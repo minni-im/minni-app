@@ -1,0 +1,12 @@
+---
+- name: minni-nginx
+  image: nginx
+  ports: ['8080:80', '443:443']
+- name: minni-redis
+  image: redis
+  ports: ['6379:6379']
+- name: minni-couchdb
+  image: klaemo/couchdb
+  ports:
+    - '5984:5984'
+  volumes: ["/vagrant/logs/couchdb:/usr/local/var/log/couchdb", "/vagrant/etc/couchdb:/usr/local/var/lib/couchdb"]

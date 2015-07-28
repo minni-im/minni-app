@@ -1,0 +1,15 @@
+---
+rules:
+  no-underscore-dangle: 0
+  space-after-keywords: 2
+  quotes: [2, "double", "avoid-escape"]
+  strict: [2, "never"]
+
+ecmaFeatures:
+  modules: true
+  jsx: true
+
+env:
+  es6: true
+  node: true
+  jasmine: true

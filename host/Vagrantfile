@@ -1,0 +1,28 @@
+Vagrant.configure("2") do |config|
+
+  OSX = (/darwin/ =~ RUBY_PLATFORM) != nil
+
+  config.vm.hostname = "minni-app-host"
+  config.vm.synced_folder "..", "/vagrant"
+  config.vm.box =  "ubuntu/trusty64"
+
+  config.vm.provider "virtualbox" do |v|
+    v.name = "minni-app"
+    v.memory = 1024
+    v.cpus = 2
+  end
+
+  config.vm.network "forwarded_port", guest: 5984, host: 5984
+  config.vm.network "forwarded_port", guest: 6379, host: 6379
+
+  if OSX
+    # Needed for OSX that does not allow to bind ports < 1024 without root access
+    config.vm.network "forwarded_port", guest: 8080, host: 8080
+  else
+    config.vm.network "forwarded_port", guest: 8080, host: 80
+  end
+
+  config.vm.provision "docker"
+
+
+end

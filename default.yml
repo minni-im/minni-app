@@ -1,0 +1,24 @@
+# Minni Default Settings
+
+debug: true
+
+session:
+  key: minni-session-id
+  secret: MinniIsTrullyAnAwesomeCollaborativeChatToolWithALotOfFeatures
+
+database:
+  name: minni
+  host: 127.0.0.1
+  port: 5984
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+
+auth:
+  providers: [ github ]
+  github:
+    id: #your client id here
+    secret: #your client secret here
+    scope: user
+    callback: /auth/github/callback
