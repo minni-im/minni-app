@@ -6,7 +6,7 @@ containers = YAML.load_file('containers.yml')
 Vagrant.configure("2") do |config|
 
   config.vm.provider "docker" do |docker|
-    docker.vagrant_vagrantfile = './host/Vagrantfile'
+    docker.vagrant_vagrantfile = './etc/Vagrantfile'
   end
 
   containers.each do |container|
@@ -19,6 +19,15 @@ Vagrant.configure("2") do |config|
         docker.image = container["image"]
         docker.ports = container["ports"] ||= []
         docker.volumes = container["volumes"] ||= []
+        if container["env"] != nil
+          docker.env = container["env"]
+        end
+        if container["cmd"] != nil
+          docker.cmd = container["cmd"]
+        end
+        (container["links"] ||= []).each do |link|
+          docker.link link
+        end
       end
 
     end

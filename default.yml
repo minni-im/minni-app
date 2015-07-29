@@ -1,12 +1,14 @@
 # Minni Default Settings
 
 debug: true
+port: 3000
+host: 0.0.0.0
 
 session:
   key: minni-session-id
   secret: MinniIsTrullyAnAwesomeCollaborativeChatToolWithALotOfFeatures
 
-database:
+couchdb:
   name: minni
   host: 127.0.0.1
   port: 5984
@@ -18,7 +20,5 @@ redis:
 auth:
   providers: [ github ]
   github:
-    id: #your client id here
-    secret: #your client secret here
     scope: user
     callback: /auth/github/callback

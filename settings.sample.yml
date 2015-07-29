@@ -1,12 +1,10 @@
 # Minni Settings File
 
-debug: true
-
 session:
-  key: minni-seesion-id
+  key: minni-session-id
   secret: MinniIsTrullyAnAwesomeCollaborativeChatToolWithALotOfFeatures
 
-database:
+couchdb:
   name: minni
   host: 127.0.0.1
   port: 5984

@@ -1,8 +1,6 @@
-dist
-etc
-logs
-.vagrant
-host/.vagrant
+dist/
+.vagrant/
+.c9revisions/
 settings.yml
 settings.js
 node_modules
@@ -18,3 +16,5 @@ npm-debug.log
 *.pem
 *.crt
 *.csr
+ehthumbs.db
+Thumbs.db

@@ -12,17 +12,20 @@ Vagrant.configure("2") do |config|
     v.cpus = 2
   end
 
+  # CouchDB forwarding for inspecting w/ futon via http://localhost:5984/_utils
   config.vm.network "forwarded_port", guest: 5984, host: 5984
-  config.vm.network "forwarded_port", guest: 6379, host: 6379
+  # Uncomment to foward Redis port on the guest
+  # config.vm.network "forwarded_port", guest: 6379, host: 6379
 
   if OSX
     # Needed for OSX that does not allow to bind ports < 1024 without root access
+    # You then need to configure local firewall to redirect to 80
     config.vm.network "forwarded_port", guest: 8080, host: 8080
   else
     config.vm.network "forwarded_port", guest: 8080, host: 80
   end
 
+  # Simply install the latest docker version
   config.vm.provision "docker"
-
 
 end
