@@ -1,5 +1,9 @@
-import nano from "nano";
+import Waterline from "waterline";
 
-export default class Message {
-
-}
+export default Waterline.Collection.extend({
+  identity: "message",
+  connection: "minniCouch",
+  attributes: {
+    content: "string"
+  }
+});

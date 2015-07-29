@@ -1,7 +1,12 @@
+import fs from "fs";
+import path from "path";
 import express from "express.oi";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import connectRedis from "connect-redis";
+
+import Waterline from "waterline";
+import CouchWaterline from "sails-couchdb-orm";
 
 import config from "./config";
 
@@ -48,4 +53,27 @@ let bootstrap = () => {
   console.log("Minni application started and listenning on http://%s:%s", host, port);
 };
 
-bootstrap();
+let waterline = new Waterline();
+let waterlineConfig = {
+  adapters: {
+    "default": CouchWaterline,
+    "couch": CouchWaterline
+  },
+  connections: {
+    minniCouch: {
+      adapter: "couch",
+      host: process.env.COUCHDB_PORT_5984_TCP_ADDR || config.couchdb.host,
+      port: process.env.COUCHDB_PORT_5984_TCP_PORT || config.couchb.port
+    }
+  }
+};
+fs.readdirSync(path.join(__dirname, "models")).forEach(model => {
+  waterline.loadCollection(require("./models/" + model));
+});
+
+waterline.initialize(waterlineConfig, (error, ontology) => {
+  if (error) {
+    throw error;
+  }
+  bootstrap();
+});

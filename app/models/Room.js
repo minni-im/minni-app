@@ -1,5 +1,11 @@
-import nano from "nano";
+import Waterline from "waterline";
 
-export default class Room {
-
-}
+export default Waterline.Collection.extend({
+  identity: "room",
+  connection: "minniCouch",
+  attributes: {
+    name: "string",
+    topic: "string",
+    token: "string"
+  }
+});

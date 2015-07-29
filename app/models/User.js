@@ -1,7 +1,10 @@
-import nano from "nano";
+import Waterline from "waterline";
 
-export default class User {
-  static findById() {
-
+export default Waterline.Collection.extend({
+  identity: "user",
+  connection: "minniCouch",
+  attributes: {
+    firstName: "string",
+    lastName: "string"
   }
-}
+});

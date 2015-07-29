@@ -20,6 +20,8 @@ Vagrant.configure("2") do |config|
   if OSX
     # Needed for OSX that does not allow to bind ports < 1024 without root access
     # You then need to configure local firewall to redirect to 80
+    # /etc/pf.anchors/com.vagrant
+    # rdr pass on lo0 inet proto tcp from any to 127.0.0.1 port 80 -> 127.0.0.1 port 8080
     config.vm.network "forwarded_port", guest: 8080, host: 8080
   else
     config.vm.network "forwarded_port", guest: 8080, host: 80
