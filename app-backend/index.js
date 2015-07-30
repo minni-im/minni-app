@@ -32,6 +32,9 @@ let session = {
   }
 };
 
+app.set("view engine", "jade");
+app.set("views", path.join(__dirname, "views"));
+
 app.use(cookieParser());
 app.io.session(session);
 
@@ -42,7 +45,14 @@ app.use(bodyParser.urlencoded({
 
 app.route("/")
   .get((req, res) => {
-    res.send(config);
+    app.get("models").user.create({
+      firstName: "Benoit",
+      lastName: "Charbonnier"
+    }, function(error, user) {
+      res.render("chat", {
+        config: user
+      });
+    });
   });
 
 let bootstrap = () => {
@@ -56,12 +66,11 @@ let bootstrap = () => {
 let waterline = new Waterline();
 let waterlineConfig = {
   adapters: {
-    "default": CouchWaterline,
-    "couch": CouchWaterline
+    "couchdbConnector": CouchWaterline
   },
   connections: {
-    minniCouch: {
-      adapter: "couch",
+    "couchdb": {
+      adapter: "couchdbConnector",
       host: process.env.COUCHDB_PORT_5984_TCP_ADDR || config.couchdb.host,
       port: process.env.COUCHDB_PORT_5984_TCP_PORT || config.couchb.port
     }
@@ -71,9 +80,10 @@ fs.readdirSync(path.join(__dirname, "models")).forEach(model => {
   waterline.loadCollection(require("./models/" + model));
 });
 
-waterline.initialize(waterlineConfig, (error, ontology) => {
+waterline.initialize(waterlineConfig, (error, models) => {
   if (error) {
     throw error;
   }
+  app.set("models", models.collections);
   bootstrap();
 });
