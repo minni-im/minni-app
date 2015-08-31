@@ -54,12 +54,10 @@
     "moment": "^2.10.6",
     "node-libs-browser": "^0.5.2",
     "passport": "^0.2.2",
-    "passport-github": "^0.1.5",
     "passport-http-bearer": "^1.0.1",
-    "passport.socket.io": "0.0.0",
+    "passport.socketio": "^3.5.1",
     "react": "^0.13.3",
     "redis": "^0.12.1",
-    "sails-couchdb-orm": "^0.10.3",
-    "waterline": "^0.10.26"
+    "tape-recorder": "^1.0.1"
   }
 }

@@ -4,11 +4,11 @@ import express from "express.oi";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import connectRedis from "connect-redis";
+import recorder from "tape-recorder";
 
-import Waterline from "waterline";
-import CouchWaterline from "sails-couchdb-orm";
-
+import auth from "./auth";
 import config from "./config";
+
 
 let RedisStore = connectRedis(express.session);
 let app = express();
@@ -35,27 +35,21 @@ let session = {
 app.set("view engine", "jade");
 app.set("views", path.join(__dirname, "views"));
 
-app.use(cookieParser());
-app.io.session(session);
+let bootstrap = () => {
+  app.use(cookieParser());
+  app.io.session(session);
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+  auth.setup(app, session);
 
-app.route("/")
-  .get((req, res) => {
-    app.get("models").user.create({
-      firstName: "Benoit",
-      lastName: "Charbonnier"
-    }, function(error, user) {
-      res.render("chat", {
-        config: user
-      });
-    });
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({
+      extended: true
+  }));
+
+  fs.readdirSync(path.join(__dirname, "controllers")).forEach(ctrl => {
+    require("./controllers/" + ctrl)(app);
   });
 
-let bootstrap = () => {
   let port = config.port;
   let host = config.host;
 
@@ -63,27 +57,11 @@ let bootstrap = () => {
   console.log("Minni application started and listenning on http://%s:%s", host, port);
 };
 
-let waterline = new Waterline();
-let waterlineConfig = {
-  adapters: {
-    "couchdbConnector": CouchWaterline
-  },
-  connections: {
-    "couchdb": {
-      adapter: "couchdbConnector",
-      host: process.env.COUCHDB_PORT_5984_TCP_ADDR || config.couchdb.host,
-      port: process.env.COUCHDB_PORT_5984_TCP_PORT || config.couchb.port
-    }
-  }
-};
-fs.readdirSync(path.join(__dirname, "models")).forEach(model => {
-  waterline.loadCollection(require("./models/" + model));
-});
-
-waterline.initialize(waterlineConfig, (error, models) => {
-  if (error) {
-    throw error;
-  }
-  app.set("models", models.collections);
+const couchDBHost = process.env.COUCHDB_PORT_5984_TCP_ADDR || config.couchdb.host;
+const couchDBPort = process.env.COUCHDB_PORT_5984_TCP_PORT || config.couchdb.port;
+recorder.connect(`http://${couchDBHost}:${couchDBPort}`, config.couchdb.name, () => {
+  fs.readdirSync(path.join(__dirname, "models")).forEach(model => {
+    require("./models/" + model);
+  });
   bootstrap();
 });

@@ -1,10 +1,17 @@
-import Waterline from "waterline";
+import recorder from "tape-recorder";
 
-export default Waterline.Collection.extend({
-  identity: "user",
-  connection: "couchdb",
-  attributes: {
-    firstName: "string",
-    lastName: "string"
-  }
+let UserSchema = new recorder.Schema({
+  firstName: String,
+  lastName: String,
+  nickname: String,
+  email: String,
+  token: String
 });
+
+UserSchema.static("findByToken", (token) => {
+  return UserSchema.where("token", token).then(user => {
+
+  });
+});
+
+export default recorder.model("User", UserSchema);

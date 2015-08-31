@@ -1,0 +1,6 @@
+extends layout
+
+block content
+  foreach provider in auth
+    div(class=provider.key)
+      a(href="/login/#{provider.key}") #{provider.key}

@@ -1,11 +1,9 @@
-import Waterline from "waterline";
+import recorder from "tape-recorder";
 
-export default Waterline.Collection.extend({
-  identity: "room",
-  connection: "couchdb",
-  attributes: {
-    name: "string",
-    topic: "string",
-    token: "string"
-  }
+let RoomSchema = new recorder.Schema({
+  name: String,
+  topic: String,
+  token: String
 });
+
+export default recorder.model("Room", RoomSchema);

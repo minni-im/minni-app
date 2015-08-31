@@ -9,7 +9,7 @@ session:
   secret: MinniIsTrullyAnAwesomeCollaborativeChatToolWithALotOfFeatures
 
 couchdb:
-  name: minni
+  name: minni-app
   host: 127.0.0.1
   port: 5984
 

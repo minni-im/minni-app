@@ -7,7 +7,7 @@ html
     meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
     meta(name="viewport", content="width=device-width,initial-scale=1.0,maximum-scale=1.0")
 
-    //- meta(name="application-name", content="Minni.im")
+    meta(name="application-name", content="Minni.im")
     //- meta(name="description", content="Your cloud office")
     //- meta(name="application-url", content="#{url.protocol}://#{url.hostname}/chat/#{account.name}?origin=cda")
     
@@ -24,12 +24,12 @@ html
       
     //- IE9+
     meta(name="msapplication-tooltip", content="Minni.im")
-    meta(name="msapplication-starturl", content="#{url.protocol}://#{url.hostname}/chat/#{account.name}?origin=ieps")
+    //- meta(name="msapplication-starturl", content="#{url.protocol}://#{url.hostname}/chat/#{account.name}?origin=ieps")
     //- IE10+
     meta(name="msapplication-TileColor", content="#48a6ff")
-    meta(name="msapplication-TileImage", content="#{url.protocol}://#{url.hostname}/images/logos/msapp/mstile-144x144.png")
+    //- meta(name="msapplication-TileImage", content="#{url.protocol}://#{url.hostname}/images/logos/msapp/mstile-144x144.png")
     //- Fluid
-    link(rel="fluid-icon", href="#{url.protocol}://#{url.hostname}/images/logos/logo-x512.png", title="Minni.im")
+    //- link(rel="fluid-icon", href="#{url.protocol}://#{url.hostname}/images/logos/logo-x512.png", title="Minni.im")
     //- Favicons
     link(rel="icon", type="image/x-icon", href="/favicon.ico")
     link(rel="icon", sizes="512x512", href="/images/logos/logo-x512.png")
@@ -44,6 +44,7 @@ html
   body
     header
       block header
+        .header-wrapper Minni
     
     main    
       block content
