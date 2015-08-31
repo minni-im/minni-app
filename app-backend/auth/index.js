@@ -11,6 +11,14 @@ let enabledProviders = [];
 let providersSettings = {};
 
 function getProviders() {
+  if (!settings.auth.providers) {
+    throw new Error(`No auth provider found!
+You have to specify at least one in your setting.yml file:
+
+    auth:
+      providers: [ github ]
+`);
+  }
   return settings.auth.providers.map( provider => {
     let Provider = plugins.getPlugin(provider, "auth");
     return {
@@ -29,22 +37,21 @@ function getProvider(key) {
 
 function setup (app, session) {
   enabledProviders = getProviders();
-
   enabledProviders.forEach(p => {
     p.provider.setup();
     providersSettings[p.key] = p.provider.options;
   });
 
-  function tokenAuth(token, done) {
+  passport.use(new BearerStrategy((token, done) => {
     let User = recorder.model("User");
-    User.findByToken(token).then(user => {
-      return done(null, user);
-    }, error => {
-      return done(error);
-    });
-  }
-
-  passport.use(new BearerStrategy(tokenAuth));
+    User.findByToken(token)
+      .then(user => {
+        return done(null, user);
+      })
+      .catch(error => {
+        return done(error);
+      });
+  }));
 
   passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -58,10 +65,9 @@ function setup (app, session) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  let ioSession = Object.assign(ioSession, session, {
+  let ioSession = Object.assign({}, session, {
     passport: passport
   });
-
   let psiAuth = passportSocketIo.authorize(ioSession);
 
   app.io.use((socket, next) => {

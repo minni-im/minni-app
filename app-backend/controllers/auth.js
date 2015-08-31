@@ -25,7 +25,7 @@ export default (app) => {
     req.io.route("auth:signup");
   });
 
-  app.params("provider", (req, res, next, provider) => {
+  app.param("provider", (req, res, next, provider) => {
     if (provider in auth.providers) {
       next();
     } else {
@@ -39,7 +39,7 @@ export default (app) => {
   app.io.route("auth", {
     signup(req, res) {
       let provider = req.params.provider;
-      auth.signup(provider), req, res)
+      auth.signup(provider, req, res)
         .then(user => {
 
         })
