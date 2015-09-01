@@ -1,6 +1,6 @@
 import passport from "passport";
 
-export function requireLogin(req, res, next) {
+export function requireBearerLogin(req, res, next) {
   if (req.user) {
     next();
     return;

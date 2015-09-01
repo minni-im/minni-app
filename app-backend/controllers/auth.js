@@ -1,30 +1,9 @@
+import passport from "passport";
 import auth from "../auth";
 
 export default (app) => {
 
-  app.get("/", (Req, res) => {
-    res.send("Hello minni-app");
-  });
-
-  app.get("/login", (req, res) => {
-    res.render("login", {
-      auth: auth.providers
-    });
-  });
-
-  app.get("/logout", function(req, res ) {
-    req.session.destroy();
-    res.redirect("/");
-  });
-
-  app.get("/login/:provider", (req) => {
-    req.io.route("auth:login");
-  });
-
-  app.post("/signup/:provider", (req) => {
-    req.io.route("auth:signup");
-  });
-
+  /* =Parameters= */
   app.param("provider", (req, res, next, provider) => {
     if (provider in auth.providers) {
       next();
@@ -36,21 +15,49 @@ export default (app) => {
     }
   });
 
+  /* =Routes= */
+  app.get("/", (Req, res) => {
+    res.send("Hello minni-app");
+  });
+
+  app.get("/login", (req, res) => {
+    res.render("login", {
+      providers: Object.keys(auth.providers)
+    });
+  });
+
+  app.get("/logout", function(req, res ) {
+    req.session.destroy();
+    res.redirect("/");
+  });
+
+  app.get("/login/:provider", passport.authenticate("github"));
+
+  app.get("/auth/:provider/callback", passport.authenticate("github", {
+    failureRedirect: "/login"
+  }), (req, res) => {
+    res.send("authenticated");
+  });
+
+  app.post("/signup/:provider", (req) => {
+    req.io.route("auth:signup");
+  });
+
+  /* =Socket routes= */
   app.io.route("auth", {
     signup(req, res) {
       let provider = req.params.provider;
       auth.signup(provider, req, res)
         .then(user => {
 
-        })
-        .catch(error => {
+        }, error => {
 
         });
     },
 
     login(req, res) {
       let provider = req.params.provider;
-      auth.authenticate(provider, req, res)
+      auth.authenticate(provider, req)
         .then(user => {
           req.login(user, (error) => {
             if (error) {
@@ -62,8 +69,7 @@ export default (app) => {
             }
             res.redirect("/");
           });
-        })
-        .catch(errorCode => {
+        }, errorCode => {
           let errorInfo = {
             status: "error"
           };

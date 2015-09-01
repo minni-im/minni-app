@@ -12,12 +12,7 @@ let providersSettings = {};
 
 function getProviders() {
   if (!settings.auth.providers) {
-    throw new Error(`No auth provider found!
-You have to specify at least one in your setting.yml file:
-
-    auth:
-      providers: [ github ]
-`);
+    throw new Error("No auth provider found! You have to specify at least one in your setting.yml file.");
   }
   return settings.auth.providers.map( provider => {
     let Provider = plugins.getPlugin(provider, "auth");
@@ -32,16 +27,10 @@ function getProvider(key) {
   return enabledProviders.map( p => {
     return p.key === key ? p : false;
   })
-  .filter(item => { return item !== false; })[0];
+  .filter(item => { return item !== false; })[0].provider;
 }
 
 function setup (app, session) {
-  enabledProviders = getProviders();
-  enabledProviders.forEach(p => {
-    p.provider.setup();
-    providersSettings[p.key] = p.provider.options;
-  });
-
   passport.use(new BearerStrategy((token, done) => {
     let User = recorder.model("User");
     User.findByToken(token)
@@ -60,6 +49,13 @@ function setup (app, session) {
   passport.deserializeUser(function(id, done) {
     let User = recorder.model("User");
     User.findFirst(id).then(user => done(null, user), error => done(error));
+  });
+
+
+  enabledProviders = getProviders();
+  enabledProviders.forEach(p => {
+    p.provider.setup();
+    providersSettings[p.key] = p.provider.options;
   });
 
   app.use(passport.initialize());
@@ -90,10 +86,10 @@ function setup (app, session) {
 }
 
 function action(type) {
-  return (provider, req, res) => {
-    provider = getProvider(provider).provider;
+  return (provider, req) => {
+    provider = getProvider(provider);
     return new Promise((resolve, reject) => {
-      provider[type].call(provider, req, res, (error, user) => {
+      return provider[type].call(provider, req, (error, user) => {
         if (error) {
           return reject(error);
         }

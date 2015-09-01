@@ -1,6 +1,7 @@
 extends layout
 
 block content
-  foreach provider in auth
-    div(class=provider.key)
-      a(href="/login/#{provider.key}") #{provider.key}
+  h3 Please use one of these providers to login
+  each provider in providers
+    div(class=["provider", "provider-#{provider}"])
+      a(href="/login/#{provider}") #{provider}
