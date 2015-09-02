@@ -46,6 +46,11 @@ let bootstrap = () => {
       extended: true
   }));
 
+  app.use((req, res, next) => {
+    res.locals.user = req.user;
+    next();
+  });
+
   fs.readdirSync(path.join(__dirname, "controllers")).forEach(ctrl => {
     require("./controllers/" + ctrl)(app);
   });

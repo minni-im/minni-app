@@ -1,4 +1,3 @@
-import passport from "passport";
 import auth from "../auth";
 
 export default (app) => {
@@ -16,8 +15,8 @@ export default (app) => {
   });
 
   /* =Routes= */
-  app.get("/", (Req, res) => {
-    res.send("Hello minni-app");
+  app.get("/", (req, res) => {
+    res.render("home");
   });
 
   app.get("/login", (req, res) => {
@@ -26,35 +25,25 @@ export default (app) => {
     });
   });
 
-  app.get("/logout", function(req, res ) {
-    req.session.destroy();
+  app.get("/logout", function(req, res) {
+    req.logout();
     res.redirect("/");
   });
 
-  app.get("/login/:provider", passport.authenticate("github"));
-
-  app.get("/auth/:provider/callback", passport.authenticate("github", {
-    failureRedirect: "/login"
-  }), (req, res) => {
-    res.send("authenticated");
+  app.get("/login/:provider", function(req, res, next) {
+    return auth.initialize(req.params.provider)(req, res, next);
   });
 
-  app.post("/signup/:provider", (req) => {
-    req.io.route("auth:signup");
+  app.get("/auth/:provider/callback", function(req, res, next) {
+    return auth.authenticate(req.params.provider)(req, res, next);
+  });
+
+  app.post("/signup/:provider", (req, res, next) => {
+    return auth.signup(req.params.provider)(req, res, next);
   });
 
   /* =Socket routes= */
   app.io.route("auth", {
-    signup(req, res) {
-      let provider = req.params.provider;
-      auth.signup(provider, req, res)
-        .then(user => {
-
-        }, error => {
-
-        });
-    },
-
     login(req, res) {
       let provider = req.params.provider;
       auth.authenticate(provider, req)

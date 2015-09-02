@@ -44,7 +44,13 @@ html
   body
     header
       block header
-        .header-wrapper Minni
+        .header-wrapper
+          .logo Minni
+          if user === undefined
+            a(href="/login") Login
+          else
+            .user #{user.fullname} - 
+              a(href="/logout") Logout
     
     main    
       block content

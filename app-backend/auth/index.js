@@ -86,22 +86,16 @@ function setup (app, session) {
 }
 
 function action(type) {
-  return (provider, req) => {
+  return (provider, ...rest) => {
     provider = getProvider(provider);
-    return new Promise((resolve, reject) => {
-      return provider[type].call(provider, req, (error, user) => {
-        if (error) {
-          return reject(error);
-        }
-        return resolve(user);
-      });
-    });
+    return provider[type].apply(provider, rest);
   };
 }
 
 export default {
   providers: providersSettings,
   setup: setup,
+  initialize: action("initialize"),
   authenticate: action("authenticate"),
   signup: action("signup")
 };

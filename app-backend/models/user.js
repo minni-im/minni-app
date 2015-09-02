@@ -13,7 +13,18 @@ let UserSchema = new recorder.Schema({
   }
 });
 
-UserSchema.static("findByToken", (token) => {
+UserSchema.virtual({
+  fullname: {
+    get() {
+      return `${this.firstname} ${this.lastname}`;
+    },
+    set(value) {
+      [this.firstname, this.lastname] = value.split(" ");
+    }
+  }
+});
+
+UserSchema.static("findByToken", function findByToken(token) {
   return this.where("token", token).then(users => {
     return users[0];
   });
@@ -21,19 +32,19 @@ UserSchema.static("findByToken", (token) => {
 
 UserSchema
   .view("byProviderId", {
-    map: function(doc) {
+    map: `function(doc) {
       if (doc.modelType === "User" && doc.providers) {
         for (var provider in doc.providers) {
           emit([provider, doc.providers[provider]], doc);
         }
       }
-    }
+    }`
   })
-  .static("findByProviderId", (provider, id) => {
-  return this.where("byProviderId", { key: [provider, id] })
-    .then((users) => {
-      return users[0];
-    });
+  .static("findByProviderId", function findByProviderId(provider, id) {
+    return this.where("byProviderId", { key: [provider, id] })
+      .then((users) => {
+        return users[0];
+      });
 });
 
 export default recorder.model("User", UserSchema);
