@@ -4,6 +4,7 @@ let UserSchema = new recorder.Schema({
   firstname: String,
   lastname: String,
   nickname: String,
+  password: String,
   email: String,
   gravatarEmail: String,
   token: String,
@@ -24,11 +25,32 @@ UserSchema.virtual({
   }
 });
 
-UserSchema.static("findByToken", function findByToken(token) {
-  return this.where("token", token).then(users => {
-    return users[0];
+UserSchema.method("authenticate", function authenticate(password) {
+  console.log("user.authenticate", password, this.fullname);
+  return new Promise((resolve, reject) => {
+    return this.password === password ? resolve(this) : reject("BAD PASSWORD");
   });
 });
+
+UserSchema
+  .static("findByToken", function findByToken(token) {
+    return this.where("token", token)
+      .then(users => {
+        return users[0];
+      });
+  })
+  .static("authenticate", function authenticate(identifier, password) {
+    console.log("User.authenticate", identifier, password);
+    return this.where("email", identifier)
+      .then(users => {
+        console.log("We got some users", users);
+        if (users.length) {
+          console.log("Trying to authenticate");
+          return users[0].authenticate(password);
+        }
+        return false;
+      });
+  });
 
 UserSchema
   .view("byProviderId", {

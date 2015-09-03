@@ -1,9 +1,8 @@
 import passport from "passport";
 
 export function requireBearerLogin(req, res, next) {
-  if (req.user) {
-    next();
-    return;
+  if (req.isAuthenticated()) {
+    return next();
   }
   if (req.headers && req.headers.authorization) {
     let [scheme, token] = req.headers.authorization.split(" "), auth;

@@ -1,6 +1,12 @@
 extends layout
 
 block content
+  h3 Enter your credentials
+  form(method="POST", action="/login")
+    input(type="text", placeholder="identifier (email)", name="identifier")
+    input(type="password", placeholder="password", name="password")
+    button Login
+    
   h3 Please use one of these providers to login
   each provider in providers
     div(class=["provider", "provider-#{provider}"])

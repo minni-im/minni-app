@@ -3,6 +3,7 @@ import path from "path";
 import express from "express.oi";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
+import flash from "flash";
 import connectRedis from "connect-redis";
 import recorder from "tape-recorder";
 
@@ -45,6 +46,7 @@ let bootstrap = () => {
   app.use(bodyParser.urlencoded({
       extended: true
   }));
+  app.use(flash());
 
   app.use((req, res, next) => {
     res.locals.user = req.user;

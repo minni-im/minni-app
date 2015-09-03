@@ -52,7 +52,12 @@ html
             .user #{user.fullname} - 
               a(href="/logout") Logout
     
-    main    
+    main
+      block flash
+        while message = flash.shift()
+          a.alert(class='alert-' + message.type)
+            p= message.message
+          
       block content
 
     footer

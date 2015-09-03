@@ -1,8 +1,10 @@
 import recorder from "tape-recorder";
+import cookieParser from "cookie-parser";
 
 import passport from "passport";
 import passportSocketIo from "passport.socketio";
 import BearerStrategy from "passport-http-bearer";
+import LocalProvider from "./local";
 
 import settings from "../config";
 import plugins from "../plugins";
@@ -14,11 +16,17 @@ function getProviders() {
   if (!settings.auth.providers) {
     throw new Error("No auth provider found! You have to specify at least one in your setting.yml file.");
   }
-  return settings.auth.providers.map( provider => {
-    let Provider = plugins.getPlugin(provider, "auth");
+  return settings.auth.providers.map(provider => {
+    let Provider;
+    if (provider === "local") {
+      Provider = LocalProvider;
+    } else {
+      Provider = plugins.getPlugin(provider, "auth");
+    }
+
     return {
       key: provider,
-      provider: new Provider(settings.auth[provider])
+      provider: new Provider(settings.auth[provider] || {})
     };
   });
 }
@@ -31,13 +39,13 @@ function getProvider(key) {
 }
 
 function setup (app, session) {
+
   passport.use(new BearerStrategy((token, done) => {
     let User = recorder.model("User");
     User.findByToken(token)
       .then(user => {
         return done(null, user);
-      })
-      .catch(error => {
+      }, error => {
         return done(error);
       });
   }));
@@ -62,6 +70,7 @@ function setup (app, session) {
   app.use(passport.session());
 
   let ioSession = Object.assign({}, session, {
+    cookieParser: cookieParser,
     passport: passport
   });
   let psiAuth = passportSocketIo.authorize(ioSession);
@@ -75,14 +84,18 @@ function setup (app, session) {
           socket.request.user.loggedIn = true;
           socket.request.user.usingToken = true;
           return next();
-        })
-        .catch(() => {
+        }, () => {
           return next("Fail");
         });
     } else {
       psiAuth(socket, next);
     }
   });
+}
+
+function authenticate(provider, req, res, done) {
+  provider = getProvider(provider);
+  provider.authenticate(req, res, done);
 }
 
 function action(type) {
@@ -96,6 +109,6 @@ export default {
   providers: providersSettings,
   setup: setup,
   initialize: action("initialize"),
-  authenticate: action("authenticate"),
+  authenticate: authenticate,
   signup: action("signup")
 };

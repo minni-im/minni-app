@@ -30,17 +30,32 @@ export default (app) => {
     res.redirect("/");
   });
 
-  app.get("/login/:provider", function(req, res, next) {
-    return auth.initialize(req.params.provider)(req, res, next);
+  app.post("/login", function(req, res) {
+    auth.authenticate("local", req, res, function(error, user, info) {
+      if (!user) {
+        res.redirect("/login");
+      }
+      req.login(user, function(err) {
+        res.redirect("/");
+      });
+    });
   });
 
-  app.get("/auth/:provider/callback", function(req, res, next) {
-    return auth.authenticate(req.params.provider)(req, res, next);
+  app.get([
+    "/login/:provider",
+    "/signup/:provider",
+    "/auth/:provider/callback"
+  ], function(req, res) {
+    auth.authenticate(req.params.provider, req, res, function(error, user, info) {
+      req.login(user, function(error) {
+        res.redirect("/");
+      });
+    });
   });
 
-  app.post("/signup/:provider", (req, res, next) => {
-    return auth.signup(req.params.provider)(req, res, next);
-  });
+  // app.get("/connect/:provider", (req, res, next) => {
+  //   return auth.connect(req.params.provider)(req, res, next);
+  // });
 
   /* =Socket routes= */
   app.io.route("auth", {
