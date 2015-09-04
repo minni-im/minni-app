@@ -10,24 +10,22 @@ export default class LocalAuth {
 
   setup() {
     passport.use(new LocalStrategy({
-      usernameField: "identifier",
+      usernameField: "username",
       passwordField: "password"
     }, function localAuthVerify(identifier, password, done) {
       let User = recorder.model("User");
-
       User.authenticate(identifier, password)
         .then(user => {
-          console.log("Auth done, we should have a user", user.fullname);
           if (user) {
             return done(null, user);
           }
           return done(null, false, {
-            message: "Incorrect login credentials"
+            message: `Username/password for '${identifier}' is incorrect`
           });
         }, (error) => {
-          console.log("Trying to auth", identifier, password, "crashed", error);
+          console.error("Passport LocalStrategy error", error);
           done(null, false, {
-            message: "Some fields did not validate"
+            message: `Username/password for '${identifier}' is incorrect`
           });
         });
     }));

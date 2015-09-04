@@ -26,7 +26,6 @@ UserSchema.virtual({
 });
 
 UserSchema.method("authenticate", function authenticate(password) {
-  console.log("user.authenticate", password, this.fullname);
   return new Promise((resolve, reject) => {
     return this.password === password ? resolve(this) : reject("BAD PASSWORD");
   });

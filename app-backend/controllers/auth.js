@@ -33,9 +33,15 @@ export default (app) => {
   app.post("/login", function(req, res) {
     auth.authenticate("local", req, res, function(error, user, info) {
       if (!user) {
+        if (info && info.message) {
+          req.flash("error", info.message);
+        }
         res.redirect("/login");
       }
-      req.login(user, function(err) {
+      req.login(user, function(loginError) {
+        if (loginError) {
+          console.error("Login user via 'local' auth error", loginError);
+        }
         res.redirect("/");
       });
     });
@@ -46,8 +52,18 @@ export default (app) => {
     "/signup/:provider",
     "/auth/:provider/callback"
   ], function(req, res) {
-    auth.authenticate(req.params.provider, req, res, function(error, user, info) {
-      req.login(user, function(error) {
+    let provider = req.params.provider;
+    auth.authenticate(provider, req, res, function(error, user, info) {
+      if (!user) {
+        if (info && info.message) {
+          req.flash("error", info.message);
+        }
+        res.redirect("/login");
+      }
+      req.login(user, function(loginError) {
+        if (loginError) {
+          console.error(`Login user via ${provider} auth error`, loginError);
+        }
         res.redirect("/");
       });
     });

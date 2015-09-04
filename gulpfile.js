@@ -131,7 +131,7 @@ var webpackStats = function webpackStats(done) {
 };
 
 gulp.task("less", function() {
-  return gulp.src(["./app/stylesheets/style.less"])
+  return gulp.src(["./app-backend/stylesheets/style.less"])
     .pipe(plumber())
     .pipe(less({
       cleancss: true
@@ -151,7 +151,7 @@ gulp.task("webpack", function(done) {
 
 gulp.task("watch", function() {
   gulp.watch([ "./public/**/*" ], ["static"]);
-  gulp.watch([ "./app/stylesheets/**/*.less" ], ["less"]);
+  gulp.watch([ "./app-backend/stylesheets/**/*.less" ], ["less"]);
   webpackBuild.watch({
     aggregateTimeout: 300
   }, webpackStats());
