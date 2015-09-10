@@ -1,0 +1,8 @@
+# robots.txt
+# It is the future, The distant future. It is the distant future, The year 2000
+# We are robots, The world is very different, Ever since the robotic uprising of the mid-90's
+# There is no more unhappiness
+
+User-agent: *
+Disallow: /
+Allow: /humans.txt

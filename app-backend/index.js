@@ -12,7 +12,7 @@ import config from "./config";
 
 
 let RedisStore = connectRedis(express.session);
-let app = express();
+const app = express();
 
 app.http().io();
 
@@ -49,6 +49,7 @@ let bootstrap = () => {
   app.use(flash());
 
   app.use((req, res, next) => {
+    res.locals.viewname = function(filename) { return path.basename(filename, ".jade"); };
     res.locals.user = req.user;
     next();
   });

@@ -1,13 +1,28 @@
 extends layout
 
 block content
-  h3 Enter your credentials
-  form(method="POST", action="/login")
-    input(type="text", placeholder="identifier (email)", name="username")
-    input(type="password", placeholder="password", name="password")
-    button Login
+  .content
+    .greetings
+      img.logo(src="/images/logo.png")      
     
-  h3 Please use one of these providers to login
-  each provider in providers
-    div(class=["provider", "provider-#{provider}"])
-      a(href="/login/#{provider}") #{provider}
+    .providers
+      h1 Sign in to minni
+      - filteredProviders = providers.filter(function (p) { return p !== "local"; })
+      p Sign in with <span class="providers-list">#{filteredProviders.join(", ")}</span> or Email
+      
+      .providers-links
+        each provider in filteredProviders
+          a(class=["provider", "provider-#{provider}"], href="/login/#{provider}") #{provider}
+
+      .email
+        form(method="POST", action="/login")
+          p
+            input(type="text", placeholder="Identifier (email)", name="username")
+          p
+            input(type="password", placeholder="Password", name="password")
+          p
+            button Sign in
+    
+  //- div
+  //-   a(href="/login/reset-password") Forgot password?
+  

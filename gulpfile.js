@@ -8,6 +8,8 @@ var lodash = require("lodash");
 var less = require("gulp-less");
 var runSeq = require("run-sequence");
 var webpack = require("webpack");
+var Autoprefixer = require("less-plugin-autoprefix");
+var CleanCss = require("less-plugin-clean-css");
 
 
 var argv = require("minimist")(process.argv.splice(2));
@@ -130,11 +132,19 @@ var webpackStats = function webpackStats(done) {
   };
 };
 
+var lessPlugins = [new Autoprefixer({
+  browsers: ["last 2 versions"]
+})];
+if (RELEASE) {
+  lessPlugins.push(new CleanCss({
+    advanced: true
+  }));
+}
 gulp.task("less", function() {
-  return gulp.src(["./app-backend/stylesheets/style.less"])
+  return gulp.src(["./app-frontend/stylesheets/style.less"])
     .pipe(plumber())
     .pipe(less({
-      cleancss: true
+      plugins: lessPlugins
     }))
     .pipe(plumber.stop())
     .pipe(gulp.dest("./dist/public/css"));
@@ -151,7 +161,7 @@ gulp.task("webpack", function(done) {
 
 gulp.task("watch", function() {
   gulp.watch([ "./public/**/*" ], ["static"]);
-  gulp.watch([ "./app-backend/stylesheets/**/*.less" ], ["less"]);
+  gulp.watch([ "./app-frontend/stylesheets/**/*.less" ], ["less"]);
   webpackBuild.watch({
     aggregateTimeout: 300
   }, webpackStats());

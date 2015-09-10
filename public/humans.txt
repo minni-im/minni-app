@@ -1,0 +1,10 @@
+/* TEAM */
+  Boss: Benoit Charbonnier
+  Site: https://minni.im
+  Twitter: @bencharbonnier
+  Location: Antibes, French Riviera, France
+
+/* SITE */
+  Built with: Nodejs, CouchDB, Redis, Socket.io
+  Doctype: HTML5
+  IDE: atom.io
