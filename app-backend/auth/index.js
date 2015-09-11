@@ -93,11 +93,6 @@ function setup (app, session) {
   });
 }
 
-function authenticate(provider, req, res, done) {
-  provider = getProvider(provider);
-  provider.authenticate(req, res, done);
-}
-
 function action(type) {
   return (provider, ...rest) => {
     provider = getProvider(provider);
@@ -109,6 +104,6 @@ export default {
   providers: providersSettings,
   setup: setup,
   initialize: action("initialize"),
-  authenticate: authenticate,
-  signup: action("signup")
+  connect: action("connect"),
+  authenticate: action("authenticate")
 };

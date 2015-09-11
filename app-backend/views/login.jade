@@ -7,11 +7,10 @@ block content
     
     .providers
       h1 Sign in to minni
-      - filteredProviders = providers.filter(function (p) { return p !== "local"; })
-      p Sign in with <span class="providers-list">#{filteredProviders.join(", ")}</span> or Email
+      p Sign in with <span class="providers-list">#{providers.join(", ")}</span> or Email
       
       .providers-links
-        each provider in filteredProviders
+        each provider in providers
           a(class=["provider", "provider-#{provider}"], href="/login/#{provider}") #{provider}
 
       .email
@@ -23,6 +22,7 @@ block content
           p
             button Sign in
     
-  //- div
-  //-   a(href="/login/reset-password") Forgot password?
+  .links
+    a(href="/login/reset-password") Forgot password?
+    a(href="/signup") Don't have yet an account?
   

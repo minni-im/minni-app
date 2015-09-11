@@ -1,0 +1,30 @@
+extends layout
+
+block content
+  .content
+    .greetings
+      img.logo(src="/images/logo.png")      
+    
+    .providers
+      h1 Prepare yourself
+      p In about 30 seconds you'll have new world-wide offices
+      p Sign up with <span class="providers-list">#{providers.join(", ")}</span> or Email
+      
+      .providers-links
+        each provider in providers
+          a(class=["provider", "provider-#{provider}"], href="/signup/#{provider}") #{provider}
+
+      .email
+        form(method="POST", action="/signup")
+          p
+            input(type="text", placeholder="Choose a username", name="username")
+          p
+            input(type="text", placeholder="Your email", name="email")
+          p
+            input(type="password", placeholder="Choose a password", name="password")
+          p
+            button Create your account
+    
+  .links
+    a(href="/login") Already have an account?
+  

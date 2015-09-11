@@ -25,11 +25,19 @@ UserSchema.virtual({
   }
 });
 
-UserSchema.method("authenticate", function authenticate(password) {
-  return new Promise((resolve, reject) => {
-    return this.password === password ? resolve(this) : reject("BAD PASSWORD");
+UserSchema
+  .method("authenticate", function authenticate(password) {
+    return new Promise((resolve, reject) => {
+      return this.password === password ? resolve(this) : reject("BAD PASSWORD");
+    });
+  })
+  .method("linkProvider", function linkProvider(provider, token, profile) {
+    this.providers[provider] = profile._json.id;
+    return this.save();
+  })
+  .static("createFromProvider", function createFromProvider(provider, token, profile) {
+
   });
-});
 
 UserSchema
   .static("findByToken", function findByToken(token) {
@@ -39,12 +47,9 @@ UserSchema
       });
   })
   .static("authenticate", function authenticate(identifier, password) {
-    console.log("User.authenticate", identifier, password);
     return this.where("email", identifier)
       .then(users => {
-        console.log("We got some users", users);
         if (users.length) {
-          console.log("Trying to authenticate");
           return users[0].authenticate(password);
         }
         return false;
@@ -62,6 +67,7 @@ UserSchema
     }`
   })
   .static("findByProviderId", function findByProviderId(provider, id) {
+    console.log(`Trying to find user with: ${provider}:${id}`);
     return this.where("byProviderId", { key: [provider, id] })
       .then((users) => {
         return users[0];

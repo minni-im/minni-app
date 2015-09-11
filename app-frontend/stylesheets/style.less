@@ -13,7 +13,7 @@ body {
   margin: 0;
   padding: 0;
   color: @home-color;
-  //background-color: @home-background-color;
+  background-color: @home-background-color;
   font: 14px/26px "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 300;
 }
@@ -23,8 +23,8 @@ body {
 /***
  *** LOGIN
  ***/
-body.login {
-  background-image: url(/images/photo-overlay.png), url(/images/login/tags.jpg);
+body.login, body.signup {
+  background-image: url(/images/photo-overlay.png), url(/images/login/bokeh.jpg);
   background-position: 0 0;
   background-size: auto auto, cover;
   display: flex;
@@ -37,10 +37,22 @@ body.login {
   }
 
   main {
-    background-color: fade(@black, 50%);
+    background-color: fade(@black, 40%);
+    border-radius: 3px;
     min-width: 600px;
     text-align: center;
     padding: 25px;
+    position: relative;
+
+    .alerts {
+      background-color: @dark-orange;
+      color: @color-dark;
+      position: absolute;
+      right: 15px;
+      left: 15px;
+      bottom: 100%;
+      margin-bottom: 15px;
+    }
 
     .content {
       display: flex;
@@ -82,7 +94,18 @@ body.login {
         width: 300px;
       }
       button {
-        width: 100%;
+        width: 320px;
+      }
+    }
+
+    .links {
+      a {
+        color: inherit;
+        margin: 0 10px;
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
   }

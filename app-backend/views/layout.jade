@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title #{title} · Minni
+    title #{title ? title + " · " : ""}Minni
     meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
     
     meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
@@ -53,9 +53,11 @@ html
     
     main
       block flash
-        while message = flash.shift()
-          a.alert(class="alert-" + message.type)
-            p= message.message
+        if flash.length
+          .alerts
+            while message = flash.shift()
+              a.alert(class="alert-" + message.type)
+                p= message.message
       
       block content
 

@@ -5,7 +5,10 @@ import recorder from "tape-recorder";
 
 export default class LocalAuth {
   constructor(options = {}) {
-    this.options = options;
+    this.options = Object.assign({
+      failureRedirect: "/login",
+      successRedirect: "/"
+    }, options);
   }
 
   setup() {
@@ -31,7 +34,11 @@ export default class LocalAuth {
     }));
   }
 
-  authenticate(req, res, done) {
-    passport.authenticate("local", done)(req, res);
+  authenticate() {
+    return passport.authenticate("local", {
+      successRedirect: this.options.successRedirect,
+      failureRedirect: this.options.failureRedirect,
+      failureFlash: true
+    });
   }
 }
