@@ -8,18 +8,20 @@ block content
     .providers
       h1 Prepare yourself
       p In about 30 seconds you'll have new world-wide offices
-      p Sign up with <span class="providers-list">#{providers.join(", ")}</span> or Email
+      p Sign up with <span class="providers-list">#{providers.map(function(p) {return p.name;}).join(", ")}</span> or Email
       
       .providers-links
         each provider in providers
-          a(class=["provider", "provider-#{provider}"], href="/signup/#{provider}") #{provider}
+          a(class=["provider", "provider-#{provider.name}"], href="/signup/#{provider.name}")
+            img.logo(src="data:image/png;base64,#{provider.logo}")
+            | #{provider.name}
 
       .email
         form(method="POST", action="/signup")
           p
-            input(type="text", placeholder="Choose a username", name="username")
+            input(type="text", placeholder="Choose a username", name="username", value=fields.username)
           p
-            input(type="text", placeholder="Your email", name="email")
+            input(type="text", placeholder="Your email", name="email", value=fields.email)
           p
             input(type="password", placeholder="Choose a password", name="password")
           p

@@ -7,11 +7,13 @@ block content
     
     .providers
       h1 Sign in to minni
-      p Sign in with <span class="providers-list">#{providers.join(", ")}</span> or Email
-      
+      p Sign in with <span class="providers-list">#{providers.map(function(p) {return p.name;}).join(", ")}</span> or Email
+          
       .providers-links
         each provider in providers
-          a(class=["provider", "provider-#{provider}"], href="/login/#{provider}") #{provider}
+          a(class=["provider", "provider-#{provider.name}"], href="/login/#{provider.name}")
+            img.logo(src="data:image/png;base64,#{provider.logo}")
+            | #{provider.name}
 
       .email
         form(method="POST", action="/login")

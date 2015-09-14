@@ -1,13 +1,13 @@
 doctype html
 html
   head
-    title #{title ? title + " · " : ""}Minni
+    title #{title ? title + " · " : ""}#{name}
     meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
     
     meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
     meta(name="viewport", content="width=device-width,initial-scale=1.0,maximum-scale=1.0")
 
-    meta(name="application-name", content="Minni.im")
+    meta(name="application-name", content=name)
     //- meta(name="description", content="Your cloud office")
     //- meta(name="application-url", content="#{url.protocol}://#{url.hostname}/chat/#{account.name}?origin=cda")
     
@@ -23,7 +23,7 @@ html
     link(rel="apple-touch-icon", sizes="180x180", href="/images/logos/ios/apple-touch-icon-180x180.png")
       
     //- IE9+
-    meta(name="msapplication-tooltip", content="Minni.im")
+    meta(name="msapplication-tooltip", content=name)
     //- meta(name="msapplication-starturl", content="#{url.protocol}://#{url.hostname}/chat/#{account.name}?origin=ieps")
     //- IE10+
     meta(name="msapplication-TileColor", content="#48a6ff")

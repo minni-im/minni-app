@@ -1,7 +1,17 @@
+import bcrypt from "bcryptjs";
+import recorder from "tape-recorder";
+
 import auth from "../auth";
+import { requireLoginRedirect, requireEmail } from "../middlewares/auth";
 
 
-let oauthProviders = Object.keys(auth.providers).filter((p) => (p !== "local"))
+let oauthProvidersInfo =
+  Object.keys(auth.providers)
+    .filter((p) => (p !== "local"))
+    .map((name) => {
+      let { logo } = auth.providers[name];
+      return { name, logo };
+    });
 
 
 export default (app) => {
@@ -18,16 +28,19 @@ export default (app) => {
     }
   });
 
+  // =Middelwares= */
+  app.use(requireEmail);
+
   /* =Routes= */
-  app.get("/", (req, res) => {
-    res.render("home");
+  app.get("/", requireLoginRedirect, (req, res) => {
+    res.render("chat");
   });
 
   app.route("/login")
     .get((req, res) => {
       res.render("login", {
-        title: "Login",
-        providers: oauthProviders
+        title: "Signin",
+        providers: oauthProvidersInfo
       });
     })
     .post(auth.authenticate("local"));
@@ -37,16 +50,54 @@ export default (app) => {
     res.redirect("/");
   });
 
+
+  let signupViewOptions = {
+    title: "Sign Up",
+    providers: oauthProvidersInfo,
+    fields: {}
+  };
+
   app.route("/signup")
     .get((req, res) => {
-      res.render("signup", {
-        title: "Sign Up",
-        providers: oauthProviders
-      });
+      res.render("signup", signupViewOptions);
     })
     .post((req, res) => {
-      
-    })
+      let { username, email, password } = req.body;
+      let errors = [];
+
+      if (!username) { errors.push("Username"); }
+      if (!email) { errors.push("Email address"); }
+      if (!password) { errors.push("Password"); }
+
+      let newSignupViewOptions = Object.assign({}, signupViewOptions, { fields: req.body });
+
+      if (errors.length > 0) {
+        res.flash("error", `${errors.join(", ")} ${errors.length > 0 ? "are" : "is"} mandatory`);
+        return res.render("signup", newSignupViewOptions);
+      }
+
+      bcrypt.hash(password, 10, function(error, hash) {
+        if (error) {
+          res.flash("error", error);
+          return res.render("signup", newSignupViewOptions);
+        }
+
+        let User = recorder.model("User");
+        let user = new User({
+          nickname: username,
+          email: email,
+          password: hash
+        });
+
+        user.save()
+          .then(function() {
+            res.redirect(auth.providers.local.successRedirect);
+          }, function(err) {
+            res.flash("error", err);
+            res.render("signup", newSignupViewOptions);
+          });
+      });
+    });
 
   // Registering auth providers routes and middlewares
   for (let provider in auth.providers) {

@@ -49,6 +49,7 @@ let bootstrap = () => {
   app.use(flash());
 
   app.use((req, res, next) => {
+    res.locals.name = config.name;
     res.locals.viewname = function(filename) { return path.basename(filename, ".jade"); };
     res.locals.user = req.user;
     next();
