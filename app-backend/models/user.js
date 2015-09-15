@@ -29,6 +29,15 @@ UserSchema.virtual({
   }
 });
 
+
+UserSchema
+  .pre("save", function() {
+    console.log(`About to save an existing user[${this.id}]: ${this.fullname}`);
+  })
+  .post("save", function() {
+    console.log(`User: ${this.fullname} has just been saved`);
+  });
+
 UserSchema
   .method("toJSON", function toJSON() {
     return {
@@ -62,13 +71,6 @@ UserSchema
   });
 
 UserSchema
-  .static("findById", function findById(id) {
-    //TODO Should be change in recorder directly to expose byId retrieval
-    return this.where("id", id)
-      .then(users => {
-        return users[0];
-      });
-  })
   .static("findByToken", function findByToken(token) {
     return this.where("token", token)
       .then(users => {
