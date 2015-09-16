@@ -19,7 +19,10 @@ let UserSchema = new recorder.Schema({
 UserSchema.virtual({
   fullname: {
     get() {
-      return `${this.firstname} ${this.lastname}`;
+      if (this.firstname && this.lastname) {
+        return `${this.firstname} ${this.lastname}`;
+      }
+      return this.nickname;
     },
     set(value) {
       if (value.indexOf(" ") !== -1) {
@@ -28,15 +31,6 @@ UserSchema.virtual({
     }
   }
 });
-
-
-UserSchema
-  .pre("save", function() {
-    console.log(`About to save an existing user[${this.id}]: ${this.fullname}`);
-  })
-  .post("save", function() {
-    console.log(`User: ${this.fullname} has just been saved`);
-  });
 
 UserSchema
   .method("toJSON", function toJSON() {
@@ -71,13 +65,13 @@ UserSchema
 
 UserSchema
   .static("findByToken", function findByToken(token) {
-    return this.where("token", { key: [token] })
+    return this.where("token", { key: token })
       .then(users => {
         return users[0];
       });
   })
   .static("authenticate", function authenticate(identifier, password) {
-    return this.where("email", { key: [identifier] })
+    return this.where("email", { key: identifier })
       .then(users => {
         if (users.length) {
           return users[0].authenticate(password);

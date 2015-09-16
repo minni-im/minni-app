@@ -9,7 +9,7 @@
 - name: minni-redis
   image: redis
   ports: [ '6379:6379' ]
-  volumes: [ '/vagrant/etc/redis:/data' ]
+  # volumes: [ '/vagrant/etc/redis:/data' ]
 
 - name: minni-app
   image: node

@@ -56,7 +56,7 @@ function setup (app, session) {
 
   passport.deserializeUser(function(id, done) {
     let User = recorder.model("User");
-    User.findFirst(id).then(user => done(null, user), error => done(error));
+    User.findById(id).then(user => done(null, user), error => done(error));
   });
 
 
