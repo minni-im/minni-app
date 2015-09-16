@@ -66,6 +66,6 @@
     "passport.socketio": "^3.5.1",
     "react": "^0.13.3",
     "redis": "^0.12.1",
-    "tape-recorder": "^1.2.0"
+    "tape-recorder": "^1.2.1"
   }
 }
