@@ -54,11 +54,10 @@ UserSchema
       bcrypt.compare(password, this.password, (error, isMatch) => {
         if (error) {
           console.error(error);
-          reject(error);
-          return;
+          return reject(error);
         }
         if (!isMatch) {
-          reject(false);
+          resolve(false);
         } else {
           resolve(this);
         }
@@ -72,13 +71,13 @@ UserSchema
 
 UserSchema
   .static("findByToken", function findByToken(token) {
-    return this.where("token", token)
+    return this.where("token", { key: [token] })
       .then(users => {
         return users[0];
       });
   })
   .static("authenticate", function authenticate(identifier, password) {
-    return this.where("email", identifier)
+    return this.where("email", { key: [identifier] })
       .then(users => {
         if (users.length) {
           return users[0].authenticate(password);

@@ -56,8 +56,7 @@ html
         if flash.length
           .alerts
             while message = flash.shift()
-              a.alert(class="alert-" + message.type)
-                p= message.message
+              p.alert(class="alert-" + message.type)= message.message
       
       block content
 

@@ -18,7 +18,7 @@ export default class LocalAuth {
     }, function localAuthVerify(identifier, password, done) {
       let User = recorder.model("User");
       User.authenticate(identifier, password)
-        .then(user => {
+        .then((user) => {
           if (user) {
             return done(null, user);
           }
@@ -27,9 +27,7 @@ export default class LocalAuth {
           });
         }, (error) => {
           console.error("Passport LocalStrategy error", error);
-          done(null, false, {
-            message: `Username/password for '${identifier}' is incorrect`
-          });
+          done(error);
         });
     }));
   }

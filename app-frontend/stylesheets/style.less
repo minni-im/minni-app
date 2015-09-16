@@ -45,13 +45,24 @@ body.login, body.signup {
     position: relative;
 
     .alerts {
-      background-color: @dark-orange;
-      color: @color-dark;
       position: absolute;
       right: 15px;
       left: 15px;
       bottom: 100%;
-      margin-bottom: 15px;
+      margin-bottom: 5px;
+      p {
+        padding: 10px 0 5px;
+      }
+      .alert-error {
+        background-color: @dark-orange;
+        color: @color-dark;
+      }
+
+      .alert-info {
+        background-color: @green;
+        color: @color-light;
+      }
+
     }
 
     .content {

@@ -91,9 +91,11 @@ export default (app) => {
 
         user.save()
           .then(function() {
+            req.flash("info", "Your account has been created. Please try to logging in now!");
             res.redirect(auth.providers.local.successRedirect);
           }, function(err) {
-            res.flash("error", err);
+            console.error(err);
+            res.flash("error", "Sorry, we could not process your request");
             res.render("signup", newSignupViewOptions);
           });
       });
@@ -105,7 +107,7 @@ export default (app) => {
       app.get(`/login/${provider}`, auth.initialize(provider));
       app.get(`/signup/${provider}`, auth.authenticate(provider));
       app.get(`/auth/${provider}/callback`, auth.authenticate(provider));
-      app.get(`/connect/${provider}`, auth.connect(provider));
+      app.get(`/connect/${provider}`, requireLoginRedirect, auth.connect(provider));
     }
   }
 
