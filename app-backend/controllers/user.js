@@ -3,6 +3,16 @@ import { requireLogin } from "../middlewares/auth";
 
 export default (app) => {
 
+  app.route("/profile")
+    .get((req, res) => {
+      res.render("profile", {
+        title: "Your profile"
+      });
+    })
+    .post((req) => {
+      req.io.route("me:profile");
+    });
+
   app.get("/me", requireLogin, function(req) {
     req.io.route("me:whoami");
   })
@@ -27,6 +37,10 @@ export default (app) => {
     },
 
     revokeToken(req, res) {
+
+    },
+
+    profile(req, res) {
 
     }
   });

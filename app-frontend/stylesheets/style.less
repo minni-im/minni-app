@@ -5,6 +5,8 @@
 @import url(variables.less);
 @import url(mixins.less);
 
+@import url(input.less);
+
 html, body {
   height: 100%;
 }
@@ -18,7 +20,117 @@ body {
   font-weight: 300;
 }
 
-@import url(input.less);
+body > header, body > .banner,
+  body > .alerts, body > main, body > footer {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+
+  .wrapper {
+    width: @main-container-width;
+  }
+}
+
+body > header {
+  background-color: @background-dark;
+  .wrapper {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+  }
+  a {
+    color: @color-light;
+    text-decoration: none;
+  }
+  h1 {
+    position: relative;
+    left: -10px;
+    font-weight: 300;
+    margin: 48px 0;
+  }
+  .logo {
+    text-transform: lowercase;
+    img {
+      width: 64px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+  }
+  nav {
+    flex: 1;
+    text-align: right;
+    a {
+      text-transform: uppercase;
+      border-bottom: 3px solid transparent;
+
+      &:hover {
+        border-bottom-color: @dark-orange;
+      }
+    }
+  }
+}
+
+body > .banner {
+  background-color: @electric-blue;
+  h2, h3 {
+    font-weight: 300;
+    text-shadow: 0 1px 0 fade(@black, 15%);
+  }
+
+  h2 {
+    font-size: 48px;
+    line-height: 50px;
+    margin-bottom: 24px;
+  }
+
+  h3 {
+    font-size: 20px;
+    margin-top: 24px;
+  }
+}
+
+.alerts {
+  background-color: @background-light;
+  p {
+    padding: 5px 10px;
+    border-radius: 3px;
+  }
+
+  .alert-error {
+    background-color: @flash-messages-error;
+    color: @color-dark;
+  }
+
+  .alert-info {
+    background-color: @flash-messages-info;
+    color: @color-dark;
+  }
+}
+
+body > main {
+  background-color: @background-light;
+  color: @color-dark;
+  padding: 20px 0;
+}
+
+body > footer {
+  padding: 20px 0;
+  .logo {
+    font-size: 18px;
+    text-transform: lowercase;
+    img {
+      width: 32px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+  }
+  .copyright {
+    color: @gray-light;
+    font-size: 12px;
+  }
+}
+
+
 
 /***
  *** LOGIN
@@ -36,34 +148,22 @@ body.login, body.signup {
     display: none;
   }
 
+  .wrapper {
+    width: auto;
+  }
+
+  .alerts {
+    background-color: transparent;
+  }
+
   main {
     background-color: fade(@black, 40%);
+    color: @color-light;
     border-radius: 3px;
-    min-width: 600px;
+    min-width: 680px;
     text-align: center;
     padding: 25px;
     position: relative;
-
-    .alerts {
-      position: absolute;
-      right: 15px;
-      left: 15px;
-      bottom: 100%;
-      margin-bottom: 5px;
-      p {
-        padding: 10px 0 5px;
-      }
-      .alert-error {
-        background-color: @dark-orange;
-        color: @color-dark;
-      }
-
-      .alert-info {
-        background-color: @green;
-        color: @color-light;
-      }
-
-    }
 
     .content {
       display: flex;

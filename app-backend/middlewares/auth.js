@@ -20,11 +20,3 @@ export function requireLoginRedirect(req, res, next) {
   }
   res.redirect("/login");
 }
-
-export function requireEmail(req, res, next) {
-  if (req.isAuthenticated() && !req.user.email) {
-    req.flash("info", "You have to specify an email address as we use it to recognize you from various auhtentication providers");
-    return res.redirect("/profile");
-  }
-  next();
-}

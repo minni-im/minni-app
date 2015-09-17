@@ -8,8 +8,8 @@ html
     meta(name="viewport", content="width=device-width,initial-scale=1.0,maximum-scale=1.0")
 
     meta(name="application-name", content=name)
-    //- meta(name="description", content="Your cloud office")
-    //- meta(name="application-url", content="#{url.protocol}://#{url.hostname}/chat/#{account.name}?origin=cda")
+    meta(name="description", content="Your world wide offices in the cloud")
+    meta(name="application-url", content="#{url.protocol}://#{url.hostname}/?origin=cda")
     
     //- iOS
     link(rel="apple-touch-icon", sizes="57x57",   href="/images/logos/ios/apple-touch-icon-57x57.png")
@@ -24,12 +24,12 @@ html
       
     //- IE9+
     meta(name="msapplication-tooltip", content=name)
-    //- meta(name="msapplication-starturl", content="#{url.protocol}://#{url.hostname}/chat/#{account.name}?origin=ieps")
+    meta(name="msapplication-starturl", content="#{url.protocol}://#{url.hostname}/?origin=ieps")
     //- IE10+
     meta(name="msapplication-TileColor", content="#48a6ff")
-    //- meta(name="msapplication-TileImage", content="#{url.protocol}://#{url.hostname}/images/logos/msapp/mstile-144x144.png")
+    meta(name="msapplication-TileImage", content="#{url.protocol}://#{url.hostname}/images/logos/msapp/mstile-144x144.png")
     //- Fluid
-    //- link(rel="fluid-icon", href="#{url.protocol}://#{url.hostname}/images/logos/logo-x512.png", title="Minni.im")
+    link(rel="fluid-icon", href="#{url.protocol}://#{url.hostname}/images/logos/logo-x512.png", title=name)
     //- Favicons
     link(rel="icon", type="image/x-icon", href="/favicon.ico")
     link(rel="icon", sizes="512x512", href="/images/logos/logo-x512.png")
@@ -43,29 +43,43 @@ html
   body(class=[viewname(filename), bodyClass])
     header
       block header
-        .header-wrapper
-          .logo Minni
-          if user === undefined
-            a(href="/login") Login
-          else
-            .user #{user.fullname} - 
+        .wrapper
+          h1: a.logo(href="/")
+            img(src="/images/logo-color.png")
+            | #{name}
+          
+          nav
+            if user === undefined
+              a(href="/login") Login
+            else
+              .user
+                a(href="/profile")= user.fullname
               a(href="/logout") Logout
+                
     
-    main
-      block flash
-        if flash.length
-          .alerts
+    block banner_outer
+      section.banner
+        .wrapper
+          block banner
+
+    block flash
+      if flash.length
+        .alerts
+          .wrapper
             while message = flash.shift()
               p.alert(class="alert-" + message.type)= message.message
-      
-      block content
+    
+    main
+      block content_outer
+        .wrapper
+          block content
 
     footer
       block footer
-        .footer-wrapper
+        .wrapper
           div.logo
-            img(src="/images/logo.svg")
-            | minni
+            img(src="/images/logo-dark.png")
+            | #{name}
           div.copyright 2014 - #{(new Date()).getFullYear()} &copy; Benoit Charbonnier
 
     block scripts

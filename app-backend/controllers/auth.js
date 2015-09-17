@@ -2,7 +2,8 @@ import bcrypt from "bcryptjs";
 import recorder from "tape-recorder";
 
 import auth from "../auth";
-import { requireLoginRedirect, requireEmail } from "../middlewares/auth";
+import { requireLoginRedirect } from "../middlewares/auth";
+import { requireEmailRedirect, requireProfileInfoRedirect } from "../middlewares/profile";
 
 
 let oauthProvidersInfo =
@@ -29,10 +30,10 @@ export default (app) => {
   });
 
   // =Middelwares= */
-  app.use(requireEmail);
+  app.use(requireEmailRedirect);
 
   /* =Routes= */
-  app.get("/", requireLoginRedirect, (req, res) => {
+  app.get("/", requireLoginRedirect, requireProfileInfoRedirect, (req, res) => {
     res.render("chat");
   });
 
