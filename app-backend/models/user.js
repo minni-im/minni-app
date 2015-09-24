@@ -79,13 +79,45 @@ UserSchema
   .method("linkProvider", function linkProvider(provider, token, profile) {
     this.providers[provider] = profile._json.id;
     return this.save();
+  })
+  .method("generateToken", function generateToken() {
+    return new Promise((resolve, reject) => {
+
+      crypto.randomBytes(24, (errorRandom, buffer) => {
+        let password = buffer.toString("hex");
+
+        bcrypt.hash(password, 10, (errorHash, hash) => {
+          if (errorHash) {
+            return reject(errorHash);
+          }
+          this.token = hash;
+          let userToken = new Buffer(`${this.id}:${password}`).toString("base64");
+
+          this.save().then(() => {
+              resolve(userToken);
+            }, (error) => {
+              reject(error);
+            });
+
+        });
+      });
+    });
   });
 
 UserSchema
   .static("findByToken", function findByToken(token) {
-    return this.where("token", { key: token })
-      .then(users => {
-        return users[0];
+    let [userId, hash] = new Buffer(token, "base64").toString("ascii").split(":");
+
+    return this.findById(userId)
+      .then(user => {
+        return new Promise((resolve, reject) => {
+          bcrypt.compare(hash, user.token, (errorHash, isMatch) => {
+            if (errorHash) {
+              return reject(errorHash);
+            }
+            resolve(isMatch ? user : false);
+          });
+        });
       });
   })
   .static("authenticate", function authenticate(identifier, password) {

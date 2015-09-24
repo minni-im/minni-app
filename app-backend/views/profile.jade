@@ -75,8 +75,8 @@ block content
           if !(provider in user.providers)
             span Not connected
             | 
-            a.button.button-secondary(href="/connect/#{provider}") Link this provider
+            a.button.button-secondary(href="/connect/#{provider}?returnTo=/profile") Link this provider
           else
             span Connected
             | 
-            a.button.button-secondary(href="/connect/#{provider}/revoke") Unlink this provider
+            a.button.button-secondary(href="/connect/#{provider}/revoke?returnTo=/profile") Unlink this provider

@@ -46,6 +46,16 @@ export default (app) => {
     })
     .post(auth.authenticate("local"));
 
+  app.route("/login/reset-password")
+    .get((req, res) => {
+      res.render("reset-password", {
+        title: "Reset your password"
+      });
+    })
+    .post((req) => {
+      req.io.route("auth:resetpassword");
+    });
+
   app.get("/logout", function(req, res) {
     req.logout();
     res.redirect("/");
@@ -115,7 +125,9 @@ export default (app) => {
 
   /* =Socket routes= */
   app.io.route("auth", {
+    resetpassword(req, res) {
 
+    }
   });
 
 };

@@ -66,6 +66,17 @@ function setup (app, session) {
     providersSettings[p.key] = p.provider.options;
   });
 
+  // eventual redirection
+  app.use((req, res, next) => {
+    if (req.query.returnTo) {
+      if (req.query.returnTo[0] !== "/") {
+        req.query.returnTo = "/" + req.query.returnTo;
+      }
+      req.session.returnTo = req.query.returnTo;
+    }
+    next();
+  });
+
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -84,7 +95,8 @@ function setup (app, session) {
           socket.request.user.loggedIn = true;
           socket.request.user.usingToken = true;
           return next();
-        }, () => {
+        }, (error) => {
+          console.error(error);
           return next("Fail");
         });
     } else {
@@ -105,5 +117,6 @@ export default {
   setup: setup,
   initialize: action("initialize"),
   connect: action("connect"),
-  authenticate: action("authenticate")
+  authenticate: action("authenticate"),
+  disconnect: action("disconnect")
 };
