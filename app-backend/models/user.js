@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import recorder from "tape-recorder";
+import crypto from "crypto";
 
 let UserSchema = new recorder.Schema({
   firstname: String,
@@ -8,7 +9,7 @@ let UserSchema = new recorder.Schema({
   password: String,
   email: String,
   gravatarEmail: String,
-  avatar: String,
+  picture: String,
   token: String,
   providers: {
     type: Object,
@@ -17,6 +18,13 @@ let UserSchema = new recorder.Schema({
 });
 
 UserSchema.virtual({
+  initials: {
+    get() {
+      if (this.firstname && this.lastname) {
+        return this.firstname[0].toUpperCase() + this.lastname[0].toUpperCase();
+      }
+    }
+  },
   fullname: {
     get() {
       if (this.firstname && this.lastname) {
@@ -33,6 +41,16 @@ UserSchema.virtual({
 });
 
 UserSchema
+  .method("avatar", function avatar(size = 80) {
+    if (this.picture) {
+      return `${this.picture}&s=${size}`;
+    }
+    let hash = crypto.createHash("md5").update(this.email).digest("hex");
+    if (this.gravatarEmail) {
+      hash = crypto.createHash("md5").update(this.gravatarEmail).digest("hex");
+    }
+    return `https://secure.gravatar.com/avatar/${hash}?s=${size}`;
+  })
   .method("toJSON", function toJSON() {
     return {
       id: this.id,

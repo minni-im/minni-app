@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import flash from "flash";
 import connectRedis from "connect-redis";
 import recorder from "tape-recorder";
+import moment from "moment";
 
 import auth from "./auth";
 import config from "./config";
@@ -34,7 +35,8 @@ let local = {
         url: {
           hostname: req.hostname,
           protocol: req.protocol
-        }
+        },
+        moment
       });
 
       next();

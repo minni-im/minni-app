@@ -2,7 +2,81 @@ extends layout
 
 block banner
   h2 #{user.fullname}
-  h3 Member since #{user.dateCreated}
+  h3 Member since #{moment(user.dateCreated).format("LL")}
   
 block content
-  div yo
+
+  h3 Edit Profile
+  form.column(method="post", action="/profile")
+    .personnal-info
+      h4 Personnal information
+      p.inline
+        label
+          span First name
+          input(type="text", name="firstname", placeholder="First Name", value=user.firstname)
+      p.inline
+        label
+          span Last name
+          input(type="text", name="lastname", placeholder="Last Name", value=user.lastname)
+      p.inline
+        label
+          span Mention name
+          input(type="text", name="nickname", placeholder="@nickname", value=user.nickname)
+      p.inline
+        label
+          span Email
+          input(type="text", name="email", placeholder="Email", value=user.email)
+      p.inline
+        label
+          span Gravatar Email
+          if user.gravatarEmail && user.gravatarEmail != ""
+            input(type="text", name="gravatarEmail", placeholder="Email used by gravatar", value=user.gravatarEmail)
+          else
+            input(type="text", name="gravatarEmail", placeholder=user.email, value="")
+        span.info This email is private, and will only be used for gravatar purposes.
+      
+      p.inline
+        button Save
+    
+    .avatar
+      h4 Avatar
+      -var email = (user.gravatarEmail && user.gravatarEmail != "" ) ? user.gravatarEmail : user.email
+      img(src="#{user.avatar(150)}", title="Email used by gravatar: #{email}")
+      p Avatars are provided by <a href="https://gravatar.com">gravatar</a> services. You can change yours on their website.
+
+  h3 Authentication providers
+  each options, provider in providers
+    if provider === "local"
+      -var action = user.password ? "Change your password" : "Set a password"
+      h4= action
+      form(method="post", action="/login/reset-password")
+        if user.password
+          p.inline
+            label
+              span Current password
+              input(type="password", name="current", placeholder="Current password")
+        p.inline
+          label
+            span New password
+            input(type="password", name="new", placeholder="New password")
+        
+        p.inline
+          button Save
+        
+    else
+      .provider
+        .name
+          h4 Service
+          div= provider
+        .logo
+          img(src="data:image/png;base64,#{options.logo}")
+        .status
+          h4 Status
+          if !(provider in user.providers)
+            span Not connected
+            | 
+            a.button.button-secondary(href="/connect/#{provider}") Link this provider
+          else
+            span Connected
+            | 
+            a.button.button-secondary(href="/connect/#{provider}/revoke") Unlink this provider

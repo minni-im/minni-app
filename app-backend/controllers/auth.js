@@ -109,6 +109,7 @@ export default (app) => {
       app.get(`/signup/${provider}`, auth.authenticate(provider));
       app.get(`/auth/${provider}/callback`, auth.authenticate(provider));
       app.get(`/connect/${provider}`, requireLoginRedirect, auth.connect(provider));
+      app.get(`/connect/${provider}/revoke`, requireLoginRedirect, auth.disconnect(provider));
     }
   }
 

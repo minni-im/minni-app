@@ -1,20 +1,63 @@
 /***
  *** INPUTS
  ***/
-input, textarea, select {
+input, textarea, select, button {
+  font-size: 14px;
   padding: 10px;
-  border: 1px solid;
-  border-radius: 2px;
+  border-radius: 3px;
+  border: 3px solid @gray-lighter;
+  outline: none;
+}
+
+input:focus, textarea:focus,
+input:active, textarea:active {
+    border-color: @electric-blue;
 }
 
 button, input[type=submit], .button {
   background-color: @electric-blue;
   color: @color-light;
+  font-size: 12px;
   border-radius: 3px;
-  border: 1px solid @electric-blue;
-  padding: 2px 15px;
+  border: 1px solid @dark-blue;
+  padding: 6px 15px;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0 -1px 0 fadeout(@black, 75%) inset, 0 -2px 0 fadeout(@black, 75%) inset;
+  }
+}
+
+.button-secondary {
+  border-color: darken(@dark-orange, 15%);
+  background-color: @dark-orange;
+
+  &:hover {
+    box-shadow: 0 -1px 0 fadeout(@black, 75%) inset, 0 -2px 0 fadeout(@black, 75%) inset;
+  }
 }
 
 button, input[type=submit] {
   padding: 6px 15px;
+}
+
+form {
+  .inline {
+    label {
+      display: flex;
+      align-items: center;
+      span {
+        width: 150px;
+      }
+      input {
+        width: 300px;
+      }
+    }
+
+    .info {
+      margin-left: 150px;
+      font-size: 11px;
+      color: @gray-light;
+    }
+  }
 }

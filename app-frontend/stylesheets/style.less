@@ -59,9 +59,12 @@ body > header {
   nav {
     flex: 1;
     text-align: right;
+    font-size: 16px;
+    line-height: 2em;
     a {
       text-transform: uppercase;
       border-bottom: 3px solid transparent;
+      margin-left: 2em;
 
       &:hover {
         border-bottom-color: @dark-orange;
@@ -111,6 +114,15 @@ body > main {
   background-color: @background-light;
   color: @color-dark;
   padding: 20px 0;
+
+
+  h3 {
+    font-size: 22px;
+    line-height: 16px;
+    margin: 25px 0;
+    font-weight: 300;
+    color: @electric-blue;
+  }
 }
 
 body > footer {
@@ -171,6 +183,10 @@ body.login, body.signup {
       justify-content: space-around;
     }
 
+    input {
+      border-color: @gray-dark;
+    }
+
     .providers, .greetings {
       margin: 0 20px;
     }
@@ -226,6 +242,50 @@ body.login, body.signup {
           text-decoration: underline;
         }
       }
+    }
+  }
+}
+
+
+body.profile {
+  .column {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+
+    .personnal-info {
+      flex: 2;
+    }
+    .avatar {
+      flex: 1;
+      padding: 0 20px;
+      background-color: @gray-lighter;
+      text-align: center;
+    }
+  }
+
+  .provider {
+    background-color: @gray-lighter;
+    margin: 30px 0;
+    display: flex;
+    flex-flow: row;
+    align-items: stretch;
+    > div {
+      margin: 10px;
+      h4 {
+        margin: 0;
+      }
+    }
+    .name div { text-transform: capitalize;}
+    .logo {
+      order: -1;
+      img {
+        vertical-align: middle;
+      }
+    }
+    a {
+      text-decoration: none;
+      margin: 0 20px;
     }
   }
 }

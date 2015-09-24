@@ -1,4 +1,5 @@
 import { requireLogin } from "../middlewares/auth";
+import auth from "../auth";
 
 
 export default (app) => {
@@ -6,7 +7,8 @@ export default (app) => {
   app.route("/profile")
     .get((req, res) => {
       res.render("profile", {
-        title: "Your profile"
+        title: "Your profile",
+        providers: auth.providers
       });
     })
     .post((req) => {
