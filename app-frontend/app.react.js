@@ -1,10 +1,8 @@
 import React from "react";
+import { Router, Route } from "react-router";
 
-class App extends React.Component {
+import Minni from "./components/Minni.react";
 
-  render() {
-    return <div></div>;
-  }
-}
-
-export default App;
+React.render((
+  <Minni />
+), document.body);

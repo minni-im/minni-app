@@ -70,7 +70,7 @@ var WEBPACK_CONFIG = {
         exclude: /node_modules/,
         loader: "babel",
         query: {
-          optional: ["runtime", "reactCompat"],
+          optional: ["runtime"],
           stage: BABEL_STAGE
         }
       }
