@@ -18,6 +18,7 @@ block content
         label
           span Last name
           input(type="text", name="lastname", placeholder="Last Name", value=user.lastname)
+        span.info Entering your first &amp; last name helps your teammates recognize you.
       p.inline
         label
           span Mention name
@@ -37,13 +38,21 @@ block content
       
       p.inline
         button Save
-    
+        
     .avatar
       h4 Avatar
       -var email = (user.gravatarEmail && user.gravatarEmail != "" ) ? user.gravatarEmail : user.email
       img(src="#{user.avatar(150)}", title="Email used by gravatar: #{email}")
       p Avatars are provided by <a href="https://gravatar.com">gravatar</a> services. You can change yours on their website.
-
+  
+  h3 API token
+  p
+    | API authentication is achieved via a bearer token which identifies yourself as a single user.
+    | Your token is something precious. Don't share it publicly. Keep it somewhere safe.
+    | If you think it has been compromised, simply click the `Re-issue token` button. 
+  
+  
+  
   h3 Authentication providers
   each options, provider in providers
     if provider === "local"
@@ -64,7 +73,7 @@ block content
           button Save
         
     else
-      .provider
+      .provider(class=["provider-" + provider])
         .name
           h4 Service
           div= provider

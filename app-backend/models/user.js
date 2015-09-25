@@ -57,7 +57,8 @@ UserSchema
       firstname: this.firstname,
       lastname: this.lastname,
       nickname: this.nickname,
-      avatar: this.avatar,
+      fullname: this.fullname,
+      picture: this.avatar(160),
       email: this.email
     };
   })
@@ -115,7 +116,7 @@ UserSchema
             if (errorHash) {
               return reject(errorHash);
             }
-            resolve(isMatch ? user : false);
+            return resolve(isMatch ? user : false);
           });
         });
       });

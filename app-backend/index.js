@@ -6,43 +6,10 @@ import bodyParser from "body-parser";
 import flash from "flash";
 import connectRedis from "connect-redis";
 import recorder from "tape-recorder";
-import moment from "moment";
 
 import auth from "./auth";
 import config from "./config";
-
-
-let local = {
-  setup(app) {
-    app.use((req, res, next) => {
-      Object.assign(res.locals, {
-        name: config.name,
-        viewname(filename) {
-          return path.basename(filename, ".jade");
-        },
-        title: "Your office in the cloud",
-        user: req.user,
-        production: process.env.NODE_ENV === "production",
-        nth(rank) {
-          rank = Math.max(1, rank);
-          const ranks = ["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"];
-          if (rank in [11, 12, 13]) {
-            // Only works for ranks below 100
-            return rank + ranks[0];
-          }
-          return rank + ranks[rank % 10];
-        },
-        url: {
-          hostname: req.hostname,
-          protocol: req.protocol
-        },
-        moment
-      });
-
-      next();
-    });
-  }
-};
+import expressLocals from "./express-locals";
 
 let RedisStore = connectRedis(express.session);
 const app = express();
@@ -80,7 +47,7 @@ let bootstrap = () => {
     extended: true
   }));
   app.use(flash());
-  local.setup(app);
+  expressLocals.setup(app);
 
   fs.readdirSync(path.join(__dirname, "controllers")).forEach(ctrl => {
     require("./controllers/" + ctrl)(app);

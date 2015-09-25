@@ -58,12 +58,26 @@ export default (app) => {
     },
 
     revokeToken(req, res) {
-      if (req.user.usingToken) {
+      let user = req.user;
+      if (user.usingToken) {
         return res.status(403).json({
           ok: false,
           message: "Cannot revoke token when using token authentication."
         });
       }
+      delete user.token;
+      user.save().then(() => {
+        res.json({
+          ok: true,
+          message: "Token revoked."
+        });
+      }, (error) => {
+        return res.status(500).json({
+          ok: false,
+          message: "Oops, it did not work. Please ty again.",
+          errors: error
+        });
+      });
     },
 
     profile(req, res) {

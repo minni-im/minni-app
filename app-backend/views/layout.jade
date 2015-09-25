@@ -41,20 +41,22 @@ html
     block header_scripts
 
   body(class=[viewname(filename), bodyClass])
-    header
-      block header
-        .wrapper
-          h1: a.logo(href="/")
-            img(src="/images/logo-color.png")
-            | #{name}
-          
-          nav
-            if user === undefined
-              a(href="/login") Login
-            else
-              .user
-                a(href="/profile")= user.fullname
-              a(href="/logout") Logout
+    
+    block header_outer
+      header
+        block header
+          .wrapper
+            h1: a.logo(href="/")
+              img(src="/images/logo-color.png")
+              | #{name}
+            
+            nav
+              if user === undefined
+                a(href="/login") Login
+              else
+                .user
+                  a(href="/profile")= user.fullname
+                a(href="/logout") Logout
                 
     
     block banner_outer
@@ -74,12 +76,13 @@ html
         .wrapper
           block content
 
-    footer
-      block footer
-        .wrapper
-          div.logo
-            img(src="/images/logo-dark.png")
-            | #{name}
-          div.copyright 2014 - #{(new Date()).getFullYear()} &copy; Benoit Charbonnier
+    block footer_outer
+      footer
+        block footer
+          .wrapper
+            div.logo
+              img(src="/images/logo-dark.png")
+              | #{name}
+            div.copyright 2014 - #{(new Date()).getFullYear()} &copy; Benoit Charbonnier
 
     block scripts

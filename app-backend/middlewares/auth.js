@@ -8,7 +8,7 @@ export function requireLogin(req, res, next) {
     let [scheme, token] = req.headers.authorization.split(" "), auth;
     if (/^Bearer$/i.test(scheme)) {
       auth = passport.authenticate("bearer", { session: false });
-      auth(req, res, next);
+      return auth(req, res, next);
     }
   }
   res.status(401).send("You are not authorized to access this resource");

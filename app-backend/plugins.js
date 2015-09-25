@@ -1,6 +1,6 @@
 export default {
   getPlugin(key, type) {
-    const pluginName = `minni-im-${key}`;
+    const pluginName = `minni-${type}-${key}`;
     let plugin;
     try {
       plugin = require(pluginName);

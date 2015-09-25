@@ -44,6 +44,9 @@ function setup (app, session) {
     let User = recorder.model("User");
     User.findByToken(token)
       .then(user => {
+        if (user) {
+          user.usingToken = true;
+        }
         return done(null, user);
       }, error => {
         return done(error);

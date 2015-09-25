@@ -52,11 +52,12 @@
     "express-session": "^1.11.3",
     "express.oi": "0.0.19",
     "flash": "^1.1.0",
+    "immutable": "^3.7.5",
     "jade": "^1.11.0",
     "js-yaml": "^3.3.1",
     "json-loader": "^0.5.2",
     "lodash": "^3.10.0",
-    "minni-im-github": "minni-im/minni-im-github",
+    "minni-auth-github": "minni-im/minni-auth-github",
     "moment": "^2.10.6",
     "node-libs-browser": "^0.5.2",
     "node_hash": "^0.2.0",
@@ -65,6 +66,7 @@
     "passport-local": "^1.0.0",
     "passport.socketio": "^3.5.1",
     "react": "^0.13.3",
+    "react-router": "^0.13.3",
     "redis": "^0.12.1",
     "tape-recorder": "^1.2.2"
   }

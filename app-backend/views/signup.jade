@@ -8,7 +8,10 @@ block content
     .providers
       h1 Prepare yourself
       p In about 30 seconds you'll have new world-wide offices
-      p Sign up with <span class="providers-list">#{providers.map(function(p) {return p.name;}).join(", ")}</span> or Email
+      if providers.length >=1
+        p Sign up with <span class="providers-list">#{providers.map(function(p) {return p.name;}).join(", ")}</span> or Email
+      else
+        p Sign up with your email
       
       .providers-links
         each provider in providers

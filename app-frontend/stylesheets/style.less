@@ -251,6 +251,7 @@ body.profile {
   .column {
     display: flex;
     flex-flow: row;
+    align-items: flex-start;
     justify-content: space-between;
 
     .personnal-info {
@@ -276,17 +277,26 @@ body.profile {
         margin: 0;
       }
     }
-    .name div { text-transform: capitalize;}
+    .name {
+      flex: 1;
+      div { text-transform: capitalize; }
+    }
+    .status {
+      flex: 4;
+    }
     .logo {
       order: -1;
       img {
         vertical-align: middle;
-        filter: invert(100%);
       }
     }
     a {
       text-decoration: none;
       margin: 0 20px;
     }
+  }
+
+  .provider-github .logo img {
+    filter: invert(100%);
   }
 }
