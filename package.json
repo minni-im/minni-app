@@ -52,6 +52,7 @@
     "express-session": "^1.11.3",
     "express.oi": "0.0.19",
     "flash": "^1.1.0",
+    "history": "^1.11.1",
     "immutable": "^3.7.5",
     "jade": "^1.11.0",
     "js-yaml": "^3.3.1",
@@ -66,7 +67,7 @@
     "passport-local": "^1.0.0",
     "passport.socketio": "^3.5.1",
     "react": "^0.13.3",
-    "react-router": "^0.13.3",
+    "react-router": "^1.0.0-rc1",
     "redis": "^0.12.1",
     "tape-recorder": "^1.2.2"
   }
