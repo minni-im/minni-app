@@ -1,3 +1,27 @@
+// The micro clearfix http://nicolasgallagher.com/micro-clearfix-hack/
+.clearfix() {
+  *zoom:1;
+
+  &:before,
+  &:after {
+      content:"";
+      display:table;
+  }
+  &:after {
+      clear:both;
+  }
+}
+
+.square(@size) {
+  .size(@size, @size);
+}
+
+.size(@width, @height) {
+  width: @width;
+  height: @height;
+}
+
+
 // Text overflow
 // -------------------------
 // Requires inline-block or block for proper styling
@@ -7,23 +31,59 @@
   white-space: nowrap;
 }
 
-.user-select-none {
-  -webkit-user-select: none;
-     -moz-user-select: -moz-none;
-      -ms-user-select: none;
-          user-select: none;
-}
 
-.user-select(@select) {
-  -webkit-user-select: @select;
-     -moz-user-select: @select;
-      -ms-user-select: @select;
-          user-select: @select;
-}
+#user {
+  .status-icon(@background-color: @background-light, @with-status: true) {
+    .user-status-icon when (@with-status = true) {
+      .square(10px);
+      background-color: @status-color-online;
+      border: 3px solid @background-color;
+      border-radius: 50%;
 
-.transition(@transitionA, @transitionB:X, ...) {
-  @props: ~`"@{arguments}".replace(/[\[\]]|\,\sX/g, '')`;
-  -webkit-transition: @props;
-     -moz-transition: @props;
-          transition: @props;
+      transition: background-color 250ms ease,
+        border-color 250ms ease;
+
+      &[data-status="-1"], &[data-status="0"] {
+        background-color: @status-color-offline;
+      }
+
+      &[data-status="1"] {
+        background-color: @status-color-connecting;
+      }
+
+      // IDLE
+      &[data-status="3"] {
+        background-color: @status-color-idle;
+        &:before, &:after {
+          position: absolute;
+          content: "";
+          background-color: fade(@white, 60%);
+          left: 4px;
+        }
+        &:before {
+          top: 1px;
+          .size(1px, 4px);
+        }
+
+        &:after {
+          top: 5px;
+          .size(4px, 1px);
+        }
+      }
+
+      // AWAY
+      &[data-status="4"] {
+        background-color: @status-color-away;
+      }
+
+      // DND
+      &[data-status="5"] {
+        background-color: @status-color-dnd;
+      }
+    }
+
+    .user-status-icon when (@with-status = false) {
+      display: none;
+    }
+  }
 }

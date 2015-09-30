@@ -1,3 +1,10 @@
+body.chat {
+  overflow-x: hidden;
+  > main {
+    background-color: @background-dark;
+  }
+}
+
 .minni-app {
   height: 100%;
   display: flex;
@@ -20,12 +27,59 @@
     }
 
     > nav {
+      flex: 1;
       display: flex;
-      flex-flow: row nowrap;
-      align-items: center;
+      flex-flow: column nowrap;
+      justify-content: flex-start;
 
-      .active {
-        background-color: yellow;
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      > a {
+        flex: 0 0 50px;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        text-decoration: none;
+        color: inherit;
+
+        .icon {
+          .square(28px);
+          margin: 5px;
+        }
+
+        .name {
+          flex: 1;
+          .text-overflow;
+        }
+
+        &.selected.lobby {
+          background-color: rgba(0, 0, 0, .3);
+        }
+
+        &.selected {
+          position: relative;
+          &:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: -1px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid @background-light;
+            margin-top: -10px;
+          }
+        }
+
+        &.selected, &.selected:not(.lobby):hover {
+          background-color: @medium-blue;
+        }
+
+        &:hover {
+          background-color: rgba(0, 0, 0, .1);
+        }
       }
     }
   }
@@ -103,6 +157,55 @@
         align-self: center;
         text-align: center;
       }
+    }
+  }
+}
+
+
+header .user-info {
+  height: @main-user-info-height;
+  background-color: @dark-blue;
+
+  .user {
+    height: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    .user-avatar {
+      margin: 5px 10px;
+      position: relative;
+      img {
+        vertical-align: middle;
+        border-radius: 50%;
+        .square(42px);
+      }
+
+      #user.status-icon(@dark-blue);
+      .user-status-icon {
+        transition: background-color 250ms ease;
+        position: absolute;
+        bottom: -3px; right: -3px;
+      }
+    }
+    .user-name {
+      font-weight: 400;
+    }
+
+    .user-status {
+      font-weight: 300;
+      font-size: 11px;
+      line-height: 1.2em;
+    }
+  }
+
+  &:hover {
+    @background-color: lighten(@dark-blue, 8%);
+    cursor: pointer;
+    background-color: @background-color;
+
+    .user-status-icon {
+      border-color: @background-color !important;
     }
   }
 }

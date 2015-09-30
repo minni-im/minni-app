@@ -52,6 +52,7 @@
     "express-session": "^1.11.3",
     "express.oi": "0.0.19",
     "flash": "^1.1.0",
+    "flux": "^2.1.1",
     "history": "^1.11.1",
     "immutable": "^3.7.5",
     "jade": "^1.11.0",

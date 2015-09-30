@@ -3,14 +3,16 @@ extends layout
 block header_scripts
   script(src="/socket.io/socket.io.js")
   script(src="/js/vendor-bundle.js")
-
+  script#data-holder(data-user=user).
+    //comment here
+    
 block header_outer
   
 block banner_outer
     
+block flash
+    
 block footer_outer
-
-block content
-
+  
 append scripts
   script(src="/js/minni-bundle.js")
