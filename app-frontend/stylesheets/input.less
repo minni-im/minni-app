@@ -14,6 +14,10 @@ input:active, textarea:active {
     border-color: @electric-blue;
 }
 
+input.error, textarea.error {
+  border-color: @light-orange;
+}
+
 button, input[type=submit], .button {
   background-color: @electric-blue;
   color: @color-light;
@@ -42,6 +46,13 @@ button, input[type=submit] {
 }
 
 form {
+  .inline, .block {
+    .info {
+      font-size: 11px;
+      color: @gray-light;
+    }
+  }
+
   .inline {
     label {
       display: flex;
@@ -56,8 +67,17 @@ form {
 
     .info {
       margin-left: 150px;
-      font-size: 11px;
-      color: @gray-light;
+    }
+  }
+
+  .block {
+    label, label span {
+      display: block;
+    }
+
+    input {
+      display: block;
+      width: 100%;
     }
   }
 }

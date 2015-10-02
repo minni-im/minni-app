@@ -1,3 +1,5 @@
 ---
+globals:
+  Minni: false
 env:
   browser: true

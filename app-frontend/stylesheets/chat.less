@@ -20,7 +20,7 @@ body.chat {
 
     h1 {
       height: @main-header-height;
-      margin: 0 0 10px;
+      margin: 10px 0 10px;
       text-indent: -9999px;
       background: url(/images/logo.png) center center no-repeat;
       background-size: 64px 64px;
@@ -82,6 +82,16 @@ body.chat {
         }
       }
     }
+
+    &.has-no-account {
+      justify-content: center;
+      text-align: center;
+
+      > h2, div, p {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+    }
   }
 
   > main {
@@ -107,6 +117,22 @@ body.chat {
         overflow: auto;
         display: flex;
         flex-flow: row nowrap;
+        padding: 10px;
+
+        h2, h3 {
+          color: @electric-blue;
+          font-weight: 300;
+        }
+
+        h2 {
+          font-size: 28px;
+          line-height: 1.2em;
+        }
+      }
+
+      section.panel--contrast {
+        background-color: @white;
+        border-top: 1px dotted @gray-light;
       }
     }
 
@@ -161,7 +187,6 @@ body.chat {
   }
 }
 
-
 header .user-info {
   height: @main-user-info-height;
   background-color: @dark-blue;
@@ -207,5 +232,14 @@ header .user-info {
     .user-status-icon {
       border-color: @background-color !important;
     }
+  }
+}
+
+
+.account-create {
+  align-self: center;
+
+  .panel--contrast {
+    border-bottom: 1px dotted @gray-light;
   }
 }

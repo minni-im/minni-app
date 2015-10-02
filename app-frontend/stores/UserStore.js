@@ -11,7 +11,7 @@ class UserStore extends MapStore {
 
     let dataHolder = document.getElementById("data-holder");
     let user = JSON.parse(dataHolder.dataset.user);
-    dataHolder.parentNode.removeChild(dataHolder);
+    delete dataHolder.dataset.user;
 
     let connectedUser = new User(user);
     this.connectedUserId = user.id;

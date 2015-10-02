@@ -16,8 +16,8 @@ export default (app) => {
     },
 
     get(req, res) {
-      let userId = req.params.id;
-      let User = recorder.model("User");
+      const userId = req.params.id;
+      const User = recorder.model("User");
 
       User.findById(userId)
         .then((user) => {

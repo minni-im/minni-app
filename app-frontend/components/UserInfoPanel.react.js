@@ -1,5 +1,5 @@
 import React from "react";
-import { Container } from 'flux/utils';
+import { Container } from "flux/utils";
 
 import UserStore from "../stores/UserStore";
 
@@ -8,7 +8,7 @@ class UserInfoPanel extends React.Component {
     return [ UserStore ];
   }
 
-  static calculateState(prevState) {
+  static calculateState(/*prevState*/) {
     return {
       user: UserStore.getConnectedUser()
     };

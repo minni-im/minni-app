@@ -1,6 +1,6 @@
 import React from "react";
 import Dashboard from "./Dashboard.react";
-import ContactList from "./ContactList.react";
+import ContactList from "./sidebars/ContactList.react";
 
 export default class Lobby extends React.Component {
   render() {

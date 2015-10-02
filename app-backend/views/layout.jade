@@ -38,6 +38,11 @@ html
     link(rel="icon", sizes="16x16 24x24", href="/favicon.ico")
 
     link(rel="stylesheet", href="/css/style.css")
+    script(type="text/javascript").
+      window.Minni = {
+        name: "#{name}",
+        debug: #{!production}
+      };
     block header_scripts
 
   body(class=[viewname(filename), bodyClass])
