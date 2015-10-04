@@ -23,9 +23,23 @@ class AccountStore extends MapStore {
     return state;
   }
 
+  reduce(state, action) {
+    switch (action.type) {
+      case "account/new":
+        return addAccount(state, action.account);
+      default:
+        return state;
+    }
+  }
+
   hasNoAccount() {
     return this.getState().size === 0;
   }
+}
+
+function addAccount(state, accountPayload) {
+  let newAccount = new Account(accountPayload);
+  return state.set(newAccount.name, newAccount);
 }
 
 const instance = new AccountStore(Dispatcher);

@@ -1,5 +1,5 @@
 import React from "react";
-import Dashboard from "./Dashboard.react";
+
 import ContactList from "./sidebars/ContactList.react";
 
 export default class Lobby extends React.Component {
@@ -10,12 +10,21 @@ export default class Lobby extends React.Component {
         <header>
           <div className="header-info">
             <h2>Lobby</h2>
-            <h3>Lobby description</h3>
+            <h3>Your room(s)</h3>
           </div>
         </header>
-        {children ? children.content : <Dashboard />}
+        <section className="panel">
+          Lobby
+        </section>
       </section>
-      {children ? children.sidebar : <ContactList />}
+      <aside>
+        <header>
+          <div className="header-info">
+            <h2>Coworkers</h2>
+            <h3>Teammates</h3>
+          </div>
+        </header>
+      </aside>
     </main>;
   }
 }

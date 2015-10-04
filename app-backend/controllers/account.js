@@ -16,11 +16,9 @@ export default (app) => {
   /* =Routes= */
   app.get([
     "/",
-    "/lobby",
-    "/lobby/*",
-    "/create/account", "/create/room",
-    "/messages",
-    "/messages/*"
+    "/create",
+    "/dashboard",
+    "/chat/*"
   ], requireLoginRedirect, requireProfileInfoRedirect, (req, res) => {
     const Account = recorder.model("Account");
     Account.getListForUser(req.user.id).then((accounts) => {
@@ -46,12 +44,12 @@ export default (app) => {
     req.io.route("accounts:check");
   });
 
-  app.post("/api/accounts/:id", requireLogin, (req) => {
-    req.io.route("accounts:update");
-  });
-
   app.get("/api/accounts/:id", requireLogin, (req) => {
     req.io.route("accounts:get");
+  });
+
+  app.post("/api/accounts/:id", requireLogin, (req) => {
+    req.io.route("accounts:update");
   });
 
   app.delete("/api/accounts/:id", requireLogin, (req) => {
@@ -123,14 +121,15 @@ export default (app) => {
       let name = sanitizeName(req.body.name);
       let description = req.body.description;
       const Account = recorder.model("Account");
+
       let account = new Account({
         name: name,
         description: description,
         adminId: req.user.id,
         users: [ req.user.id ]
       });
-      account.save(savedAccount => {
-        return res.json({
+      account.save().then(savedAccount => {
+        return res.status(201).json({
           ok: true,
           message: `Account '${name}' succesfully created.`,
           account: savedAccount.toAPI(true)

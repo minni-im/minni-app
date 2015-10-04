@@ -1,33 +1,12 @@
 import React from "react";
-import { Link } from "react-router";
-import history from "../history";
-import { Container } from "flux/utils";
-
-import AccountStore from "../stores/AccountStore";
-import UserInfoPanel from "./UserInfoPanel.react";
 
 class MinniPanel extends React.Component {
-  static getStores() {
-    return [ AccountStore ];
-  }
-
-  static calculateState(/*prevState*/) {
-    return {
-      hasAccounts: !AccountStore.hasNoAccount(),
-      accounts: AccountStore.getState()
-    }
-  }
-
-  componentWillMount() {
-    if (AccountStore.hasNoAccount()) {
-      history.replaceState(null, "/create/account");
-    }
-  }
 
   render() {
+    const { children } = this.props;
     return <div className="minni-app">
-      {this.state.hasAccounts ? this.renderHeader() : this.renderWelcomeHeader()}
-      {this.props.children}
+      {children ? children.sidebar : false}
+      {children.content}
     </div>;
   }
 
@@ -44,14 +23,6 @@ class MinniPanel extends React.Component {
     </header>;
   }
 
-  renderWelcomeHeader() {
-    return <header className="has-no-account">
-      <h1>Minni</h1>
-      <h2>Welcome to {Minni.name}</h2>
-      <p>You are about to setup a new team organisation.</p>
-    </header>;
-  }
 }
 
-const MinniPanelContainer = Container.create(MinniPanel);
-export default MinniPanelContainer;
+export default MinniPanel;
