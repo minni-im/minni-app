@@ -23,7 +23,7 @@ class Lobby extends React.Component {
       <header>
         <div className="header-info">
           <h2>Lobby</h2>
-          <h3>Your «{account.name}» room(s)</h3>
+          <h3>Your « {account.name} » room(s)</h3>
         </div>
       </header>
       <section className="panel">

@@ -76,10 +76,11 @@ html
             while message = flash.shift()
               p.alert(class="alert-" + message.type)= message.message
     
-    main
-      block content_outer
-        .wrapper
-          block content
+    block main
+      main
+        block content_outer
+          .wrapper
+            block content
 
     block footer_outer
       footer

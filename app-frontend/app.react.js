@@ -55,6 +55,8 @@ function checkAccountExistence(meta, replaceState) {
   }
 }
 
+const appHolder = document.querySelector("#minni");
+
 ReactDOM.render((
   <Router history={history}>
     <Route path="/" component={Minni} onEnter={detectNoAccount}>
@@ -72,4 +74,6 @@ ReactDOM.render((
       </Route>
     </Route>
   </Router>
-), document.body);
+), appHolder, () => {
+  appHolder.classList.add("fadein");
+});

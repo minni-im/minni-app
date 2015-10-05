@@ -4,7 +4,7 @@ const AccountRecord = Immutable.Record({
   id: undefined,
   name: undefined,
   description: undefined,
-  users: []
+  usersId: []
 });
 
 export default class Account extends AccountRecord {

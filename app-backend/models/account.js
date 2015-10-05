@@ -5,7 +5,7 @@ let AccountSchema = new recorder.Schema({
   description: String,
   inviteToken: String,
   token: String,
-  users: Array,
+  usersId: Array,
   adminId: String
 });
 
@@ -16,7 +16,7 @@ AccountSchema.method("toAPI", function toAPI(isAdmin = false) {
     description: this.description,
     dateCreated: this.dateCreated,
     lastUpdated: this.lastUpdated,
-    users: this.users,
+    usersId: this.usersId,
     usersCount: this.users.length,
     adminId: this.adminId
   };
@@ -29,7 +29,7 @@ AccountSchema.method("toAPI", function toAPI(isAdmin = false) {
 AccountSchema.static("getListForUser", function getListForUser (userId) {
   return this.findAll().then(accounts => {
     return accounts.filter(account => {
-      return account.users.indexOf(userId) !== -1;
+      return account.usersId.indexOf(userId) !== -1;
     });
   });
 });

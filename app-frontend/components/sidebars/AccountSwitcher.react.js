@@ -19,7 +19,7 @@ class AccountSwitcher extends React.Component {
 
   render() {
     const { accounts } = this.state;
-    if (accounts.size === 1) {
+    if (accounts.size <= 1) {
       return false;
     }
 
@@ -28,16 +28,22 @@ class AccountSwitcher extends React.Component {
     };
 
     let links = [];
-    accounts.toSeq().forEach(account => {
-      links.push(<Link to={`/chat/${account.name}/lobby`} key={account.name}
-        className={classnames(classNames, {
-          "account-selected": this.props.params.account === account.name
-        })}>{account.name.substring(0, 2)}</Link>);
+    accounts.toIndexedSeq().forEach((account, index) => {
+      links.push(<Link to={`/chat/${account.name}/lobby`} key={account.name} title={account.name}
+        data-kbd-modifier="⌘" data-kbd-index={index + 1}>
+          <div className={classnames(classNames, {
+            "account-selected": this.props.params.account === account.name
+            })}>{account.name[0]}</div>
+        </Link>
+      );
     });
 
     return <div className="account-switcher">
       {links}
-      </div>;
+      <Link to="/create" className="create">
+        <div className="account">+</div>
+      </Link>
+    </div>;
   }
 }
 
