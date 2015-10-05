@@ -2,7 +2,11 @@ import React, { PropTypes } from "react";
 
 class Chat extends React.Component {
   render () {
-    return this.props.children;
+    const { children } = this.props;
+    return <main className="lobby">
+      {children.content}
+      {children && children.sidebar ? children.sidebar : false}
+    </main>;
   }
 }
 

@@ -1,30 +1,37 @@
 import React from "react";
+import { Container } from "flux/utils";
 
-import ContactList from "./sidebars/ContactList.react";
+import AccountStore from "../stores/AccountStore";
 
-export default class Lobby extends React.Component {
+
+class Lobby extends React.Component {
+  static getStores() {
+    return [ AccountStore ];
+  }
+
+  static calculateState(/* prevState */) {
+
+    return {
+      accounts: AccountStore.getState()
+    };
+  }
+
   render() {
-    const { children } = this.props;
-    return <main className="lobby">
-      <section>
-        <header>
-          <div className="header-info">
-            <h2>Lobby</h2>
-            <h3>Your room(s)</h3>
-          </div>
-        </header>
-        <section className="panel">
-          Lobby
-        </section>
+    const { children, params } = this.props;
+    const account = this.state.accounts.get(this.props.params.account);
+    return <section>
+      <header>
+        <div className="header-info">
+          <h2>Lobby</h2>
+          <h3>Your «{account.name}» room(s)</h3>
+        </div>
+      </header>
+      <section className="panel">
+        Lobby
       </section>
-      <aside>
-        <header>
-          <div className="header-info">
-            <h2>Coworkers</h2>
-            <h3>Teammates</h3>
-          </div>
-        </header>
-      </aside>
-    </main>;
+    </section>;
   }
 }
+
+const LobbyContainer = Container.create(Lobby);
+export default LobbyContainer;

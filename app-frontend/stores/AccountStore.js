@@ -35,6 +35,10 @@ class AccountStore extends MapStore {
   hasNoAccount() {
     return this.getState().size === 0;
   }
+
+  get(accountName) {
+    return this.getState().get(accountName);
+  }
 }
 
 function addAccount(state, accountPayload) {

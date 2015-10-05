@@ -71,13 +71,12 @@ form {
   }
 
   .block {
-    label, label span {
-      display: block;
-    }
-
-    input {
-      display: block;
-      width: 100%;
+    label {
+      display: flex;
+      flex-flow: column;
+      span {
+        display: block;
+      }
     }
   }
 }

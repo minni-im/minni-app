@@ -244,6 +244,32 @@ header .user-info {
 }
 
 
+.account-switcher {
+  display: flex;
+  flex-flow: column nowrap;
+  width: @main-account-switcher-width;
+  background-color: darken(@background-dark, 1%);
+  padding: 5px 0;
+  border-right: 1px dotted @gray-dark;
+
+  .account {
+    .square(@main-account-switcher-width / 1.5);
+    line-height: @main-account-switcher-width / 1.5;
+    margin: 5px 10px;
+    background-color: @gray-lighter;
+    border-radius: 3px;
+    text-align: center;
+    color: @gray-light;
+    text-transform: capitalize;
+    font-weight: 700;
+
+    &.account-selected {
+      background-color: @orange;
+      color: @color-dark;
+    }
+  }
+}
+
 .account-create {
   align-self: center;
 
