@@ -18,6 +18,14 @@ class RoomStore extends MapStore {
         return state;
     }
   }
+
+  getPrivate() {
+    return this.getState().filter(room => room.private);
+  }
+
+  getPublic() {
+    return this.getState().filter(room => room.public);
+  }
 }
 
 function addRoom(state, payload) {

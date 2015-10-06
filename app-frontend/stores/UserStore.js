@@ -24,9 +24,19 @@ class UserStore extends MapStore {
     switch (action.type) {
       case "user/add":
         return addUser(state, action.payload);
+
+      case "users/add":
+        return addUsers(state, action.payload);
+
       default:
         return state;
     }
+  }
+
+  getUsers(usersId) {
+    return this.getState().filter(user => {
+      return usersId.indexOf(user.id) !== -1
+    });
   }
 
   getConnectedUser() {
@@ -34,6 +44,12 @@ class UserStore extends MapStore {
   }
 }
 
+function addUsers(state, usersPayload) {
+  for (let userPayload of usersPayload) {
+    state = addUser(state, userPayload);
+  }
+  return state;
+}
 
 function addUser(state, userPayload) {
   if (state.get(userPayload.id)) {

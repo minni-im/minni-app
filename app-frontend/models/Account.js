@@ -1,5 +1,7 @@
 import Immutable from "immutable";
 
+import { camelize } from "../utils/Text";
+
 const AccountRecord = Immutable.Record({
   id: undefined,
   name: undefined,
@@ -8,4 +10,7 @@ const AccountRecord = Immutable.Record({
 });
 
 export default class Account extends AccountRecord {
+  get displayName() {
+    return camelize(this.name);
+  }
 }

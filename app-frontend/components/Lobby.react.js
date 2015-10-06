@@ -2,15 +2,16 @@ import React from "react";
 import { Container } from "flux/utils";
 
 import AccountStore from "../stores/AccountStore";
+import RoomStore from "../stores/RoomStore";
+
 
 
 class Lobby extends React.Component {
   static getStores() {
-    return [ AccountStore ];
+    return [ AccountStore, RoomStore ];
   }
 
   static calculateState(/* prevState */) {
-
     return {
       accounts: AccountStore.getState()
     };
@@ -18,7 +19,7 @@ class Lobby extends React.Component {
 
   render() {
     const { children, params } = this.props;
-    const account = this.state.accounts.get(this.props.params.account);
+    const account = this.props.accounts.get(params.account);
     return <section>
       <header>
         <div className="header-info">
@@ -27,7 +28,8 @@ class Lobby extends React.Component {
         </div>
       </header>
       <section className="panel">
-        Lobby
+        <h2>Rooms</h2>
+
       </section>
     </section>;
   }

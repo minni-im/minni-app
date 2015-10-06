@@ -17,13 +17,17 @@ AccountSchema.method("toAPI", function toAPI(isAdmin = false) {
     dateCreated: this.dateCreated,
     lastUpdated: this.lastUpdated,
     usersId: this.usersId,
-    usersCount: this.users.length,
+    usersCount: this.usersId.length,
     adminId: this.adminId
   };
   if (isAdmin) {
     json.inviteToken = this.inviteToken;
   }
   return json;
+});
+
+AccountSchema.method("userBelongTo", function userBelongTo(userId) {
+  return this.usersId.indexOf(userId) !== -1;
 });
 
 AccountSchema.static("getListForUser", function getListForUser (userId) {

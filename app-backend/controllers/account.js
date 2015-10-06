@@ -2,6 +2,7 @@ import recorder from "tape-recorder";
 
 import { requireLogin, requireLoginRedirect } from "../middlewares/auth";
 import { requireProfileInfoRedirect } from "../middlewares/profile";
+import { requireValidAccount } from "../middlewares/account";
 
 
 function sanitizeName(name) {
@@ -54,6 +55,10 @@ export default (app) => {
 
   app.delete("/api/accounts/:id", requireLogin, (req) => {
     req.io.route("accounts:delete");
+  });
+
+  app.get("/api/accounts/:id/users", requireLogin, requireValidAccount, (req) => {
+    req.io.route("accounts:users");
   });
 
   /* =Socket routes= */
@@ -121,12 +126,13 @@ export default (app) => {
       let name = sanitizeName(req.body.name);
       let description = req.body.description;
       const Account = recorder.model("Account");
+      const { user } = req;
 
       let account = new Account({
         name: name,
         description: description,
-        adminId: req.user.id,
-        users: [ req.user.id ]
+        adminId: user.id,
+        users: [ user.id ]
       });
       account.save().then(savedAccount => {
         return res.status(201).json({
@@ -149,6 +155,25 @@ export default (app) => {
 
     delete(req, res) {
 
+    },
+
+    users(req, res) {
+      const User = recorder.model("User");
+      //TODO improve by fetching a list of known ID directly instead of looping
+      Promise.all(req.account.usersId.map(userId => {
+        return User.findById(userId);
+      })).then(users => {
+        res.json({
+          ok: true,
+          users: users
+        });
+      }, error => {
+        res.json({
+          ok: false,
+          message: "Could not fetch users list",
+          errors: error
+        });
+      });
     }
   });
 

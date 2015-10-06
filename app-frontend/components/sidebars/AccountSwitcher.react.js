@@ -1,25 +1,12 @@
 import React from "react";
 import classnames from "classnames";
-import { Container } from "flux/utils";
 
 import { Link } from "react-router";
 
-import AccountStore from "../../stores/AccountStore";
-
 class AccountSwitcher extends React.Component {
-  static getStores() {
-    return [ AccountStore ];
-  }
-
-  static calculateState(/* prevState */) {
-    return {
-      accounts: AccountStore.getState()
-    };
-  }
-
   render() {
-    const { accounts } = this.state;
-    if (accounts.size <= 1) {
+    const { currentAccount, accounts } = this.props;
+    if (!accounts || accounts.size <= 1) {
       return false;
     }
 
@@ -29,23 +16,24 @@ class AccountSwitcher extends React.Component {
 
     let links = [];
     accounts.toIndexedSeq().forEach((account, index) => {
-      links.push(<Link to={`/chat/${account.name}/lobby`} key={account.name} title={account.name}
+      links.push(<Link to={`/chat/${account.name}/lobby`} key={account.name}
+        title={account.displayName}
+        className={classnames(classNames, {
+          "account-selected": this.props.currentAccount === account.name
+        })}
         data-kbd-modifier="⌘" data-kbd-index={index + 1}>
-          <div className={classnames(classNames, {
-            "account-selected": this.props.params.account === account.name
-            })}>{account.name[0]}</div>
+          <div>{account.name[0]}</div>
         </Link>
       );
     });
 
     return <div className="account-switcher">
       {links}
-      <Link to="/create" className="create">
-        <div className="account">+</div>
+      <Link to="/create" className="account create" activeClassName="account-selected">
+        <div>+</div>
       </Link>
     </div>;
   }
 }
 
-const AccountSwitcherContainer = Container.create(AccountSwitcher);
-export default AccountSwitcherContainer;
+export default AccountSwitcher;

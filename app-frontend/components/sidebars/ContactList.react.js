@@ -1,12 +1,19 @@
 import React from "react";
 
+import UserListContainer from "../UserListContainer.react";
+
 export default class ContactList extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;
     this.state = {
-      coworkers: []
+      coworkers: this.props.currentAccount.usersId
     };
+  }
+
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      coworkers: newProps.currentAccount.usersId
+    });
   }
 
   render() {
@@ -24,7 +31,7 @@ export default class ContactList extends React.Component {
   }
 
   renderList() {
-    return <div></div>;
+    return <UserListContainer usersId={this.state.coworkers}/>;
   }
 
   renderEmptyList() {

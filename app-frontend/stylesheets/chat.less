@@ -74,6 +74,9 @@ body.chat {
         .icon {
           .square(28px);
           margin: 5px;
+          svg {
+            fill: @white;
+          }
         }
 
         .name {
@@ -82,7 +85,7 @@ body.chat {
         }
 
         &.selected.lobby {
-          background-color: rgba(0, 0, 0, .3);
+          background-color: fade(@black, 30%);
         }
 
         &.selected {
@@ -203,7 +206,7 @@ body.chat {
     }
 
     > aside {
-      width: @main-sidebar-width;
+      width: @content-sidebar-width;
     }
   }
 
@@ -276,27 +279,38 @@ header .user-info {
   width: @main-account-switcher-width;
   background-color: darken(@background-dark, 1%);
   padding: 5px 0;
-  border-right: 1px dotted @gray-dark;
+  border-right: 1px solid fade(@black, 30%);
 
   .account {
-    .square(@main-account-switcher-width / 2);
-    line-height: @main-account-switcher-width / 2;
-    margin: 10px;
-    background-color: @gray-lighter;
-    border-radius: 3px;
-    text-align: center;
-    color: @gray-light;
-    text-transform: uppercase;
-    font-weight: 400;
-    font-size: 20px;
+    opacity: 0.35;
+    transition: opacity 500ms;
+
+    > div {
+      .square(@main-account-switcher-width / 2);
+      line-height: @main-account-switcher-width / 2;
+      margin: 10px 10px 5px;
+      background-color: @gray-lighter;
+      border-radius: 3px;
+      text-align: center;
+      color: @gray-light;
+      text-transform: uppercase;
+      font-weight: 400;
+      font-size: 20px;
+    }
 
     &:hover {
-      box-shadow: 0 0 0 5px @gray;
+      opacity: 1;
+      > div {
+        box-shadow: 0 0 0 5px @gray;
+      }
     }
 
     &.account-selected {
-      background-color: @orange;
-      color: @color-dark;
+      opacity: 1;
+      > div {
+        background-color: @orange;
+        color: @color-dark;
+      }
     }
   }
 
@@ -316,12 +330,14 @@ header .user-info {
 
   a.create {
     margin-top: auto;
+    margin-bottom: 10px;
     color: inherit;
-    div {
+    opacity: 1;
+    > div {
       background-color: darken(@background-dark, 1%);
     }
     &:hover {
-      div {
+      > div {
         box-shadow: none;
         background-color: @gray;
       }
