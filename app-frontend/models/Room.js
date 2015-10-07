@@ -9,11 +9,12 @@ const TYPE = {
 const RoomRecord = Immutable.Record({
   id: undefined,
   name: undefined,
-  topic: undefined,
+  topic: "",
   type: TYPE.PUBLIC,
   adminId: undefined,
   usersId: [],
-  lastMsgUserId: undefined
+  lastMsgUserId: undefined,
+  starred: false
 });
 
 export default class Room extends RoomRecord {

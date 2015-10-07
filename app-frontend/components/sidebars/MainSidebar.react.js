@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router";
 import { Container } from "flux/utils";
 
+import classnames from "classnames";
+
 import AccountStore from "../../stores/AccountStore";
 
 import { LobbyIcon } from "../../utils/Icons";
@@ -21,8 +23,16 @@ class MainSidebar extends React.Component {
   render() {
     const { children, params } = this.props;
     const account = this.state.accounts.get(params.account);
+
+    let logo;
+    if (this.state.accounts.size === 1) {
+      logo = <h1>{Minni.name}</h1>;
+    } else {
+      logo = <h2 className="account">{account.name}</h2>;
+    }
+
     return <header>
-      <h1>{Minni.name}</h1>
+      {logo}
       <nav>
         <Link to={`/chat/${account.name}/lobby`}
           className="lobby" activeClassName="selected">

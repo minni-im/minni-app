@@ -19,6 +19,7 @@ export default (app) => {
     "/",
     "/create",
     "/dashboard",
+    "/settings/:account/*",
     "/chat/:account/*"
   ], requireLoginRedirect, requireProfileInfoRedirect, (req, res) => {
     const Account = recorder.model("Account");
@@ -132,7 +133,7 @@ export default (app) => {
         name: name,
         description: description,
         adminId: user.id,
-        users: [ user.id ]
+        usersId: [ user.id ]
       });
       account.save().then(savedAccount => {
         return res.status(201).json({

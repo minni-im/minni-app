@@ -16,11 +16,11 @@ export default class AccountCreate extends React.Component {
     let errors = false;
     if (!this.state.valid) {
       errors = <div className="alerts">
-        <div className="alert-error">{this.state.message}</div>
+        <div className="alert alert-error">{this.state.message}</div>
       </div>;
     }
 
-    let title = `Create a new ${Minni.name}`;
+    let title = `Create a new ${Minni.name} team`;
     if (this.props.location.state && this.props.location.state.welcome) {
       title = `First thing first, create a new ${Minni.name} team`;
     }
@@ -125,9 +125,3 @@ export default class AccountCreate extends React.Component {
     });
   }
 }
-
-AccountCreate.meta = {
-  className: "account-create",
-  title: `First thing first, create a new ${Minni.name} team`,
-  description: "A team is a central place where you and your coworkers can collaborate and get things done."
-};

@@ -17,15 +17,16 @@ export default class ContactList extends React.Component {
   }
 
   render() {
+    const teamSize = this.state.coworkers.length - 1;
     return <aside>
       <header>
         <div className="header-info">
           <h2>Coworkers</h2>
-          <h3>{this.state.coworkers.length} teammate{this.state.coworkers.length ? "s" : ""}</h3>
+          <h3>{teamSize} teammate{teamSize > 1 ? "s" : ""}</h3>
         </div>
       </header>
       <section className="panel">
-        {this.state.coworkers.length ? this.renderList() : this.renderEmptyList()}
+        {teamSize ? this.renderList() : this.renderEmptyList()}
       </section>
     </aside>;
   }

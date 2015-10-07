@@ -32,6 +32,10 @@ class AccountSwitcher extends React.Component {
       <Link to="/create" className="account create" activeClassName="account-selected">
         <div>+</div>
       </Link>
+      <a href="https://minni.im" className="powered-by-minni"
+        target="_blank" title="Powered by Minni.im">
+        <img src="/images/logo-color.png" />
+      </a>
     </div>;
   }
 }

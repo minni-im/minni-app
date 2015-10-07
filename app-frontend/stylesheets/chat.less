@@ -30,6 +30,24 @@ body.chat {
   }
 }
 
+.icon {
+  svg {
+    .square(36px);
+  }
+
+  &:hover, &.icon--active {
+    svg {
+      fill: @electric-blue;
+    }
+  }
+}
+
+.powered-by-minni {
+  img {
+    .square(36px);
+  }
+}
+
 .minni-app {
   height: 100%;
   display: flex;
@@ -49,6 +67,12 @@ body.chat {
       text-indent: -9999px;
       background: url(/images/logo.png) center center no-repeat;
       background-size: 64px 64px;
+    }
+
+    h2.account {
+      font-weight: 400;
+      margin: 10px;
+      text-transform: capitalize;
     }
 
     a {
@@ -75,6 +99,7 @@ body.chat {
           .square(28px);
           margin: 5px;
           svg {
+            .square(28px);
             fill: @white;
           }
         }
@@ -164,6 +189,13 @@ body.chat {
           font-size: 28px;
           line-height: 1.2em;
         }
+
+        header {
+          height: auto;
+          .actions {
+            align-self: center;
+          }
+        }
       }
 
       section.panel--contrast {
@@ -198,6 +230,11 @@ body.chat {
           font-weight: 300;
           margin: -2px 0 5px;
         }
+      }
+
+      .actions {
+        align-self: center;
+        margin-right: 15px;
       }
     }
 
@@ -343,6 +380,20 @@ header .user-info {
       }
     }
   }
+}
+
+.room-create, .account-create {
+  .alerts {
+    display: inline-block;
+    .alert {
+      border-radius: 2px;
+      padding: 0 10px;
+    }
+  }
+}
+
+.room-create {
+  border-right: 1px dotted @gray;
 }
 
 .account-create {

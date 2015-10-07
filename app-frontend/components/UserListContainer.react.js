@@ -11,13 +11,15 @@ class UserListContainer extends React.Component {
   }
 
   static calculateState(prevState, prevProps) {
+    const viewer = UserStore.getConnectedUser();
     return {
-      users: UserStore.getUsers(prevProps.usersId)
+      viewer: viewer,
+      users: UserStore.getUsers(prevProps.usersId, [ viewer.id ])
     };
   }
 
   render() {
-    return <UserList users={this.state.users} />;
+    return <UserList viewer={this.state.viewer} users={this.state.users} />;
   }
 }
 
