@@ -57,7 +57,11 @@ var WEBPACK_CONFIG = {
       }),
       new webpack.optimize.DedupePlugin(),
       new webpack.optimize.AggressiveMergingPlugin()
-    ] : [ ]
+    ] : [
+      new webpack.DefinePlugin({
+        "__DEV__": true
+      })
+    ]
   ),
   externals: [
     //{ "react": "React" }

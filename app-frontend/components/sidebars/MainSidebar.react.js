@@ -28,7 +28,7 @@ class MainSidebar extends React.Component {
     if (this.state.accounts.size === 1) {
       logo = <h1>{Minni.name}</h1>;
     } else {
-      logo = <h2 className="account">{account.name}</h2>;
+      logo = <h2 className="account">{account.displayName}</h2>;
     }
 
     return <header>

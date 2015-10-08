@@ -25,4 +25,8 @@ export default class Room extends RoomRecord {
   get public() {
     return this.type === TYPE.PUBLIC;
   }
+
+  isUserAdmin(userId) {
+    return userId === this.adminId;
+  }
 }

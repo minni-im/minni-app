@@ -9,7 +9,7 @@ class Dashboard extends React.Component {
     for (let [name, account] of this.props.accounts) {
       const url = `/chat/${name}/lobby`;
       accounts.push(<div key={name} className="team">
-        <div className="name">{name}</div>
+        <div className="name">{account.displayName}</div>
         <div className="description">{account.description}</div>
         <div className="actions">
           <a href={url} className="button" target="_blank">Connect</a>

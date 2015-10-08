@@ -13,4 +13,8 @@ export default class Account extends AccountRecord {
   get displayName() {
     return camelize(this.name);
   }
+
+  isUserAdmin(userId) {
+    return userId === this.adminId;
+  }
 }
