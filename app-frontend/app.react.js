@@ -63,5 +63,8 @@ ReactDOM.render((
     </Route>
   </Router>
 ), appHolder, () => {
-  appHolder.classList.add("fadein");
+  setTimeout(() => {
+    appHolder.classList.add("fadein");
+  }, 1000);
+
 });
