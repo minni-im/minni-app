@@ -1,12 +1,13 @@
 import React from "react";
 
+import dispatch from "../dispatchers/Dispatcher";
 
 class RoomCreate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       type: 1,
-      valid: true
+      usersId: []
     };
   }
 
@@ -44,31 +45,31 @@ class RoomCreate extends React.Component {
 
           <h3>Access Control</h3>
 
-          <p className="inline-block">
+          <div className="inline-block">
             <label>
               <input type="radio" value={1} defaultChecked name="type" onChange={this._onRoomTypeChanged.bind(this)}/>
               <span>Public room</span>
             </label>
             <span className="info">Anyone in the team can access this room.</span>
-          </p>
+          </div>
 
-          <p className="inline-block">
+          <div className="inline-block">
             <label>
               <input type="radio" value={2} name="type" onChange={this._onRoomTypeChanged.bind(this)}/>
               <span>Private room</span>
             </label>
             <span className="info">Only selected team members will see the room in their lobby.</span>
-          </p>
+          </div>
 
-          {this.state.type == 2 ? <div className="coworkers-picker">
+          {this.state.type === 2 ? <div className="coworkers-picker">
             {this.props.currentAccount.usersId.map(userId => {
               return <div className="coworker">{userId}</div>;
             })}
           </div> : false}
 
-          <div>
+          <p>
             <button disabled={!this.state.valid}>Create</button>
-          </div>
+          </p>
 
         </form>
       </section>
@@ -77,16 +78,41 @@ class RoomCreate extends React.Component {
 
   _onHandleSubmit(event) {
     event.preventDefault();
-    const name = this.refs.name.value, topic = this.refs.topic.value;
-    if (name.length === 0) {
-      this.setState({ valid: false, message: "You must provide a name" });
+    const { name, topic } = this.refs;
+    if (name.value.length === 0) {
       return;
     }
-
+    fetch(`/api/accounts/${this.props.currentAccount.id}/rooms/`, {
+      method: "PUT",
+      credentials: "same-origin",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: name.value,
+        topic: topic.value,
+        type: this.state.type
+      })
+    }).then(response => {
+      return response.json();
+    }).then(payload => {
+      if (payload.ok) {
+        const room = payload.room;
+        dispatch({
+          type: "room/add",
+          payload: room
+        });
+      } else {
+        this.setState({
+          message: payload.message
+        });
+      }
+    });
   }
 
   _onRoomTypeChanged(event) {
-    const type = event.target.value;
+    const type = parseInt(event.target.value, 10);
     if (type !== this.state.type) {
       this.setState({
         "type": type

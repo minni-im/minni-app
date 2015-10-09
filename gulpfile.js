@@ -45,6 +45,7 @@ var WEBPACK_CONFIG = {
   ].concat(
     RELEASE ? [
       new webpack.DefinePlugin({
+        DEBUG: false,
         "process.env": {
           // This has effect on the react lib size
           "NODE_ENV": JSON.stringify("production")
@@ -59,7 +60,7 @@ var WEBPACK_CONFIG = {
       new webpack.optimize.AggressiveMergingPlugin()
     ] : [
       new webpack.DefinePlugin({
-        "__DEV__": true
+        DEBUG: true
       })
     ]
   ),
@@ -68,8 +69,7 @@ var WEBPACK_CONFIG = {
   ],
   module: {
     loaders: [
-      { test: /\.json$/, loader: "json"
-      },
+      { test: /\.json$/, loader: "json" },
       { test: /\.js$/,
         exclude: /node_modules/,
         loader: "babel",

@@ -6,7 +6,7 @@ class Chat extends React.Component {
 
   componentWillMount() {
     fetch(`/api/accounts/${this.props.currentAccount.id}/users`, {
-      credentials: "include"
+      credentials: "same-origin"
     }).then((response) => {
       return response.json();
     }).then((payload) => {
