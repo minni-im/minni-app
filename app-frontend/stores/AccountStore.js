@@ -12,12 +12,14 @@ class AccountStore extends MapStore {
     let dataHolder = document.getElementById("data-holder");
     let accounts = JSON.parse(dataHolder.dataset.accounts);
 
-    if (!Minni.debug) {
+    if (!__DEV__) {
       delete dataHolder.dataset.accounts;
     }
 
     accounts.forEach(account => {
       state = state.set(account.name, new Account(account));
+      Account.getUsers(account.id);
+      Account.getRooms(account.id);
     });
 
     return state;

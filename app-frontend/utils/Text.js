@@ -1,7 +1,3 @@
-export function camelize(text) {
-  return text[0].toUpperCase() + text.substr(1);
-}
-
 export function slugify(text) {
   return text.toLowerCase()
       .trim()
@@ -9,4 +5,16 @@ export function slugify(text) {
       .replace(/-+/g, "-")
       .replace(/[^\w-]+/g, "")
       .replace(/-$/, "");
+}
+
+export function unslugify(text) {
+  return text.replace(/-/g, " ");
+}
+
+export function capitalize(text) {
+  return unslugify(text).replace(/(?:^|\s)([a-z])/, `${"$1".toUpperCase()}`);
+}
+
+export function camelize(text) {
+  return text[0].toUpperCase() + text.substr(1);
 }

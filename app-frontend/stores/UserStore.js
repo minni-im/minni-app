@@ -53,9 +53,6 @@ function addUsers(state, usersPayload) {
 }
 
 function addUser(state, userPayload) {
-  if (state.get(userPayload.id)) {
-    return state;
-  }
   let newUser = new User(userPayload);
   return state.set(newUser.id, newUser);
 }

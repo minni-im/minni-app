@@ -20,7 +20,7 @@ var VERBOSE = argv.verbose;
 var WEBPACK_CONFIG = {
   progress: true,
   debug: !RELEASE,
-  devtool: RELEASE ? false : "eval",
+  devtool: RELEASE ? false : "#source-map",
   entry: {
     vendor: [
       "react",
@@ -45,7 +45,7 @@ var WEBPACK_CONFIG = {
   ].concat(
     RELEASE ? [
       new webpack.DefinePlugin({
-        DEBUG: false,
+        "__DEV__": false,
         "process.env": {
           // This has effect on the react lib size
           "NODE_ENV": JSON.stringify("production")
@@ -60,7 +60,7 @@ var WEBPACK_CONFIG = {
       new webpack.optimize.AggressiveMergingPlugin()
     ] : [
       new webpack.DefinePlugin({
-        DEBUG: true
+        "__DEV__": true
       })
     ]
   ),

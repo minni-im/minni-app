@@ -2,28 +2,15 @@ import React, { PropTypes } from "react";
 
 import { dispatch } from "../dispatchers/Dispatcher";
 
-class Chat extends React.Component {
+import Account from "../models/Account";
 
-  componentWillMount() {
-    fetch(`/api/accounts/${this.props.currentAccount.id}/users`, {
-      credentials: "same-origin"
-    }).then((response) => {
-      return response.json();
-    }).then((payload) => {
-      if (payload.ok) {
-        const users = payload.users;
-        dispatch({
-          type: "users/add",
-          payload: users
-        });
-      }
-    });
-  }
+class Chat extends React.Component {
 
   render () {
     const { children } = this.props;
     return <main className="lobby">
       {React.cloneElement(children.content, {
+        currentUser: this.props.currentUser,
         currentAccount: this.props.currentAccount,
         accounts: this.props.accounts
       })}

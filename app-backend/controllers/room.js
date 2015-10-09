@@ -4,9 +4,10 @@ import { requireLogin } from "../middlewares/auth";
 import { requireValidAccount } from "../middlewares/account";
 
 export default (app) => {
-  app.get("/api/accounts/:accountId/rooms/",
+
+  app.get("/api/accounts/:accountId/rooms",
     requireLogin, requireValidAccount,
-    (req) => {
+    (req, res) => {
       req.io.route("rooms:list");
     });
 
@@ -21,11 +22,21 @@ export default (app) => {
       const Room = recorder.model("Room");
       Room.where("accountId", { key: req.params.accountId })
         .then(rooms => {
+          const { user } = req;
+          rooms = rooms.filter(room => {
+            return room.public || room.private && room.usersId.indexOf(user.id) !== -1;
+          }).map(room => {
+            return room.toAPI(user.id === room.adminId);
+          });
+
           res.json({
             ok: true,
-            rooms: rooms.map(room => {
-              return room.toAPI(req.user.id === room.adminId);
-            })
+            rooms: rooms
+          });
+        }, error => {
+          res.json({
+            ok: false,
+            errors: error
           });
         });
     },
@@ -42,10 +53,12 @@ export default (app) => {
           message: `You are not allowed to create a room in this account.`
         });
       }
+
       let room = new Room({
         name,
         topic,
         type,
+        accountId: accountId,
         usersId,
         adminId: user.id
       });

@@ -1,5 +1,7 @@
 import Immutable from "immutable";
 
+import { slugify } from "../utils/Text";
+
 const TYPE = {
   DELETED: 0,
   PUBLIC: 1,
@@ -11,6 +13,7 @@ const RoomRecord = Immutable.Record({
   name: undefined,
   topic: "",
   type: TYPE.PUBLIC,
+  accountId: undefined,
   adminId: undefined,
   usersId: [],
   lastMsgUserId: undefined,
@@ -24,6 +27,10 @@ export default class Room extends RoomRecord {
 
   get public() {
     return this.type === TYPE.PUBLIC;
+  }
+
+  get slug() {
+    return slugify(this.name);
   }
 
   isUserAdmin(userId) {

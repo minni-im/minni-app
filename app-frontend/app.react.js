@@ -19,6 +19,9 @@ import MainSidebar from "./components/sidebars/MainSidebar.react";
 import ContactList from "./components/sidebars/ContactList.react";
 import RoomCreate from "./components/RoomCreate.react";
 
+import Room from "./components/Room.react";
+import RoomMessagesContainer from "./components/RoomMessagesContainer.react";
+
 import AccountStore from "./stores/AccountStore";
 
 /*
@@ -60,10 +63,13 @@ ReactDOM.render((
         <Route path="lobby" components={{content: Lobby, sidebar: ContactList }} />
         <Route path="create" components={{content: RoomCreate, sidebar: ContactList }} />
       </Route>
+      <Route path="chat/:account/messages" components={{content: Room, sidebar: MainSidebar }}>
+        <Route path=":roomSlug" component={RoomMessagesContainer} />
+      </Route>
     </Route>
   </Router>
 ), appHolder, () => {
-  if (DEBUG) {
+  if (__DEV__) {
     appHolder.classList.add("fadein");
   } else {
     setTimeout(() => {

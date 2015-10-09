@@ -15,7 +15,10 @@ let RoomSchema = new recorder.Schema({
   },
   accountId: String,
   adminId: String,
-  usersId: Array,
+  usersId: {
+    type: Array,
+    default: []
+  },
   lastMsgUserId: String
 });
 
@@ -37,6 +40,7 @@ RoomSchema.method("toAPI", function toAPI(admin = false) {
     id: this.id,
     name: this.name,
     topic: this.topic,
+    accountId: this.accountId,
     adminId: this.adminId,
     usersId: this.usersId,
     dateCreated: this.dateCreated,

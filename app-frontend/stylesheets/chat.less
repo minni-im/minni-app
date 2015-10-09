@@ -195,6 +195,7 @@ body.chat {
           height: auto;
           .actions {
             align-self: center;
+            margin-right: 5px;
           }
         }
       }
@@ -216,6 +217,7 @@ body.chat {
           text-overflow: ellipsis;
           overflow: hidden;
           white-space: nowrap;
+          text-transform: capitalize;
         }
 
         h2 {
@@ -245,18 +247,6 @@ body.chat {
 
     > aside {
       width: @content-sidebar-width;
-    }
-  }
-
-  .lobby {
-    aside {
-      background-color: @gray-lighter;
-
-      .coworker-all-alone {
-        padding: 2em;
-        align-self: center;
-        text-align: center;
-      }
     }
   }
 }
@@ -309,6 +299,85 @@ header .user-info {
   }
 }
 
+.lobby {
+  aside {
+    background-color: @gray-lighter;
+
+    .coworker-all-alone {
+      padding: 2em;
+      align-self: center;
+      text-align: center;
+      margin: auto 0;
+    }
+  }
+
+  .rooms {
+    .room {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      padding: 5px;
+
+      color: inherit;
+      cursor: pointer;
+
+      .room--name {
+        font-weight: 700;
+        margin-right: 10px;
+      }
+
+      .room--topic {
+        flex: 1;
+      }
+
+      .room--icon {
+        margin-left: 5px;
+        svg {
+          .square(24px);
+          fill: @gray-light;
+          vertical-align: middle;
+        }
+      }
+
+      &.room-favorite {
+        .room--icon {
+          svg {
+            fill: gold;
+          }
+        }
+      }
+
+      &:nth-child(even) {
+        background-color: @gray-lighter;
+      }
+
+      &:hover {
+        background-color: @electric-blue;
+        color: @color-light;
+
+        .room--icon {
+          svg {
+            fill: @gray-dark;
+          }
+
+          &:hover {
+            svg {
+              fill: @background-light;
+            }
+          }
+        }
+
+        .icon--favorite:hover {
+          svg {
+            fill: gold;
+          }
+        }
+      }
+    }
+
+
+  }
+}
 
 .account-switcher {
   display: flex;
@@ -418,9 +487,11 @@ header .user-info {
     display: flex;
     flex-flow: column nowrap;
 
-    background-color: @gray-lighter;
+    background-color: @background-light;
     padding: 10px;
     margin: 5px;
+    border: 3px solid @gray-lighter;
+    border-radius: 2px;
     flex: 1 0 300px;
 
 
@@ -447,5 +518,11 @@ header .user-info {
       margin-top: 10px;
       text-align: right;
     }
+  }
+}
+
+.room {
+  > section + section {
+    border-left: 1px solid @gray-light;
   }
 }

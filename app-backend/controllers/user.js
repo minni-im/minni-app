@@ -16,15 +16,15 @@ export default (app) => {
       req.io.route("me:profile");
     });
 
-  app.get("/me", requireLogin, function(req) {
+  app.get("/api/me", requireLogin, function(req) {
     req.io.route("me:whoami");
   });
 
-  app.get("/me/token/generate", requireLogin, function(req) {
+  app.get("/api/me/token/generate", requireLogin, function(req) {
     req.io.route("me:generateToken");
   });
 
-  app.get("/me/token/revoke", requireLogin, function(req) {
+  app.get("/api/me/token/revoke", requireLogin, function(req) {
     req.io.route("me:revokeToken");
   });
 

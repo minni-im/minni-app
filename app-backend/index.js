@@ -62,6 +62,7 @@ let bootstrap = () => {
 
 const couchDBHost = process.env.COUCHDB_PORT_5984_TCP_ADDR || config.couchdb.host;
 const couchDBPort = process.env.COUCHDB_PORT_5984_TCP_PORT || config.couchdb.port;
+
 recorder.connect(`http://${couchDBHost}:${couchDBPort}`, config.couchdb.name, () => {
   fs.readdirSync(path.join(__dirname, "models")).forEach(model => {
     require("./models/" + model);

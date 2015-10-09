@@ -1,6 +1,7 @@
 import React from "react";
 
-import dispatch from "../dispatchers/Dispatcher";
+import history from "../history";
+import { dispatch } from "../dispatchers/Dispatcher";
 
 class RoomCreate extends React.Component {
   constructor(props) {
@@ -13,7 +14,7 @@ class RoomCreate extends React.Component {
 
   render() {
     let errors;
-    if (!this.state.valid) {
+    if (this.state.message) {
       errors = <div className="alerts">
         <div className="alert alert-error">{this.state.message}</div>
       </div>;
@@ -68,7 +69,7 @@ class RoomCreate extends React.Component {
           </div> : false}
 
           <p>
-            <button disabled={!this.state.valid}>Create</button>
+            <button>Create</button>
           </p>
 
         </form>
@@ -103,6 +104,7 @@ class RoomCreate extends React.Component {
           type: "room/add",
           payload: room
         });
+        history.pushState({ }, `/chat/${this.props.currentAccount.name}/lobby`);
       } else {
         this.setState({
           message: payload.message

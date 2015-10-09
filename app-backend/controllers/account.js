@@ -19,8 +19,8 @@ export default (app) => {
     "/",
     "/create",
     "/dashboard",
-    "/settings/:account/*",
-    "/chat/:account/*"
+    "/settings/:accountName/*",
+    "/chat/:accountName/*"
   ], requireLoginRedirect, requireProfileInfoRedirect, (req, res) => {
     const Account = recorder.model("Account");
     Account.getListForUser(req.user.id).then((accounts) => {
@@ -46,19 +46,19 @@ export default (app) => {
     req.io.route("accounts:check");
   });
 
-  app.get("/api/accounts/:id", requireLogin, (req) => {
+  app.get("/api/accounts/:accountId", requireLogin, (req) => {
     req.io.route("accounts:get");
   });
 
-  app.post("/api/accounts/:id", requireLogin, (req) => {
+  app.post("/api/accounts/:accountId", requireLogin, (req) => {
     req.io.route("accounts:update");
   });
 
-  app.delete("/api/accounts/:id", requireLogin, (req) => {
+  app.delete("/api/accounts/:accountId", requireLogin, (req) => {
     req.io.route("accounts:delete");
   });
 
-  app.get("/api/accounts/:id/users", requireLogin, requireValidAccount, (req) => {
+  app.get("/api/accounts/:accountId/users", requireLogin, requireValidAccount, (req) => {
     req.io.route("accounts:users");
   });
 
@@ -82,7 +82,7 @@ export default (app) => {
     },
 
     get(req, res) {
-      const accountId = req.params.id;
+      const { accountId } = req.params;
       const Account = recorder.model("Account");
 
       Account.findById(accountId).then(account => {

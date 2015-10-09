@@ -14,9 +14,25 @@ class RoomStore extends MapStore {
     switch (action.type) {
       case "room/add":
         return addRoom(state, action.payload);
+
+      case "rooms/add":
+        return addRooms(state, action.payload);
+
       default:
         return state;
     }
+  }
+
+  getForAccount(accountId) {
+    return this.getState().filter(room => {
+      return room.accountId === accountId;
+    });
+  }
+
+  get(roomSlug) {
+    return this.getState().find(room => {
+      return room.slug === roomSlug;
+    });
   }
 
   getPrivate() {
@@ -31,6 +47,13 @@ class RoomStore extends MapStore {
 function addRoom(state, payload) {
   let room = new Room(payload);
   return state.set(room.id, room);
+}
+
+function addRooms(state, rooms) {
+  for (let room of rooms) {
+    state = addRoom(state, room);
+  }
+  return state;
 }
 
 const instance = new RoomStore(Dispatcher);

@@ -1,6 +1,8 @@
 import Immutable from "immutable";
 
-import { camelize } from "../utils/Text";
+import { dispatch } from "../dispatchers/Dispatcher";
+
+import { capitalize } from "../utils/Text";
 
 const AccountRecord = Immutable.Record({
   id: undefined,
@@ -11,10 +13,44 @@ const AccountRecord = Immutable.Record({
 
 export default class Account extends AccountRecord {
   get displayName() {
-    return camelize(this.name);
+    return capitalize(this.name);
   }
 
   isUserAdmin(userId) {
     return userId === this.adminId;
+  }
+
+  /* STATIC METHODS */
+
+  static getRooms(accountId) {
+    fetch(`/api/accounts/${accountId}/rooms`, {
+      credentials: "same-origin"
+    }).then(response => {
+      return response.json();
+    }).then(payload => {
+      if (payload.ok) {
+        const rooms = payload.rooms;
+        dispatch({
+          type: "rooms/add",
+          payload: rooms
+        });
+      }
+    });
+  }
+
+  static getUsers(accountId) {
+    fetch(`/api/accounts/${accountId}/users`, {
+      credentials: "same-origin"
+    }).then(response => {
+      return response.json();
+    }).then(payload => {
+      if (payload.ok) {
+        const users = payload.users;
+        dispatch({
+          type: "users/add",
+          payload: users
+        });
+      }
+    });
   }
 }
