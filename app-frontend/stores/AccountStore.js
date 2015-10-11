@@ -2,6 +2,9 @@ import Immutable from "immutable";
 import { MapStore } from "flux/utils";
 
 import Dispatcher from "../dispatchers/Dispatcher";
+import { dispatch } from "../dispatchers/Dispatcher";
+
+import { slugify } from "../utils/Text";
 
 import Account from "../models/Account";
 
@@ -17,9 +20,9 @@ class AccountStore extends MapStore {
     }
 
     accounts.forEach(account => {
-      state = state.set(account.name, new Account(account));
-      Account.getUsers(account.id);
-      Account.getRooms(account.id);
+        state = state.set(slugify(account.name), new Account(account));
+        Account.getUsers(account.id);
+        Account.getRooms(account.id);
     });
 
     return state;
@@ -29,6 +32,12 @@ class AccountStore extends MapStore {
     switch (action.type) {
       case "account/new":
         return addAccount(state, action.account);
+
+      case "account/select":
+        return state.map(account => {
+          return account.set("active", account.slug === action.account.name);
+        });
+
       default:
         return state;
     }
@@ -39,7 +48,14 @@ class AccountStore extends MapStore {
   }
 
   get(accountName) {
+    accountName = slugify(accountName);
     return this.getState().get(accountName);
+  }
+
+  getCurrentAccount() {
+    return this.getState().find(account => {
+      return account.active;
+    });
   }
 }
 

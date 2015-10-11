@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import { Router, Route, IndexRoute } from "react-router";
 import history from "./history";
 
+import { dispatch } from "./dispatchers/Dispatcher";
+
 import Minni from "./components/Minni.react";
 
 import Welcome from "./components/sidebars/Welcome.react";
@@ -45,9 +47,28 @@ function detectNoAccount(meta, replaceState) {
 }
 
 function checkAccountExistence(meta, replaceState) {
-  if (!AccountStore.get(meta.params.account)) {
+  const accountName = meta.params.account;
+  const account = AccountStore.get(accountName);
+
+  if (account) {
+    dispatch({
+      type: "account/select",
+      account: {
+        id: account.id,
+        name: accountName
+      }
+    });
+  } else {
     replaceState(null, "/404");
   }
+}
+
+function connectRooms(meta, replaceState) {
+  dispatch({
+    type: "room/join",
+    accountSlug: meta.params.account,
+    roomIds: meta.params.roomSlug.split(",")
+  });
 }
 
 const appHolder = document.querySelector("#minni");
@@ -60,11 +81,12 @@ ReactDOM.render((
       <Route path="dashboard" components={{ content: Dashboard, sidebar: DashboardSidebar }} />
       <Route path="settings/:account" components={{ content: Settings, sidebar: MainSidebar }} onEnter={checkAccountExistence} />
       <Route path="chat/:account" components={{ content: Chat, sidebar: MainSidebar }} onEnter={checkAccountExistence}>
+        <IndexRoute components={{content: Lobby, sidebar: ContactList }} />
         <Route path="lobby" components={{content: Lobby, sidebar: ContactList }} />
         <Route path="create" components={{content: RoomCreate, sidebar: ContactList }} />
       </Route>
-      <Route path="chat/:account/messages" components={{content: Room, sidebar: MainSidebar }}>
-        <Route path=":roomSlug" component={RoomMessagesContainer} />
+      <Route path="chat/:account/messages" components={{content: Room, sidebar: MainSidebar }} onEnter={checkAccountExistence}>
+        <Route path=":roomSlug" component={RoomMessagesContainer} onEnter={connectRooms} />
       </Route>
     </Route>
   </Router>

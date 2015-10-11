@@ -17,7 +17,11 @@ const RoomRecord = Immutable.Record({
   adminId: undefined,
   usersId: [],
   lastMsgUserId: undefined,
-  starred: false
+
+  /* UI related properties */
+  starred: false,
+  active: false,
+  connected: false
 });
 
 export default class Room extends RoomRecord {

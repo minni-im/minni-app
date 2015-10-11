@@ -1,7 +1,9 @@
+import extend from "deep-extend";
 import recorder from "tape-recorder";
 
 import { requireLogin } from "../middlewares/auth";
 import { requireValidAccount } from "../middlewares/account";
+import { requireValidRoom } from "../middlewares/room";
 
 export default (app) => {
 
@@ -17,7 +19,67 @@ export default (app) => {
       req.io.route("rooms:create");
     });
 
+  app.post("/api/rooms/:roomId/star", requireLogin, requireValidRoom, (req) => {
+    req.io.route("rooms:star");
+  });
+
+  app.post("/api/rooms/:roomId/unstar", requireLogin, requireValidRoom, (req) => {
+    req.io.route("rooms:unstar");
+  });
+
   app.io.route("rooms", {
+    star(req, res) {
+      const { room, user } = req;
+      let { settings } = user;
+      if (!settings.starred) {
+        settings.starred = { rooms: [] };
+      }
+      let { rooms } = user.settings.starred;
+
+      if (rooms.indexOf(room.id) === -1) {
+        rooms.push(room.id);
+      }
+
+      user.save().then(newUser => {
+        res.json({
+          ok: true,
+          message: `Room '${room.name}' has been starred`
+        });
+      }, error => {
+        res.json({
+          ok: false,
+          message: `We did not managed to star the room. Please try again later.`,
+          errors: error
+        });
+      });
+    },
+
+    unstar(req, res) {
+      const { room, user } = req;
+      let { rooms } = user.settings.starred;
+      if (!rooms || (rooms && rooms.indexOf(room.id) === -1)) {
+        return res.json({
+          ok: true,
+          message: "Nothing to be done."
+        });
+      }
+      
+      rooms = rooms.splice(rooms.indexOf(room.id), 1);
+
+      user.save().then(newUser => {
+        res.json({
+          ok: true,
+          message: `Room '${room.name}' has been unstarred`
+        });
+      }, error => {
+        res.json({
+          ok: false,
+          message: `We did not managed to unstar the room. Please try again later.`,
+          errors: error
+        });
+      });
+    },
+
     list(req, res) {
       const Room = recorder.model("Room");
       Room.where("accountId", { key: req.params.accountId })

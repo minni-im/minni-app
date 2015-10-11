@@ -14,6 +14,10 @@ let UserSchema = new recorder.Schema({
   providers: {
     type: Object,
     default: {}
+  },
+  settings: {
+    type: Object,
+    default: {}
   }
 });
 
@@ -59,7 +63,9 @@ UserSchema
       nickname: this.nickname,
       fullname: this.fullname,
       picture: this.avatar(160),
-      email: this.email
+      email: this.email,
+      providers: this.providers,
+      settings: this.settings
     };
   })
   .method("authenticate", function authenticate(password) {

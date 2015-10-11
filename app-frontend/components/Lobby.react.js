@@ -5,27 +5,28 @@ import classnames from "classnames";
 
 import { SettingsIcon, FavoriteIcon } from "../utils/Icons";
 
+import { dispatch } from "../dispatchers/Dispatcher";
+
 import AccountStore from "../stores/AccountStore";
 import RoomStore from "../stores/RoomStore";
 
 
-
 class Lobby extends React.Component {
   static getStores() {
-    return [ AccountStore, RoomStore ];
+    return [ RoomStore, AccountStore ];
   }
 
-  static calculateState(prevState, prevProps) {
+  static calculateState() {
     return {
-      rooms: RoomStore.getForAccount(prevProps.currentAccount.id),
-      accounts: AccountStore.getState()
+      account: AccountStore.getCurrentAccount(),
+      rooms: RoomStore.getCurrentRooms().sortBy(room => !room.starred)
     };
   }
 
   render() {
-    const account = this.props.currentAccount;
+    const { account } = this.state;
     let rooms = [], allRoomSlugs = [];
-    this.state.rooms.toIndexedSeq().forEach(room => {
+    this.state.rooms.forEach(room => {
       allRoomSlugs.push(room.slug);
       let classNames = classnames("room", {
         "room-favorite": room.starred
@@ -33,16 +34,20 @@ class Lobby extends React.Component {
 
       let settings;
       if (this.props.currentUser.id === room.adminId) {
-        settings = <div className="room--icon icon">
+        settings = <div className="room--icon icon icon--show-on-hover">
           <SettingsIcon />
         </div>;
       }
-      rooms.push(<Link to={`/chat/${account.name}/messages/${room.slug}`} className={classNames} key={room.id}>
+      let title = room.name;
+      if (__DEV__) {
+        title += ` - ${room.id}`;
+      }
+      rooms.push(<Link to={`/chat/${account.name}/messages/${room.slug}`} className={classNames} key={room.id} title={title}>
         <div className="room--name">{room.name}</div>
         <div className="room--topic">{room.topic}</div>
         {settings}
         <div className="room--icon icon icon--favorite">
-          <FavoriteIcon />
+          <FavoriteIcon onClick={this._onRoomStarClick.bind(this, room.id, room.starred)}/>
         </div>
       </Link>);
     });
@@ -51,11 +56,13 @@ class Lobby extends React.Component {
       <header>
         <div className="header-info">
           <h2>Lobby</h2>
-          <h3>{ account.displayName }</h3>
+          <h3>{ account.description }</h3>
         </div>
         <div className="actions">
           <Link to={`/settings/${account.name}`} title="Settings"
-            className="icon" activeClassName="icon--active"><SettingsIcon /></Link>
+            className="icon" activeClassName="icon--active">
+            <SettingsIcon />
+          </Link>
         </div>
       </header>
       <section className="panel">
@@ -72,7 +79,16 @@ class Lobby extends React.Component {
       </section>
     </section>;
   }
+
+  _onRoomStarClick(roomId, starred, event) {
+    event.preventDefault();
+    dispatch({
+      type: starred ? "room/unstar" : "room/star",
+      roomId: roomId
+    });
+  }
+
 }
 
-const LobbyContainer = Container.create(Lobby, { withProps: true });
+const LobbyContainer = Container.create(Lobby);
 export default LobbyContainer;

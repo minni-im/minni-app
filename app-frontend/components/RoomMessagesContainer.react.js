@@ -26,6 +26,9 @@ class RoomMessagesContainer extends React.Component {
     return <main className="room">
       {this.state.slugs.map(slug => {
         const room = this.state.rooms[slug];
+        if (!room) {
+          return <div key="loading">Loading...</div>;
+        }
         return <RoomMessages key={room.id} room={room} />;
       })}
     </main>;

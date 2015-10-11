@@ -2,13 +2,16 @@ import Immutable from "immutable";
 
 import { dispatch } from "../dispatchers/Dispatcher";
 
-import { capitalize } from "../utils/Text";
+import { capitalize, slugify } from "../utils/Text";
 
 const AccountRecord = Immutable.Record({
   id: undefined,
   name: undefined,
   description: undefined,
-  usersId: []
+  usersId: [],
+
+  /* UI related properties */
+  active: false
 });
 
 export default class Account extends AccountRecord {
@@ -18,6 +21,10 @@ export default class Account extends AccountRecord {
 
   isUserAdmin(userId) {
     return userId === this.adminId;
+  }
+
+  get slug() {
+    return slugify(this.name);
   }
 
   /* STATIC METHODS */

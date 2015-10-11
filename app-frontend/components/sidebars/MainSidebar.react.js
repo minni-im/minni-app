@@ -5,27 +5,31 @@ import { Container } from "flux/utils";
 import classnames from "classnames";
 
 import AccountStore from "../../stores/AccountStore";
+import ConnectedRoomStore from "../../stores/ConnectedRoomStore";
 
-import { LobbyIcon } from "../../utils/Icons";
+
+import { LobbyIcon, RoomIcons } from "../../utils/Icons";
 import UserInfoPanel from "../UserInfoPanel.react";
 
 class MainSidebar extends React.Component {
   static getStores() {
-    return [ AccountStore ];
+    return [ AccountStore, ConnectedRoomStore ];
   }
 
   static calculateState(/* prevState */) {
+    const account = AccountStore.getCurrentAccount();
     return {
-      accounts: AccountStore.getState()
+      accountsSize: AccountStore.getState().size,
+      account: account,
+      rooms: ConnectedRoomStore.getRooms(account.slug)
     };
   }
 
   render() {
-    const { children, params } = this.props;
-    const account = this.state.accounts.get(params.account);
+    const { accountsSize, account, rooms } = this.state;
 
     let logo;
-    if (this.state.accounts.size === 1) {
+    if (accountsSize === 1) {
       logo = <h1>{Minni.name}</h1>;
     } else {
       logo = <h2 className="account">{account.displayName}</h2>;
@@ -41,6 +45,19 @@ class MainSidebar extends React.Component {
           </span>
           <span className="name">Lobby</span>
         </Link>
+        {rooms.sortBy(room => {
+          return room.name
+        }).map(room => {
+          if (!room) {
+            return <div></div>;
+          }
+          return <Link key={room.id} activeClassName="selected" to={`/chat/${account.slug}/messages/${room.slug}`}>
+            <span className="icon">
+                <RoomIcons.RoomPublicIcon />
+            </span>
+            <span className="name">{room.name}</span>
+          </Link>;
+        })}
       </nav>
       <UserInfoPanel />
     </header>;

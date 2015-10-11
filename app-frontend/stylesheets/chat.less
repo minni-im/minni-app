@@ -128,6 +128,15 @@ body.chat {
             border-right: 10px solid @background-light;
             margin-top: -10px;
           }
+
+          svg {
+            .background {
+              fill: @white;
+            }
+            .sprite {
+              fill: @dark-blue;
+            }
+          }
         }
 
         &.selected, &.selected:not(.lobby):hover {
@@ -196,6 +205,9 @@ body.chat {
           .actions {
             align-self: center;
             margin-right: 5px;
+            .button {
+              margin-left: 5px;
+            }
           }
         }
       }
@@ -218,7 +230,29 @@ body.chat {
           overflow: hidden;
           white-space: nowrap;
           text-transform: capitalize;
+
+          .icon {
+            cursor: pointer;
+            vertical-align: middle;
+            margin-left: 5px;
+            svg {
+              .square(24px);
+            }
+
+            &.icon--favorite {
+              svg {
+                fill: @gray-lighter;
+              }
+
+              &:hover {
+                svg {
+                  fill: gold;
+                }
+              }
+            }
+          }
         }
+
 
         h2 {
           font-size: 28px;
@@ -337,12 +371,16 @@ header .user-info {
           fill: @gray-light;
           vertical-align: middle;
         }
+
+        &.icon--show-on-hover {
+          display: none;
+        }
       }
 
       &.room-favorite {
-        .room--icon {
+        .icon--favorite {
           svg {
-            fill: gold;
+            fill: gold !important;
           }
         }
       }
@@ -360,6 +398,10 @@ header .user-info {
             fill: @gray-dark;
           }
 
+          &.icon--show-on-hover {
+            display: block;
+          }
+
           &:hover {
             svg {
               fill: @background-light;
@@ -374,7 +416,6 @@ header .user-info {
         }
       }
     }
-
 
   }
 }
@@ -524,5 +565,13 @@ header .user-info {
 .room {
   > section + section {
     border-left: 1px solid @gray-light;
+  }
+
+  .room--favorite {
+    .icon--favorite {
+      svg {
+        fill: gold !important;
+      }
+    }
   }
 }
