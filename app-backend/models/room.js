@@ -40,6 +40,7 @@ RoomSchema.method("toAPI", function toAPI(admin = false) {
     id: this.id,
     name: this.name,
     topic: this.topic,
+    type: this.type,
     accountId: this.accountId,
     adminId: this.adminId,
     usersId: this.usersId,

@@ -20,8 +20,8 @@ const RoomRecord = Immutable.Record({
 
   /* UI related properties */
   starred: false,
-  active: false,
-  connected: false
+  active: false, // when the associated account is active
+  connected: false // when a user joins the room
 });
 
 export default class Room extends RoomRecord {

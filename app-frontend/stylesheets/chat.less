@@ -91,7 +91,7 @@ body.chat {
       overflow-x: hidden;
 
       > a {
-        flex: 0 0 50px;
+        flex: 0;
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
@@ -108,6 +108,24 @@ body.chat {
         .name {
           flex: 1;
           .text-overflow;
+        }
+
+        &.room--starred {
+          .icon {
+            position: relative;
+
+            &:after {
+              content: "★";
+              .square(12px);
+              position: absolute;
+              bottom: 3px;
+              right: 0px;
+
+              font-size: 14px;
+              line-height: 14px;
+              color: gold;
+            }
+          }
         }
 
         &.selected.lobby {
@@ -129,18 +147,18 @@ body.chat {
             margin-top: -10px;
           }
 
-          svg {
-            .background {
-              fill: @white;
-            }
-            .sprite {
-              fill: @dark-blue;
-            }
-          }
+          // svg {
+          //   .background {
+          //     fill: @white;
+          //   }
+          //   .sprite {
+          //     fill: @medium-blue;
+          //   }
+          // }
         }
 
         &.selected, &.selected:not(.lobby):hover {
-          background-color: @medium-blue;
+          background-color: @dark-blue;
         }
 
         &:hover {
