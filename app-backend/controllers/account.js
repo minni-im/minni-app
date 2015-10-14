@@ -4,7 +4,6 @@ import { requireLogin, requireLoginRedirect } from "../middlewares/auth";
 import { requireProfileInfoRedirect } from "../middlewares/profile";
 import { requireValidAccount } from "../middlewares/account";
 
-
 function sanitizeName(name) {
   return name.toLowerCase()
     .replace(/[^a-z0-9 -]/g, " ")
@@ -129,25 +128,39 @@ export default (app) => {
       const Account = recorder.model("Account");
       const { user } = req;
 
+      function genericFail(error) {
+        return res.json({
+          ok: false,
+          message: `Creation of new account failed.`,
+          errors: error
+        });
+      }
+
       let account = new Account({
         name: name,
         description: description,
         adminId: user.id,
         usersId: [ user.id ]
       });
+
       account.save().then(savedAccount => {
-        return res.status(201).json({
-          ok: true,
-          message: `Account '${name}' succesfully created.`,
-          account: savedAccount.toAPI(true)
+        const Room = recorder.model("Room");
+        let room = new Room({
+          name: "The General Room",
+          topic: "This is room is for team-wide communication. All team members can access this room.",
+          adminId: user.id,
+          accountId: savedAccount.id
         });
-      }, error => {
-        return res.json({
-          ok: false,
-          message: `Creation of new account failed.`,
-          errors: error
-        });
-      });
+
+        room.save().then(savedRoom => {
+          return res.status(201).json({
+            ok: true,
+            message: `Account '${name}' succesfully created.`,
+            account: savedAccount.toAPI(true),
+            room: savedRoom.toAPI(true)
+          });
+        }, genericFail);
+      }, genericFail);
     },
 
     update(req, res) {

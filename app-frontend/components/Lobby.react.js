@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { Container } from "flux/utils";
 import classnames from "classnames";
 
-import { SettingsIcon, FavoriteIcon } from "../utils/Icons";
+import { SettingsIcon, FavoriteIcon } from "../utils/IconsUtils";
 
 import { dispatch } from "../dispatchers/Dispatcher";
 

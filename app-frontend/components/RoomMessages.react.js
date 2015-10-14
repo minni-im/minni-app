@@ -1,6 +1,6 @@
 import React from "react";
 import classnames from "classnames";
-import { FavoriteIcon } from "../utils/Icons";
+import { FavoriteIcon } from "../utils/IconsUtils";
 
 export default class RoomMessages extends React.Component {
   render() {

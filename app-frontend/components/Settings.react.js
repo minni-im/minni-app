@@ -1,6 +1,6 @@
 import React from "react";
 
-import { camelize } from "../utils/Text";
+import { camelize } from "../utils/TextUtils";
 
 class Settings extends React.Component {
   render() {

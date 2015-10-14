@@ -8,7 +8,7 @@ import AccountStore from "../../stores/AccountStore";
 import ConnectedRoomStore from "../../stores/ConnectedRoomStore";
 
 
-import { LobbyIcon, RoomIcons } from "../../utils/Icons";
+import { LobbyIcon, RoomIcons } from "../../utils/IconsUtils";
 import UserInfoPanel from "../UserInfoPanel.react";
 
 class MainSidebar extends React.Component {

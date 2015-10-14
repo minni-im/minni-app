@@ -4,14 +4,18 @@ import { MapStore } from "flux/utils";
 import Dispatcher from "../dispatchers/Dispatcher";
 import { dispatch } from "../dispatchers/Dispatcher";
 
-import { slugify } from "../utils/Text";
+import { slugify } from "../utils/TextUtils";
 
 import Account from "../models/Account";
+
+import Logger from "../libs/Logger";
+const logger = Logger.create("AccountStore");
 
 class AccountStore extends MapStore {
   getInitialState() {
     let state = Immutable.Map();
 
+    logger.info("loading initial accounts");
     let dataHolder = document.getElementById("data-holder");
     let accounts = JSON.parse(dataHolder.dataset.accounts);
 
@@ -20,6 +24,7 @@ class AccountStore extends MapStore {
     }
 
     accounts.forEach(account => {
+        logger.info(slugify(account.name), account.id);
         state = state.set(slugify(account.name), new Account(account));
         Account.getUsers(account.id);
         Account.getRooms(account.id);

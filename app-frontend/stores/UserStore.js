@@ -4,11 +4,15 @@ import { MapStore } from "flux/utils";
 import Dispatcher from "../dispatchers/Dispatcher";
 import User from "../models/User";
 
+import Logger from "../libs/Logger";
+const logger = Logger.create("UserStore");
+
 class UserStore extends MapStore {
 
   getInitialState() {
     let state = Immutable.Map();
 
+    logger.info("loading connected user");
     let dataHolder = document.getElementById("data-holder");
     let user = JSON.parse(dataHolder.dataset.user);
     if (!__DEV__) {
@@ -18,7 +22,7 @@ class UserStore extends MapStore {
     let connectedUser = new User(user);
     this.connectedUserId = user.id;
     state = state.set(this.connectedUserId, connectedUser);
-    
+
     return state;
   }
 

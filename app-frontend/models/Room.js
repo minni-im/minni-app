@@ -1,6 +1,6 @@
 import Immutable from "immutable";
 
-import { slugify } from "../utils/Text";
+import { slugify } from "../utils/TextUtils";
 
 const TYPE = {
   DELETED: 0,

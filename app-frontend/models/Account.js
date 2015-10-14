@@ -2,7 +2,7 @@ import Immutable from "immutable";
 
 import { dispatch } from "../dispatchers/Dispatcher";
 
-import { capitalize, slugify } from "../utils/Text";
+import { capitalize, slugify } from "../utils/TextUtils";
 
 const AccountRecord = Immutable.Record({
   id: undefined,
