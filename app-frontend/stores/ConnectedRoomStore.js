@@ -1,83 +1,69 @@
 import Immutable from "immutable";
-import { MapStore } from "flux/utils";
+import { MapStore } from "../libs/flux/Store";
 
 import Dispatcher from "../dispatchers/Dispatcher";
 import { dispatch } from "../dispatchers/Dispatcher";
 
+import AccountStore from "./AccountStore";
+import SelectedAccountStore from "./SelectedAccountStore";
 import RoomStore from "./RoomStore";
+
+import Storage from "../libs/Storage";
+
+import Logger from "../libs/Logger";
+const logger = Logger.create("ConnectedRoomStore");
+
 const CONNECTED_ROOMS = "connectedRooms";
 
-function joinRoom(state, accountSlug, roomId) {
+function handleNewAccount(state, { account }) {
+  return state.set(account, Immutable.Set());
+}
+
+function handleRoomJoin(state, { accountSlug, roomSlugs }) {
   let connectedRooms = state.get(accountSlug) || Immutable.Set();
-  connectedRooms = connectedRooms.add(RoomStore.get(roomId));
-  return state.set(accountSlug, connectedRooms);
+  state = state.set(accountSlug, roomSlugs.reduce((set, roomSlug) => {
+    return set.add(roomSlug);
+  }, connectedRooms));
+  Storage.set(CONNECTED_ROOMS, state.toJS());
+  return state;
 }
 
-function saveToLocalStorage(accountSlug, roomSlug, remove = false) {
-  let list = JSON.parse(localStorage.getItem(CONNECTED_ROOMS)) || {};
-  let accountList = list[accountSlug] || (list[accountSlug] = []);
-  if (remove) {
-    accountList.splice(accountList.indexOf(roomSlug), 1);
-  } else {
-    if (accountList.indexOf(roomSlug) === -1) {
-      accountList.push(roomSlug);
-    }
-  }
-  localStorage.setItem(CONNECTED_ROOMS, JSON.stringify(list));
+function handleRoomLeave(state, { accountSlug, roomId }) {
+  let connectedRooms = state.get(accountSlug);
+  state = state.setIn(accountSlug, connectedRooms.remove(roomId));
+  Storage.set(CONNECTED_ROOMS, state.toJS());
+  return state;
 }
 
-function loadFromLocalStorage() {
-  let list = JSON.parse(localStorage.getItem(CONNECTED_ROOMS));
-  for (let accountSlug in list) {
-    list[accountSlug].forEach(roomSlug => {
-      this._state = joinRoom(this.getState(), accountSlug, roomSlug);
-    });
+function handleLoadFromStorage(state) {
+  let list = Storage.get(CONNECTED_ROOMS);
+  if (!list) {
+    return state;
   }
+  logger.info("Some connected rooms to load", JSON.stringify(list));
+  Object.keys(list).forEach(accountSlug => {
+    state = handleRoomJoin(state, { accountSlug, roomSlugs: list[accountSlug] });
+  });
+  return state;
 }
 
 class ConnectedRoomStore extends MapStore {
-  getInitialState() {
-    setTimeout(() => {
-      dispatch({
-        type: "connectedroom/init"
-      });
-    }, 0);
-    return Immutable.Map();
-  }
+  initialize() {
+    this.waitFor(AccountStore, SelectedAccountStore, RoomStore);
+    this.addAction("account/new", handleNewAccount);
+    this.addAction("room/join", handleRoomJoin);
+    this.addAction("room/leave", handleRoomLeave);
+    this.addAction("connectedrooms/load", handleLoadFromStorage);
 
-  reduce(state, action) {
-    switch (action.type) {
-      case "connectedroom/init":
-        let list = JSON.parse(localStorage.getItem(CONNECTED_ROOMS));
-        for (let accountSlug in list) {
-          list[accountSlug].forEach(roomSlug => {
-            state = joinRoom(state, accountSlug, roomSlug);
-          });
-        }
-        return state;
-
-      case "account/new":
-        return state.set(action.account, Immutable.Set());
-
-      case "room/join":
-        this.getDispatcher().waitFor([RoomStore.getDispatchToken()]);
-
-        action.roomIds.forEach(roomId => {
-          saveToLocalStorage(action.accountSlug, roomId);
-          state = joinRoom(state, action.accountSlug, roomId);
-        });
-        return state;
-
-      case "room/leave":
-        return state;
-
-      default:
-        return state;
-    }
+    logger.info("Looking to localStorage for connected rooms");
+    dispatch({
+      type: "connectedrooms/load"
+    });
   }
 
   getRooms(accountSlug) {
-    return this.getState().get(accountSlug) || Immutable.Set();
+    const roomSlugs = this.get(accountSlug) || Immutable.Set();
+    return RoomStore.getRooms(roomSlugs.toJS());
   }
 }
 

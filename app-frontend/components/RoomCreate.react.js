@@ -102,7 +102,7 @@ class RoomCreate extends React.Component {
         const room = payload.room;
         dispatch({
           type: "room/add",
-          payload: room
+          room
         });
         history.pushState({ }, `/chat/${this.props.currentAccount.name}/lobby`);
       } else {

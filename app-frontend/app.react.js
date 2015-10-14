@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { Router, Route, IndexRoute } from "react-router";
 import history from "./history";
 
+import Flux from "./libs/flux/Store";
 import { dispatch } from "./dispatchers/Dispatcher";
 
 import Minni from "./components/Minni.react";
@@ -67,11 +68,12 @@ function connectRooms(meta, replaceState) {
   dispatch({
     type: "room/join",
     accountSlug: meta.params.account,
-    roomIds: meta.params.roomSlug.split(",")
+    roomSlugs: meta.params.roomSlug.split(",")
   });
 }
 
 const appHolder = document.querySelector("#minni");
+Flux.initialize();
 
 ReactDOM.render((
   <Router history={history}>

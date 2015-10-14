@@ -3,19 +3,22 @@ import { Container } from "flux/utils";
 
 import AccountStore from "../stores/AccountStore";
 import UserStore from "../stores/UserStore";
+import SelectedAccountStore from "../stores/SelectedAccountStore";
 
 import AccountSwitcher from "./sidebars/AccountSwitcher.react";
 
 class MinniPanel extends React.Component {
 
   static getStores() {
-    return [ AccountStore ];
+    return [ AccountStore, SelectedAccountStore ];
   }
 
   static calculateState() {
+    const accounts = AccountStore.getState();
     return {
       currentUser: UserStore.getConnectedUser(),
-      accounts: AccountStore.getState()
+      accounts: accounts,
+      currentAccount: SelectedAccountStore.getAccount()
     };
   }
 
@@ -28,7 +31,7 @@ class MinniPanel extends React.Component {
       {children ? children.sidebar : false}
       {React.cloneElement(children.content, {
         currentUser: this.state.currentUser,
-        currentAccount: this.state.accounts.get(this.props.params.account),
+        currentAccount: this.state.currentAccount,
         accounts: this.state.accounts
       })}
     </div>;

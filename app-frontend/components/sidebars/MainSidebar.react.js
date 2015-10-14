@@ -5,19 +5,24 @@ import { Container } from "flux/utils";
 import classnames from "classnames";
 
 import AccountStore from "../../stores/AccountStore";
+import SelectedAccountStore from "../../stores/SelectedAccountStore";
 import ConnectedRoomStore from "../../stores/ConnectedRoomStore";
+import RoomStore from "../../stores/RoomStore";
 
 
 import { LobbyIcon, RoomIcons } from "../../utils/IconsUtils";
 import UserInfoPanel from "../UserInfoPanel.react";
 
+import Logger from "../../libs/Logger";
+const logger = Logger.create("MainSideBar");
+
 class MainSidebar extends React.Component {
   static getStores() {
-    return [ AccountStore, ConnectedRoomStore ];
+    return [ AccountStore, SelectedAccountStore, RoomStore, ConnectedRoomStore ];
   }
 
-  static calculateState(/* prevState */) {
-    const account = AccountStore.getCurrentAccount();
+  static calculateState() {
+    const account = SelectedAccountStore.getAccount();
     return {
       accountsSize: AccountStore.getState().size,
       account: account,
@@ -27,7 +32,6 @@ class MainSidebar extends React.Component {
 
   render() {
     const { accountsSize, account, rooms } = this.state;
-
     let logo;
     if (accountsSize === 1) {
       logo = <h1>{Minni.name}</h1>;
@@ -40,18 +44,17 @@ class MainSidebar extends React.Component {
       <nav>
         <Link to={`/chat/${account.name}/lobby`}
           className="lobby" activeClassName="selected">
-          <span className="icon">
-            <LobbyIcon />
-          </span>
           <span className="name">Lobby</span>
         </Link>
-        {rooms.sortBy(room => {
-          return room.name
+        {rooms.size > 0 ? <a className="lobby">Rooms</a> : false}
+        {rooms.toSeq().sortBy(room => {
+          return room.starred ? "a" : "z" + "-" + room.name;
         }).map(room => {
-          if (!room) {
-            return <div></div>;
-          }
-          return <Link key={room.id} activeClassName="selected" to={`/chat/${account.slug}/messages/${room.slug}`}>
+          return <Link key={room.id}
+            className={classnames({
+              "room--starred": room.starred
+            })}
+            activeClassName="selected" to={`/chat/${account.slug}/messages/${room.slug}`}>
             <span className="icon">
                 <RoomIcons.RoomPublicIcon />
             </span>
@@ -64,5 +67,5 @@ class MainSidebar extends React.Component {
   }
 }
 
-const MainSidebarContainer = Container.create(MainSidebar);
-export default MainSidebarContainer;
+const container = Container.create(MainSidebar);
+export default container;

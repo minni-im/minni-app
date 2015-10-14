@@ -1,3 +1,6 @@
+import Logger from "../libs/Logger";
+const logger = Logger.create("TextUtils");
+
 export function slugify(text) {
   return text.toLowerCase()
       .trim()

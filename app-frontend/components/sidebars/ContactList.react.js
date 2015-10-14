@@ -2,6 +2,9 @@ import React from "react";
 
 import UserListContainer from "../UserListContainer.react";
 
+import Logger from "../../libs/Logger";
+const logger = Logger.create("ContactList");
+
 export default class ContactList extends React.Component {
   constructor(props) {
     super(props);

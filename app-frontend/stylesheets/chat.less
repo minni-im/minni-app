@@ -64,7 +64,7 @@ body.chat {
 
     h1 {
       height: @main-header-height;
-      margin: 10px 0 10px;
+      margin: 15px 0 15px;
       text-indent: -9999px;
       background: url(/images/logo.png) center center no-repeat;
       background-size: 64px 64px;
@@ -72,7 +72,7 @@ body.chat {
 
     h2.account {
       font-weight: 400;
-      margin: 10px;
+      margin: 10px 20px;
       text-transform: capitalize;
     }
 
@@ -91,17 +91,23 @@ body.chat {
       overflow-x: hidden;
 
       > a {
-        flex: 0;
+        flex: 0 0 40px;
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
 
+        font-size: 13px;
+
+        border-left: 4px solid transparent;
+        opacity: .5;
+        transition: opacity 250ms;
+
         .icon {
-          .square(28px);
-          margin: 5px;
+          .square(24px);
+          margin: 5px 2px 5px 12px;
           svg {
-            .square(28px);
-            fill: @white;
+            .square(24px);
+            fill: @gray-light;
           }
         }
 
@@ -116,53 +122,40 @@ body.chat {
 
             &:after {
               content: "★";
-              .square(12px);
+              .square(8px);
               position: absolute;
               bottom: 3px;
               right: 0px;
 
-              font-size: 14px;
-              line-height: 14px;
+              font-size: 9px;
+              line-height: 9px;
               color: gold;
             }
           }
         }
 
-        &.selected.lobby {
-          background-color: fade(@black, 30%);
-        }
-
         &.selected {
-          position: relative;
-          &:after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            right: -1px;
-            width: 0;
-            height: 0;
-            border-top: 10px solid transparent;
-            border-bottom: 10px solid transparent;
-            border-right: 10px solid @background-light;
-            margin-top: -10px;
-          }
-
-          // svg {
-          //   .background {
-          //     fill: @white;
-          //   }
-          //   .sprite {
-          //     fill: @medium-blue;
-          //   }
-          // }
+          background-color: fade(@black, 15%);
+          border-left-color: @electric-blue;
+          opacity: 1;
         }
 
-        &.selected, &.selected:not(.lobby):hover {
-          background-color: @dark-blue;
+        &.selected:hover {
+          opacity: 1;
+        }
+
+        &.lobby {
+          letter-spacing: .1em;
+          border-left: 0px;
+          padding: 0 20px;
+          text-transform: uppercase;
+          margin-bottom: 5px;
+          max-height: 2em;
+
         }
 
         &:hover {
-          background-color: rgba(0, 0, 0, .1);
+          opacity: 0.8;
         }
       }
     }
@@ -362,6 +355,23 @@ header .user-info {
       margin: auto 0;
     }
   }
+  // > section {
+  //   position: relative;
+  //   z-index: 0;
+  //   &:after {
+  //     content: "";
+  //     position: absolute;
+  //     top: 0;
+  //     left: 0;
+  //     right: 0;
+  //     bottom: 0;
+  //     z-index: -1;
+  //     background: url(/images/logo-color.png) 75% 75% no-repeat;
+  //     background-size: 100%;
+  //     opacity: 0.05;
+  //     filter: grayscale();
+  //   }
+  // }
 
   .rooms {
     .room {
@@ -380,6 +390,7 @@ header .user-info {
 
       .room--topic {
         flex: 1;
+        .text-overflow;
       }
 
       .room--icon {

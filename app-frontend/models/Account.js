@@ -39,7 +39,7 @@ export default class Account extends AccountRecord {
         const rooms = payload.rooms;
         dispatch({
           type: "rooms/add",
-          payload: rooms
+          rooms
         });
       }
     });
@@ -55,7 +55,7 @@ export default class Account extends AccountRecord {
         const users = payload.users;
         dispatch({
           type: "users/add",
-          payload: users
+          users
         });
       }
     });

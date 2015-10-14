@@ -5,6 +5,9 @@ import RoomMessages from "./RoomMessages.react";
 
 import RoomStore from "../stores/RoomStore";
 
+import Logger from "../libs/Logger";
+const logger = Logger.create("RoomMessagesContainer");
+
 class RoomMessagesContainer extends React.Component {
   static getStores() {
     return [ RoomStore ];
@@ -12,23 +15,14 @@ class RoomMessagesContainer extends React.Component {
 
   static calculateState(prevState, prevProps) {
     let roomSlugs = prevProps.params.roomSlug.split(",");
-    let rooms = {};
-    for (let roomSlug of roomSlugs) {
-      rooms[roomSlug] = RoomStore.get(roomSlug);
-    }
     return {
-      slugs: roomSlugs,
-      rooms
+      rooms: RoomStore.getRooms(roomSlugs)
     };
   }
 
   render() {
     return <main className="room">
-      {this.state.slugs.map(slug => {
-        const room = this.state.rooms[slug];
-        if (!room) {
-          return <div key="loading">Loading...</div>;
-        }
+      {this.state.rooms.map(room => {
         return <RoomMessages key={room.id} room={room} />;
       })}
     </main>;

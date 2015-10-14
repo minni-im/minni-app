@@ -1,26 +1,38 @@
-import { Store } from " flux/utils";
+import Immutable from "immutable";
+import { ReduceStore } from "../libs/flux/Store";
 
 import Dispatcher from "../dispatchers/Dispatcher";
-
 import AccountStore from "./AccountStore";
 
-let selectedAccountId = null;
+import Logger from "../libs/Logger";
+const logger = Logger.create("SelectedAccountStore");
 
-class SelectedAccountStore extends Store {
-  __onDispatch(action) {
-    this.waitFor([AccountStore.getDispatchToken()]);
-    switch (action.type) {
-      case "account/select":
-        if (action.accountId !== selectedAccountId) {
-          selectedAccountId = action.accountId;
-          this.__emitChange();
-        }
-        break;
-    }
+
+let _state = {
+  selectedAccountId: null
+};
+
+function handleAccountSelect(state, { account: {id} }) {
+  state = Immutable.Set([ id ]);
+  return state;
+}
+
+class SelectedAccountStore extends ReduceStore {
+  initialize() {
+    this.waitFor(AccountStore);
+    this.addAction("account/select", handleAccountSelect);
+  }
+
+  getInitialState() {
+    return Immutable.Set();
   }
 
   getAccountId() {
-    return selectedAccountId;
+    return this.getState().first();
+  }
+
+  getAccount() {
+    return AccountStore.getById(this.getState().first());
   }
 }
 

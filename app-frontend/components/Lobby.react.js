@@ -7,18 +7,18 @@ import { SettingsIcon, FavoriteIcon } from "../utils/IconsUtils";
 
 import { dispatch } from "../dispatchers/Dispatcher";
 
-import AccountStore from "../stores/AccountStore";
+import SelectedAccountStore from "../stores/SelectedAccountStore";
 import RoomStore from "../stores/RoomStore";
 
 
 class Lobby extends React.Component {
   static getStores() {
-    return [ RoomStore, AccountStore ];
+    return [ RoomStore, SelectedAccountStore ];
   }
 
   static calculateState() {
     return {
-      account: AccountStore.getCurrentAccount(),
+      account: SelectedAccountStore.getAccount(),
       rooms: RoomStore.getCurrentRooms().sortBy(room => !room.starred)
     };
   }

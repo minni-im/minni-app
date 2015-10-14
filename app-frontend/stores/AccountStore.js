@@ -1,5 +1,5 @@
 import Immutable from "immutable";
-import { MapStore } from "flux/utils";
+import { MapStore } from "../libs/flux/Store";
 
 import Dispatcher from "../dispatchers/Dispatcher";
 import { dispatch } from "../dispatchers/Dispatcher";
@@ -11,9 +11,15 @@ import Account from "../models/Account";
 import Logger from "../libs/Logger";
 const logger = Logger.create("AccountStore");
 
+function handleAccountAdd(state, { account }) {
+  let newAccount = new Account(account);
+  logger.info("New account", newAccount.slug, account.id);
+  return state.set(newAccount.slug, newAccount);
+}
+
 class AccountStore extends MapStore {
-  getInitialState() {
-    let state = Immutable.Map();
+  initialize() {
+    this.addAction("account/new", handleAccountAdd);
 
     logger.info("loading initial accounts");
     let dataHolder = document.getElementById("data-holder");
@@ -24,49 +30,29 @@ class AccountStore extends MapStore {
     }
 
     accounts.forEach(account => {
-        logger.info(slugify(account.name), account.id);
-        state = state.set(slugify(account.name), new Account(account));
-        Account.getUsers(account.id);
-        Account.getRooms(account.id);
+      dispatch({
+        type: "account/new",
+        account
+      });
+      Account.getUsers(account.id);
+      Account.getRooms(account.id);
     });
-
-    return state;
-  }
-
-  reduce(state, action) {
-    switch (action.type) {
-      case "account/new":
-        return addAccount(state, action.account);
-
-      case "account/select":
-        return state.map(account => {
-          return account.set("active", account.slug === action.account.name);
-        });
-
-      default:
-        return state;
-    }
   }
 
   hasNoAccount() {
     return this.getState().size === 0;
   }
 
-  get(accountName) {
-    accountName = slugify(accountName);
-    return this.getState().get(accountName);
+  getById(accountId) {
+    return this.getState()
+      .toSeq()
+      .filter(account => account.id === accountId)
+      .first();
   }
 
-  getCurrentAccount() {
-    return this.getState().find(account => {
-      return account.active;
-    });
+  getAccount(accountSlug) {
+    return this.get(accountSlug);
   }
-}
-
-function addAccount(state, accountPayload) {
-  let newAccount = new Account(accountPayload);
-  return state.set(newAccount.name, newAccount);
 }
 
 const instance = new AccountStore(Dispatcher);

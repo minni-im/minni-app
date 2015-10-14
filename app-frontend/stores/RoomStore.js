@@ -4,21 +4,20 @@ import { MapStore } from "flux/utils";
 import Dispatcher from "../dispatchers/Dispatcher";
 import Room from "../models/Room";
 
-import AccountStore from "../stores/AccountStore";
+import SelectedAccountStore from "../stores/SelectedAccountStore";
 import UserStore from "../stores/UserStore";
 
-class RoomStore extends MapStore {
-  getInitialState() {
-    return Immutable.Map();
-  }
+import Logger from "../libs/Logger";
+const logger = Logger.create("RoomStore");
 
+class RoomStore extends MapStore {
   reduce(state, action) {
     switch (action.type) {
       case "rooms/add":
-        return addRooms(state, action.payload);
+        return addRooms(state, action.rooms);
 
       case "room/add":
-        return addRoom(state, action.payload);
+        return addRoom(state, action.room);
 
       case "room/star":
         return state.setIn([action.roomId, "starred"], true);
@@ -27,19 +26,16 @@ class RoomStore extends MapStore {
           return state.setIn([action.roomId, "starred"], false);
 
       case "room/join":
-        action.roomIds.forEach(roomId => {
-          state = state.setIn([roomId, "connected"], true);
+        action.roomSlugs.forEach(roomSlug => {
+          state = state.setIn([roomSlug, "connected"], true);
         });
         return state;
 
       case "room/leave":
-        action.roomIds.forEach(roomId => {
-          state = state.setIn([roomId, "connected"], false);
-        });
-        return state;
+        return state.setIn([action.roomSlug, "connected"], false);
 
       case "account/select":
-        this.getDispatcher().waitFor([AccountStore.getDispatchToken()]);
+        this.getDispatcher().waitFor([SelectedAccountStore.getDispatchToken()]);
         return state.map(room => room.set("active", action.account.id === room.accountId));
 
       default:
@@ -51,29 +47,27 @@ class RoomStore extends MapStore {
     return this.getState().filter(room => room.active);
   }
 
-  get(roomSlug) {
-    return this.getState().find(room => {
-      return room.slug === roomSlug;
+  getRooms(roomSlugs) {
+    let rooms = this.getState().filter(room => {
+      return roomSlugs.indexOf(room.slug) !== -1;
     });
-  }
-
-  getPrivate() {
-    return this.getState().filter(room => room.private);
-  }
-
-  getPublic() {
-    return this.getState().filter(room => room.public);
+    return rooms;
   }
 }
 
 function addRoom(state, payload) {
-  const account = AccountStore.getCurrentAccount();
+  const account = SelectedAccountStore.getAccount();
   const user = UserStore.getConnectedUser();
 
   Object.assign(payload, {
-    active: payload.accountId === account.id,
     starred: user.settings.isRoomStarred(payload.id)
   });
+  if (account) {
+    Object.assign(payload, {
+      active: payload.accountId === account.id
+    });
+  }
+
   let room = new Room(payload);
   return state.set(room.id, room);
 }
