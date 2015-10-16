@@ -90,7 +90,7 @@ body.chat {
       overflow-y: auto;
       overflow-x: hidden;
 
-      > a {
+      a.room {
         flex: 0 0 40px;
         display: flex;
         flex-flow: row nowrap;
@@ -98,16 +98,16 @@ body.chat {
 
         font-size: 13px;
 
-        border-left: 4px solid transparent;
         opacity: .5;
         transition: opacity 250ms;
 
         .icon {
-          .square(24px);
+          .square(28px);
           margin: 5px 2px 5px 12px;
           svg {
-            .square(24px);
+            .square(28px);
             fill: @gray-light;
+            transition: fill 250ms;
           }
         }
 
@@ -116,47 +116,35 @@ body.chat {
           .text-overflow;
         }
 
-        &.room--starred {
-          .icon {
-            position: relative;
+        &:hover {
+          background-color: fade(@black, 15%);
+          opacity: 1;
 
-            &:after {
-              content: "★";
-              .square(8px);
-              position: absolute;
-              bottom: 3px;
-              right: 0px;
-
-              font-size: 9px;
-              line-height: 9px;
-              color: gold;
-            }
-          }
         }
 
         &.selected {
-          background-color: fade(@black, 15%);
-          border-left-color: @electric-blue;
+          background-color: @dark-blue;
           opacity: 1;
+          .icon svg {
+            fill: @white;
+          }
         }
+      }
 
-        &.selected:hover {
-          opacity: 1;
-        }
+      .lobby, .separator {
+        margin-bottom: 5px;
+      }
 
-        &.lobby {
-          letter-spacing: .1em;
-          border-left: 0px;
-          padding: 0 20px;
-          text-transform: uppercase;
-          margin-bottom: 5px;
-          max-height: 2em;
+      .separator {
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: @white;
+        margin: 10px 20px;
+        max-height: 2em;
+      }
 
-        }
-
-        &:hover {
-          opacity: 0.8;
-        }
+      .lobby.selected {
+        background-color: fade(@black, 15%);
       }
     }
 

@@ -62,6 +62,7 @@
     "jade": "^1.11.0",
     "js-yaml": "^3.3.1",
     "json-loader": "^0.5.2",
+    "keymirror": "^0.1.1",
     "lodash": "^3.10.0",
     "minni-auth-github": "minni-im/minni-auth-github",
     "moment": "^2.10.6",

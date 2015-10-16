@@ -1,6 +1,7 @@
 import Immutable from "immutable";
 import { MapStore } from "../libs/flux/Store";
 
+import { ActionTypes } from "../Constants";
 import Dispatcher from "../dispatchers/Dispatcher";
 import { dispatch } from "../dispatchers/Dispatcher";
 
@@ -11,6 +12,16 @@ import Account from "../models/Account";
 import Logger from "../libs/Logger";
 const logger = Logger.create("AccountStore");
 
+function handleConnectionOpen(state, { accounts }) {
+  state = state.clear().withMutations(map => {
+    accounts.forEach(rawAccount => {
+      const account = new Account(rawAccount);
+      map.set(account.slug, account);
+    });
+  });
+  return state;
+}
+
 function handleAccountAdd(state, { account }) {
   let newAccount = new Account(account);
   logger.info("New account", newAccount.slug, account.id);
@@ -19,24 +30,8 @@ function handleAccountAdd(state, { account }) {
 
 class AccountStore extends MapStore {
   initialize() {
+    this.addAction(ActionTypes.CONNECTION_OPEN, handleConnectionOpen);
     this.addAction("account/new", handleAccountAdd);
-
-    logger.info("loading initial accounts");
-    let dataHolder = document.getElementById("data-holder");
-    let accounts = JSON.parse(dataHolder.dataset.accounts);
-
-    if (!__DEV__) {
-      delete dataHolder.dataset.accounts;
-    }
-
-    accounts.forEach(account => {
-      dispatch({
-        type: "account/new",
-        account
-      });
-      Account.getUsers(account.id);
-      Account.getRooms(account.id);
-    });
   }
 
   hasNoAccount() {
