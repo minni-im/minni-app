@@ -1,30 +1,70 @@
 import React from "react";
 import classnames from "classnames";
+import { Container } from "flux/utils";
+
+import Platform from "../../utils/PlatformUtils";
+
+import SelectedAccountStore from "../../stores/SelectedAccountStore";
+import AccountStore from "../../stores/AccountStore";
+import UserStore from "../../stores/UserStore";
+
+import AccountRecord from "../../models/Account";
 
 import { Link } from "react-router";
 
-class AccountSwitcher extends React.Component {
+class Account extends React.Component {
   render() {
-    const { currentAccount, accounts } = this.props;
+    const { account, selected, keyboardShorcut } = this.props;
+    let keyboard = {};
+    if (keyboardShorcut) {
+      keyboard = {
+        "data-kbd-modifier": Platform.isOSX() ? "⌘" : "CTRL",
+        "data-kbd-index": this.props.index
+      };
+    }
+    return <Link to={`/chat/${account.name}/lobby`} key={account.name}
+      title={account.displayName}
+      className={classnames("account", {
+        "account-selected": selected
+      })} {...keyboard}>
+        <div>{account.name[0]}</div>
+    </Link>;
+  }
+}
+
+Account.defaultProps = {
+  selected: false,
+  keyboardShorcut: false
+};
+
+Account.propTypes = {
+  account: React.PropTypes.instanceOf(AccountRecord).isRequired,
+  index: React.PropTypes.number,
+  selected: React.PropTypes.bool,
+  keyboardShorcut: React.PropTypes.bool
+};
+
+class AccountSwitcher extends React.Component {
+  static getStores() {
+    return [ AccountStore, SelectedAccountStore ];
+  }
+
+  static calculateState() {
+    return {
+      selectedAccountSlug: SelectedAccountStore.getAccountSlug(),
+      accounts: AccountStore.getAccounts()
+    };
+  }
+
+  render() {
+    const { selectedAccountSlug, accounts } = this.state;
     if (!accounts || accounts.size <= 1) {
-      return false;
+      return <div className="account-switcher"></div>;
     }
 
-    let classNames = {
-      "account": true
-    };
-
-    let links = [];
-    accounts.toIndexedSeq().forEach((account, index) => {
-      links.push(<Link to={`/chat/${account.name}/lobby`} key={account.name}
-        title={account.displayName}
-        className={classnames(classNames, {
-          "account-selected": this.props.currentAccount === account.name
-        })}
-        data-kbd-modifier="⌘" data-kbd-index={index + 1}>
-          <div>{account.name[0]}</div>
-        </Link>
-      );
+    let links = accounts.toArray().map((account, index) => {
+      return <Account key={account.slug} account={account} keyboardShorcut={true}
+        selected={selectedAccountSlug === account.slug} index={index + 1}/>;
     });
 
     return <div className="account-switcher">
@@ -40,4 +80,5 @@ class AccountSwitcher extends React.Component {
   }
 }
 
-export default AccountSwitcher;
+const container = Container.create(AccountSwitcher);
+export default container;

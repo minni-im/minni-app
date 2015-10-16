@@ -26,12 +26,15 @@ class MainSidebar extends React.Component {
     return {
       accountsSize: AccountStore.getState().size,
       account: account,
-      rooms: ConnectedRoomStore.getRooms(account.slug)
+      rooms: ConnectedRoomStore.getRooms(account && account.slug || "----", [])
     };
   }
 
   render() {
     const { accountsSize, account, rooms } = this.state;
+    if (!account) {
+      return false;
+    }
     let logo;
     if (accountsSize === 1) {
       logo = <h1>{Minni.name}</h1>;

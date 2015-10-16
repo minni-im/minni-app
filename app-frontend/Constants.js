@@ -18,7 +18,11 @@ export default {
 
     LOAD_ROOMS: null,
     LOAD_ROOMS_SUCCESS: null,
-    LOAD_ROOMS_FAILURE: null
+    LOAD_ROOMS_FAILURE: null,
+
+    ACCOUNT_SELECT: null,
+    ROOM_SELECT: null,
+    ROOMS_SELECT: null
   }),
 
   EndPoints: {

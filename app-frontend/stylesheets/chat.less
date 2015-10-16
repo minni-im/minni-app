@@ -441,7 +441,9 @@ header .user-info {
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
-  width: @main-account-switcher-width;
+  //width: @main-account-switcher-width;
+  flex: 0 0 @main-account-switcher-width;
+  transition: flex-basis 500ms;
   background-color: darken(@background-dark, 1%);
   padding: 5px 0;
   border-right: 1px solid fade(@black, 30%);
@@ -483,12 +485,12 @@ header .user-info {
     align-self: center;
   }
 
-  a:not(.create):after {
+  a.account:not(.create):after {
     display: block;
-    content: attr(data-kbd-modifier) attr(data-kbd-index);
-    color: @color-light;
+    content: attr(data-kbd-modifier) "+" attr(data-kbd-index);
+    color: @gray-light;
     text-align: center;
-    font-size: 11px;
+    font-size: 10px;
     line-height: 14px;
     font-weight: 400;
   }

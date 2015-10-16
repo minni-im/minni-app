@@ -1,4 +1,4 @@
-import { MapStore } from "../libs/flux/Store";
+import { MapStore } from "../libs/Flux";
 
 import { ActionTypes } from "../Constants";
 
@@ -26,6 +26,7 @@ function handleUserAdd(state, { user }) {
 function handleConnectionOpen(state, { user }) {
   connectedUserId = user.id;
   state = state.set(user.id, new User(user));
+  logger.info("Registering logged in user", user.fullname);
   return state;
 }
 
@@ -45,7 +46,7 @@ class UserStore extends MapStore {
   }
 
   getConnectedUser() {
-    return this.get(this.connectedUserId);
+    return this.get(connectedUserId);
   }
 }
 

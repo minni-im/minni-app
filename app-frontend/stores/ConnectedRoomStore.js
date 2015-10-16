@@ -1,5 +1,5 @@
 import Immutable from "immutable";
-import { MapStore } from "../libs/flux/Store";
+import { MapStore } from "../libs/Flux";
 
 import Dispatcher from "../dispatchers/Dispatcher";
 import { dispatch } from "../dispatchers/Dispatcher";

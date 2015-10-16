@@ -1,38 +1,48 @@
 import Immutable from "immutable";
-import { ReduceStore } from "../libs/flux/Store";
+import { ReduceStore } from "../libs/Flux";
 
 import Dispatcher from "../dispatchers/Dispatcher";
 import AccountStore from "./AccountStore";
 
+import { ActionTypes } from "../Constants";
+
+import history from "../history";
+
 import Logger from "../libs/Logger";
 const logger = Logger.create("SelectedAccountStore");
 
+let selectedAccountSlug;
 
-let _state = {
-  selectedAccountId: null
-};
-
-function handleAccountSelect(state, { account: {id} }) {
-  state = Immutable.Set([ id ]);
-  return state;
+function handleAccountSelect(state, { accountSlug }) {
+  logger.info(`Selecting account from '${state}' => '${accountSlug}'`);
+  return accountSlug;
 }
 
 class SelectedAccountStore extends ReduceStore {
   initialize() {
     this.waitFor(AccountStore);
-    this.addAction("account/select", handleAccountSelect);
+    this.addAction(ActionTypes.ACCOUNT_SELECT, handleAccountSelect);
   }
 
   getInitialState() {
-    return Immutable.Set();
+    // Intentionnaly returning null here.
+    return null;
   }
 
-  getAccountId() {
-    return this.getState().first();
+  getState() {
+    return selectedAccountSlug;
+  }
+
+  areEquals(prev, next) {
+    return prev !== next;
   }
 
   getAccount() {
-    return AccountStore.getById(this.getState().first());
+    return AccountStore.getAccount(selectedAccountSlug);
+  }
+
+  getAccountSlug() {
+    return selectedAccountSlug;
   }
 }
 

@@ -3,19 +3,19 @@ import ReactDOM from "react-dom";
 import { Router, Route, IndexRoute } from "react-router";
 import history from "./history";
 
-import Flux from "./libs/flux/Store";
+import Flux from "./libs/Flux";
 import { dispatch } from "./dispatchers/Dispatcher";
 
 import Logger from "./libs/Logger";
 
-import DebugUtils from "./utils/DebugUtils";
+import { ActionTypes } from "./Constants";
 
 import Minni from "./components/Minni.react";
 
 import Welcome from "./components/sidebars/Welcome.react";
 import AccountCreate from "./components/AccountCreate.react";
 
-import Dashboard from "./components/Dashboard.react";
+import Dashboard from "./components/DashboardContainer.react";
 import DashboardSidebar from "./components/sidebars/Dashboard.react";
 
 import Settings from "./components/Settings.react";
@@ -29,66 +29,52 @@ import RoomCreate from "./components/RoomCreate.react";
 import Room from "./components/Room.react";
 import RoomMessagesContainer from "./components/RoomMessagesContainer.react";
 
-import AccountStore from "./stores/AccountStore";
+import ConnectionStore from "./stores/ConnectionStore";
 
-function bootstrap(meta, replaceState) {
-  if (AccountStore.hasNoAccount() && meta.location.pathname !== "/create") {
-    replaceState({ welcome: true }, "/create");
-  }
-}
-
-function checkAccountExistence(meta, replaceState) {
-  const accountName = meta.params.account;
-  const account = AccountStore.get(accountName);
-
-  if (account) {
-    dispatch({
-      type: "account/select",
-      account: {
-        id: account.id,
-        name: accountName
-      }
-    });
-  } else {
-    replaceState(null, "/404");
-  }
-}
-
-function connectRooms(meta, replaceState) {
+function selectAccount(meta, replaceState) {
+  const { accountSlug } = meta.params;
   dispatch({
-    type: "room/join",
-    accountSlug: meta.params.account,
-    roomSlugs: meta.params.roomSlug.split(",")
+    type: ActionTypes.ACCOUNT_SELECT,
+    accountSlug
   });
 }
 
-const appHolder = document.querySelector("#minni");
+function selectRooms(meta, replaceState) {
+  const { accountSlug } = meta.params;
+  let roomSlugs = meta.params.roomSlugs.split(",");
+  if (roomSlugs.length > 1) {
+    return dispatch({
+      type: ActionTypes.ROOMS_SELECT,
+      accountSlug,
+      roomSlugs
+    });
+  }
+  return dispatch({
+    type: ActionTypes.ROOM_SELECT,
+    accountSlug,
+    roomSlug: roomSlugs
+  });
+}
+
 Flux.initialize();
 
 ReactDOM.render((
   <Router history={history}>
-    <Route path="/" component={Minni} onEnter={bootstrap}>
+    <Route path="/" component={Minni} >
       <IndexRoute components={{ content: Dashboard, sidebar: DashboardSidebar }} />
       <Route path="create" components={{ content: AccountCreate, sidebar: Welcome }} />
       <Route path="dashboard" components={{ content: Dashboard, sidebar: DashboardSidebar }} />
-      <Route path="settings/:account" components={{ content: Settings, sidebar: MainSidebar }} onEnter={checkAccountExistence} />
+      <Route path="settings/:accountSlug" components={{ content: Settings, sidebar: MainSidebar }} onEnter={selectAccount} />
 
-      <Route path="chat/:account" components={{ content: Chat, sidebar: MainSidebar }} onEnter={checkAccountExistence}>
+      <Route path="chat/:accountSlug" components={{ content: Chat, sidebar: MainSidebar }} onEnter={selectAccount}>
         <IndexRoute components={{content: Lobby, sidebar: ContactList }} />
         <Route path="lobby" components={{content: Lobby, sidebar: ContactList }} />
         <Route path="create" components={{content: RoomCreate, sidebar: ContactList }} />
       </Route>
-      <Route path="chat/:account/messages" components={{content: Room, sidebar: MainSidebar }} onEnter={checkAccountExistence}>
-        <Route path=":roomSlug" component={RoomMessagesContainer} onEnter={connectRooms} />
+
+      <Route path="chat/:accountSlug/messages" components={{content: Room, sidebar: MainSidebar }} onEnter={selectAccount}>
+        <Route path=":roomSlugs" component={RoomMessagesContainer} onEnter={selectRooms} />
       </Route>
     </Route>
   </Router>
-), appHolder, () => {
-  if (__DEV__) {
-    appHolder.classList.add("fadein");
-  } else {
-    setTimeout(() => {
-      appHolder.classList.add("fadein");
-    }, 1000);
-  }
-});
+), document.querySelector("#minni"));

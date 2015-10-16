@@ -1,5 +1,5 @@
 import Immutable from "immutable";
-import { MapStore } from "../libs/flux/Store";
+import { MapStore } from "../libs/Flux";
 
 import { ActionTypes } from "../Constants";
 import Dispatcher from "../dispatchers/Dispatcher";
@@ -47,6 +47,14 @@ class AccountStore extends MapStore {
 
   getAccount(accountSlug) {
     return this.get(accountSlug);
+  }
+
+  getDefaultAccount() {
+    return this.getState().first();
+  }
+
+  getAccounts() {
+    return this.getState();
   }
 }
 

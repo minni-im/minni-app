@@ -2,20 +2,19 @@ import React from "react";
 
 import { Link } from "react-router";
 
-
 class Dashboard extends React.Component {
   render() {
-    const accounts = [];
-    for (let [name, account] of this.props.accounts) {
+    const { accounts } = this.props;
+    let list = accounts.toArray().map(account => {
       const url = `/chat/${name}/lobby`;
-      accounts.push(<div key={name} className="team">
+      return <div key={account.slug} className="team">
         <div className="name">{account.displayName}</div>
         <div className="description">{account.description}</div>
         <div className="actions">
           <a href={url} className="button" target="_blank">Connect</a>
         </div>
-      </div>);
-    }
+      </div>;
+    });
 
     return <main className="dashboard">
       <section>
@@ -27,7 +26,7 @@ class Dashboard extends React.Component {
         </header>
         <section className="panel panel--contrast">
           <div className="teams">
-            {accounts}
+            {list}
           </div>
         </section>
       </section>

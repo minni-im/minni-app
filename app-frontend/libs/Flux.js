@@ -1,9 +1,16 @@
 import { ReduceStore as FluxReduceStore, MapStore as FluxMapStore } from "flux/utils";
 
-import { Mixin as mixin } from "../Mixin";
-import { debounce } from "../../utils/TimerUtils";
+import { Mixin as mixin } from "./Mixin";
+import { debounce } from "../utils/TimerUtils";
 
 let storesStore = [];
+
+export function withNoMutations(handler) {
+  return function(state, ...args) {
+    handler(...args);
+    return state;
+  };
+}
 
 const StoreOverlay = {
     addAction(...args) {
