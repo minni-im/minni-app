@@ -1,26 +1,13 @@
 import React from "react";
 
-import UserListContainer from "../UserListContainer.react";
+import UserList from "../UserList.react";
 
 import Logger from "../../libs/Logger";
 const logger = Logger.create("ContactList");
 
 export default class ContactList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      coworkers: this.props.currentAccount.usersId
-    };
-  }
-
-  componentWillReceiveProps(newProps) {
-    this.setState({
-      coworkers: newProps.currentAccount.usersId
-    });
-  }
-
   render() {
-    const teamSize = this.state.coworkers.length - 1;
+    const teamSize = this.props.users.size;
     return <aside>
       <header>
         <div className="header-info">
@@ -35,7 +22,7 @@ export default class ContactList extends React.Component {
   }
 
   renderList() {
-    return <UserListContainer usersId={this.state.coworkers}/>;
+    return <UserList viewer={this.props.viewer} users={this.props.users}/>;
   }
 
   renderEmptyList() {

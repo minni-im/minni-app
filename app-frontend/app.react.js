@@ -21,9 +21,12 @@ import DashboardSidebar from "./components/sidebars/Dashboard.react";
 import Settings from "./components/Settings.react";
 
 import Chat from "./components/Chat.react";
-import Lobby from "./components/Lobby.react";
+
+import Lobby from "./components/LobbyContainer.react";
+
 import MainSidebar from "./components/sidebars/MainSidebar.react";
-import ContactList from "./components/sidebars/ContactList.react";
+import ContactList from "./components/sidebars/ContactListContainer.react";
+
 import RoomCreate from "./components/RoomCreate.react";
 
 import Room from "./components/Room.react";

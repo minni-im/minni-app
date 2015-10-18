@@ -22,7 +22,10 @@ export default {
 
     ACCOUNT_SELECT: null,
     ROOM_SELECT: null,
-    ROOMS_SELECT: null
+    ROOMS_SELECT: null,
+
+    ROOM_STAR: null,
+    ROOM_UNSTAR: null
   }),
 
   EndPoints: {

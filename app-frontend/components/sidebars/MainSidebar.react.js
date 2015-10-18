@@ -47,12 +47,13 @@ class MainSidebar extends React.Component {
       <nav>
         <Link to={`/chat/${account.name}/lobby`}
           className="lobby" activeClassName="selected">
+          <span className="icon"><LobbyIcon /></span>
           <span className="name">Lobby</span>
         </Link>
         {rooms.size > 0 ? <a className="lobby">Rooms</a> : false}
         {rooms.toSeq().sortBy(room => {
           return room.starred ? "a" : "z" + "-" + room.name;
-        }).map(room => {
+        }).toArray().map(room => {
           return <Link key={room.id}
             className={classnames({
               "room--starred": room.starred

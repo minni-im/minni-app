@@ -90,16 +90,13 @@ body.chat {
       overflow-y: auto;
       overflow-x: hidden;
 
-      a.room {
+      a {
         flex: 0 0 40px;
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
 
         font-size: 13px;
-
-        opacity: .5;
-        transition: opacity 250ms;
 
         .icon {
           .square(28px);
@@ -110,6 +107,12 @@ body.chat {
             transition: fill 250ms;
           }
         }
+      }
+
+      a.room {
+
+        opacity: .5;
+        transition: opacity 250ms;
 
         .name {
           flex: 1;

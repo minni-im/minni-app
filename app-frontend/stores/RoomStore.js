@@ -1,5 +1,7 @@
 import Immutable from "immutable";
-import { MapStore } from "flux/utils";
+import { MapStore } from "../libs/Flux";
+
+import { ActionTypes } from "../Constants";
 
 import Dispatcher from "../dispatchers/Dispatcher";
 import Room from "../models/Room";
@@ -10,37 +12,44 @@ import UserStore from "../stores/UserStore";
 import Logger from "../libs/Logger";
 const logger = Logger.create("RoomStore");
 
-class RoomStore extends MapStore {
-  reduce(state, action) {
-    switch (action.type) {
-      case "rooms/add":
-        return addRooms(state, action.rooms);
+function handleAccountSelect(state, { accountSlug }) {
+  logger.info(`new account '${accountSlug}' selected, recomputing active rooms`);
+  const account = SelectedAccountStore.getAccount();
+  return state.map(room => room.set("active", account.id === room.accountId));
+}
 
-      case "room/add":
-        return addRoom(state, action.room);
+function handleLoadRoomsSuccess(state, { rooms }) {
+  const account = SelectedAccountStore.getAccount();
+  const user = UserStore.getConnectedUser();
+  logger.info(rooms.length, `new room(s)`);
+  return state.withMutations(map => {
+    rooms.forEach(room => {
 
-      case "room/star":
-        return state.setIn([action.roomId, "starred"], true);
-
-      case "room/unstar":
-          return state.setIn([action.roomId, "starred"], false);
-
-      case "room/join":
-        action.roomSlugs.forEach(roomSlug => {
-          state = state.setIn([roomSlug, "connected"], true);
+      Object.assign(room, {
+        starred: user.settings.isRoomStarred(room.id)
+      });
+      if (account) {
+        Object.assign(room, {
+          active: room.accountId === account.id
         });
-        return state;
+      }
+      map.set(room.id, new Room(room));
+    });
+  });
+}
 
-      case "room/leave":
-        return state.setIn([action.roomSlug, "connected"], false);
+function handleRoomFavorite(state, { type, roomId }) {
+  const starred = ActionTypes.ROOM_STAR === type;
+  logger.info(`${starred ? "Starring" : "Unstarring"} room '${roomId}'`);
+  return state.setIn([roomId, "starred"], starred);
+}
 
-      case "account/select":
-        this.getDispatcher().waitFor([SelectedAccountStore.getDispatchToken()]);
-        return state.map(room => room.set("active", action.account.id === room.accountId));
-
-      default:
-        return state;
-    }
+class RoomStore extends MapStore {
+  initialize() {
+    this.waitFor(SelectedAccountStore);
+    this.addAction(ActionTypes.ACCOUNT_SELECT, handleAccountSelect);
+    this.addAction(ActionTypes.LOAD_ROOMS_SUCCESS, handleLoadRoomsSuccess);
+    this.addAction(ActionTypes.ROOM_STAR, ActionTypes.ROOM_UNSTAR, handleRoomFavorite);
   }
 
   getCurrentRooms() {
@@ -53,30 +62,6 @@ class RoomStore extends MapStore {
     });
     return rooms;
   }
-}
-
-function addRoom(state, payload) {
-  const account = SelectedAccountStore.getAccount();
-  const user = UserStore.getConnectedUser();
-
-  Object.assign(payload, {
-    starred: user.settings.isRoomStarred(payload.id)
-  });
-  if (account) {
-    Object.assign(payload, {
-      active: payload.accountId === account.id
-    });
-  }
-
-  let room = new Room(payload);
-  return state.set(room.id, room);
-}
-
-function addRooms(state, rooms) {
-  for (let room of rooms) {
-    state = addRoom(state, room);
-  }
-  return state;
 }
 
 const instance = new RoomStore(Dispatcher);

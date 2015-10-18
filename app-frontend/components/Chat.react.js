@@ -9,15 +9,9 @@ class Chat extends React.Component {
   render () {
     const { children } = this.props;
     return <main className="lobby">
-      {React.cloneElement(children.content, {
-        currentUser: this.props.currentUser,
-        currentAccount: this.props.currentAccount,
-        accounts: this.props.accounts
-      })}
+      {children.content}
       {children && children.sidebar ?
-        React.cloneElement(children.sidebar, {
-          currentAccount: this.props.currentAccount
-        }) : false}
+        children.sidebar : false}
     </main>;
   }
 }
