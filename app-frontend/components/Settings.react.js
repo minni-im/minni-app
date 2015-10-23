@@ -1,17 +1,14 @@
 import React from "react";
 
-import { camelize } from "../utils/TextUtils";
-
 class Settings extends React.Component {
   render() {
-    const { children, params } = this.props;
-    const account = this.props.accounts.get(params.account);
+    const { account } = this.props;
     return <main className="settings">
       <section>
         <header>
           <div className="header-info">
             <h2>Settings</h2>
-            <h3>{ camelize(account.name) }</h3>
+            <h3>{account.displayName}</h3>
           </div>
         </header>
         <section className="panel panel--contrast">

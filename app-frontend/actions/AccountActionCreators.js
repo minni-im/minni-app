@@ -36,7 +36,6 @@ export default {
       accountId
     });
     return request(EndPoints.ACCOUNT_ROOMS(accountId)).then(({ ok, rooms, message, errors }) => {
-      logger.info(`'${accountId}' ${ok}`, rooms);
       if (ok) {
         dispatch({
           type: ActionTypes.LOAD_ROOMS_SUCCESS,

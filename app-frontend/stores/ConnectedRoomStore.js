@@ -4,6 +4,8 @@ import { MapStore } from "../libs/Flux";
 import Dispatcher from "../dispatchers/Dispatcher";
 import { dispatch } from "../dispatchers/Dispatcher";
 
+import { ActionTypes } from "../Constants";
+
 import AccountStore from "./AccountStore";
 import SelectedAccountStore from "./SelectedAccountStore";
 import RoomStore from "./RoomStore";
@@ -28,9 +30,9 @@ function handleRoomJoin(state, { accountSlug, roomSlugs }) {
   return state;
 }
 
-function handleRoomLeave(state, { accountSlug, roomId }) {
+function handleRoomLeave(state, { accountSlug, roomSlug }) {
   let connectedRooms = state.get(accountSlug);
-  state = state.setIn(accountSlug, connectedRooms.remove(roomId));
+  state = state.setIn(accountSlug, connectedRooms.remove(roomSlug));
   Storage.set(CONNECTED_ROOMS, state.toJS());
   return state;
 }
@@ -50,20 +52,19 @@ function handleLoadFromStorage(state) {
 class ConnectedRoomStore extends MapStore {
   initialize() {
     this.waitFor(AccountStore, SelectedAccountStore, RoomStore);
-    this.addAction("account/new", handleNewAccount);
-    this.addAction("room/join", handleRoomJoin);
-    this.addAction("room/leave", handleRoomLeave);
-    this.addAction("connectedrooms/load", handleLoadFromStorage);
-
+    this.addAction(ActionTypes.ACCOUNT_NEW, handleNewAccount);
+    this.addAction(ActionTypes.ROOM_SELECT, handleRoomJoin);
+    this.addAction(ActionTypes.ROOM_LEAVE, handleRoomLeave);
     logger.info("Looking to localStorage for connected rooms");
+    this.addAction("loadfromstorage", handleLoadFromStorage);
     dispatch({
-      type: "connectedrooms/load"
+      type: "loadfromstorage"
     });
   }
 
   getRooms(accountSlug) {
     const roomSlugs = this.get(accountSlug) || Immutable.Set();
-    return RoomStore.getRooms(roomSlugs.toJS());
+    return RoomStore.getRooms(...roomSlugs.toJS());
   }
 }
 

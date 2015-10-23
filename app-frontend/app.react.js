@@ -18,7 +18,7 @@ import AccountCreate from "./components/AccountCreate.react";
 import Dashboard from "./components/DashboardContainer.react";
 import DashboardSidebar from "./components/sidebars/Dashboard.react";
 
-import Settings from "./components/Settings.react";
+import Settings from "./components/SettingsContainer.react";
 
 import Chat from "./components/Chat.react";
 
@@ -30,9 +30,11 @@ import ContactList from "./components/sidebars/ContactListContainer.react";
 import RoomCreate from "./components/RoomCreate.react";
 
 import Room from "./components/Room.react";
-import RoomMessagesContainer from "./components/RoomMessagesContainer.react";
+import RoomMessages from "./components/RoomMessagesContainer.react";
 
 import ConnectionStore from "./stores/ConnectionStore";
+import SelectedAccountStore from "./stores/SelectedAccountStore";
+import SelectedRoomStore from "./stores/SelectedRoomStore";
 
 function selectAccount(meta, replaceState) {
   const { accountSlug } = meta.params;
@@ -55,7 +57,15 @@ function selectRooms(meta, replaceState) {
   return dispatch({
     type: ActionTypes.ROOM_SELECT,
     accountSlug,
-    roomSlug: roomSlugs
+    roomSlugs: roomSlugs
+  });
+}
+
+function deselectRooms() {
+  dispatch({
+    type: ActionTypes.ROOMS_DESELECT,
+    accountSlug: SelectedAccountStore.getAccountSlug(),
+    roomSlugs: SelectedRoomStore.getRooms()
   });
 }
 
@@ -76,7 +86,9 @@ ReactDOM.render((
       </Route>
 
       <Route path="chat/:accountSlug/messages" components={{content: Room, sidebar: MainSidebar }} onEnter={selectAccount}>
-        <Route path=":roomSlugs" component={RoomMessagesContainer} onEnter={selectRooms} />
+        <Route path=":roomSlugs"
+          component={RoomMessages}
+          onEnter={selectRooms} onLeave={deselectRooms} />
       </Route>
     </Route>
   </Router>

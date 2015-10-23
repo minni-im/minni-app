@@ -14,7 +14,9 @@ const socket = window.io.connect("/");
 
 function handleConnectionOpen() {
   const appHolder = document.querySelector("#minni");
-  appHolder.classList.add("fadein");
+  setTimeout(()=> {
+    appHolder.classList.add("fadein");
+  }, 1000);
 }
 
 class ConnectionStore extends ReduceStore {

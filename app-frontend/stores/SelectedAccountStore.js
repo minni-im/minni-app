@@ -15,6 +15,9 @@ const logger = Logger.create("SelectedAccountStore");
 
 
 function handleAccountSelect(state, { accountSlug }) {
+  if (state.has(accountSlug)) {
+    return state;
+  }
   logger.info(`Selecting account from '${state.first()}' => '${accountSlug}'`);
   state = Immutable.Set([accountSlug]);
   return state;

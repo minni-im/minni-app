@@ -6,7 +6,7 @@ class Dashboard extends React.Component {
   render() {
     const { accounts } = this.props;
     let list = accounts.toArray().map(account => {
-      const url = `/chat/${name}/lobby`;
+      const url = `/chat/${account.slug}/lobby`;
       return <div key={account.slug} className="team">
         <div className="name">{account.displayName}</div>
         <div className="description">{account.description}</div>

@@ -1,52 +1,46 @@
 import Immutable from "immutable";
-import { ReduceStore } from "flux/utils";
+import { MapStore } from "../libs/Flux";
 
 import Dispatcher from "../dispatchers/Dispatcher";
+
+import { ActionTypes } from "../Constants";
 
 import AccountStore from "./AccountStore";
 import RoomStore from "./RoomStore";
 import SelectedAccountStore from "./SelectedAccountStore";
 
+import Logger from "../libs/Logger";
+const logger = Logger.create("SelectedRoomStore");
 
-function getRoomId(roomSlugs) {
-  const rooms = RoomStore.getRooms()
-    .toSeq()
-    .filter(room => roomSlugs.indexOf(room.slug) !== -1);
-  if (rooms != null) {
-    return Immutable.Set(rooms.map(room => room.id));
-  }
+import { slugify } from "../utils/TextUtils";
+
+function handleRoomsSelect(state, { accountSlug, roomSlugs }) {
+  return state.update(accountSlug, Immutable.Set(), (slugs) => {
+    return slugs.union(roomSlugs);
+  });
 }
 
-
-function handleRoomSelect(state, { roomSlugs }) {
-  const accountId = SelectedAccountStore.getAccountId();
-  const roomId = getRoomId(roomSlugs);
-  state = state.setIn(accountId, roomId);
-  return state;
+function handleRoomsDeselect(state, { accountSlug, roomSlugs }) {
+  return state.update(accountSlug, (slugs) => {
+    return slugs.subtract(roomSlugs);
+  });
 }
 
+function handleAccountNew(state, { account }) {
+  return state.set(account, Immutable.Set());
+}
 
-class SelectedRoomStore extends ReduceStore {
-  getInitialState() {
-    return Immutable.Map();
+class SelectedRoomStore extends MapStore {
+  initialize() {
+    this.waitFor(AccountStore, RoomStore);
+    this.addAction(ActionTypes.ACCOUNT_NEW, handleAccountNew);
+    this.addAction(ActionTypes.ROOM_SELECT,
+      ActionTypes.ROOMS_SELECT, handleRoomsSelect);
+    this.addAction(ActionTypes.ROOMS_DESELECT, handleRoomsDeselect);
   }
 
-  reduce(state, action) {
-    this.waitFor([
-      AccountStore.getDispatchToken(),
-      RoomStore.getDispatchToken(),
-      SelectedAccountStore.getDispatchToken()
-    ]);
-    switch (action.type) {
-      case "room/select":
-        return handleRoomSelect(state, action);
-      default:
-        return state;
-    }
-  }
-
-  getRoomId(accountId = SelectedAccountStore.getAccountId()) {
-    return this.getState().get(accountId);
+  getRooms(accountSlug = SelectedAccountStore.getAccountSlug()) {
+    return this.getState().get(accountSlug, Immutable.Set());
   }
 }
 

@@ -2,11 +2,9 @@ import React from "react";
 import { Link } from "react-router";
 import classnames from "classnames";
 
-import { ActionTypes } from "../Constants";
+import RoomActionCreators from "../actions/RoomActionCreators";
 
 import { SettingsIcon, FavoriteIcon } from "../utils/IconsUtils";
-
-import { dispatch } from "../dispatchers/Dispatcher";
 
 import Logger from "../libs/Logger";
 const logger = Logger.create("Lobby");
@@ -34,10 +32,7 @@ class Room extends React.Component {
   _onRoomStarClick(event) {
     event.preventDefault();
     const { room } = this.props;
-    dispatch({
-      type: room.starred ? ActionTypes.ROOM_UNSTAR : ActionTypes.ROOM_STAR,
-      roomId: room.id
-    });
+    RoomActionCreators.toggleFavorite(room.id, room.starred);
   }
 }
 

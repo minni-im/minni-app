@@ -59,7 +59,7 @@ class AccountSwitcher extends React.Component {
   render() {
     const { selectedAccountSlug, accounts } = this.state;
     if (!accounts || accounts.size <= 1) {
-      return <div className="account-switcher"></div>;
+      return <div className="account-switcher" style={{flexBasis: 0}}></div>;
     }
 
     let links = accounts.toArray().map((account, index) => {

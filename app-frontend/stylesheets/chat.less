@@ -113,6 +113,7 @@ body.chat {
 
         opacity: .5;
         transition: opacity 250ms;
+        margin-bottom: 1px;
 
         .name {
           flex: 1;
@@ -122,7 +123,6 @@ body.chat {
         &:hover {
           background-color: fade(@black, 15%);
           opacity: 1;
-
         }
 
         &.selected {
@@ -133,6 +133,10 @@ body.chat {
           }
         }
       }
+
+      // .room.selected + .room.selected {
+      //   border-top: 1px solid @white;
+      // }
 
       .lobby, .separator {
         margin-bottom: 5px;
