@@ -27,5 +27,6 @@ export default {
     InternetExplorerIcon: require("babel!svg-react!../../public/images/svgs/ie.svg"),
     SafariIcon: require("babel!svg-react!../../public/images/svgs/safari.svg")
   },
-  SpinnerIcon: require("babel!svg-react!../../public/images/svgs/spinner.svg")
+  SpinnerIcon: require("babel!svg-react!../../public/images/svgs/spinner.svg"),
+  UploadIcon: require("babel!svg-react!../../public/images/svgs/upload.svg")
 };

@@ -9,6 +9,8 @@ import { dispatch } from "./dispatchers/Dispatcher";
 import Logger from "./libs/Logger";
 
 import { ActionTypes } from "./Constants";
+import AccountActionCreators from "./actions/AccountActionCreators";
+import RoomActionCreators from "./actions/RoomActionCreators";
 
 import Minni from "./components/Minni.react";
 
@@ -38,35 +40,17 @@ import SelectedRoomStore from "./stores/SelectedRoomStore";
 
 function selectAccount(meta, replaceState) {
   const { accountSlug } = meta.params;
-  dispatch({
-    type: ActionTypes.ACCOUNT_SELECT,
-    accountSlug
-  });
+  AccountActionCreators.selectAccount(accountSlug);
 }
 
 function selectRooms(meta, replaceState) {
   const { accountSlug } = meta.params;
   let roomSlugs = meta.params.roomSlugs.split(",");
   if (roomSlugs.length > 1) {
-    return dispatch({
-      type: ActionTypes.ROOMS_SELECT,
-      accountSlug,
-      roomSlugs
-    });
+    RoomActionCreators.selectRooms(accountSlug, roomSlugs);
+    return;
   }
-  return dispatch({
-    type: ActionTypes.ROOM_SELECT,
-    accountSlug,
-    roomSlugs: roomSlugs
-  });
-}
-
-function deselectRooms() {
-  dispatch({
-    type: ActionTypes.ROOMS_DESELECT,
-    accountSlug: SelectedAccountStore.getAccountSlug(),
-    roomSlugs: SelectedRoomStore.getRooms()
-  });
+  RoomActionCreators.selectRoom(accountSlug, roomSlugs);
 }
 
 Flux.initialize();
@@ -77,9 +61,14 @@ ReactDOM.render((
       <IndexRoute components={{ content: Dashboard, sidebar: DashboardSidebar }} />
       <Route path="create" components={{ content: AccountCreate, sidebar: Welcome }} />
       <Route path="dashboard" components={{ content: Dashboard, sidebar: DashboardSidebar }} />
-      <Route path="settings/:accountSlug" components={{ content: Settings, sidebar: MainSidebar }} onEnter={selectAccount} />
+      <Route path="settings/:accountSlug"
+        components={{ content: Settings, sidebar: MainSidebar }}
+        onEnter={selectAccount} />
 
-      <Route path="chat/:accountSlug" components={{ content: Chat, sidebar: MainSidebar }} onEnter={selectAccount}>
+      <Route path="chat/:accountSlug"
+        components={{ content: Chat, sidebar: MainSidebar }}
+        onEnter={selectAccount}>
+
         <IndexRoute components={{content: Lobby, sidebar: ContactList }} />
         <Route path="lobby" components={{content: Lobby, sidebar: ContactList }} />
         <Route path="create" components={{content: RoomCreate, sidebar: ContactList }} />
@@ -88,7 +77,7 @@ ReactDOM.render((
       <Route path="chat/:accountSlug/messages" components={{content: Room, sidebar: MainSidebar }} onEnter={selectAccount}>
         <Route path=":roomSlugs"
           component={RoomMessages}
-          onEnter={selectRooms} onLeave={deselectRooms} />
+          onEnter={selectRooms} onLeave={RoomActionCreators.deselectRooms} />
       </Route>
     </Route>
   </Router>

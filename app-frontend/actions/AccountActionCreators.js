@@ -6,6 +6,12 @@ import Logger from "../libs/Logger";
 const logger = Logger.create("AccountActionCreators");
 
 export default {
+  selectAccount(accountSlug) {
+    dispatch({
+      type: ActionTypes.ACCOUNT_SELECT,
+      accountSlug
+    });
+  },
 
   fetchUsers(accountId) {
     dispatch({

@@ -16,6 +16,7 @@
 @dark-orange:             #f5c400;
 @orange:                  mix(@light-orange, @dark-orange);
 @green:                   #00b700;
+@magenta:                 #cb4848;
 
 @background-dark:         #2d333b;
 @background-light:        #f9f9f9;
@@ -26,7 +27,7 @@
 @status-color-online:     #9bcb48;
 @status-color-idle:       #9bcb48;
 @status-color-dnd:        #d9c522;
-@status-color-away:       #cb4848;
+@status-color-away:       @magenta;
 @status-color-offline:    @gray;
 @status-color-connecting: #888;
 
@@ -44,6 +45,12 @@
 
 @main-sidebar-width:          240px;
 @main-header-height:          68px;
-@main-user-info-height:       @main-header-height;
+@main-footer-height:          82px;
+@main-user-info-height:       @main-footer-height;
 
 @content-sidebar-width:       250px;
+
+@room-unread-background-color:         @orange;
+@room-unread-color:                    @color-dark;
+@room-unread-mention-background-color: @magenta;
+@room-unread-mention-color:            @color-light;

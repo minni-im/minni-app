@@ -3,6 +3,7 @@ import classnames from "classnames";
 
 import RoomActionCreators from "../actions/RoomActionCreators";
 
+import Composer from "./Composer.react";
 import { FavoriteIcon } from "../utils/IconsUtils";
 
 export default class RoomMessages extends React.Component {
@@ -21,6 +22,10 @@ export default class RoomMessages extends React.Component {
       </header>
       <section className="panel panel--contrast">
       </section>
+      <footer>
+        <Composer />
+        <div className="is-typing"><strong>bcharbonnier</strong> is typing&hellip;</div>
+      </footer>
     </section>;
   }
 

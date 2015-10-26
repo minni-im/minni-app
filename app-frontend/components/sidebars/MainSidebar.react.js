@@ -57,10 +57,11 @@ class MainSidebar extends React.Component {
         {rooms.toSeq().sortBy(room => {
           return room.starred ? "a" : "z" + "-" + room.name;
         }).toArray().map(room => {
+          const selected = selectedRooms.has(room.slug);
           return <Link key={room.id}
             className={classnames("room", {
               "room--starred": room.starred,
-              "selected": selectedRooms.has(room.slug)
+              "room--selected": selected
             })}
             onClick={this._onRoomClicked.bind(this)} data-slug={room.slug}
             to={`/chat/${account.slug}/messages/${room.slug}`}>
@@ -68,6 +69,7 @@ class MainSidebar extends React.Component {
                 <RoomIcons.RoomPublicIcon />
             </span>
             <span className="name">{room.name}</span>
+            <span className="quit" title="Quit this room">×</span>
           </Link>;
         })}
       </nav>

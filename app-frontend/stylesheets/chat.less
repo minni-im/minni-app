@@ -98,15 +98,19 @@ body.chat {
 
         font-size: 13px;
 
+        padding-left: 15px;
+        padding-right: 15px;
+
         .icon {
           .square(28px);
-          margin: 5px 2px 5px 12px;
           svg {
             .square(28px);
             fill: @gray-light;
             transition: fill 250ms;
           }
         }
+
+
       }
 
       a.room {
@@ -115,28 +119,56 @@ body.chat {
         transition: opacity 250ms;
         margin-bottom: 1px;
 
+        .unread {
+          text-align: center;
+          background-color: @room-unread-background-color;
+          color: @room-unread-color;
+          border-radius: 16px;
+          padding: 0 5px;
+          min-width: 15px;
+          font-size: 11px;
+          line-height: 21px;
+        }
+
         .name {
           flex: 1;
           .text-overflow;
         }
 
+        .quit {
+          width: 0;
+          font-size: 24px;
+          text-align: right;
+          transition: all 250ms linear;
+          opacity: 0;
+        }
+
         &:hover {
           background-color: fade(@black, 15%);
           opacity: 1;
+          .quit {
+            width: 24px;
+            opacity: 1;
+          }
         }
 
-        &.selected {
+        &.room--selected {
           background-color: @dark-blue;
           opacity: 1;
           .icon svg {
             fill: @white;
           }
+          .unread { display: none }
+          .quit {
+            width: 0;
+            opacity: 0;
+          }
         }
       }
 
-      // .room.selected + .room.selected {
-      //   border-top: 1px solid @white;
-      // }
+      a.room--unread {
+        opacity: 1;
+      }
 
       .lobby, .separator {
         margin-bottom: 5px;
@@ -146,7 +178,7 @@ body.chat {
         letter-spacing: .1em;
         text-transform: uppercase;
         color: @white;
-        margin: 10px 20px;
+        margin: 10px 5px;
         max-height: 2em;
       }
 
@@ -221,6 +253,106 @@ body.chat {
       section.panel--contrast {
         background-color: @white;
         border-top: 1px dotted @gray-light;
+      }
+
+      footer {
+        min-height: @main-footer-height;
+        display: flex;
+        flex-flow: column nowrap;
+
+        .composer {
+          flex: 1;
+
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: flex-start;
+
+          max-height: 240px;
+          margin: 10px 10px 0 10px;
+
+          position: relative;
+          border: 3px solid @gray-lighter;
+          border-radius: 3px;
+
+          textarea {
+            padding: 10px 8px;
+            margin: 0;
+            border: none;
+            overflow: auto;
+            resize: none;
+            flex: 1;
+            align-self: stretch;
+          }
+
+          .shadow {
+            margin: 10px 0;
+            font: inherit;
+            width: 0;
+            visibility: hidden;
+          }
+
+          textarea , .shadow {
+            line-height: 20px;
+          }
+
+          .action {
+            background-color: @gray-lighter;
+            padding: 5px;
+            align-self: stretch;
+            justify-content: center;
+            cursor: pointer;
+            svg {
+              .square(24px);
+              vertical-align: middle;
+              fill: @gray;
+            }
+          }
+
+          .action + .action {
+            border-left: 1px solid @gray-lighter;
+          }
+
+          .suggestions {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            border-top: 1px dotted @gray-dark;
+            left: 0; right: 0;
+            background-color: @white;
+          }
+
+          .suggestions-header, .suggestions-footer {
+            font-size: 11px;
+            line-height: 16px;
+            background-color: @background-light;
+            color: @gray-light;
+            padding: 10px 15px;
+          }
+
+          .suggestions-list > div {
+            padding: 5px 15px;
+            &:hover {
+              background-color: @electric-blue;
+              color: @color-light !important;
+            }
+          }
+        }
+
+        .composer.active {
+          border-color: @electric-blue;
+          .action {
+            background-color: @electric-blue;
+            svg {
+              fill: @color-light;
+            }
+          }
+        }
+
+        .is-typing {
+          color: @gray-light;
+          margin: 0 15px;
+          font-size: 11px;
+        }
       }
     }
 
@@ -516,6 +648,10 @@ header .user-info {
         background-color: @gray;
       }
     }
+  }
+
+  .powered-by-minni {
+    margin-bottom: 10px;
   }
 }
 

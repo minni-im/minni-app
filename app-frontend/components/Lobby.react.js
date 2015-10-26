@@ -20,7 +20,9 @@ class Room extends React.Component {
     }
 
     return <Link to={`/chat/${accountName}/messages/${room.slug}`} className={classnames("room", this.props.className, {
-        "room-favorite": room.starred
+        "room-favorite": room.starred,
+        "room-public": room.public,
+        "room-private": room.private
       })} key={room.id} title={title}>
       <div className="room--name">{room.name}</div>
       <div className="room--topic">{room.topic}</div>
@@ -39,12 +41,6 @@ class Room extends React.Component {
 Room.defaultProps = {
   className: {}
 };
-
-class RoomPublic extends React.Component {
-  render() {
-    return <Room className={classnames("room-public")} {...this.props} />;
-  }
-}
 
 export default class Lobby extends React.Component {
   render() {
@@ -74,7 +70,7 @@ export default class Lobby extends React.Component {
         </header>
         <div className="rooms">
           {rooms.toArray().map(room => {
-            return <RoomPublic key={room.id} room={room} accountName={account.name} viewer={this.props.viewer}/>;
+            return <Room key={room.id} room={room} accountName={account.name} viewer={this.props.viewer}/>;
           })}
         </div>
       </section>
