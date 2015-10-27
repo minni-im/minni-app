@@ -36,14 +36,23 @@ export default {
     ROOM_STAR_FAILURE: null,
     ROOM_UNSTAR: null,
     ROOM_UNSTAR_SUCCES: null,
-    ROOM_UNSTAR_FAILURE: null
+    ROOM_UNSTAR_FAILURE: null,
+
+    COMPOSER_TEXT_SAVE: null,
+
+    MESSAGE_CREATE: null,
+    MESSAGE_SEND_FAILED: null
   }),
+
+  MAX_MESSAGES_PER_CHANNEL: 50,
+  MAX_MESSAGE_LENGTH: 2000,
 
   EndPoints: {
     ACCOUNT_ROOMS: (accountId) => `/api/accounts/${accountId}/rooms`,
     ACCOUNT_USERS: (accountId) => `/api/accounts/${accountId}/users`,
     ROOM_STAR: (roomId) => `/api/rooms/${roomId}/star`,
-    ROOM_UNSTAR: (roomId) => `/api/rooms/${roomId}/unstar`
+    ROOM_UNSTAR: (roomId) => `/api/rooms/${roomId}/unstar`,
+    MESSAGES: `/api/messages/`
   }
 
 };

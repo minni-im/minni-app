@@ -7,6 +7,8 @@ import { request } from "../utils/RequestUtils";
 import SelectedAccountStore from "../stores/SelectedAccountStore";
 import SelectedRoomStore from "../stores/SelectedRoomStore";
 
+import { createMessage } from "../utils/MessageUtils";
+
 export default {
   selectRoom(accountSlug, roomSlug) {
     dispatch({
@@ -53,5 +55,35 @@ export default {
           });
         }
       });
+  },
+
+  receiveMessage(roomId, message, optimistic = false) {
+    dispatch({
+      type: ActionTypes.MESSAGE_CREATE,
+      roomId,
+      message,
+      optimistic
+    });
+  },
+
+  sendMessage(roomId, text) {
+    const rawMessage = createMessage(roomId, text);
+    this.receiveMessage(roomId, rawMessage, true);
+    request(EndPoints.MESSAGES, {
+      body: Object.assign(rawMessage, {
+        nonce: rawMessage
+      })
+    }).then(({ ok, message }) => {
+      if (ok) {
+        this.receiveMessage(roomId, message);
+      } else {
+        logger.error(message);
+        dispatch({
+          type: ActionTypes.MESSAGE_SEND_FAILED,
+          roomId,
+          message
+        });
+      }
+    });
   }
 };

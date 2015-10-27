@@ -9,7 +9,7 @@ const AccountRecord = Immutable.Record({
   name: undefined,
   description: undefined,
   usersId: [],
-
+  adminId: undefined,
   /* UI related properties */
   active: false
 });

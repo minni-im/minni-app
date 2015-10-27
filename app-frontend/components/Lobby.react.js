@@ -48,6 +48,15 @@ export default class Lobby extends React.Component {
     if (!account) {
       return false;
     }
+
+    let settingsIcon;
+    if (account.isUserAdmin(this.props.viewer.id)) {
+      settingsIcon = <Link to={`/settings/${account.name}`} title="Edit this team's settings"
+        className="icon" activeClassName="icon--active">
+        <SettingsIcon />
+      </Link>;
+    }
+
     return <section>
       <header>
         <div className="header-info">
@@ -55,10 +64,7 @@ export default class Lobby extends React.Component {
           <h3>{ account.description }</h3>
         </div>
         <div className="actions">
-          <Link to={`/settings/${account.name}`} title="Settings"
-            className="icon" activeClassName="icon--active">
-            <SettingsIcon />
-          </Link>
+          {settingsIcon}
         </div>
       </header>
       <section className="panel">

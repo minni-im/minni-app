@@ -31,8 +31,8 @@ import ContactList from "./components/sidebars/ContactListContainer.react";
 
 import RoomCreate from "./components/RoomCreate.react";
 
-import Room from "./components/Room.react";
-import RoomMessages from "./components/RoomMessagesContainer.react";
+import MutliRoomContainer from "./components/MutliRoomContainer.react";
+import Rooms from "./components/RoomsContainer.react";
 
 import ConnectionStore from "./stores/ConnectionStore";
 import SelectedAccountStore from "./stores/SelectedAccountStore";
@@ -74,9 +74,9 @@ ReactDOM.render((
         <Route path="create" components={{content: RoomCreate, sidebar: ContactList }} />
       </Route>
 
-      <Route path="chat/:accountSlug/messages" components={{content: Room, sidebar: MainSidebar }} onEnter={selectAccount}>
+      <Route path="chat/:accountSlug/messages" components={{content: MutliRoomContainer, sidebar: MainSidebar }} onEnter={selectAccount}>
         <Route path=":roomSlugs"
-          component={RoomMessages}
+          component={Rooms}
           onEnter={selectRooms} onLeave={RoomActionCreators.deselectRooms} />
       </Route>
     </Route>

@@ -252,107 +252,7 @@ body.chat {
 
       section.panel--contrast {
         background-color: @white;
-        border-top: 1px dotted @gray-light;
-      }
-
-      footer {
-        min-height: @main-footer-height;
-        display: flex;
-        flex-flow: column nowrap;
-
-        .composer {
-          flex: 1;
-
-          display: flex;
-          flex-flow: row nowrap;
-          align-items: flex-start;
-
-          max-height: 240px;
-          margin: 10px 10px 0 10px;
-
-          position: relative;
-          border: 3px solid @gray-lighter;
-          border-radius: 3px;
-
-          textarea {
-            padding: 10px 8px;
-            margin: 0;
-            border: none;
-            overflow: auto;
-            resize: none;
-            flex: 1;
-            align-self: stretch;
-          }
-
-          .shadow {
-            margin: 10px 0;
-            font: inherit;
-            width: 0;
-            visibility: hidden;
-          }
-
-          textarea , .shadow {
-            line-height: 20px;
-          }
-
-          .action {
-            background-color: @gray-lighter;
-            padding: 5px;
-            align-self: stretch;
-            justify-content: center;
-            cursor: pointer;
-            svg {
-              .square(24px);
-              vertical-align: middle;
-              fill: @gray;
-            }
-          }
-
-          .action + .action {
-            border-left: 1px solid @gray-lighter;
-          }
-
-          .suggestions {
-            display: none;
-            position: absolute;
-            bottom: 100%;
-            border-top: 1px dotted @gray-dark;
-            left: 0; right: 0;
-            background-color: @white;
-          }
-
-          .suggestions-header, .suggestions-footer {
-            font-size: 11px;
-            line-height: 16px;
-            background-color: @background-light;
-            color: @gray-light;
-            padding: 10px 15px;
-          }
-
-          .suggestions-list > div {
-            padding: 5px 15px;
-            &:hover {
-              background-color: @electric-blue;
-              color: @color-light !important;
-            }
-          }
-        }
-
-        .composer.active {
-          border-color: @electric-blue;
-          .action {
-            background-color: @electric-blue;
-            svg {
-              fill: @color-light;
-            }
-          }
-        }
-
-        .is-typing {
-          color: @gray-light;
-          margin: 0 15px;
-          font-size: 11px;
-        }
+        border-top: 1px solid darken(@gray-lighter, 5%);
       }
     }
 
@@ -726,7 +626,7 @@ header .user-info {
 
 .room {
   > section + section {
-    border-left: 1px solid @gray-light;
+    border-left: 1px solid darken(@gray-lighter, 5%);
   }
 
   .room--favorite {
@@ -736,4 +636,144 @@ header .user-info {
       }
     }
   }
+
+  footer {
+    min-height: @main-footer-height;
+    display: flex;
+    flex-flow: column;
+    border-top: 1px solid darken(@gray-lighter, 5%);
+
+    .composer {
+      flex: 1;
+
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: flex-start;
+
+      margin: 10px 10px 0 10px;
+
+      position: relative;
+      border: 3px solid @gray-lighter;
+      border-radius: 3px;
+      background-color: @gray-lighter;
+
+      textarea {
+        padding: 10px 8px;
+        margin: 0;
+        border: none;
+        border-radius: 0;
+        overflow: auto;
+        resize: none;
+        flex: 1;
+        align-self: stretch;
+        max-height: 180px;
+      }
+
+      .shadow {
+        margin: 10px 0;
+        font: inherit;
+        width: 0;
+        visibility: hidden;
+      }
+
+      textarea , .shadow {
+        line-height: 20px;
+      }
+
+      .action {
+        padding: 5px;
+        align-self: stretch;
+        justify-content: center;
+        cursor: pointer;
+
+        transition: background-color 250ms;
+        svg {
+          .square(24px);
+          vertical-align: middle;
+          fill: @gray;
+        }
+      }
+
+      .action + .action {
+        border-left: 1px solid @gray-lighter;
+      }
+
+      .suggestions {
+        display: none;
+        position: absolute;
+        bottom: 100%;
+        border-top: 1px dotted @gray-dark;
+        left: 0; right: 0;
+        background-color: @white;
+      }
+
+      .suggestions-header, .suggestions-footer {
+        font-size: 11px;
+        line-height: 16px;
+        background-color: @background-light;
+        color: @gray-light;
+        padding: 10px 15px;
+      }
+
+      .suggestions-list > div {
+        padding: 5px 15px;
+        &:hover {
+          background-color: @electric-blue;
+          color: @color-light !important;
+        }
+      }
+    }
+
+    .composer.active {
+      border-color: @electric-blue;
+      background-color: @electric-blue;
+      .action {
+        svg {
+          fill: @color-light;
+        }
+      }
+    }
+
+    .composer {
+      .action:hover {
+        background-color: fadeout(@black, 85%);
+      }
+    }
+
+    .typing-info, .contextual-info {
+      font-size: 11px;
+      color: @gray-light;
+    }
+
+    .typing-info {
+      flex: 3;
+    }
+
+    .contextual-info {
+      flex: 1;
+      text-align: right;
+    }
+
+    .formatting-tips {
+      padding-left: 24px;
+      background: url(/images/svgs/keyboard.svg) center left no-repeat;
+      background-size: 20px;
+      code {
+        background-color: fadeout(@black, 85%);
+        border: 1px solid fadeout(@black, 70%);
+        border-radius: 2px;
+        padding: 0 2px;
+      }
+
+      .tooltip-content {
+        margin-bottom: 5px;
+        right: -5px;
+
+        > span {
+          margin: 0 5px;
+        }
+      }
+    }
+  }
+
 }
