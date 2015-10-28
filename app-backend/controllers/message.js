@@ -8,7 +8,7 @@ export default (app) => {
 
   app.io.route("messages", {
     create(req, res) {
-      const Message = recorder.model("Messsage");
+      const Message = recorder.model("Message");
       const nonce = req.body.nonce;
       let message = new Message({
         content: req.body.content,
@@ -23,6 +23,11 @@ export default (app) => {
           message: nonce ? Object.assign(json, {nonce}) : json
         });
         //TODO should trigger here embeds + pipeline execution, and push results back to socket for client update
+        setTimeout(() => {
+          app.io.emit("messages:create", Object.assign(json, {
+            content: `EDITED: ${json.content}`
+          }));
+        }, Math.ceil(Math.random() * 3000));
       }, error => {
         res.json({
           ok: false,

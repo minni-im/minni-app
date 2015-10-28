@@ -1,6 +1,9 @@
 import React from "react";
 import { Container } from "flux/utils";
 
+import { MAX_MESSAGES_PER_ROOMS } from "../Constants";
+import RoomActionCreators from "../actions/RoomActionCreators";
+
 import MessageStore from "../stores/MessageStore";
 import UserStore from "../stores/UserStore";
 
@@ -16,6 +19,12 @@ class MessagesContainer extends React.Component {
     return {
       messages: MessageStore.getMessages(nextProps.room.id)
     };
+  }
+
+  componentDidMount() {
+    if (this.state.messages.size === 0) {
+      RoomActionCreators.fetchMessages(this.props.room.id, null, null, MAX_MESSAGES_PER_ROOMS);
+    }
   }
 
   render() {

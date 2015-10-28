@@ -1,6 +1,6 @@
 import Logger from "../libs/Logger";
 const logger = Logger.create("RoomActionCreators");
-import { dispatch } from "../dispatchers/Dispatcher";
+import Dispatcher, { dispatch } from "../dispatchers/Dispatcher";
 import { ActionTypes, EndPoints } from "../Constants";
 import { request } from "../utils/RequestUtils";
 
@@ -67,11 +67,14 @@ export default {
   },
 
   sendMessage(roomId, text) {
+    logger.info(`sending message '${text}' to roomId:${roomId}`);
     const rawMessage = createMessage(roomId, text);
     this.receiveMessage(roomId, rawMessage, true);
+
     request(EndPoints.MESSAGES, {
+      method: "PUT",
       body: Object.assign(rawMessage, {
-        nonce: rawMessage
+        nonce: rawMessage.id
       })
     }).then(({ ok, message }) => {
       if (ok) {
@@ -79,11 +82,38 @@ export default {
       } else {
         logger.error(message);
         dispatch({
-          type: ActionTypes.MESSAGE_SEND_FAILED,
+          type: ActionTypes.MESSAGE_SEND_FAILURE,
           roomId,
           message
         });
       }
     });
+  },
+
+
+  fetchMessages(roomId, latest, oldest, limit) {
+    if (!Dispatcher.isDispatching()) {
+      dispatch({
+        type: ActionTypes.LOAD_MESSAGES,
+        roomId
+      });
+    }
+    return request(EndPoints.ROOM_MESSAGES(roomId))
+      .then(({ok, messages, errors}) => {
+        if (ok) {
+          logger.info(roomId, messages.length);
+          dispatch({
+            type: ActionTypes.LOAD_MESSAGES_SUCCESS,
+            roomId,
+            messages
+          });
+        } else {
+          dispatch({
+            type: ActionTypes.LOAD_MESSAGES_FAILURE,
+            roomId,
+            errors
+          });
+        }
+      });
   }
 };

@@ -18,7 +18,7 @@ export default {
       type: ActionTypes.LOAD_USERS,
       accountId
     });
-    return request(EndPoints.ACCOUNT_USERS(accountId)).then(({ ok, users, message, errors }) => {
+    return request(EndPoints.ACCOUNT_USERS(accountId)).then(({ ok, users, errors }) => {
       if (ok) {
         dispatch({
           type: ActionTypes.LOAD_USERS_SUCCESS,

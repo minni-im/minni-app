@@ -3,13 +3,14 @@ import React from "react";
 
 class Message extends React.Component {
   render() {
-    return <div className="message">{this.props.message.content}</div>;
+    const { message } = this.props;
+    return <div className="message">{message.id} - {message.content}</div>;
   }
 }
 
 export default class Messages extends React.Component {
   render() {
-    const messages = this.props.messages.map(message => {
+    const messages = this.props.messages.toArray().map(message => {
       return <Message key={message.id} message={message} />;
     });
 

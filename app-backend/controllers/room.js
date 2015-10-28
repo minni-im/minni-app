@@ -27,6 +27,10 @@ export default (app) => {
     req.io.route("rooms:unstar");
   });
 
+  app.get("/api/rooms/:roomId/messages", requireLogin, requireValidRoom, (req) => {
+    req.io.route("rooms:messages");
+  });
+
   app.io.route("rooms", {
     star(req, res) {
       const { room, user } = req;
@@ -63,7 +67,7 @@ export default (app) => {
           message: "Nothing to be done."
         });
       }
-      
+
       rooms = rooms.splice(rooms.indexOf(room.id), 1);
 
       user.save().then(newUser => {
@@ -138,6 +142,35 @@ export default (app) => {
           errors: error
         });
       });
+    },
+
+    messages(req, res) {
+      const Message = recorder.model("Message");
+      const { roomId } = req.params;
+      console.log(`Fetching messages for room:${roomId}`);
+      Message.getHistory(roomId)
+        .then(messages => {
+          res.json({
+            ok: true,
+            messages: messages.map(message => message.toAPI())
+          });
+        }, error => {
+          res.json({
+            ok: false,
+            message: `Fetching messages for room:${roomId} failed`,
+            errors: error
+          });
+        });
+    },
+
+    join(req, res) {
+      const { roomId } = req.param;
+      console.log(`joining '${roomId}'`);
+    },
+
+    leave(req, res) {
+      const { roomId } = req.param;
+      console.log(`leaving '${roomId}'`);
     }
   });
 };

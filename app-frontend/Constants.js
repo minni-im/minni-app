@@ -41,10 +41,14 @@ export default {
     COMPOSER_TEXT_SAVE: null,
 
     MESSAGE_CREATE: null,
-    MESSAGE_SEND_FAILED: null
+    MESSAGE_SEND_FAILURE: null,
+
+    LOAD_MESSAGES: null,
+    LOAD_MESSAGES_SUCCESS: null,
+    LOAD_MESSAGES_FAILURE: null
   }),
 
-  MAX_MESSAGES_PER_CHANNEL: 50,
+  MAX_MESSAGES_PER_ROOMS: 50,
   MAX_MESSAGE_LENGTH: 2000,
 
   EndPoints: {
@@ -52,6 +56,7 @@ export default {
     ACCOUNT_USERS: (accountId) => `/api/accounts/${accountId}/users`,
     ROOM_STAR: (roomId) => `/api/rooms/${roomId}/star`,
     ROOM_UNSTAR: (roomId) => `/api/rooms/${roomId}/unstar`,
+    ROOM_MESSAGES: (roomId) => `/api/rooms/${roomId}/messages`,
     MESSAGES: `/api/messages/`
   }
 

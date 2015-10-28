@@ -6,6 +6,9 @@ import history from "./history";
 import Flux from "./libs/Flux";
 import { dispatch } from "./dispatchers/Dispatcher";
 
+// Patch for Immutable to have replace on OrderedMap
+import "./libs/Immutable";
+
 import Logger from "./libs/Logger";
 
 import { ActionTypes } from "./Constants";

@@ -6,7 +6,7 @@ import { SmileyIcon, UploadIcon } from "../utils/IconsUtils";
 import ComposerActionCreators from "../actions/ComposerActionCreators";
 import UploadActionCreators from "../actions/UploadActionCreators";
 
-import Logger from  "../libs/Logger";
+import Logger from "../libs/Logger";
 const logger = Logger.create("Composer.react");
 
 const KEYCODES = {
