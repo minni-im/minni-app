@@ -45,6 +45,10 @@ class UserStore extends MapStore {
     });
   }
 
+  getUser(userId) {
+    return this.get(userId);
+  }
+
   getConnectedUser() {
     return this.get(connectedUserId);
   }

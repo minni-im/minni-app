@@ -23,10 +23,16 @@ function handleAccountSelect(state, { accountSlug }) {
   return state;
 }
 
+function handleAccountDeselect(state) {
+  state = Immutable.Set();
+  return state;
+}
+
 class SelectedAccountStore extends ReduceStore {
   initialize() {
     this.waitFor(ConnectionStore, AccountStore);
     this.addAction(ActionTypes.ACCOUNT_SELECT, handleAccountSelect);
+    this.addAction(ActionTypes.ACCOUNT_DESELECT, handleAccountDeselect);
   }
 
   getInitialState() {

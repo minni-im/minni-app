@@ -13,6 +13,10 @@ import ComposerStore from "../stores/ComposerStore";
 import { MAX_MESSAGE_LENGTH } from "../Constants";
 
 export default class Room extends React.Component {
+  componentDidMount() {
+    this._focusComposer();
+  }
+
   render() {
     const { room } = this.props;
     const { name, topic } = room;
@@ -27,9 +31,7 @@ export default class Room extends React.Component {
           <h3>{topic}</h3>
         </div>
       </header>
-      <section className="panel panel--contrast">
-        <MessagesContainer room={room} />
-      </section>
+      <MessagesContainer room={room} />
       <footer onClick={this._handleFooterOnClick.bind(this)}>
         <Composer ref="composer" room={room} defaultValue={defaultValue}
           onSubmit={this._handleSendMessage.bind(this)} />
@@ -53,6 +55,10 @@ export default class Room extends React.Component {
     </section>;
   }
 
+  _focusComposer() {
+    this.refs.composer.focus();
+  }
+
   _handleSendMessage(message) {
     if (message.length === 0) {
       return false;
@@ -66,7 +72,7 @@ export default class Room extends React.Component {
   }
 
   _handleFooterOnClick() {
-    this.refs.composer.focus();
+    this._focusComposer();
   }
 
   _onRoomFavoriteToggle(event) {

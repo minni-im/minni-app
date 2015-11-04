@@ -1,4 +1,6 @@
 import Immutable from "immutable";
+import moment from "moment";
+
 import Dispatcher from "../dispatchers/Dispatcher";
 import { MapStore } from "../libs/Flux";
 
@@ -7,9 +9,13 @@ import { ActionTypes } from "../Constants";
 import UserStore from "../stores/UserStore";
 import RoomStore from "../stores/RoomStore";
 
+import Message from "../models/Message";
 
 function transformMessage(message) {
-  return message;
+  message.dateCreated = moment(message.dateCreated);
+  message.lastUpdated = moment(message.lastUpdated);
+  message.user = UserStore.getUser(message.userId);
+  return new Message(message);
 }
 
 function mergeMessage(messages, message) {
@@ -27,10 +33,10 @@ function handleIncomingMessage(state, { roomId, message }) {
   const nonce = message.nonce;
   if (nonce !== null && messages.has(nonce)) {
     delete message.nonce;
-    messages = messages.replace(nonce, message.id, Object.assign({}, message, {content: `UPGRADED: ${message.content}`}));
+    messages = messages.replace(nonce, message.id, transformMessage(message));
   } else {
     messages = messages.withMutations(map => {
-      map.set(message.id, message);
+      map.set(message.id, mergeMessage(map, message));
     });
   }
   return state.set(roomId, messages);

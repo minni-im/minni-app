@@ -1,5 +1,7 @@
 import React from "react";
 
+import TabBar, { TabPanel } from "./generic/TabBar.react";
+
 class Settings extends React.Component {
   render() {
     const { account } = this.props;
@@ -12,7 +14,17 @@ class Settings extends React.Component {
           </div>
         </header>
         <section className="panel panel--contrast">
-
+          <TabBar>
+            <TabPanel label="One">
+              Prout
+            </TabPanel>
+            <TabPanel label="Two">
+              Pouet
+            </TabPanel>
+            <TabPanel label="Three">
+              Arf
+            </TabPanel>
+          </TabBar>
         </section>
       </section>
     </main>;

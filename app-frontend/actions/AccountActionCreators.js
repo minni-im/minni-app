@@ -13,6 +13,12 @@ export default {
     });
   },
 
+  deselectCurrentAccount() {
+    dispatch({
+      type: ActionTypes.ACCOUNT_DESELECT
+    });
+  },
+
   fetchUsers(accountId) {
     dispatch({
       type: ActionTypes.LOAD_USERS,

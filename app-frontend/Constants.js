@@ -22,6 +22,7 @@ export default {
 
     ACCOUNT_NEW: null,
     ACCOUNT_SELECT: null,
+    ACCOUNT_DESELECT: null,
 
     ROOM_NEW: null,
     ROOM_SELECT: null,
@@ -45,8 +46,24 @@ export default {
 
     LOAD_MESSAGES: null,
     LOAD_MESSAGES_SUCCESS: null,
-    LOAD_MESSAGES_FAILURE: null
+    LOAD_MESSAGES_FAILURE: null,
+
+    MODAL_PUSH: null,
+    MODAL_POP: null
   }),
+  AVATAR_SIZES: keyMirror({
+    SMALL: null,
+    MEDIUM: null,
+    LARGE: null
+  }),
+
+  USER_STATUS: {
+    OFFLINE: 1 << 0,
+    ONLINE: 1 << 1,
+    IDLE: 1 << 2,
+    AWAY: 1 << 3,
+    DND: 1 << 4
+  },
 
   MAX_MESSAGES_PER_ROOMS: 50,
   MAX_MESSAGE_LENGTH: 2000,

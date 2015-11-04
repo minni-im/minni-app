@@ -56,14 +56,19 @@ function selectRooms(meta, replaceState) {
   RoomActionCreators.selectRoom(accountSlug, roomSlugs);
 }
 
+function deselectAccount() {
+  AccountActionCreators.deselectCurrentAccount();
+}
+
 Flux.initialize();
 
 ReactDOM.render((
   <Router history={history}>
     <Route path="/" component={Minni} >
       <IndexRoute components={{ content: Dashboard, sidebar: DashboardSidebar }} />
-      <Route path="create" components={{ content: AccountCreate, sidebar: Welcome }} />
-      <Route path="dashboard" components={{ content: Dashboard, sidebar: DashboardSidebar }} />
+      <Route path="create" components={{ content: AccountCreate, sidebar: Welcome }} onEnter={deselectAccount} />
+      <Route path="dashboard" components={{ content: Dashboard, sidebar: DashboardSidebar }} onEnter={deselectAccount} />
+
       <Route path="settings/:accountSlug"
         components={{ content: Settings, sidebar: MainSidebar }}
         onEnter={selectAccount} />

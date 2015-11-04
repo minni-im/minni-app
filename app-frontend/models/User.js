@@ -28,4 +28,8 @@ export default class User extends UserRecord {
       settings: new Settings(Object.assign(DEFAULT_SETTINGS, props.settings))
     });
   }
+
+  get initials() {
+    return (this.firstname[0] + this.lastname[0]).toUpperCase();
+  }
 }
