@@ -17,6 +17,7 @@ class MessagesContainer extends React.Component {
 
   static calculateState(prevProps, nextProps) {
     return {
+      viewer: UserStore.getConnectedUser(),
       messages: MessageStore.getMessages(nextProps.room.id)
     };
   }
@@ -28,7 +29,7 @@ class MessagesContainer extends React.Component {
   }
 
   render() {
-    return <Messages room={this.props.room} messages={this.state.messages} />;
+    return <Messages room={this.props.room} messages={this.state.messages} viewer={this.state.viewer}/>;
   }
 }
 

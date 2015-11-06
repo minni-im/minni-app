@@ -56,6 +56,11 @@ export default {
     MEDIUM: null,
     LARGE: null
   }),
+  
+  MessageStreamTypes: keyMirror({
+    DIVIDER_TIME_STAMP: null,
+    MESSAGE_GROUP: null
+  }),
 
   USER_STATUS: {
     OFFLINE: 1 << 0,
