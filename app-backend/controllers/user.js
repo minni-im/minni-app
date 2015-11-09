@@ -30,7 +30,15 @@ export default (app) => {
 
 
   /* =Socket routes= */
+  app.io.route("disconnect", (req) => {
+    console.log("client socket disconnection");
+  });
+
   app.io.route("me", {
+    ready(req) {
+      req.io.broadcast("user:connection", req.data);
+    },
+
     whoami(req, res) {
       res.json(req.user);
     },

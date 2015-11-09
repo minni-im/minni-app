@@ -5,24 +5,36 @@ import { ActionTypes, EndPoints } from "../Constants";
 import { request } from "../utils/RequestUtils";
 
 import SelectedAccountStore from "../stores/SelectedAccountStore";
+import ConnectedRoomStore from "../stores/ConnectedRoomStore";
 import SelectedRoomStore from "../stores/SelectedRoomStore";
 
 import { createMessage } from "../utils/MessageUtils";
 
 export default {
-  selectRoom(accountSlug, roomSlug) {
-    dispatch({
-      type: ActionTypes.ROOM_SELECT,
-      accountSlug,
-      roomSlugs: roomSlug
+  joinRoom(accountSlug, roomSlug) {
+    if (!Array.isArray(roomSlug)) {
+      roomSlug = [ roomSlug ];
+    }
+    roomSlug.forEach(slug => {
+      if (!ConnectedRoomStore.isRoomConnected(accountSlug, slug)) {
+        dispatch({
+          type: ActionTypes.ROOM_JOIN,
+          accountSlug,
+          roomSlug: slug
+        });
+      }
     });
   },
 
-  selectRooms(accountSlug, roomSlugs) {
+  selectRoom(accountSlug, roomSlug) {
+    if (!Array.isArray(roomSlug)) {
+      roomSlug = [ roomSlug ];
+    }
+    this.joinRoom(accountSlug, roomSlug);
     dispatch({
-      type: ActionTypes.ROOMS_SELECT,
+      type: ActionTypes.ROOM_SELECT,
       accountSlug,
-      roomSlugs
+      roomSlug
     });
   },
 
@@ -69,6 +81,7 @@ export default {
   sendMessage(roomId, text) {
     logger.info(`sending message '${text}' to roomId:${roomId}`);
     const rawMessage = createMessage(roomId, text);
+    // Optimistic UI pattern. First display it, then send it to the server
     this.receiveMessage(roomId, rawMessage, true);
 
     request(EndPoints.MESSAGES, {
@@ -89,7 +102,6 @@ export default {
       }
     });
   },
-
 
   fetchMessages(roomId, latest, oldest, limit) {
     if (!Dispatcher.isDispatching()) {

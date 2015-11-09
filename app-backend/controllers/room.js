@@ -163,14 +163,22 @@ export default (app) => {
         });
     },
 
-    join(req, res) {
-      const { roomId } = req.param;
-      console.log(`joining '${roomId}'`);
+    join(req) {
+      const params = req.isSocket ? req.data : req.params;
+      const { accountSlug, roomSlug } = params;
+      const roomKey = `${accountSlug}:${roomSlug}`;
+      console.log(`'${req.user.id}' is joining '${roomKey}'`);
+
+      // req.socket.join(roomKey);
+      // req.socket.room(accountSlug).broadcast("users:join", { user: req.user, accountSlug, roomSlug });
     },
 
-    leave(req, res) {
-      const { roomId } = req.param;
-      console.log(`leaving '${roomId}'`);
+    leave(req) {
+      const params = req.isSocket ? req.data : req.params;
+      const { accountSlug, roomSlug } = params;
+      const roomKey = `${accountSlug}:${roomSlug}`;
+      console.log(`'${req.user.id}' is leaving '${roomKey}'`);
+      req.io.leave(roomKey);
     }
   });
 };

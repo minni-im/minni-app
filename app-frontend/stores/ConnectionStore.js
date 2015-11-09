@@ -7,6 +7,8 @@ import AccountActionCreators from "../actions/AccountActionCreators";
 import RoomActionCreators from "../actions/RoomActionCreators";
 
 import AccountStore from "../stores/AccountStore";
+import RoomStore from "../stores/RoomStore";
+import ConnectedRoomStore from "../stores/ConnectedRoomStore";
 import UserStore from "../stores/UserStore";
 
 import Logger from "../libs/Logger";
@@ -40,10 +42,18 @@ function handleConnectionOpen() {
   }, 1000);
 }
 
+function handleRoomJoin({accountSlug, roomSlug}) {
+  logger.info(accountSlug, roomSlug);
+  socket.emit("rooms:join", { accountSlug, roomSlug });
+}
+
 class ConnectionStore extends ReduceStore {
   initialize() {
     this.waitFor(AccountStore, UserStore);
     this.addAction(ActionTypes.CONNECTION_OPEN, withNoMutations(handleConnectionOpen));
+
+    this.waitFor(ConnectedRoomStore);
+    this.addAction(ActionTypes.ROOM_JOIN, withNoMutations(handleRoomJoin));
   }
 
   getInitialState() {

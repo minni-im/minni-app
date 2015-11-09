@@ -7,11 +7,10 @@ import Account from "../models/Account";
 class Chat extends React.Component {
 
   render () {
-    const { children } = this.props;
+    const { content, sidebar } = this.props;
     return <main className="lobby">
-      {children.content}
-      {children && children.sidebar ?
-        children.sidebar : false}
+      {content}
+      {sidebar ? sidebar : false}
     </main>;
   }
 }

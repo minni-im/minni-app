@@ -104,7 +104,8 @@ export default class Messages extends React.Component {
   }
 
   render() {
-    const messageGroup = this.regroupMessages(this.props.messages).map(({ type, content }, i) => {
+    const messageGroup = this.regroupMessages(this.props.messages);
+    const messageGroupFinal = messageGroup.map(({ type, content }, i) => {
       if (type === MessageStreamTypes.DIVIDER_TIME_STAMP) {
         return <MessageTimestamp key={i}><h4>{content}</h4></MessageTimestamp>;
       }
@@ -114,8 +115,8 @@ export default class Messages extends React.Component {
         messages={content} />;
     });
 
-    return <section className="panel panel--contrast messages" ref="scroller">
-      {messageGroup}
+    return <section className="panel panel--contrast messages" ref="scroller" onScroll={this._handleScroll.bind(this)}>
+      {messageGroupFinal}
     </section>;
   }
 
@@ -136,7 +137,7 @@ export default class Messages extends React.Component {
     let lastTimestamp;
     let messageStream = [];
     messageGroups.forEach(group => {
-      const timestamp = group[0].dateCreated.format("LL");
+      const timestamp = group[0].dateCreated.format("dddd, LL");
       if (timestamp !== lastTimestamp) {
         if (lastTimestamp != null) {
           messageStream.push({
@@ -152,5 +153,9 @@ export default class Messages extends React.Component {
       });
     });
     return messageStream;
+  }
+
+  _handleScroll() {
+    logger.warn("scrolling...");
   }
 }

@@ -7,6 +7,7 @@ import { ActionTypes } from "../Constants";
 
 import AccountStore from "./AccountStore";
 import RoomStore from "./RoomStore";
+import AccountRoomStore from "./AccountRoomStore";
 import SelectedAccountStore from "./SelectedAccountStore";
 
 import Logger from "../libs/Logger";
@@ -14,14 +15,17 @@ const logger = Logger.create("SelectedRoomStore");
 
 import { slugify } from "../utils/TextUtils";
 
-function handleRoomsSelect(state, { accountSlug, roomSlugs }) {
-  return state.update(accountSlug, Immutable.Set(), (slugs) => {
-    return slugs.union(roomSlugs);
-  });
+function handleRoomSelect(state, { accountSlug, roomSlug }) {
+  const account = SelectedAccountStore.getAccount();
+  const rooms = AccountRoomStore.getRoomsSlug(account.id);
+  return state.set(accountSlug, rooms.intersect(roomSlug));
+  // return state.update(accountSlug, Immutable.Set(), (slugs) => {
+  //   return slugs.union(roomSlug);
+  // });
 }
 
 function handleRoomsDeselect(state, { accountSlug, roomSlugs }) {
-  return state.update(accountSlug, (slugs) => {
+  return state.update(accountSlug, Immutable.Set(), (slugs) => {
     return slugs.subtract(roomSlugs);
   });
 }
@@ -32,10 +36,9 @@ function handleAccountNew(state, { account }) {
 
 class SelectedRoomStore extends MapStore {
   initialize() {
-    this.waitFor(AccountStore, RoomStore);
+    this.waitFor(AccountStore, RoomStore, SelectedAccountStore);
     this.addAction(ActionTypes.ACCOUNT_NEW, handleAccountNew);
-    this.addAction(ActionTypes.ROOM_SELECT,
-      ActionTypes.ROOMS_SELECT, handleRoomsSelect);
+    this.addAction(ActionTypes.ROOM_SELECT, handleRoomSelect);
     this.addAction(ActionTypes.ROOMS_DESELECT, handleRoomsDeselect);
   }
 

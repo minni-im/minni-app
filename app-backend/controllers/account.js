@@ -110,6 +110,8 @@ export default (app) => {
         res.json({
           ok: true,
           accounts: accounts.map(account => {
+            // TODO: Hook into socket to join room
+            //req.socket.join(account.slug);
             return account.toAPI(req.user.id === account.adminId);
           })
         });

@@ -49,10 +49,6 @@ function selectAccount(meta, replaceState) {
 function selectRooms(meta, replaceState) {
   const { accountSlug } = meta.params;
   let roomSlugs = meta.params.roomSlugs.split(",");
-  if (roomSlugs.length > 1) {
-    RoomActionCreators.selectRooms(accountSlug, roomSlugs);
-    return;
-  }
   RoomActionCreators.selectRoom(accountSlug, roomSlugs);
 }
 
@@ -78,14 +74,17 @@ ReactDOM.render((
         onEnter={selectAccount}>
 
         <IndexRoute components={{content: Lobby, sidebar: ContactList }} />
-        <Route path="lobby" components={{content: Lobby, sidebar: ContactList }} />
+        <Route path="lobby" components={{content: Lobby, sidebar: ContactList }} 
+          onEnter={RoomActionCreators.deselectRooms}/>
         <Route path="create" components={{content: RoomCreate, sidebar: ContactList }} />
       </Route>
 
-      <Route path="chat/:accountSlug/messages" components={{content: MutliRoomContainer, sidebar: MainSidebar }} onEnter={selectAccount}>
+      <Route path="chat/:accountSlug/messages"
+        components={{content: MutliRoomContainer, sidebar: MainSidebar }}
+        onEnter={selectAccount}>
         <Route path=":roomSlugs"
           component={Rooms}
-          onEnter={selectRooms} onLeave={RoomActionCreators.deselectRooms} />
+          onEnter={selectRooms} />
       </Route>
     </Route>
   </Router>

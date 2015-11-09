@@ -1,5 +1,5 @@
 import Immutable from "immutable";
-import { MapStore } from "../libs/Flux";
+import { MapStore, withNoMutations } from "../libs/Flux";
 
 import Dispatcher from "../dispatchers/Dispatcher";
 import { dispatch } from "../dispatchers/Dispatcher";
@@ -9,6 +9,8 @@ import { ActionTypes } from "../Constants";
 import AccountStore from "./AccountStore";
 import SelectedAccountStore from "./SelectedAccountStore";
 import RoomStore from "./RoomStore";
+
+import RoomActionCreators from "../actions/RoomActionCreators";
 
 import Storage from "../libs/Storage";
 
@@ -21,11 +23,9 @@ function handleNewAccount(state, { account }) {
   return state.set(account, Immutable.Set());
 }
 
-function handleRoomJoin(state, { accountSlug, roomSlugs }) {
+function handleRoomJoin(state, { accountSlug, roomSlug }) {
   let connectedRooms = state.get(accountSlug) || Immutable.Set();
-  state = state.set(accountSlug, roomSlugs.reduce((set, roomSlug) => {
-    return set.add(roomSlug);
-  }, connectedRooms));
+  state = state.set(accountSlug, connectedRooms.add(roomSlug));
   Storage.set(CONNECTED_ROOMS, state.toJS());
   return state;
 }
@@ -37,29 +37,32 @@ function handleRoomLeave(state, { accountSlug, roomSlug }) {
   return state;
 }
 
-function handleLoadFromStorage(state) {
+function loadConnectedRoomsFromStorage() {
   let list = Storage.get(CONNECTED_ROOMS);
   if (!list) {
-    return state;
+    return;
   }
   logger.info("Some connected rooms to load", JSON.stringify(list));
-  Object.keys(list).forEach(accountSlug => {
-    state = handleRoomJoin(state, { accountSlug, roomSlugs: list[accountSlug] });
-  });
-  return state;
+  Object.keys(list).forEach(accountSlug => RoomActionCreators.joinRoom(accountSlug, list[accountSlug]));
 }
 
 class ConnectedRoomStore extends MapStore {
   initialize() {
     this.waitFor(AccountStore, SelectedAccountStore, RoomStore);
     this.addAction(ActionTypes.ACCOUNT_NEW, handleNewAccount);
-    this.addAction(ActionTypes.ROOM_SELECT, handleRoomJoin);
+
+    this.addAction(ActionTypes.ROOM_JOIN, handleRoomJoin);
     this.addAction(ActionTypes.ROOM_LEAVE, handleRoomLeave);
-    logger.info("Looking to localStorage for connected rooms");
-    this.addAction("loadfromstorage", handleLoadFromStorage);
-    dispatch({
-      type: "loadfromstorage"
-    });
+
+    this.addAction(ActionTypes.CONNECTION_OPEN, withNoMutations(() => {
+      setImmediate(loadConnectedRoomsFromStorage);
+    }));
+  }
+
+  isRoomConnected(accountSlug, roomSlug) {
+    const accountRooms = this.get(accountSlug);
+    if (!accountRooms) { return false; }
+    return this.get(accountSlug).has(roomSlug);
   }
 
   getRooms(accountSlug) {

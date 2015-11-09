@@ -13,7 +13,7 @@ class Settings extends React.Component {
             <h3>{account.displayName}</h3>
           </div>
         </header>
-        <section className="panel panel--contrast">
+        <section className="panel">
           <TabBar>
             <TabPanel label="One">
               Prout

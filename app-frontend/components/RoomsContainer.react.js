@@ -7,7 +7,7 @@ import RoomStore from "../stores/RoomStore";
 import SelectedRoomStore from "../stores/SelectedRoomStore";
 
 import Logger from "../libs/Logger";
-const logger = Logger.create("RoomMessagesContainer");
+const logger = Logger.create("RoomsContainer.react");
 
 class RoomsContainer extends React.Component {
   static getStores() {
@@ -16,19 +16,20 @@ class RoomsContainer extends React.Component {
 
   static calculateState() {
     let roomSlugs = SelectedRoomStore.getRooms();
+    logger.info(roomSlugs);
     return {
-      rooms: RoomStore.getRooms(...roomSlugs)
+      rooms: RoomStore.getRooms(...roomSlugs).toArray()
     };
   }
 
   render() {
     return <main className="room">
-      {this.state.rooms.toArray().map(room => {
+      {this.state.rooms.map(room => {
         return <Room key={room.id} room={room} />;
       })}
     </main>;
   }
 }
 
-const container = Container.create(RoomsContainer, { withProps: true });
+const container = Container.create(RoomsContainer);
 export default container;

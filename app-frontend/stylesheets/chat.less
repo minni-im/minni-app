@@ -85,6 +85,38 @@ body.chat {
   line-height: 80px;
 }
 
+.x-tabbar {
+  display: flex;
+  flex-flow: column nowrap;
+  .x-tabs {
+    border-bottom: 1px solid @gray-lighter;
+    padding: 0 10px;
+    a {
+      padding: 5px 10px;
+      display: inline-block;
+      position: relative;
+      top: 1px;
+      color: @gray-light;
+      vertical-align: bottom;
+      cursor: pointer;
+
+      &.x-tab-selected {
+        background-color: @white;
+        color: @color-dark;
+
+        border-top: 1px solid @gray-lighter;
+        border-left: 1px solid @gray-lighter;
+        border-right: 1px solid @gray-lighter;
+      }
+
+    }
+  }
+  .x-tab-content {
+    flex: 1;
+    background-color: @white;
+    padding: 10px 15px;
+  }
+}
 
 .minni-app {
   height: 100%;
@@ -290,6 +322,11 @@ body.chat {
       section.panel--contrast {
         background-color: @white;
         border-top: 1px solid darken(@gray-lighter, 5%);
+      }
+
+      section > .x-tabbar {
+        flex: 1;
+        margin: -10px;
       }
     }
 
@@ -675,7 +712,6 @@ header .user-info {
   }
 
   footer {
-    min-height: @main-footer-height;
     display: flex;
     flex-flow: column;
     border-top: 1px solid darken(@gray-lighter, 5%);
@@ -686,15 +722,15 @@ header .user-info {
       display: flex;
       flex-flow: row nowrap;
       align-items: flex-start;
+      justify-content: center;
 
       margin: 10px 10px 0 10px;
 
       position: relative;
-      border: 3px solid @gray-lighter;
-      border-radius: 3px;
-      background-color: @gray-lighter;
+      border-bottom: 1px solid darken(@gray-lighter, 5%);
 
       textarea {
+        background-color: inherit;
         padding: 10px 8px;
         margin: 0;
         border: none;
@@ -704,26 +740,14 @@ header .user-info {
         flex: 1;
         align-self: stretch;
         max-height: 180px;
-      }
-
-      .shadow {
-        margin: 10px 0;
-        font: inherit;
-        width: 0;
-        visibility: hidden;
-      }
-
-      textarea , .shadow {
         line-height: 20px;
       }
 
       .action {
         padding: 5px;
-        align-self: stretch;
-        justify-content: center;
         cursor: pointer;
-
         transition: background-color 250ms;
+        border-radius: 3px;
         svg {
           .square(24px);
           vertical-align: middle;
@@ -731,8 +755,13 @@ header .user-info {
         }
       }
 
+      .action:hover {
+        background-color: @electric-blue;
+
+      }
+
       .action + .action {
-        border-left: 1px solid @gray-lighter;
+        margin-left: 2px;
       }
 
       .suggestions {
@@ -762,18 +791,15 @@ header .user-info {
     }
 
     .composer.active {
-      border-color: @electric-blue;
-      background-color: @electric-blue;
-      .action {
-        svg {
-          fill: @color-light;
-        }
-      }
+      border-bottom-color: @electric-blue;
     }
 
     .composer {
       .action:hover {
-        background-color: fadeout(@black, 85%);
+        background-color: @electric-blue;
+        svg {
+          fill: @background-light;
+        }
       }
     }
 
@@ -821,11 +847,11 @@ header .user-info {
   .message-timestamp {
     margin: 0 -10px 10px -10px;
     text-align: center;
-    background-color: @gray-lighter;
+    background-color: fade(@black, 2%);
     h4 {
-      margin: 5px;
-      font-weight: 500;
-      font-size: 16px;
+      margin: 15px;
+      font-weight: 400;
+      font-size: 24px;
     }
 
   }

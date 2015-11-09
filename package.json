@@ -38,7 +38,7 @@
     "less-plugin-clean-css": "^1.5.1",
     "minimist": "^1.1.2",
     "run-sequence": "^1.1.2",
-    "svg-react-loader": "^0.2.0",
+    "svg-react-loader": "^0.3.1",
     "webpack": "^1.10.5"
   },
   "dependencies": {
@@ -74,8 +74,8 @@
     "passport-local": "^1.0.0",
     "passport.socketio": "^3.5.1",
     "react": "^0.14.0",
-    "react-dom": "^0.14.0-rc1",
-    "react-router": "^1.0.0-rc3",
+    "react-dom": "^0.14.0",
+    "react-router": "^1.0.0-rc4",
     "redis": "^0.12.1",
     "tape-recorder": "^1.2.2"
   }

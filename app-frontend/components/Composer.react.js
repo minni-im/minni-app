@@ -144,7 +144,7 @@ export default class Composer extends React.Component {
     return <div className="composer">
       <textarea ref="textarea"
         autoCorrect="off" autoComplete="off" spellCheck="true"
-        placeholder={`Chat in ${room.name}`}
+        placeholder="Type your message here"
         rows="1"
         onFocus={this._handleTextareaFocus.bind(this)}
         onBlur={this._handleTextareaFocus.bind(this)}

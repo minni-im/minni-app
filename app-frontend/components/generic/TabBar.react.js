@@ -2,7 +2,7 @@ import React from "react";
 import classnames from "classnames";
 
 export function TabPanel(props) {
-  return props.chidlren;
+  return <div>TabPanel should be used from TabBar</div>;
 }
 
 TabPanel.propTypes = {
@@ -43,7 +43,7 @@ export default class TabBar extends React.Component {
       tabClassNames[tab.props.className] = true;
     }
 
-    return <div className="x-tabbar">
+    return <div className={classnames(this.props.className, "x-tabbar")}>
       <nav className="x-tabs" onClick={this._onNavClicked.bind(this)}>{tabNav}</nav>
       <div className={classnames(tabClassNames)} onChange={tab.props.onChange}>{tab.props.children}</div>
     </div>;
