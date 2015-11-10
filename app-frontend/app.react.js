@@ -41,9 +41,8 @@ import ConnectionStore from "./stores/ConnectionStore";
 import SelectedAccountStore from "./stores/SelectedAccountStore";
 import SelectedRoomStore from "./stores/SelectedRoomStore";
 
-function selectAccount(meta, replaceState) {
-  const { accountSlug } = meta.params;
-  AccountActionCreators.selectAccount(accountSlug);
+function selectAccount(meta) {
+  AccountActionCreators.selectAccount(meta.params.accountSlug);
 }
 
 function selectRooms(meta, replaceState) {
@@ -74,9 +73,10 @@ ReactDOM.render((
         onEnter={selectAccount}>
 
         <IndexRoute components={{content: Lobby, sidebar: ContactList }} />
-        <Route path="lobby" components={{content: Lobby, sidebar: ContactList }} 
-          onEnter={RoomActionCreators.deselectRooms}/>
+        <Route path="lobby" components={{content: Lobby, sidebar: ContactList }}
+          onEnter={RoomActionCreators.deselectRooms} />
         <Route path="create" components={{content: RoomCreate, sidebar: ContactList }} />
+
       </Route>
 
       <Route path="chat/:accountSlug/messages"

@@ -43,7 +43,6 @@ function handleConnectionOpen() {
 }
 
 function handleRoomJoin({accountSlug, roomSlug}) {
-  logger.info(accountSlug, roomSlug);
   socket.emit("rooms:join", { accountSlug, roomSlug });
 }
 
@@ -52,7 +51,6 @@ class ConnectionStore extends ReduceStore {
     this.waitFor(AccountStore, UserStore);
     this.addAction(ActionTypes.CONNECTION_OPEN, withNoMutations(handleConnectionOpen));
 
-    this.waitFor(ConnectedRoomStore);
     this.addAction(ActionTypes.ROOM_JOIN, withNoMutations(handleRoomJoin));
   }
 

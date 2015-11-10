@@ -38,10 +38,10 @@ class UserStore extends MapStore {
     this.addAction(ActionTypes.LOAD_USERS_SUCCESS, handleUsersAdd);
   }
 
-  getUsers(usersId, exceptions = []) {
+  getUsers(usersId, except = []) {
     return this.getState().filter(user => {
       const { id } = user;
-      return usersId.indexOf(id) !== -1 && exceptions.indexOf(id) === -1;
+      return usersId.indexOf(id) !== -1 && except.indexOf(id) === -1;
     });
   }
 

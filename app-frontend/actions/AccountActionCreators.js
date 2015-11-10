@@ -20,6 +20,7 @@ export default {
   },
 
   fetchUsers(accountId) {
+    logger.info(`Fecthing users for '${accountId}'`);
     dispatch({
       type: ActionTypes.LOAD_USERS,
       accountId
@@ -42,7 +43,7 @@ export default {
   },
 
   fetchRooms(accountId) {
-    logger.info(`Fecthing some rooms for '${accountId}'`);
+    logger.info(`Fecthing rooms for '${accountId}'`);
     dispatch({
       type: ActionTypes.LOAD_ROOMS,
       accountId

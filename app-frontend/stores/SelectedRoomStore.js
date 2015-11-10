@@ -17,11 +17,12 @@ import { slugify } from "../utils/TextUtils";
 
 function handleRoomSelect(state, { accountSlug, roomSlug }) {
   const account = SelectedAccountStore.getAccount();
-  const rooms = AccountRoomStore.getRoomsSlug(account.id);
-  return state.set(accountSlug, rooms.intersect(roomSlug));
-  // return state.update(accountSlug, Immutable.Set(), (slugs) => {
-  //   return slugs.union(roomSlug);
-  // });
+  if (account) {
+    const rooms = AccountRoomStore.getRoomsSlug(account.id);
+    return state.set(accountSlug, rooms.intersect(roomSlug));
+  } else {
+    return state.set(accountSlug, Immutable.Set(roomSlug));
+  }
 }
 
 function handleRoomsDeselect(state, { accountSlug, roomSlugs }) {

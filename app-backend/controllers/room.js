@@ -169,7 +169,7 @@ export default (app) => {
       const roomKey = `${accountSlug}:${roomSlug}`;
       console.log(`'${req.user.id}' is joining '${roomKey}'`);
 
-      // req.socket.join(roomKey);
+      req.socket.join(roomKey);
       // req.socket.room(accountSlug).broadcast("users:join", { user: req.user, accountSlug, roomSlug });
     },
 
@@ -178,7 +178,7 @@ export default (app) => {
       const { accountSlug, roomSlug } = params;
       const roomKey = `${accountSlug}:${roomSlug}`;
       console.log(`'${req.user.id}' is leaving '${roomKey}'`);
-      req.io.leave(roomKey);
+      req.socket.leave(roomKey);
     }
   });
 };

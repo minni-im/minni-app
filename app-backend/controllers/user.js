@@ -3,7 +3,7 @@ import auth from "../auth";
 
 
 export default (app) => {
-
+  
   app.route("/profile")
     .all(requireLogin)
     .get((req, res) => {
@@ -30,9 +30,6 @@ export default (app) => {
 
 
   /* =Socket routes= */
-  app.io.route("disconnect", (req) => {
-    console.log("client socket disconnection");
-  });
 
   app.io.route("me", {
     ready(req) {

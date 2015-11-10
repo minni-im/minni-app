@@ -16,7 +16,6 @@ class RoomsContainer extends React.Component {
 
   static calculateState() {
     let roomSlugs = SelectedRoomStore.getRooms();
-    logger.info(roomSlugs);
     return {
       rooms: RoomStore.getRooms(...roomSlugs).toArray()
     };

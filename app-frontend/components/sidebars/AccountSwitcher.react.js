@@ -5,6 +5,7 @@ import { Container } from "flux/utils";
 import Platform from "../../utils/PlatformUtils";
 
 import SelectedAccountStore from "../../stores/SelectedAccountStore";
+import SelectedRoomStore from "../../stores/SelectedRoomStore";
 import AccountStore from "../../stores/AccountStore";
 import UserStore from "../../stores/UserStore";
 
@@ -22,7 +23,14 @@ class Account extends React.Component {
         "data-kbd-index": this.props.index
       };
     }
-    return <Link to={`/chat/${account.name}/lobby`} key={account.name}
+
+    let link = `/chat/${account.name}/lobby`;
+    const rooms = SelectedRoomStore.getRooms(account.slug);
+    if (rooms.size > 0) {
+      link = `/chat/${account.name}/messages/${rooms.join(",")}`;
+    }
+
+    return <Link to={link} key={account.name}
       title={account.displayName}
       className={classnames("account", {
         "account-selected": selected

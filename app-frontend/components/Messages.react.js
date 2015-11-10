@@ -156,6 +156,6 @@ export default class Messages extends React.Component {
   }
 
   _handleScroll() {
-    logger.warn("scrolling...");
+    //logger.warn("scrolling...");
   }
 }
