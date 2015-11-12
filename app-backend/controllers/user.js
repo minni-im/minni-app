@@ -3,7 +3,7 @@ import auth from "../auth";
 
 
 export default (app) => {
-  
+
   app.route("/profile")
     .all(requireLogin)
     .get((req, res) => {
@@ -32,10 +32,6 @@ export default (app) => {
   /* =Socket routes= */
 
   app.io.route("me", {
-    ready(req) {
-      req.io.broadcast("user:connection", req.data);
-    },
-
     whoami(req, res) {
       res.json(req.user);
     },

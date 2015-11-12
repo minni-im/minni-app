@@ -110,6 +110,9 @@ export default (app) => {
         res.json({
           ok: true,
           accounts: accounts.map(account => {
+            // Joining the corresponding account socket.io room
+            console.log(`'${req.user.id}' joining account:${account.id} (${account.name})`);
+            req.socket.join(account.id);
             return account.toAPI(req.user.id === account.adminId);
           })
         });

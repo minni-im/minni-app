@@ -165,20 +165,30 @@ export default (app) => {
 
     join(req) {
       const params = req.isSocket ? req.data : req.params;
-      const { accountSlug, roomSlug } = params;
-      const roomKey = `${accountSlug}:${roomSlug}`;
-      console.log(`'${req.user.id}' is joining '${roomKey}'`);
+      const { accountId, roomId } = params;
+      const socketKey = `${accountId}:${roomId}`;
 
-      req.socket.join(roomKey);
-      // req.socket.room(accountSlug).broadcast("users:join", { user: req.user, accountSlug, roomSlug });
+      console.log(`'${req.user.id}' is joining '${socketKey}'`);
+      req.socket.join(socketKey);
+      req.socket.broadcast.to(accountId).emit("users:join", {
+        user: req.user,
+        accountId,
+        roomId
+      });
     },
 
     leave(req) {
       const params = req.isSocket ? req.data : req.params;
-      const { accountSlug, roomSlug } = params;
-      const roomKey = `${accountSlug}:${roomSlug}`;
-      console.log(`'${req.user.id}' is leaving '${roomKey}'`);
-      req.socket.leave(roomKey);
+      const { accountId, roomId } = params;
+      const socketKey = `${accountId}:${roomId}`;
+
+      console.log(`'${req.user.id}' is leaving '${socketKey}'`);
+      req.socket.leave(socketKey);
+      req.socket.broadcast.to(accountId).emit("users:leave", {
+        user: req.user,
+        accountId,
+        roomId
+      });
     }
   });
 };

@@ -43,7 +43,9 @@ function handleConnectionOpen() {
 }
 
 function handleRoomJoin({accountSlug, roomSlug}) {
-  socket.emit("rooms:join", { accountSlug, roomSlug });
+  const accountId = AccountStore.getAccount(accountSlug).id;
+  const roomId = RoomStore.getRoom(roomSlug).id;
+  socket.emit("rooms:join", { accountId, roomId });
 }
 
 class ConnectionStore extends ReduceStore {

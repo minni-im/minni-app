@@ -25,15 +25,12 @@ function handleNewAccount(state, { account }) {
 
 function handleRoomJoin(state, { accountSlug, roomSlug }) {
   roomSlug = [].concat(roomSlug);
-  logger.info(accountSlug, "rooms to join", roomSlug);
   state = state.update(accountSlug, Immutable.Map(), map => {
     roomSlug.forEach(slug => {
       map = map.set(slug, true);
     });
-    logger.info(accountSlug, map.toJS());
     return map;
   });
-  logger.info(state.toJS());
   Storage.set(CONNECTED_ROOMS, state.toJS());
   return state;
 }
@@ -51,10 +48,10 @@ function handleConnectionOpen(state) {
     return state;
   }
   state.forEach((slugs, accountSlug) => {
-    logger.info(slugs);
-    setImmediate(() => {
+    // TODO: Should not use timeout here. Should make sure to have proper init events called in the right order.
+    setTimeout(() => {
       RoomActionCreators.joinRoom(accountSlug, slugs.keySeq().toJS());
-    });
+    }, 500);
   });
   return state;
 }
@@ -72,7 +69,8 @@ class ConnectedRoomStore extends MapStore {
 
   getInitialState() {
     let list = Storage.get(CONNECTED_ROOMS);
-    return Immutable.Map(list);
+    if (!list) { return Immutable.Map(); }
+    return Immutable.fromJS(list).map(rooms => rooms.map(roomIdState => false));
   }
 
   isRoomConnected(accountSlug, roomSlug) {

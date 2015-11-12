@@ -47,6 +47,10 @@ class RoomStore extends MapStore {
       ActionTypes.ROOM_UNSTAR_FAILURE, handleRoomFavoriteFailure);
   }
 
+  getRoom(roomSlug) {
+    return this.getRooms(roomSlug).first();
+  }
+
   getRooms(...roomSlugs) {
     let rooms = this.getState().filter(room => {
       return roomSlugs.indexOf(room.slug) !== -1;

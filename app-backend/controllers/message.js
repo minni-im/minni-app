@@ -18,13 +18,14 @@ export default (app) => {
 
       message.save().then(newMessage => {
         let json = newMessage.toAPI();
+        const socketKey = `${message.accountId}:${message.roomId}`;
         res.status(201).json({
           ok: true,
           message: nonce ? Object.assign(json, {nonce}) : json
         });
         //TODO should trigger here embeds + pipeline execution, and push results back to socket for client update
         setTimeout(() => {
-          app.io.emit("messages:create", Object.assign(json, {
+          app.io.in(socketKey).emit("messages:create", Object.assign(json, {
             content: `EDITED: ${json.content}`
           }));
         }, Math.ceil(Math.random() * 3000));

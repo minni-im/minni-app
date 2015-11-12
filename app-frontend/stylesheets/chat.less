@@ -724,14 +724,17 @@ header .user-info {
       align-items: flex-start;
       justify-content: center;
 
-      margin: 10px 10px 0 10px;
+      margin-top: 6px;
+      padding-left: 10px;
+      padding-right: 10px;
 
       position: relative;
-      border-bottom: 1px solid darken(@gray-lighter, 5%);
+      border-bottom: 1px solid @gray-lighter;
+      transition: border 250ms linear;
 
       textarea {
         background-color: inherit;
-        padding: 10px 8px;
+        padding: 10px 8px 14px 8px;
         margin: 0;
         border: none;
         border-radius: 0;
@@ -791,7 +794,7 @@ header .user-info {
     }
 
     .composer.active {
-      border-bottom-color: @electric-blue;
+      border-bottom-color: darken(@gray-lighter, 5%);
     }
 
     .composer {
