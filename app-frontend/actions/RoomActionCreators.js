@@ -113,7 +113,6 @@ export default {
     return request(EndPoints.ROOM_MESSAGES(roomId))
       .then(({ok, messages, errors}) => {
         if (ok) {
-          logger.info(roomId, messages.length);
           dispatch({
             type: ActionTypes.LOAD_MESSAGES_SUCCESS,
             roomId,
@@ -127,5 +126,9 @@ export default {
           });
         }
       });
+  },
+
+  sendTyping(roomId) {
+    return request(EndPoints.TYPING(roomId), { method: "POST" });
   }
 };

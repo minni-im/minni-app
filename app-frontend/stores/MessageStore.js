@@ -28,7 +28,7 @@ function mergeMessage(messages, message) {
   }
 }
 
-function handleIncomingMessage(state, { roomId, message }) {
+function handleMessageCreate(state, { roomId, message }) {
   let messages = state.get(roomId, Immutable.OrderedMap());
   const nonce = message.nonce;
   if (nonce !== null && messages.has(nonce)) {
@@ -57,7 +57,7 @@ function handleLoadMessagesSuccess(state, { roomId, messages: newMessages }) {
 class MessageStore extends MapStore {
   initialize() {
     this.waitFor(UserStore, RoomStore);
-    this.addAction(ActionTypes.MESSAGE_CREATE, handleIncomingMessage);
+    this.addAction(ActionTypes.MESSAGE_CREATE, handleMessageCreate);
     this.addAction(ActionTypes.LOAD_MESSAGES_SUCCESS, handleLoadMessagesSuccess);
   }
 

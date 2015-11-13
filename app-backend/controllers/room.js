@@ -31,6 +31,10 @@ export default (app) => {
     req.io.route("rooms:messages");
   });
 
+  app.post("/api/rooms/:roomId/typing", requireLogin, requireValidRoom, (req) => {
+    req.io.route("rooms:typing");
+  });
+
   app.io.route("rooms", {
     star(req, res) {
       const { room, user } = req;
@@ -171,7 +175,7 @@ export default (app) => {
       console.log(`'${req.user.id}' is joining '${socketKey}'`);
       req.socket.join(socketKey);
       req.socket.broadcast.to(accountId).emit("users:join", {
-        user: req.user,
+        user: req.user.toJSON(),
         accountId,
         roomId
       });
@@ -185,9 +189,18 @@ export default (app) => {
       console.log(`'${req.user.id}' is leaving '${socketKey}'`);
       req.socket.leave(socketKey);
       req.socket.broadcast.to(accountId).emit("users:leave", {
-        user: req.user,
+        user: req.user.toJSON(),
         accountId,
         roomId
+      });
+    },
+
+    typing(req) {
+      const { roomId } = req.params;
+      const { user } = req;
+      req.socket.broadcast.to(roomId).emit("users:typing", {
+        roomId,
+        userId: user.id
       });
     }
   });

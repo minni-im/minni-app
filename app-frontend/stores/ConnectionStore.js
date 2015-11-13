@@ -35,6 +35,14 @@ socket.on("messages:create", (message) => {
   RoomActionCreators.receiveMessage(message.roomId, message);
 });
 
+socket.on("users:typing", ({ roomId, userId }) => {
+  dispatch({
+    type: ActionTypes.TYPING_START,
+    roomId,
+    userId
+  });
+});
+
 function handleConnectionOpen() {
   const appHolder = document.querySelector("#minni");
   setTimeout(()=> {
