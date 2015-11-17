@@ -10,6 +10,7 @@ export default (app) => {
     create(req, res) {
       const Message = recorder.model("Message");
       const nonce = req.body.nonce;
+      const { accountId } = req.body;
       let message = new Message({
         content: req.body.content,
         userId: req.body.userId,
@@ -18,17 +19,13 @@ export default (app) => {
 
       message.save().then(newMessage => {
         let json = newMessage.toAPI();
-        const socketKey = `${message.accountId}:${message.roomId}`;
+        const socketKey = `${accountId}:${message.roomId}`;
         res.status(201).json({
           ok: true,
           message: nonce ? Object.assign(json, {nonce}) : json
         });
-        //TODO should trigger here embeds + pipeline execution, and push results back to socket for client update
-        setTimeout(() => {
-          app.io.in(socketKey).emit("messages:create", Object.assign(json, {
-            content: `EDITED: ${json.content}`
-          }));
-        }, Math.ceil(Math.random() * 3000));
+        app.io.in(socketKey).emit("messages:create", json);
+        //TODO should trigger here embeds + pipeline execution, and push results back to sockets for client update
       }, error => {
         res.json({
           ok: false,

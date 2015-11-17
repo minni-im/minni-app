@@ -23,11 +23,11 @@ function handleUserAdd(state, { user }) {
   return state.set(user.id, new User(user));
 }
 
-function handleConnectionOpen(state, { user }) {
+function handleConnectionOpen(state, { user, users }) {
   connectedUserId = user.id;
   state = state.set(user.id, new User(user));
   logger.info("Registering logged in user", user.fullname);
-  return state;
+  return handleUsersAdd(state, { users});
 }
 
 class UserStore extends MapStore {

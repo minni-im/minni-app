@@ -13,7 +13,6 @@ import Logger from "../libs/Logger";
 const logger = Logger.create("RoomStore");
 
 function handleLoadRoomsSuccess(state, { rooms }) {
-  const account = SelectedAccountStore.getAccount();
   const user = UserStore.getConnectedUser();
   logger.info(rooms.length, `new room(s)`);
   return state.withMutations(map => {
@@ -40,11 +39,17 @@ function handleRoomFavoriteFailure(state, { message }) {
 class RoomStore extends MapStore {
   initialize() {
     this.waitFor(SelectedAccountStore);
-    this.addAction(ActionTypes.LOAD_ROOMS_SUCCESS, handleLoadRoomsSuccess);
+    this.addAction(ActionTypes.LOAD_ROOMS_SUCCESS,
+      ActionTypes.CONNECTION_OPEN, handleLoadRoomsSuccess);
+
     this.addAction(ActionTypes.ROOM_STAR,
       ActionTypes.ROOM_UNSTAR, handleRoomFavorite);
     this.addAction(ActionTypes.ROOM_STAR_FAILURE,
       ActionTypes.ROOM_UNSTAR_FAILURE, handleRoomFavoriteFailure);
+  }
+
+  get(roomId) {
+    return this.getState().get(roomId);
   }
 
   getRoom(roomSlug) {
@@ -56,6 +61,10 @@ class RoomStore extends MapStore {
       return roomSlugs.indexOf(room.slug) !== -1;
     });
     return rooms;
+  }
+
+  getRoomsById(...ids) {
+    return this.getState().filter(room => ids.indexOf(room.id) !== -1);
   }
 }
 

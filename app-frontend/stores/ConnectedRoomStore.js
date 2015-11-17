@@ -7,8 +7,9 @@ import { dispatch } from "../dispatchers/Dispatcher";
 import { ActionTypes } from "../Constants";
 
 import AccountStore from "./AccountStore";
-import SelectedAccountStore from "./SelectedAccountStore";
 import RoomStore from "./RoomStore";
+
+import SelectedAccountStore from "./SelectedAccountStore";
 
 import Storage from "../libs/Storage";
 
@@ -19,17 +20,18 @@ const logger = Logger.create("ConnectedRoomStore");
 
 const CONNECTED_ROOMS = "connectedRooms";
 
+let __connected = false;
+
+// TODO: to be updated with ID instead of slug
 function handleNewAccount(state, { account }) {
   return state.set(account, Immutable.Set());
 }
 
 function handleRoomJoin(state, { accountSlug, roomSlug }) {
-  roomSlug = [].concat(roomSlug);
-  state = state.update(accountSlug, Immutable.Map(), map => {
-    roomSlug.forEach(slug => {
-      map = map.set(slug, true);
-    });
-    return map;
+  const { id: accountId } = AccountStore.getAccount(accountSlug);
+  const { id: roomId } = RoomStore.getRoom(roomSlug);
+  state = state.update(accountId, Immutable.Set(), map => {
+    return map.add(roomId);
   });
   Storage.set(CONNECTED_ROOMS, state.toJS());
   return state;
@@ -43,17 +45,8 @@ function handleRoomLeave(state, { accountSlug, roomSlug }) {
   return state;
 }
 
-function handleConnectionOpen(state) {
-  if (state.size === 0) {
-    return state;
-  }
-  state.forEach((slugs, accountSlug) => {
-    // TODO: Should not use timeout here. Should make sure to have proper init events called in the right order.
-    setTimeout(() => {
-      RoomActionCreators.joinRoom(accountSlug, slugs.keySeq().toJS());
-    }, 500);
-  });
-  return state;
+function handleConnectionOpen({accounts}) {
+  __connected = true;
 }
 
 class ConnectedRoomStore extends MapStore {
@@ -61,27 +54,36 @@ class ConnectedRoomStore extends MapStore {
     this.waitFor(AccountStore, SelectedAccountStore, RoomStore);
     this.addAction(ActionTypes.ACCOUNT_NEW, handleNewAccount);
 
+    this.addAction(ActionTypes.CONNECTION_OPEN, withNoMutations(handleConnectionOpen));
+
     this.addAction(ActionTypes.ROOM_JOIN, handleRoomJoin);
     this.addAction(ActionTypes.ROOM_LEAVE, handleRoomLeave);
-
-    this.addAction(ActionTypes.CONNECTION_OPEN, handleConnectionOpen);
   }
 
   getInitialState() {
     let list = Storage.get(CONNECTED_ROOMS);
     if (!list) { return Immutable.Map(); }
-    return Immutable.fromJS(list).map(rooms => rooms.map(roomIdState => false));
+    return Immutable.fromJS(list).map(i => i.toSet());
   }
 
   isRoomConnected(accountSlug, roomSlug) {
-    const accountRooms = this.get(accountSlug);
-    if (!accountRooms) { return false; }
-    return this.get(accountSlug).get(roomSlug, false);
+    if (!__connected) {
+      return true;
+    }
+    const { id: accountId } = AccountStore.getAccount(accountSlug);
+    const { id: roomId } = RoomStore.getRoom(roomSlug);
+    if (accountId && roomId) {
+      return this.getState().get(accountId, Immutable.Set()).has(roomId);
+    }
+    return false;
   }
 
-  getRooms(accountSlug) {
-    const roomSlugs = this.get(accountSlug) || Immutable.Map();
-    return RoomStore.getRooms(...roomSlugs.keySeq().toJS());
+  getRooms(accountId) {
+    if (!__connected || !accountId) {
+      return Immutable.Map();
+    }
+    const roomsId = this.getState().get(accountId, Immutable.Set()).toArray();
+    return RoomStore.getRoomsById(...roomsId);
   }
 }
 

@@ -11,7 +11,23 @@ export function request(url, options = {}) {
     }
   }, options);
 
-  return fetch(url, options)
+  const params = Object.keys(options.params || {})
+    .map(key => {
+      return `${key}=${encodeURIComponent(options.params[key])}`;
+    })
+    .join("&");
+
+  function getUrl() {
+    if (params.length &&
+      !options.method ||
+      (options.method && options.method.toLowerCase() === "get")) {
+      delete options.params;
+      return `${url}?${params}`;
+    }
+    return url;
+  }
+
+  return fetch(getUrl(), options)
     .then(response => {
       return response.json();
     });

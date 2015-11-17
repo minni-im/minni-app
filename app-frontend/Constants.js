@@ -1,6 +1,7 @@
 import keyMirror from "keymirror";
 
 export const ActionTypes = keyMirror({
+  CONNECTION_START: null,
   CONNECTION_OPEN: null,
 
   LOAD_USER: null,
@@ -77,6 +78,12 @@ export const TYPING_TIMEOUT = 5000;
 
 export const MAX_MESSAGES_PER_ROOMS = 50;
 export const MAX_MESSAGE_LENGTH = 2000;
+
+export const SOCKETIO_OPTIONS = {
+  reconnectionDelay: 1000,
+  reconnectionAttempts: 7,
+  reconnectionDelayMax: 45000
+};
 
 export const EndPoints = {
   ACCOUNT_ROOMS: (accountId) => `/api/accounts/${accountId}/rooms`,

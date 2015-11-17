@@ -4,7 +4,7 @@ import moment from "moment";
 import Dispatcher from "../dispatchers/Dispatcher";
 import { MapStore } from "../libs/Flux";
 
-import { ActionTypes } from "../Constants";
+import { ActionTypes, MAX_MESSAGES_PER_ROOMS } from "../Constants";
 
 import UserStore from "../stores/UserStore";
 import RoomStore from "../stores/RoomStore";
@@ -37,6 +37,9 @@ function handleMessageCreate(state, { roomId, message }) {
   } else {
     messages = messages.withMutations(map => {
       map.set(message.id, mergeMessage(map, message));
+      while (map.size > MAX_MESSAGES_PER_ROOMS) {
+        map.remove(map.first().id);
+      }
     });
   }
   return state.set(roomId, messages);

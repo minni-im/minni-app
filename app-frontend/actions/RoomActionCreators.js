@@ -12,9 +12,6 @@ import { createMessage } from "../utils/MessageUtils";
 
 export default {
   joinRoom(accountSlug, roomSlug) {
-    if (!Array.isArray(roomSlug)) {
-      roomSlug = [ roomSlug ];
-    }
     roomSlug.forEach(slug => {
       if (!ConnectedRoomStore.isRoomConnected(accountSlug, slug)) {
         dispatch({
@@ -27,10 +24,9 @@ export default {
   },
 
   selectRoom(accountSlug, roomSlug) {
-    if (!Array.isArray(roomSlug)) {
-      roomSlug = [ roomSlug ];
-    }
+
     this.joinRoom(accountSlug, roomSlug);
+
     dispatch({
       type: ActionTypes.ROOM_SELECT,
       accountSlug,
@@ -110,7 +106,11 @@ export default {
         roomId
       });
     }
-    return request(EndPoints.ROOM_MESSAGES(roomId))
+    return request(EndPoints.ROOM_MESSAGES(roomId), {
+        params: {
+          limit
+        }
+      })
       .then(({ok, messages, errors}) => {
         if (ok) {
           dispatch({

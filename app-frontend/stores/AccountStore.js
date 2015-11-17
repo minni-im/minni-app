@@ -19,6 +19,7 @@ function handleConnectionOpen(state, { accounts }) {
       map.set(account.slug, account);
     });
   });
+  logger.info(state.toJS());
   return state;
 }
 

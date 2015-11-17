@@ -151,8 +151,9 @@ export default (app) => {
     messages(req, res) {
       const Message = recorder.model("Message");
       const { roomId } = req.params;
-      console.log(`Fetching messages for room:${roomId}`);
-      Message.getHistory(roomId)
+      const { limit } = req.query;
+      console.log(`Fetching ${limit} messages for room:${roomId}`);
+      Message.getHistory(roomId, null, null, limit)
         .then(messages => {
           res.json({
             ok: true,
@@ -174,7 +175,7 @@ export default (app) => {
 
       console.log(`'${req.user.id}' is joining '${socketKey}'`);
       req.socket.join(socketKey);
-      req.socket.broadcast.to(accountId).emit("users:join", {
+      req.socket.broadcast.to(socketKey).emit("users:join", {
         user: req.user.toJSON(),
         accountId,
         roomId
@@ -188,7 +189,7 @@ export default (app) => {
 
       console.log(`'${req.user.id}' is leaving '${socketKey}'`);
       req.socket.leave(socketKey);
-      req.socket.broadcast.to(accountId).emit("users:leave", {
+      req.socket.broadcast.to(socketKey).emit("users:leave", {
         user: req.user.toJSON(),
         accountId,
         roomId

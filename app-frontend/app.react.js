@@ -48,7 +48,7 @@ function selectAccount(meta) {
 function selectRooms(meta, replaceState) {
   const { accountSlug } = meta.params;
   let roomSlugs = meta.params.roomSlugs.split(",");
-  RoomActionCreators.selectRoom(accountSlug, roomSlugs);
+  RoomActionCreators.selectRoom(accountSlug, roomSlugs, false);
 }
 
 function deselectAccount() {

@@ -1,6 +1,5 @@
 import invariant from "invariant";
 import { ReduceStore as FluxReduceStore, MapStore as FluxMapStore } from "flux/utils";
-
 import { Mixin as mixin } from "./Mixin";
 import { debounce } from "../utils/TimerUtils";
 
@@ -38,9 +37,10 @@ const StoreOverlay = {
     },
 
     syncWith(stores, callback) {
-      const wrapper = debounce(() => {
+      const wrapper = () => {
         let startingState = this._state;
         let endingState = callback.call(this, startingState);
+
         invariant(
           endingState !== undefined,
           "%s returned undefined from a syncWith(...) callback, did you forget to return " +
@@ -51,8 +51,8 @@ const StoreOverlay = {
           this._state = endingState;
           this.__emitter.emit(this.__changeEvent);
         }
-      });
-      storesStore.forEach(store => store.addListener(wrapper));
+      };
+      stores.forEach(store => store.addListener(wrapper));
     }
 };
 

@@ -2,6 +2,7 @@ import Dispatcher from "../dispatchers/Dispatcher";
 import Immutable from "immutable";
 
 import { MapStore } from "../libs/Flux";
+import AccountStore from "./AccountStore";
 import RoomStore from "./RoomStore";
 
 import Logger from "../libs/Logger";
@@ -19,7 +20,7 @@ function syncFromRoomChange(state) {
 
 class AccountRoomStore extends MapStore {
   initialize() {
-    this.syncWith([RoomStore], syncFromRoomChange);
+    this.syncWith([AccountStore, RoomStore], syncFromRoomChange);
   }
 
   getRooms(accountId) {

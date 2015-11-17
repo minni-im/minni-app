@@ -11,6 +11,7 @@ import SelectedAccountStore from "../../stores/SelectedAccountStore";
 import ConnectedRoomStore from "../../stores/ConnectedRoomStore";
 import RoomStore from "../../stores/RoomStore";
 import SelectedRoomStore from "../../stores/SelectedRoomStore";
+import UnreadMessageStore from "../../stores/UnreadMessageStore";
 
 import { LobbyIcon, RoomIcons } from "../../utils/IconsUtils";
 import UserInfoPanel from "../UserInfoPanel.react";
@@ -21,7 +22,7 @@ const logger = Logger.create("MainSideBar");
 class MainSidebar extends React.Component {
   static getStores() {
     return [ AccountStore, SelectedAccountStore,
-      RoomStore, ConnectedRoomStore, SelectedRoomStore ];
+      RoomStore, ConnectedRoomStore, SelectedRoomStore, UnreadMessageStore ];
   }
 
   static calculateState() {
@@ -30,7 +31,7 @@ class MainSidebar extends React.Component {
       accountsSize: AccountStore.getState().size,
       account: account,
       selectedRooms: SelectedRoomStore.getRooms(),
-      rooms: ConnectedRoomStore.getRooms(account && account.slug || "----", [])
+      rooms: ConnectedRoomStore.getRooms(account && account.id)
     };
   }
 
@@ -53,15 +54,19 @@ class MainSidebar extends React.Component {
           <span className="icon"><LobbyIcon /></span>
           <span className="name">Lobby</span>
         </Link>
-        {rooms.size > 0 ? <a className="separator">Rooms</a> : false}
+        <a className="separator">{rooms.size === 0 ? "No connected rooms" : "Rooms"}</a>
+
         {rooms.toSeq().sortBy(room => {
           return room.starred ? "a" : "z" + "-" + room.name;
         }).toArray().map(room => {
           const selected = selectedRooms.has(room.slug);
+          const unreadCount = UnreadMessageStore.getUnreadCount(account.id, room.id);
+
           return <Link key={room.id}
             className={classnames("room", {
               "room--starred": room.starred,
-              "room--selected": selected
+              "room--selected": selected,
+              "room--unread": unreadCount > 0
             })}
             onClick={this._onRoomClicked.bind(this)} data-slug={room.slug}
             to={`/chat/${account.slug}/messages/${room.slug}`}>
@@ -69,6 +74,7 @@ class MainSidebar extends React.Component {
                 <RoomIcons.RoomPublicIcon />
             </span>
             <span className="name">{room.name}</span>
+            {unreadCount > 0 ? <span className="unread">{unreadCount}</span> : false}
             <span className="quit" title="Quit this room">×</span>
           </Link>;
         })}

@@ -1,7 +1,7 @@
 import { ReduceStore, withNoMutations } from "../libs/Flux";
 import Dispatcher, { dispatch } from "../dispatchers/Dispatcher";
 
-import { ActionTypes } from "../Constants";
+import { ActionTypes, SOCKETIO_OPTIONS } from "../Constants";
 
 import AccountActionCreators from "../actions/AccountActionCreators";
 import RoomActionCreators from "../actions/RoomActionCreators";
@@ -14,25 +14,36 @@ import UserStore from "../stores/UserStore";
 import Logger from "../libs/Logger";
 const logger = Logger.create("ConnectionStore");
 
-const socket = window.io.connect("/");
+const socket = window.io.connect("/", SOCKETIO_OPTIONS);
 socket.on("connect", () => {
-  socket.emit("me:whoami", (me) => {
-    socket.emit("accounts:list", ({accounts}) => {
-      accounts.forEach(account => {
-        AccountActionCreators.fetchUsers(account.id);
-        AccountActionCreators.fetchRooms(account.id);
-      });
-      dispatch({
-        type: ActionTypes.CONNECTION_OPEN,
-        user: me,
-        accounts
-      });
-    });
+  dispatch({
+    type: ActionTypes.CONNECTION_START
+  });
+});
+
+socket.on("connected", ({ user, accounts, rooms, users }) => {
+  dispatch({
+    type: ActionTypes.CONNECTION_OPEN,
+    user,
+    accounts,
+    rooms,
+    users
   });
 });
 
 socket.on("messages:create", (message) => {
-  RoomActionCreators.receiveMessage(message.roomId, message);
+  const { id: userId } = UserStore.getConnectedUser();
+  if (userId !== message.userId) {
+    RoomActionCreators.receiveMessage(message.roomId, message);
+  }
+});
+
+socket.on("users:join", ({user, roomId}) => {
+  logger.warn(`${user.fullname} has joined ${roomId}`);
+});
+
+socket.on("users:disconnect", ({ user, rooms }) => {
+  logger.warn(`${user.fullname} disconnected`, rooms);
 });
 
 socket.on("users:typing", ({ roomId, userId }) => {
@@ -42,6 +53,13 @@ socket.on("users:typing", ({ roomId, userId }) => {
     userId
   });
 });
+
+
+function handleConnectionstart() {
+  socket.emit("connect-me", {
+    connectedRooms: ConnectedRoomStore.getState().toJS()
+  });
+}
 
 function handleConnectionOpen() {
   const appHolder = document.querySelector("#minni");
@@ -59,6 +77,7 @@ function handleRoomJoin({accountSlug, roomSlug}) {
 class ConnectionStore extends ReduceStore {
   initialize() {
     this.waitFor(AccountStore, UserStore);
+    this.addAction(ActionTypes.CONNECTION_START, withNoMutations(handleConnectionstart));
     this.addAction(ActionTypes.CONNECTION_OPEN, withNoMutations(handleConnectionOpen));
 
     this.addAction(ActionTypes.ROOM_JOIN, withNoMutations(handleRoomJoin));

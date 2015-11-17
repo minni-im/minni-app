@@ -7,17 +7,12 @@ function createSound(soundSrc) {
   return sound;
 }
 
-function playSound(name, volume=1) {
+export function playSound(name, volume=1) {
   let sound = soundStore[name];
   if (!sound) {
     sound = createSound(name);
     soundStore[name] = sound;
   }
   sound.volume = volume;
-  sound.load();
   sound.play();
 }
-
-export default {
-  playSound: playSound
-};
