@@ -295,7 +295,6 @@ body.chat {
         overflow: auto;
         display: flex;
         flex-flow: column nowrap;
-        padding: 10px;
 
         h2, h3 {
           color: @electric-blue;
@@ -324,9 +323,12 @@ body.chat {
         border-top: 1px solid darken(@gray-lighter, 5%);
       }
 
-      section > .x-tabbar {
+      section.panel--wrapper {
+        padding: 10px;
+      }
+
+      section .x-tabbar {
         flex: 1;
-        margin: -10px;
       }
     }
 
@@ -734,7 +736,7 @@ header .user-info {
 
       textarea {
         background-color: inherit;
-        padding: 10px 8px 14px 8px;
+        padding: 10px 0 14px;
         margin: 0;
         border: none;
         border-radius: 0;
@@ -806,6 +808,12 @@ header .user-info {
       }
     }
 
+    .footer {
+      display:flex;
+      flex-flow:row;
+      margin:0 10px;
+    }
+
     .typing-info, .contextual-info {
       font-size: 11px;
       color: @gray-light;
@@ -813,6 +821,12 @@ header .user-info {
 
     .typing-info {
       flex: 3;
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      .avatar {
+        margin-right: 5px;
+      }
     }
 
     .contextual-info {
@@ -846,17 +860,18 @@ header .user-info {
 
 
 .messages {
+  padding: 10px;
 
   .message-timestamp {
+    padding: 1px;
     margin: 0 -10px 10px -10px;
     text-align: center;
     background-color: fade(@black, 2%);
     h4 {
-      margin: 15px;
+      margin: 15px 0;
       font-weight: 400;
       font-size: 24px;
     }
-
   }
 
   .message-group {

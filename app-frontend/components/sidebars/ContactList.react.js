@@ -15,7 +15,7 @@ export default class ContactList extends React.Component {
           <h3>{teamSize} teammate{teamSize > 1 ? "s" : ""}</h3>
         </div>
       </header>
-      <section className="panel">
+      <section className="panel panel--wrapper">
         {teamSize ? this.renderList() : this.renderEmptyList()}
       </section>
     </aside>;

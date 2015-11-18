@@ -29,11 +29,20 @@ function handleMessageCreate(state, { roomId, message: { userId } }) {
   return handleTypingStop.call(this, state, { roomId, userId });
 }
 
+function handleConnectionOpen(state, { rooms }) {
+  return state.clear().withMutations(map => {
+    rooms.forEach(({ id: roomId }) => {
+      map.set(roomId, Immutable.OrderedMap());
+    });
+  });
+}
+
 class TypingStore extends MapStore {
   initialize() {
     this.addAction(ActionTypes.TYPING_START, handleTypingStart);
     this.addAction(ActionTypes.TYPING_STOP, handleTypingStop);
-    this.onAction(ActionTypes.MESSAGE_CREATE, handleMessageCreate);
+    this.addAction(ActionTypes.MESSAGE_CREATE, handleMessageCreate);
+    this.addAction(ActionTypes.CONNECTION_OPEN, handleConnectionOpen);
   }
 
   getTypingUsers(roomId) {

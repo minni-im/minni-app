@@ -196,13 +196,18 @@ export default (app) => {
       });
     },
 
-    typing(req) {
+    typing(req, res) {
       const { roomId } = req.params;
+      const { accountId } = req.body;
       const { user } = req;
-      req.socket.broadcast.to(roomId).emit("users:typing", {
+      const socketKey = `${accountId}:${roomId}`;
+      app.io.in(socketKey).emit("users:typing", {
         roomId,
         userId: user.id
       });
+      if (!req.isSocket) {
+        res.status(204).send();
+      }
     }
   });
 };

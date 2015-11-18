@@ -35,7 +35,7 @@ export default class Room extends React.Component {
       <footer onClick={this._handleFooterOnClick.bind(this)}>
         <Composer ref="composer" room={room} defaultValue={defaultValue}
           onSubmit={this._handleSendMessage.bind(this)} />
-        <div style={{display: "flex", flexFlow: "row", margin: "0 15px"}}>
+        <div className="footer">
           <TypingInfo room={room} />
           <div className="contextual-info">
             <span className="formatting-tips has-tooltip">

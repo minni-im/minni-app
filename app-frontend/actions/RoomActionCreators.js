@@ -24,9 +24,7 @@ export default {
   },
 
   selectRoom(accountSlug, roomSlug) {
-
     this.joinRoom(accountSlug, roomSlug);
-
     dispatch({
       type: ActionTypes.ROOM_SELECT,
       accountSlug,
@@ -129,6 +127,10 @@ export default {
   },
 
   sendTyping(roomId) {
-    return request(EndPoints.TYPING(roomId), { method: "POST" });
+    const { id: accountId } = SelectedAccountStore.getAccount();
+    return request(EndPoints.TYPING(roomId), {
+      method: "POST",
+      body: { accountId }
+    });
   }
 };

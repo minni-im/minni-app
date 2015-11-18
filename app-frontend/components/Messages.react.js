@@ -115,8 +115,8 @@ export default class Messages extends React.Component {
         messages={content} />;
     });
 
-    return <section className="panel panel--contrast messages" ref="scroller" onScroll={this._handleScroll.bind(this)}>
-      {messageGroupFinal}
+    return <section className="panel panel--contrast" ref="scroller" onScroll={this._handleScroll.bind(this)}>
+      <div className="panel-wrapper messages">{messageGroupFinal}</div>
     </section>;
   }
 

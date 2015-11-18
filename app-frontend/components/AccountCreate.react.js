@@ -33,7 +33,7 @@ export default class AccountCreate extends React.Component {
             <h3>A team is a central place where you and your coworkers can collaborate and get things done.</h3>
           </div>
         </header>
-        <section className="panel panel--contrast">
+        <section className="panel panel--contrast panel--wrapper">
           <div>
             <form onSubmit={this._onHandleSubmit.bind(this)}>
               <h3>Please name and describe your {Minni.name} team.</h3>

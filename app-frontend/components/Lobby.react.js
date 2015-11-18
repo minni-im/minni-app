@@ -67,7 +67,7 @@ export default class Lobby extends React.Component {
           {settingsIcon}
         </div>
       </header>
-      <section className="panel">
+      <section className="panel panel--wrapper">
         <header>
           <h2>Rooms</h2>
           <div className="actions">

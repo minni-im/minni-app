@@ -54,7 +54,6 @@ socket.on("users:typing", ({ roomId, userId }) => {
   });
 });
 
-
 function handleConnectionstart() {
   socket.emit("connect-me", {
     connectedRooms: ConnectedRoomStore.getState().toJS()

@@ -6,6 +6,8 @@ import { SmileyIcon, UploadIcon } from "../utils/IconsUtils";
 import ComposerActionCreators from "../actions/ComposerActionCreators";
 import UploadActionCreators from "../actions/UploadActionCreators";
 
+import TypingUtils from "../utils/TypingUtils";
+
 import Logger from "../libs/Logger";
 const logger = Logger.create("Composer.react");
 
@@ -80,6 +82,7 @@ export default class Composer extends React.Component {
   _handleOnChange(event) {
     const text = event.target.value;
     this._computeTextAreaHeight(text.split("\n").length);
+    TypingUtils.sendTyping(this.props.room.id);
   }
 
   _handleOnKeyPress(event) {
