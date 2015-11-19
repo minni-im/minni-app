@@ -1,5 +1,6 @@
 import React from "react";
 import { Container } from "flux/utils";
+import classnames from "classnames";
 
 import Room from "./Room.react";
 
@@ -17,15 +18,19 @@ class RoomsContainer extends React.Component {
   static calculateState() {
     let roomSlugs = SelectedRoomStore.getRooms();
     return {
-      rooms: RoomStore.getRooms(...roomSlugs).toArray()
+      rooms: RoomStore.getRooms(...roomSlugs)
     };
   }
 
   render() {
-    return <main className="room">
+    const size = this.state.rooms.size;
+    const classNames = classnames("room", {
+      "split-rooms": this.state.rooms.size > 1
+    });
+    return <main className={classNames}>
       {this.state.rooms.map(room => {
         return <Room key={room.id} room={room} />;
-      })}
+      }).toArray()}
     </main>;
   }
 }
