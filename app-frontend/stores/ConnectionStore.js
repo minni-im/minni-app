@@ -38,6 +38,10 @@ socket.on("messages:create", (message) => {
   }
 });
 
+socket.on("messages:update", (message) => {
+  RoomActionCreators.updateMessage(message.roomId, message);
+});
+
 socket.on("users:join", ({user, roomId}) => {
   logger.warn(`${user.fullname} has joined ${roomId}`);
 });

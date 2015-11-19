@@ -77,6 +77,8 @@
     "react-dom": "^0.14.0",
     "react-router": "^1.0.0-rc4",
     "redis": "^0.12.1",
-    "tape-recorder": "^1.2.2"
+    "request": "^2.67.0",
+    "tape-recorder": "^1.2.2",
+    "twitter-text": "^1.13.2"
   }
 }

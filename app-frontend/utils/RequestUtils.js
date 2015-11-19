@@ -29,6 +29,9 @@ export function request(url, options = {}) {
 
   return fetch(getUrl(), options)
     .then(response => {
+      if (response.status === 204) {
+        return response;
+      }
       return response.json();
     });
 }

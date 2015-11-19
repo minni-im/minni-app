@@ -42,6 +42,7 @@ export const ActionTypes = keyMirror({
   COMPOSER_TEXT_SAVE: null,
 
   MESSAGE_CREATE: null,
+  MESSAGE_UPDATE: null,
   MESSAGE_SEND_FAILURE: null,
 
   LOAD_MESSAGES: null,
@@ -83,6 +84,14 @@ export const SOCKETIO_OPTIONS = {
   reconnectionDelay: 1000,
   reconnectionAttempts: 7,
   reconnectionDelayMax: 45000
+};
+
+export const MAX_IMAGE_WIDTH = 1920;
+export const MAX_IMAGE_HEIGHT = 1080;
+
+export const EMBED_OPTIONS = {
+  MAX_WIDTH: 400,
+  MAX_HEIGHT: 250
 };
 
 export const EndPoints = {

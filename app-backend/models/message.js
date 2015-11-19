@@ -3,6 +3,7 @@ import recorder from "tape-recorder";
 const MAX_MESSAGES_COUNT = 50;
 
 let MessageSchema = new recorder.Schema({
+  dateEdited: String,
   content: String,
   roomId: String,
   userId: String,
@@ -11,9 +12,9 @@ let MessageSchema = new recorder.Schema({
     type: String
   },
   subType: String,
-  meta: {
-    type: Object,
-    default: {}
+  embeds: {
+    type: Array,
+    default: []
   }
 });
 
@@ -23,13 +24,12 @@ MessageSchema.method("toAPI", function toAPI() {
     roomId: this.roomId,
     userId: this.userId,
     bot: this.bot,
+    dateEdited: this.dateEdited,
     dateCreated: this.dateCreated,
     lastUpdated: this.lastUpdated,
-    content: this.content
+    content: this.content,
+    embeds: this.embeds
   };
-  if (this.meta) {
-    json.meta = this.meta;
-  }
   return json;
 });
 
@@ -54,7 +54,7 @@ MessageSchema.static("getHistory", function getHistory(roomId, latest = new Date
     options.startkey[1] = latest;
     options.endkey[1] = oldest;
     options.descending = false;
-    options.inclusive_end = false;
+    options.inclusive_end = false; // eslint-disable-line camelcase
   } else {
     if (latest) {
       options.startkey[1] = latest;

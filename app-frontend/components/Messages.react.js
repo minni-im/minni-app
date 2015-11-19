@@ -23,6 +23,11 @@ class Message extends React.Component {
       {message.content}
     </div>;
 
+    let embeds;
+    if (message.embeds.size) {
+      embeds = <div className="message-embed">embed here</div>;
+    }
+
     let classNames = {
       "message-first": this.props.first
     };
@@ -31,6 +36,7 @@ class Message extends React.Component {
       {header}
       {timestamp}
       {content}
+      {embeds}
     </div>;
   }
 }

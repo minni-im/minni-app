@@ -14,14 +14,20 @@ import Message from "../models/Message";
 function transformMessage(message) {
   message.dateCreated = moment(message.dateCreated);
   message.lastUpdated = moment(message.lastUpdated);
+  if (message.dateEdited) {
+    message.dateEdited = moment(message.dateEdited);
+  }
   message.user = UserStore.getUser(message.userId);
+  message.embeds = Immutable.fromJS(message.embeds || []);
   return new Message(message);
 }
 
 function mergeMessage(messages, message) {
   const newMessage = transformMessage(message);
   const oldMessage = messages.get(message.id);
-  if (oldMessage == null || oldMessage.content !== newMessage.content) {
+  if (oldMessage == null ||
+    oldMessage.content !== newMessage.content ||
+    !oldMessage.embeds.equals(newMessage.embeds)) {
     return newMessage;
   } else {
     return oldMessage;
@@ -45,6 +51,21 @@ function handleMessageCreate(state, { roomId, message }) {
   return state.set(roomId, messages);
 }
 
+function handleMessageUpdate(state, { message: newMessage }) {
+  const { roomId } = newMessage;
+  let messages = state.get(roomId);
+  if (!messages || !messages.has(newMessage.id)) {
+    return state;
+  }
+
+  return state.set(roomId, messages.update(newMessage.id, message => {
+    if (newMessage.embeds) {
+      message = message.set("embeds", Immutable.fromJS(newMessage.embeds));
+    }
+    return message;
+  }));
+}
+
 function handleLoadMessagesSuccess(state, { roomId, messages: newMessages }) {
   let oldMessages = this.getMessages(roomId);
 
@@ -61,6 +82,7 @@ class MessageStore extends MapStore {
   initialize() {
     this.waitFor(UserStore, RoomStore);
     this.addAction(ActionTypes.MESSAGE_CREATE, handleMessageCreate);
+    this.addAction(ActionTypes.MESSAGE_UPDATE, handleMessageUpdate);
     this.addAction(ActionTypes.LOAD_MESSAGES_SUCCESS, handleLoadMessagesSuccess);
   }
 

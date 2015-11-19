@@ -63,40 +63,6 @@ export default {
       });
   },
 
-  receiveMessage(roomId, message, optimistic = false) {
-    dispatch({
-      type: ActionTypes.MESSAGE_CREATE,
-      roomId,
-      message,
-      optimistic
-    });
-  },
-
-  sendMessage(roomId, text) {
-    logger.info(`sending message '${text}' to roomId:${roomId}`);
-    const rawMessage = createMessage(roomId, text);
-    // Optimistic UI pattern. First display it, then send it to the server
-    this.receiveMessage(roomId, rawMessage, true);
-
-    request(EndPoints.MESSAGES, {
-      method: "PUT",
-      body: Object.assign(rawMessage, {
-        nonce: rawMessage.id
-      })
-    }).then(({ ok, message }) => {
-      if (ok) {
-        this.receiveMessage(roomId, message);
-      } else {
-        logger.error(message);
-        dispatch({
-          type: ActionTypes.MESSAGE_SEND_FAILURE,
-          roomId,
-          message
-        });
-      }
-    });
-  },
-
   fetchMessages(roomId, latest, oldest, limit) {
     if (!Dispatcher.isDispatching()) {
       dispatch({
@@ -126,9 +92,51 @@ export default {
       });
   },
 
+  sendMessage(roomId, text) {
+    logger.info(`sending message '${text}' to roomId:${roomId}`);
+    const rawMessage = createMessage(roomId, text);
+    // Optimistic UI pattern. First display it, then send it to the server
+    this.receiveMessage(roomId, rawMessage, true);
+
+    request(EndPoints.MESSAGES, {
+      method: "PUT",
+      body: Object.assign(rawMessage, {
+        nonce: rawMessage.id
+      })
+    }).then(({ ok, message }) => {
+      if (ok) {
+        this.receiveMessage(roomId, message);
+      } else {
+        logger.error(message);
+        dispatch({
+          type: ActionTypes.MESSAGE_SEND_FAILURE,
+          roomId,
+          message
+        });
+      }
+    });
+  },
+
+  receiveMessage(roomId, message, optimistic = false) {
+    dispatch({
+      type: ActionTypes.MESSAGE_CREATE,
+      roomId,
+      message,
+      optimistic
+    });
+  },
+
+  updateMessage(roomId, message) {
+    dispatch({
+      type: ActionTypes.MESSAGE_UPDATE,
+      roomId,
+      message
+    });
+  },
+
   sendTyping(roomId) {
     const { id: accountId } = SelectedAccountStore.getAccount();
-    return request(EndPoints.TYPING(roomId), {
+    request(EndPoints.TYPING(roomId), {
       method: "POST",
       body: { accountId }
     });

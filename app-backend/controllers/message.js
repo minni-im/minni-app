@@ -1,6 +1,8 @@
 import recorder from "tape-recorder";
 import { requireLogin, requireLoginRedirect } from "../middlewares/auth";
 
+import { process as embedProcess } from "../libs/embeds";
+
 export default (app) => {
   app.put("/api/messages/", requireLogin, (req) => {
     req.io.route("messages:create");
@@ -10,12 +12,8 @@ export default (app) => {
     create(req, res) {
       const Message = recorder.model("Message");
       const nonce = req.body.nonce;
-      const { accountId } = req.body;
-      let message = new Message({
-        content: req.body.content,
-        userId: req.body.userId,
-        roomId: req.body.roomId
-      });
+      const { content, accountId, roomId, userId } = req.body;
+      let message = new Message({ content, userId, roomId });
 
       message.save().then(newMessage => {
         let json = newMessage.toAPI();
@@ -25,7 +23,26 @@ export default (app) => {
           message: nonce ? Object.assign(json, {nonce}) : json
         });
         app.io.in(socketKey).emit("messages:create", json);
-        //TODO should trigger here embeds + pipeline execution, and push results back to sockets for client update
+
+        embedProcess(json.content).then(embeds => {
+          const flatEmbeds = embeds.reduce((flat, embed) => {
+            return flat.concat(embed);
+          }, []);
+
+          if (flatEmbeds.length > 0) {
+            newMessage.embeds = flatEmbeds;
+            newMessage.save().then(embeddedMessage => {
+              app.io.in(socketKey).emit("messages:update", embeddedMessage.toAPI());
+            });
+          }
+
+        }, error => {
+          app.io.in(socketKey).emit("messages:update-failed", {
+            id: json.id,
+            roomId,
+            messages: [error]
+          });
+        });
       }, error => {
         res.json({
           ok: false,
