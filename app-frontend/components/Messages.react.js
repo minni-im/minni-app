@@ -5,7 +5,10 @@ import Logger from "../libs/Logger";
 const logger = Logger.create("Messages.react");
 
 import { AVATAR_SIZES, MessageStreamTypes } from "../Constants";
+
 import Avatar from "./generic/Avatar.react";
+import Embed from "./Embed.react";
+
 
 class Message extends React.Component {
   render() {
@@ -24,12 +27,21 @@ class Message extends React.Component {
     </div>;
 
     let embeds;
-    if (message.embeds.size) {
-      embeds = <div className="message-embed">embed here</div>;
+    if (message.hasEmbeds()) {
+      if (message.singleEmbed) {
+        content = <Embed {...message.embeds.get(0).toJS()} />;
+      } else {
+        embeds = message.embeds.map((embed, index) => {
+          return <Embed key={index} {...embed.toJS()} />;
+        }).toArray();
+        embeds = <div className="message--embeds">{embeds}</div>;
+      }
+
     }
 
     let classNames = {
-      "message-first": this.props.first
+      "message-first": this.props.first,
+      "message-embed": message.hasEmbeds()
     };
 
     return <div className={classnames("message", classNames)}>

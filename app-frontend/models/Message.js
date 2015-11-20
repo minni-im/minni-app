@@ -20,7 +20,11 @@ export default class Message extends MessageRecord {
     return this.dateEdited !== null;
   }
 
-  get hasEmbeds() {
-    return this.embeds.length > 0;
+  hasEmbeds() {
+    return this.embeds.size > 0;
+  }
+
+  get singleEmbed() {
+    return this.embeds.size === 1 && this.content === this.embeds.get(0).get("url");
   }
 }

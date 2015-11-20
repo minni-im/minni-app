@@ -53,7 +53,11 @@ export const ActionTypes = keyMirror({
   MODAL_POP: null,
 
   TYPING_START: null,
-  TYPING_STOP: null
+  TYPING_STOP: null,
+
+
+  LOAD_IMAGE_SUCCESS: null,
+  LOAD_IMAGE_FAILURE: null
 });
 
 export const AVATAR_SIZES = keyMirror({

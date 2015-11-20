@@ -893,12 +893,29 @@ header .user-info {
       position: relative;
     }
 
-    .message--content {
+    .message--content, .message--embed {
       display: inline-block;
       background-color: @gray-lighter;
       border-radius: 4px;
-      padding: 0 10px;
       margin-bottom: 1px;
+    }
+
+    .message--content {
+      padding: 0 10px;
+    }
+
+    .message--embed {
+      position: relative;
+      .embed-hide {
+        cursor: pointer;
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        .square(16px);
+        font-size: 16px;
+        line-height: 16px;
+        text-align: center;
+      }
     }
 
     .message--header, .message--timestamp {
@@ -917,6 +934,14 @@ header .user-info {
       right: 0;
     }
 
+
+    .embed-image {
+      img {
+        border-radius: 4px;
+        vertical-align: middle;
+      }
+    }
+
     .message:hover {
       .message--timestamp {
         display: block;
@@ -929,7 +954,7 @@ header .user-info {
   }
 
   .message-group-me {
-    .message--content {
+    .message--content, .message--embed {
       background-color: @light-blue;
       color: @color-light;
     }
