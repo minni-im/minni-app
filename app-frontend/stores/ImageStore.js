@@ -17,7 +17,7 @@ class ImageStore extends MapStore {
   }
 
   getImage(url) {
-    return this.get(url);
+    return this.get(url) || false;
   }
 }
 

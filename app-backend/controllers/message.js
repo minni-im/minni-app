@@ -12,8 +12,8 @@ export default (app) => {
     create(req, res) {
       const Message = recorder.model("Message");
       const nonce = req.body.nonce;
-      const { content, accountId, roomId, userId } = req.body;
-      let message = new Message({ content, userId, roomId });
+      const { content, accountId, roomId, userId, embeds } = req.body;
+      let message = new Message({ content, userId, roomId, embeds });
 
       message.save().then(newMessage => {
         let json = newMessage.toAPI();
@@ -24,13 +24,9 @@ export default (app) => {
         });
         app.io.in(socketKey).emit("messages:create", json);
 
-        embedProcess(json.content).then(embeds => {
-          const flatEmbeds = embeds.reduce((flat, embed) => {
-            return flat.concat(embed);
-          }, []);
-
-          if (flatEmbeds.length > 0) {
-            newMessage.embeds = flatEmbeds;
+        embedProcess(json).then(detectedEmbeds => {
+          if (detectedEmbeds.length > 0) {
+            newMessage.embeds = detectedEmbeds;
             newMessage.save().then(embeddedMessage => {
               app.io.in(socketKey).emit("messages:update", embeddedMessage.toAPI());
             });
@@ -46,6 +42,7 @@ export default (app) => {
       }, error => {
         res.json({
           ok: false,
+          body: req.body,
           message: `Message creation failed`,
           errors: error
         });

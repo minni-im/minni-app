@@ -10,7 +10,7 @@ export default {
           type: ActionTypes.LOAD_IMAGE_FAILURE,
           url
         });
-        reject({ image, url });
+        resolve(false);
       };
       image.onload = () => {
         dispatch({
@@ -19,7 +19,7 @@ export default {
           width: image.width,
           height: image.height
         });
-        resolve({ image, url, width: image.width, height: image.height });
+        resolve({ url, width: image.width, height: image.height });
       };
       image.src = url;
     });

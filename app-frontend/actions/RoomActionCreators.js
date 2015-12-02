@@ -94,26 +94,31 @@ export default {
 
   sendMessage(roomId, text) {
     logger.info(`sending message '${text}' to roomId:${roomId}`);
-    const rawMessage = createMessage(roomId, text);
-    // Optimistic UI pattern. First display it, then send it to the server
-    this.receiveMessage(roomId, rawMessage, true);
+    createMessage(roomId, text).then(rawMessage => {
+      const embeds = rawMessage.embeds;
+      delete rawMessage.embeds;
 
-    request(EndPoints.MESSAGES, {
-      method: "PUT",
-      body: Object.assign(rawMessage, {
-        nonce: rawMessage.id
-      })
-    }).then(({ ok, message }) => {
-      if (ok) {
-        this.receiveMessage(roomId, message);
-      } else {
-        logger.error(message);
-        dispatch({
-          type: ActionTypes.MESSAGE_SEND_FAILURE,
-          roomId,
-          message
-        });
-      }
+      // Optimistic UI pattern. First display it, then send it to the server
+      this.receiveMessage(roomId, rawMessage, true);
+
+      request(EndPoints.MESSAGES, {
+        method: "PUT",
+        body: Object.assign(rawMessage, {
+          nonce: rawMessage.id,
+          embeds
+        })
+      }).then(({ ok, message }) => {
+        if (ok) {
+          this.receiveMessage(roomId, message);
+        } else {
+          logger.error(message);
+          dispatch({
+            type: ActionTypes.MESSAGE_SEND_FAILURE,
+            roomId,
+            message
+          });
+        }
+      });
     });
   },
 

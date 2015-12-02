@@ -26,7 +26,9 @@ var WEBPACK_CONFIG = {
       "react",
       "moment",
       "emojify",
-      "lodash"
+      "lodash",
+      "simple-markdown",
+      "twitter-text"
     ],
     minni: "./app-frontend/app.react.js"
   },

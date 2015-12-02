@@ -1,9 +1,9 @@
 export default {
-  match(text) {
+  match(message) {
     return false;
   },
 
-  process(text) {
+  process(message) {
     return [];
   }
 };

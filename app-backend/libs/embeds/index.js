@@ -8,20 +8,27 @@ const embeds = [
   Spotify, Twitter, Vimeo, Youtube, Image
 ];
 
-export function process(text) {
-  // TODO: To be removed
-  console.log(`Embed processing: ${text}`);
-  const matching =
-    embeds
-      .filter(embed => embed.match(text))
-      .map(embed => {
-        const processed = embed.process(text);
-        return (processed instanceof Promise) ? processed : Promise.resolve(processed);
-      });
+export function process(message) {
+  const matching = embeds
+    .filter(embed => embed.match(message))
+    .map(embed => {
+      return embed.process(message);
+    });
 
-  // TODO: To be removed
-  console.log(matching.length, matching);
-  return Promise.all(matching).catch(ex => {
-    console.error(`[Embed engine failed]: ${ex}`);
-  });
+  return Promise.all(matching)
+    .then(detectedEmbeds => {
+      // Using a Set here to dedupe embeds;
+      const flatDedupedEmbeds = detectedEmbeds.reduce((flat, embed) => {
+        embed.forEach(e => {
+          flat.add(e);
+        });
+        return flat;
+      }, new Set());
+      return [...flatDedupedEmbeds];
+    }, error => {
+      console.error(`[Embed engine failed]: ${error}`);
+    })
+    .catch(ex => {
+      console.error(`[Embed engine failed]: ${ex}`);
+    });
 }
