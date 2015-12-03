@@ -10,6 +10,15 @@ function EmbedWrapper(props) {
 }
 
 export default class Embed extends React.Component {
+  renderThumbnail() {
+    if (this.props.thumbnail) {
+      const { url, width, height } = this.props.thumbnail;
+      return <a href={this.props.url} target="_blank">
+        <Image src={url} width={width} height={height} />
+      </a>;
+    }
+  }
+
   render() {
     let classNames = {
       [`embed-${this.props.type}`]: true
@@ -18,9 +27,7 @@ export default class Embed extends React.Component {
     switch (this.props.type) {
       case "image":
         return <EmbedWrapper className={classnames("message--embed", classNames)}>
-          <a href={this.props.url} target="_blank">
-            <Image src={this.props.url} />
-          </a>
+          {this.renderThumbnail()}
         </EmbedWrapper>;
 
       default:

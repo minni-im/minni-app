@@ -1,4 +1,5 @@
 import React from "react";
+import classnames from "classnames";
 import { Container } from "flux/utils";
 
 import ImageActionCreators from "../../actions/ImageActionCreators" ;
@@ -21,12 +22,13 @@ class ImageContainer extends React.Component {
   // updateStaticFrame() {
   //   if (!this.state.loaded) { return; }
   //   ImageActionCreators.loadImage(this.props.src).then(({ image, width, height }) => {
-  //     let canvas = document.createElement("canvas");
-  //     canvas.width = width;
-  //     canvas.height = height;
-  //     let ctx = canvas.getContext("2d");
-  //     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-  //     console.log(canvas);
+  //     console.log({ image, width, height });
+  //     // let canvas = document.createElement("canvas");
+  //     // canvas.width = width;
+  //     // canvas.height = height;
+  //     // let ctx = canvas.getContext("2d");
+  //     // ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+  //     // console.log(canvas);
   //     //this.setState({staticFrame: canvas.toDataURL("image/png")});
   //   });
   // }
@@ -38,27 +40,39 @@ class ImageContainer extends React.Component {
   }
 
   // componentDidUpdate() {
-  //   this.updateStaticFrame();
+  //   console.log("updated");
+  //   // if (this.isGIF()) {
+  //   //   this.updateStaticFrame();
+  //   // }
   // }
 
   render() {
     if (!this.state.loaded) {
-      return <div className="image image-loader">loading...</div>;
+      const {width, height} = this.props;
+      return <div className="image image--loader" style={{width, height}}></div>;
     } else {
       let props = {
         width: this.state.imageState.width,
         height: this.state.imageState.height,
         src: this.props.src
       };
+      let classNames = {
+        "image--gif": this.isGIF()
+      };
 
-      // if (this.isGIF()) {
+      if (this.isGIF()) {
+        console.log(this.props.src, "is a GIF");
+        return <span className="image">
+          <span className="image--gif">&#9658; GIF</span>
+          <img {...props} />
+        </span>;
       //   props.onMouseEnter = this.handleMouseEnter.bind(this);
       //   props.onMouseLeave = this.handleMouseLeave.bind(this);
       //   if (!this.state.animate) {
       //     return <img className="image image-static" {...props} src={this.state.staticFrame} />;
       //   }
-      // }
-      return <img className="image" {...props} />;
+      }
+      return <img className={classnames("image", classNames)} {...props} />;
     }
   }
 

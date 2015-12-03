@@ -940,9 +940,22 @@ header .user-info {
 
 
     .embed-image {
-      img {
+      background: url(/images/transparent-bg-pattern.png);
+      .image, .image img {
         border-radius: 4px;
         vertical-align: middle;
+      }
+      .image--gif  {
+        position: absolute;
+        left: 5px;
+        top: 5px;
+        color: @color-light;
+        background-color: fadeout(@black, 75%);
+        border-radius: 2px;
+
+        font-size: 10px;
+        line-height: 16px;
+        padding: 0 5px;
       }
     }
 
@@ -958,7 +971,7 @@ header .user-info {
   }
 
   .message-group-me {
-    .message--content, .message--embed {
+    .message--content {
       background-color: @light-blue;
       color: @color-light;
     }
