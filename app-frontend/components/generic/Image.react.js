@@ -5,6 +5,8 @@ import { Container } from "flux/utils";
 import ImageActionCreators from "../../actions/ImageActionCreators" ;
 import ImageStore from "../../stores/ImageStore";
 
+import { MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT } from "../../Constants";
+
 class ImageContainer extends React.Component {
   static getStores() {
     return [ ImageStore ];
@@ -46,14 +48,41 @@ class ImageContainer extends React.Component {
   //   // }
   // }
 
+  getRatio() {
+    let { width, height } = this.props;
+    let widthRatio = 1;
+    if (width > MAX_IMAGE_WIDTH) {
+      widthRatio = MAX_IMAGE_WIDTH / width;
+    }
+
+    width = Math.round(width * widthRatio);
+    height = Math.round(height * widthRatio);
+
+    let heightRatio = 1;
+    if (height > MAX_IMAGE_HEIGHT) {
+      heightRatio = MAX_IMAGE_HEIGHT / height;
+    }
+
+    return Math.min(widthRatio * heightRatio, 1);
+  }
+
+  getWidth() {
+    return Math.round(this.props.width * this.getRatio());
+  }
+
+  getHeight() {
+    return Math.round(this.props.height * this.getRatio());
+  }
+
   render() {
+    const width = this.props.thumbnailWidth || this.getWidth();
+    const height = this.props.thumbnailHeight || this.getHeight();
     if (!this.state.loaded) {
-      const {width, height} = this.props;
       return <div className="image image--loader" style={{width, height}}></div>;
     } else {
       let props = {
-        width: this.state.imageState.width,
-        height: this.state.imageState.height,
+        width,
+        height,
         src: this.props.src
       };
       let classNames = {

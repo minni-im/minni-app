@@ -18,23 +18,29 @@ function createNonce() {
 
 
 function extractImages(message) {
+  const potentialImages = twitter.extractUrls(message.content);
+  if (!potentialImages.length) {
+    return Promise.resolve(message);
+  }
   return Promise.all(
-    twitter.extractUrls(message.content)
-      .filter(url => {
-        return REGEX_IMAGE.test(url);
-      })
-      .map(url => {
-        const image = ImageStore.getImage(url);
-        if (image) {
-          return { url, width: image.width, height: image.height };
-        } else {
-          return ImageActionCreators.loadImage(url);
-        }
-      })
+    potentialImages.filter(url => {
+      return REGEX_IMAGE.test(url);
+    })
+    .map(url => {
+      const image = ImageStore.getImage(url);
+      if (image) {
+        return { url, width: image.width, height: image.height };
+      } else {
+        return ImageActionCreators.loadImage(url);
+      }
+    })
   ).then(images => {
     if (images.length) {
       message.embeds = images.map(image => {
         image.type = "image";
+        image.thumbnail = {
+          url: image.url
+        };
         return image;
       });
     }

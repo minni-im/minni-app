@@ -138,8 +138,8 @@ export default class Composer extends React.Component {
   render() {
     const { room } = this.props;
 
-    let actions = [ SmileyIcon ].map(action => {
-      return <div className="icon action" key={action.displayName}>
+    let actions = [ SmileyIcon ].map((action, index) => {
+      return <div className="icon action" key={`action-${index}`}>
         {React.createElement(action)}
       </div>;
     });

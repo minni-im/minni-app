@@ -14,7 +14,12 @@ export default class Embed extends React.Component {
     if (this.props.thumbnail) {
       const { url, width, height } = this.props.thumbnail;
       return <a href={this.props.url} target="_blank">
-        <Image src={url} width={width} height={height} />
+        <Image src={url}
+          width={this.props.width}
+          height={this.props.height}
+          thumbnailWidth={width}
+          thumbnailHeight={height}
+          />
       </a>;
     }
   }

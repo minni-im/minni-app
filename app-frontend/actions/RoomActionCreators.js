@@ -95,17 +95,13 @@ export default {
   sendMessage(roomId, text) {
     logger.info(`sending message '${text}' to roomId:${roomId}`);
     createMessage(roomId, text).then(rawMessage => {
-      const embeds = rawMessage.embeds;
-      delete rawMessage.embeds;
-
       // Optimistic UI pattern. First display it, then send it to the server
       this.receiveMessage(roomId, rawMessage, true);
 
       request(EndPoints.MESSAGES, {
         method: "PUT",
         body: Object.assign(rawMessage, {
-          nonce: rawMessage.id,
-          embeds
+          nonce: rawMessage.id
         })
       }).then(({ ok, message }) => {
         if (ok) {

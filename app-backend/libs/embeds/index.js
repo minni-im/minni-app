@@ -1,13 +1,12 @@
 import twitter from "twitter-text";
 
-import Image from "./image";
 import Spotify from "./spotify";
 import Twitter from "./twitter";
 import Vimeo from "./vimeo";
 import Youtube from "./youtube";
 
 const embeds = [
-  Spotify, Twitter, Vimeo, Youtube, Image
+  Spotify, Twitter, Vimeo, Youtube
 ];
 
 export function process(message) {

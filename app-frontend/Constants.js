@@ -90,8 +90,11 @@ export const SOCKETIO_OPTIONS = {
   reconnectionDelayMax: 45000
 };
 
-export const MAX_IMAGE_WIDTH = 1920;
-export const MAX_IMAGE_HEIGHT = 1080;
+export const MAX_IMAGE_WIDTH = 400;
+export const MAX_IMAGE_HEIGHT = 300;
+
+// export const MAX_IMAGE_WIDTH = 1920;
+// export const MAX_IMAGE_HEIGHT = 1080;
 
 export const EMBED_OPTIONS = {
   MAX_WIDTH: 400,
