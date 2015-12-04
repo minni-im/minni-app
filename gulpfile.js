@@ -14,7 +14,6 @@ var CleanCss = require("less-plugin-clean-css");
 
 var argv = require("minimist")(process.argv.splice(2));
 var RELEASE = !!argv.release;
-var BABEL_STAGE = argv.stage;
 var VERBOSE = argv.verbose;
 
 var WEBPACK_CONFIG = {
@@ -71,15 +70,16 @@ var WEBPACK_CONFIG = {
   ],
   module: {
     loaders: [
-      { test: /\.json$/, loader: "json" },
-      { test: /\.js$/,
+      {
+        test: /\.js$/,
         exclude: /node_modules/,
         loader: "babel",
         query: {
           optional: ["runtime"],
-          stage: BABEL_STAGE
+          cacheDirectory: true
         }
-      }
+      },
+      { test: /\.json$/, loader: "json" }
     ]
   }
 };
