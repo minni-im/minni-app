@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/minni-im/minni-app#readme",
   "devDependencies": {
+    "babel-jest": "^6.0.1",
     "eslint": "^1.10.3",
     "eslint-plugin-react": "^3.1.0",
     "gulp": "^3.9.0",
@@ -38,17 +39,15 @@
     "less-plugin-autoprefix": "^1.4.2",
     "less-plugin-clean-css": "^1.5.1",
     "minimist": "^1.1.2",
-    "run-sequence": "^1.1.2",
     "react-svg-loader": "^0.0.6",
+    "run-sequence": "^1.1.2",
     "webpack": "^1.10.5"
   },
   "dependencies": {
     "babel": "^5.x",
     "babel-core": "^5.x",
     "babel-loader": "^5.x",
-
     "babel-runtime": "^5.x",
-
     "bcryptjs": "^2.2.1",
     "body-parser": "^1.13.2",
     "classnames": "^2.1.5",
@@ -57,12 +56,13 @@
     "deep-extend": "^0.4.0",
     "emojify": "minni-im/emojify",
     "express-session": "^1.11.3",
-    "express.oi": "0.0.19",
+    "express.oi": "0.0.20",
     "flash": "^1.1.0",
     "flux": "^2.1.1",
     "history": "^1.12.3",
-    "immutable": "^3.7.5",
+    "immutable": "^3.7.6",
     "jade": "^1.11.0",
+    "jest-cli": "^0.8.2",
     "js-yaml": "^3.3.1",
     "json-loader": "^0.5.2",
     "keymirror": "^0.1.1",
@@ -70,6 +70,7 @@
     "long": "^3.0.1",
     "minni-auth-github": "minni-im/minni-auth-github",
     "moment": "^2.10.6",
+    "node-fetch": "^1.3.3",
     "node-libs-browser": "^0.5.2",
     "node_hash": "^0.2.0",
     "passport": "^0.3.2",
@@ -91,7 +92,9 @@
       "app-frontend"
     ],
     "unmockedModulePathPatterns": [
-      "react"
+      "<rootDir>/node_modules/react",
+      "<rootDir>/node_modules/react-dom",
+      "<rootDir>/node_modules/react-addons-test-utils"
     ]
   }
 }
