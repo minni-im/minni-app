@@ -1,42 +1,39 @@
-import twitter from "twitter-text";
+import SimpleMarkdown from "simple-markdown";
 
 import Spotify from "./spotify";
 import Twitter from "./twitter";
 import Vimeo from "./vimeo";
 import Youtube from "./youtube";
 
-const embeds = [
-  Spotify, Twitter, Vimeo, Youtube
+let namedEmbeds = {};
+export const embeds = [
+  new Spotify(), new Youtube(), new Twitter(), new Vimeo()
 ];
 
-export function process(message) {
-  const urls = [...new Set(twitter.extractUrls(message.content))];
+const RULES = {
+  newline: SimpleMarkdown.defaultRules.newline,
+  text: SimpleMarkdown.defaultRules.text
+}
 
-  const matching = embeds
-    .filter(embed => embed.match(message, urls))
-    .map(embed => {
-      return embed.process(message, urls);
-    });
+embeds.forEach(embed => {
+  const embedName = embed.name.toLowerCase();
+  namedEmbeds[embedName] = embed;
+  RULES[embedName] = {
+    order: SimpleMarkdown.defaultRules.url.order,
+    match: embed.match,
+    parse: embed.parse
+  }
+});
 
-  return Promise.all(matching)
-    .then(detectedEmbeds => {
-      // Using a Set here to dedupe embeds;
-      const flatDedupedEmbeds = detectedEmbeds.reduce((flat, embed) => {
-        // in case an embed would failed, we don't reject to not stop `Promise.all()`
-        // we simply return `resolve(false)`
-        if (!embed || embed.length === 0) {
-          return flat;
-        }
-        embed.forEach(e => {
-          flat.add(e);
-        });
-        return flat;
-      }, new Set());
-      return [...flatDedupedEmbeds];
-    }, error => {
-      console.error(`[Embed engine failed]: ${error}`);
-    })
-    .catch(ex => {
-      console.error(`[Embed engine failed]: ${ex}`);
-    });
+let parser = SimpleMarkdown.parserFor(RULES);
+
+export function parse(message) {
+  return parser(message, { inline: true })
+    .filter(p => p.type !== "text");
+}
+
+export function process(tree) {
+  return Promise.all(tree.map(element => {
+    return namedEmbeds[element.type].process(element)
+  }));
 }
