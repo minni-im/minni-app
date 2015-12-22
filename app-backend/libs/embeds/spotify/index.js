@@ -8,7 +8,7 @@ export default class SpotifyEmbed extends Base {
     super();
     this.name = "Spotify";
   }
-  
+
   endpointUrl({ url }) {
     return `https://embed.spotify.com/oembed/?format=json&url=${encodeURI(url)}`;
   }
@@ -24,5 +24,11 @@ export default class SpotifyEmbed extends Base {
       resource: capture[1],
       id: capture[2]
     }
+  }
+
+  extractData(data) {
+    let extractedData = super.extractData(data);
+    extractedData.type = "audio";
+    return extractedData;
   }
 };

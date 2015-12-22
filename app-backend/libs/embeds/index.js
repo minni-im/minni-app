@@ -35,5 +35,5 @@ export function parse(message) {
 export function process(tree) {
   return Promise.all(tree.map(element => {
     return namedEmbeds[element.type].process(element)
-  }));
+  })).then(results => results.filter(result => result !== false));
 }

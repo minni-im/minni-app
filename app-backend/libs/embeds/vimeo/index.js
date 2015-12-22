@@ -7,10 +7,10 @@ export default class VimeoEmbed extends Base {
     super();
     this.name = "Vimeo";
   }
-  
+
   endpointUrl({ url }) {
     // `https://vimeo.com/api/v2/video/${id}.json`
-    return `https://vimeo.com/api/oembed.json?url=${url}&width=450`;
+    return `https://vimeo.com/api/oembed.json?url=${encodeURI(url)}&width=450`;
   }
 
   match(source) {

@@ -1,4 +1,5 @@
-jest.autoMockOff();
+jest.dontMock("simple-markdown");
+jest.dontMock("../index");
 
 [
   "spotify",
@@ -57,6 +58,14 @@ describe("Embed parser", () => {
       expect(tree[0].type).toEqual("twitter");
     });
   });
+
+  describe("Vimeo", function() {
+    it("should detect standard url", function() {
+      const tree = parse(`https://vimeo.com/120876824`);
+      expect(tree.length).toEqual(1);
+      expect(tree[0].type).toEqual("vimeo");
+    });
+  })
 
   it("should detect all urls from message", function() {
     const tree = parse(`Hello there ! please check these 2 links this morning: https://www.youtube.com/watch?v=4SbiiyRSIwo and https://twitter.com/patrickbrosset/status/675448727285448705`);

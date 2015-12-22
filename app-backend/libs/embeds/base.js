@@ -15,27 +15,39 @@ export default class Base {
 
   extractData(data) {
     // default implementation supports only oEmbed endpoints
-    return {
+    let extractedData = {
       type: data.type,
-      author: {
-        name: data.author_name,
-        url: data.author_url
-      },
       thumbnail: {
         width: data.thumbnail_width,
         height: data.thumbnail_height,
         url: data.thumbnail_url
       },
-      title: data.title,
-      description: data.description
+      title: data.title
     };
+
+    if (data.author_name &&  data.author_url) {
+      extractedData.author = {
+        name: data.author_name,
+        url: data.author_url
+      };
+    }
+
+    if (data.description) {
+      extractedData.description = data.description;
+    }
+    return extractedData;
   }
 
   process(element) {
     const apiUrl = this.endpointUrl(element);
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       fetch(apiUrl)
-        .then(res => res.json())
+        .then(res => {
+          if (res.status !== 200) {
+            return resolve(false);
+          }
+          return res.json();
+        })
         .then(this.extractData)
         .then(embed => {
           embed.url = element.url;
