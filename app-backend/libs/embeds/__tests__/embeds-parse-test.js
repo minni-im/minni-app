@@ -1,12 +1,26 @@
 jest.dontMock("simple-markdown");
 jest.dontMock("../index");
 
-[
-  "spotify",
-  "youtube",
-  "twitter",
-  "vimeo"
-].forEach(embed => jest.dontMock(`../${embed}`));
+const fs = require.requireActual("fs");
+const path = require.requireActual("path");
+
+function dontMockFolder(folder) {
+  const dir = path.join(__dirname, "..", folder);
+  fs.readdirSync(dir).forEach(file => {
+    if (file.indexOf("__") === 0) {
+      return;
+    }
+    const stats = fs.lstatSync(path.join(dir, file));
+    if (stats.isDirectory()) {
+      jest.dontMock(`../${folder}/${file}`)
+    }
+  });
+}
+
+dontMockFolder("audio");
+dontMockFolder("code");
+dontMockFolder("video");
+dontMockFolder("web");
 
 const { parse } = require("../");
 
@@ -56,6 +70,19 @@ describe("Embed parser", () => {
       const tree = parse(`https://twitter.com/patrickbrosset/status/675448727285448705/`);
       expect(tree.length).toEqual(1);
       expect(tree[0].type).toEqual("twitter");
+
+      expect(tree[0].username).toEqual("patrickbrosset");
+      expect(tree[0].id).toEqual("675448727285448705");
+    });
+  });
+
+  describe("Vine", function() {
+    it("should detect standard url", function() {
+      const tree = parse(`Hello foo, check this Vine
+      https://vine.co/v/im5wjA9qDvM`);
+      expect(tree.length).toEqual(1);
+      expect(tree[0].type).toEqual("vine");
+      expect(tree[0].id).toEqual("im5wjA9qDvM");
     });
   });
 
@@ -67,11 +94,22 @@ describe("Embed parser", () => {
     });
   })
 
+  describe("Gist", function() {
+    it("should detect standard url", function() {
+      const tree = parse(`https://gist.github.com/bcharbonnier/0dcf15df255767a4bf18`);
+      expect(tree.length).toEqual(1);
+      expect(tree[0].username).toEqual("bcharbonnier");
+      expect(tree[0].id).toEqual("0dcf15df255767a4bf18");
+    });
+  });
+
   it("should detect all urls from message", function() {
-    const tree = parse(`Hello there ! please check these 2 links this morning: https://www.youtube.com/watch?v=4SbiiyRSIwo and https://twitter.com/patrickbrosset/status/675448727285448705`);
-    expect(tree.length).toEqual(2);
+    const tree = parse(`Hello there ! please check these 2 links this morning: https://www.youtube.com/watch?v=4SbiiyRSIwo and https://twitter.com/patrickbrosset/status/675448727285448705and
+      https://example.com/foo/bar/baz.ogg`);
+    expect(tree.length).toEqual(3);
     expect(tree[0].type).toEqual("youtube");
     expect(tree[1].type).toEqual("twitter");
+    expect(tree[2].type).toEqual("audio");
   });
 
 });

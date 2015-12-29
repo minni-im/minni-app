@@ -1,4 +1,4 @@
-import Base from "../base";
+import Base from "../../base";
 
 const REGXEP_VIMEO = /^https?:\/\/(?:www\.)?vimeo\.com\/(\d+\d)/;
 

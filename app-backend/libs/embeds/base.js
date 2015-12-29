@@ -16,7 +16,7 @@ export default class Base {
   extractData(data) {
     // default implementation supports only oEmbed endpoints
     let extractedData = {
-      type: data.type,
+      type: this.type || data.type,
       thumbnail: {
         width: data.thumbnail_width,
         height: data.thumbnail_height,
@@ -48,10 +48,15 @@ export default class Base {
           }
           return res.json();
         })
-        .then(this.extractData)
+        .then(data => {
+          return this.extractData(data, element);
+        })
         .then(embed => {
           embed.url = element.url;
           embed.provider = this.name;
+          if (!embed.type && this.type) {
+            embed.type = this.type;
+          }
           return resolve(embed);
         });
     });
