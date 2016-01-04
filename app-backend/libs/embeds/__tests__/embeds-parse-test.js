@@ -1,4 +1,5 @@
 jest.dontMock("simple-markdown");
+jest.dontMock("../../../config");
 jest.dontMock("../index");
 
 const fs = require.requireActual("fs");
@@ -19,6 +20,7 @@ function dontMockFolder(folder) {
 
 dontMockFolder("audio");
 dontMockFolder("code");
+dontMockFolder("image");
 dontMockFolder("video");
 dontMockFolder("web");
 
@@ -96,15 +98,52 @@ describe("Embed parser", () => {
 
   describe("Gist", function() {
     it("should detect standard url", function() {
-      const tree = parse(`https://gist.github.com/bcharbonnier/0dcf15df255767a4bf18`);
+      const tree = parse(`solange: https://gist.github.com/bcharbonnier/0dcf15df255767a4bf18`);
       expect(tree.length).toEqual(1);
       expect(tree[0].username).toEqual("bcharbonnier");
       expect(tree[0].id).toEqual("0dcf15df255767a4bf18");
     });
   });
 
+  describe("Flickr", function() {
+    it("should detect standard url", function() {
+      const tree = parse(`https://www.flickr.com/photos/78986993@N00/3372549602/`);
+      expect(tree.length).toEqual(1);
+      expect(tree[0].username).toEqual("78986993@N00");
+      expect(tree[0].photoId).toEqual("3372549602");
+    });
+
+    it("should detect standard url w/o trailing /", function() {
+      const tree = parse(` https://www.flickr.com/photos/78986993@N00/3372549602`);
+      expect(tree.length).toEqual(1);
+      expect(tree[0].username).toEqual("78986993@N00");
+      expect(tree[0].photoId).toEqual("3372549602");
+    });
+
+    it("should detect short url", function() {
+      const tree = parse(`https://flic.kr/p/78986993@N00/3372549602/`);
+      expect(tree.length).toEqual(1);
+      expect(tree[0].username).toEqual("78986993@N00");
+      expect(tree[0].photoId).toEqual("3372549602");
+    });
+  });
+
+  describe("Instagram", function() {
+    it("should detect standard url", function() {
+      const tree = parse(`https://instagram.com/p/V8UMy0LjpX/`);
+      expect(tree.length).toEqual(1);
+      expect(tree[0].id).toEqual("V8UMy0LjpX");
+    });
+
+    it("should detect short url", function() {
+      const tree = parse(`https://instagr.am/p/V8UMy0LjpX/`);
+      expect(tree.length).toEqual(1);
+      expect(tree[0].id).toEqual("V8UMy0LjpX");
+    });
+  });
+
   it("should detect all urls from message", function() {
-    const tree = parse(`Hello there ! please check these 2 links this morning: https://www.youtube.com/watch?v=4SbiiyRSIwo and https://twitter.com/patrickbrosset/status/675448727285448705and
+    const tree = parse(`Hello there ! please check these 2 links this morning: https://www.youtube.com/watch?v=4SbiiyRSIwo and https://twitter.com/patrickbrosset/status/675448727285448705 and
       https://example.com/foo/bar/baz.ogg`);
     expect(tree.length).toEqual(3);
     expect(tree[0].type).toEqual("youtube");

@@ -1,9 +1,12 @@
 import SimpleMarkdown from "simple-markdown";
+import { auth } from "../../config";
 
 import Audio from "./audio/basic";
 import Spotify from "./audio/spotify";
 import Gist from "./code/gist";
 import Github from "./code/github";
+import Flickr from "./image/flickr";
+import Instagram from "./image/instagram";
 import Video from "./video/basic";
 import Vimeo from "./video/vimeo";
 import Vine from  "./video/vine";
@@ -16,9 +19,11 @@ export const embeds = [
   new Audio(),
   new Gist(),
   new Github(),
+  new Flickr(),
+  new Instagram(),
   new Spotify(),
   new Youtube(),
-  new Twitter(),
+  new Twitter(auth.twitter),
   new Video(),
   new Vine(),
   new Vimeo()
