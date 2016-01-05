@@ -52,7 +52,7 @@ function transformText(text, entities) {
       text = text.replace(media.url, getUrlLink(media));
     }
   }
-  
+
   return text;
 }
 
@@ -63,6 +63,9 @@ export default class TwitterEmbed extends Base {
     this.name = "Twitter";
     this.type = "web.twitter";
     this.config = config;
+    if (!config || (config && !config.id || !config.secret)) {
+      throw new Error(`Missing Twitter configuration. You have to declare an id and a secret in your 'settings.yml' file.`);
+    }
 
     this.hasValidToken = false;
     this.bearerToken = null;
