@@ -24,25 +24,29 @@ export default class GistEmbed extends Base {
       id: capture[2]
     }
   }
-
-  extractData(data) {
+  extractMeta(data) {
     return {
-      id: data.id,
-      type: this.type,
-      description: data.description || "",
-      author: {
-        name: data.owner.login,
-        url: data.owner.html_url
-      },
-      files: Object.keys(data.files).map(filename => {
-        const file = data.files[filename];
-        return {
-          filename: filename,
-          language: file.language,
-          content: file.content,
-          url: file.raw_url
-        }
-      })
+       meta: {
+         id: data.id,
+         files: Object.keys(data.files).map(filename => {
+           const file = data.files[filename];
+           return {
+             filename: filename,
+             language: file.language,
+             content: file.content,
+             url: file.raw_url
+           }
+         })
+       }
+    };
+  }
+
+  extractAuthor(data) {
+    return {
+       author: {
+         name: data.owner.login,
+         url: data.owner.html_url
+       }
     }
   }
 }

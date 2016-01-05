@@ -47,26 +47,43 @@ describe("Embed processor", () => {
       });
   });
 
-  pit("should process video urls", function() {
-    const tree = parse(`ovg: https://example.com/foo/bar/baz.ogv and vine: https://vine.co/v/im5wjA9qDvM`);
+  pit("should process audio urls", function() {
+    const urls = [
+      "http://example.com/foo/baz.mp3",
+      "https://example.org/music/free.ogg"
+    ];
+    const tree = parse(`Some raw music ${urls[0]} and ${urls[1]}`);
     return process(tree).then(results => {
       expect(results.length).toEqual(2);
-      {
-        let { type, author } = results[0];
-        expect(type).toEqual("video");
-        expect(author).not.toBeDefined();
-      }
-
-      {
-        let { type, provider, author } = results[1];
-        expect(type).toEqual("video.vine");
-        expect(provider).toEqual({
-          name: "Vine",
-          url: "https://vine.co/"
+      urls.forEach((url, index) => {
+        expect(results[index]).toEqual({
+          type: "audio",
+          url
         });
-        expect(author).toBeDefined();
+      });
+    });
+  });
 
-      }
+  pit("should process video urls", function() {
+    const urls = [
+      "https://example.com/foo/bar/baz.ogv",
+      "https://vine.co/v/im5wjA9qDvM"
+    ];
+    const tree = parse(`ovg: ${urls[0]} and vine: ${urls[1]}`);
+    return process(tree).then(results => {
+      expect(results.length).toEqual(2);
+      expect(results[0]).toEqual({
+        type: "video",
+        url: urls[0]
+      });
+
+      let { type, provider, author } = results[1];
+      expect(type).toEqual("video.vine");
+      expect(provider).toEqual({
+        name: "Vine",
+        url: "https://vine.co/"
+      });
+      expect(author).toBeDefined();
     });
   });
 
@@ -81,7 +98,7 @@ describe("Embed processor", () => {
       expect(results.length).toEqual(3);
       {
         let { type, provider, author } = results[0];
-        expect(type).toEqual("video");
+        expect(type).toEqual("video.youtube");
         expect(provider).toEqual({
           name: "YouTube",
           url: "https://www.youtube.com/"
@@ -92,7 +109,7 @@ describe("Embed processor", () => {
 
       {
         let { type, provider, author } = results[1];
-        expect(type).toEqual("audio");
+        expect(type).toEqual("audio.spotify");
         expect(provider).toEqual({
             name: "Spotify",
             url: "https://www.spotify.com"
@@ -114,13 +131,16 @@ describe("Embed processor", () => {
 
     return process(tree).then(results => {
       expect(results.length).toEqual(1);
-      let { type, author, description, files: [{ filename, language }] } = results[0];
+      let { type, author, description, meta } = results[0];
       expect(type).toEqual("code.gist");
       expect(description).toEqual("Roulotte is speaking !");
       expect(author).toEqual({
         name: "bbaliguet",
         url: "https://github.com/bbaliguet"
       });
+
+
+      let [ { filename, language }] = meta.files;
       expect(filename).toBe("solange.js");
       expect(language).toBe("JavaScript");
     });
@@ -133,7 +153,7 @@ describe("Embed processor", () => {
       let { type, author, thumbnail } = results[0];
       expect(type).toEqual("code.github.user");
       expect(author.name).toEqual("bcharbonnier");
-      expect(thumbnail.url).toEqual("https://avatars.githubusercontent.com/u/583204?v=3&s=300")
+      expect(thumbnail.url).toEqual("https://avatars.githubusercontent.com/u/583204?v=3&s=300");
     });
   });
 
@@ -145,7 +165,7 @@ describe("Embed processor", () => {
       expect(type).toEqual("code.github.repo");
       expect(title).toEqual("minni-im/minni-app");
       expect(description).toEqual("Anywhere should be the place to be working from");
-      expect(thumbnail.url).toEqual("https://avatars.githubusercontent.com/u/8825731?v=3&s=300")
+      expect(thumbnail.url).toEqual("https://avatars.githubusercontent.com/u/8825731?v=3&s=300");
     });
   });
 

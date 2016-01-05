@@ -1,7 +1,6 @@
 import Base from "../../base";
 
 const REGEXP_GITHUB = /^https:\/\/github\.com\/([\w-_]+)(?:\/([\w-_]+[\w-_])\/?)?/
-
 const AVATAR_SIZE = 300;
 
 export default class Github extends Base {

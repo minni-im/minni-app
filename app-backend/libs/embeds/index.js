@@ -59,3 +59,8 @@ export function process(tree) {
   }))
   .then(results => results.filter(result => result !== false));
 }
+
+export default function(message) {
+  const tree = parse(message);
+  return process(tree);
+}

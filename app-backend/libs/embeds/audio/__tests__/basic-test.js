@@ -5,7 +5,7 @@ const extensions = ["mp3", "wav", "ogg"];
 let embed;
 
 beforeEach(function() {
-    embed = new Audio();
+  embed = new Audio();
 });
 
 describe("Audio embed", function() {
@@ -27,5 +27,15 @@ describe("Audio embed", function() {
       expect(embed.parse(match).url).toEqual(url);
     });
   });
+});
 
+describe("Audio embed", function() {
+  it("should process a single audio url in message", function() {
+    const tree = {
+      url: "http://example.com/foo/bar/baz.mp3"
+    };
+    const results = embed.process(tree);
+    expect(results).toBeDefined();
+    expect(results.url).toEqual(tree.url);
+  });
 });

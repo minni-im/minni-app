@@ -1,7 +1,7 @@
 import recorder from "tape-recorder";
 import { requireLogin, requireLoginRedirect } from "../middlewares/auth";
 
-import { process as embedProcess } from "../libs/embeds";
+import embed from "../libs/embeds";
 
 export default (app) => {
   app.put("/api/messages/", requireLogin, (req) => {
@@ -24,7 +24,7 @@ export default (app) => {
         });
         app.io.in(socketKey).emit("messages:create", json);
 
-        embedProcess(json).then(detectedEmbeds => {
+        embed(json.content).then(detectedEmbeds => {
           if (detectedEmbeds.length > 0) {
             newMessage.embeds = detectedEmbeds;
             newMessage.save().then(embeddedMessage => {

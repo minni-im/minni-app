@@ -7,7 +7,7 @@ export default class SpotifyEmbed extends Base {
   constructor() {
     super();
     this.name = "Spotify";
-    this.type = "audio";
+    this.type = "audio.spotify";
   }
 
   endpointUrl({ url }) {

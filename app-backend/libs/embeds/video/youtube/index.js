@@ -8,6 +8,7 @@ export default class YoutubeEmbed extends Base {
   constructor() {
     super();
     this.name = "Youtube";
+    this.type = "video.youtube";
   }
 
   endpointUrl({id: videoId}) {
