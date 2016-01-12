@@ -1,6 +1,6 @@
 import React from "react";
 
-import history from "../history";
+import browserHistory from "react-router";
 import { dispatch } from "../dispatchers/Dispatcher";
 
 class RoomCreate extends React.Component {
@@ -104,7 +104,7 @@ class RoomCreate extends React.Component {
           type: "room/add",
           room
         });
-        history.pushState({ }, `/chat/${this.props.currentAccount.name}/lobby`);
+        browserHistory.push(`/chat/${this.props.currentAccount.name}/lobby`);
       } else {
         this.setState({
           message: payload.message

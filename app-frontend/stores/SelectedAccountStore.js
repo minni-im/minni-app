@@ -8,8 +8,6 @@ import ConnectionStore from "./ConnectionStore";
 
 import { ActionTypes } from "../Constants";
 
-import history from "../history";
-
 import Logger from "../libs/Logger";
 const logger = Logger.create("SelectedAccountStore");
 

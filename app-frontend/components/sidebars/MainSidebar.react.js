@@ -2,8 +2,6 @@ import React from "react";
 import { Link } from "react-router";
 import { Container } from "flux/utils";
 
-import history from "../../history";
-
 import classnames from "classnames";
 
 import AccountStore from "../../stores/AccountStore";
@@ -68,8 +66,9 @@ class MainSidebar extends React.Component {
               "room--selected": selected,
               "room--unread": unreadCount > 0
             })}
-            onClick={this._onRoomClicked.bind(this)} data-slug={room.slug}
-            to={`/chat/${account.slug}/messages/${room.slug}`}>
+            onClick={this._onRoomClicked.bind(this)}
+            data-slug={room.slug}
+            to={{pathname: `/chat/${account.slug}/messages/${room.slug}`}}>
             <span className="icon">
                 <RoomIcons.RoomPublicIcon />
             </span>
@@ -87,10 +86,14 @@ class MainSidebar extends React.Component {
     if (event.ctrlKey && event.shiftKey) {
       event.preventDefault();
       const slugs = SelectedRoomStore.getRooms().add(event.currentTarget.dataset.slug).toArray();
-      history.pushState(null, `/chat/${this.state.account.slug}/messages/${slugs}`);
+      this.context.router.push(`/chat/${this.state.account.slug}/messages/${slugs}`);
     }
   }
 }
+
+MainSidebar.contextTypes = {
+  router: React.PropTypes.object.isRequired
+};
 
 const container = Container.create(MainSidebar);
 export default container;

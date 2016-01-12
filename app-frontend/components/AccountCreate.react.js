@@ -1,5 +1,5 @@
 import React from "react";
-import history from "../history";
+import browserHistory from "react-router";
 
 import { dispatch } from "../dispatchers/Dispatcher";
 
@@ -116,7 +116,7 @@ export default class AccountCreate extends React.Component {
           type: "account/new",
           account: status.account
         });
-        history.pushState({ welcome: true }, `/dashboard`);
+        browserHistory.push({ pathname: `/dashboard`, state: { welcome: true } });
       } else {
         this.setState({
           message: status.message

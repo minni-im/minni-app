@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Router, Route, IndexRoute } from "react-router";
-import history from "./history";
+import { Router, Route, IndexRoute, browserHistory } from "react-router";
 
 import Flux from "./libs/Flux";
 import { dispatch } from "./dispatchers/Dispatcher";
@@ -58,7 +57,7 @@ function deselectAccount() {
 Flux.initialize();
 
 ReactDOM.render((
-  <Router history={history}>
+  <Router history={browserHistory}>
     <Route path="/" component={Minni} >
       <IndexRoute components={{ content: Dashboard, sidebar: DashboardSidebar }} />
       <Route path="create" components={{ content: AccountCreate, sidebar: Welcome }} onEnter={deselectAccount} />
