@@ -895,17 +895,19 @@ header .user-info {
 
     .message--content, .message--embed {
       display: inline-block;
-      background-color: @gray-lighter;
       border-radius: 4px;
-      margin-bottom: 1px;
     }
 
     .message--content {
+      background-color: @gray-lighter;
       padding: 0 10px;
+      margin-bottom: 1px;
     }
 
     .message--embed {
       position: relative;
+      border: 1px solid @gray-lighter;
+      margin-bottom: 2px;
       .embed-hide {
         cursor: pointer;
         position: absolute;

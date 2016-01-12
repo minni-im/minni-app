@@ -1,5 +1,7 @@
 import SimpleMarkdown from "simple-markdown";
-import { auth } from "../../config";
+import { auth, embed } from "../../config";
+
+const { active, providers } = embed;
 
 import Audio from "./audio/basic";
 import Spotify from "./audio/spotify";
@@ -13,21 +15,13 @@ import Vine from  "./video/vine";
 import Youtube from "./video/youtube";
 import Twitter from "./web/twitter";
 
+const list = { Audio, Spotify, Gist, Github, Flickr, Instagram, Video, Vimeo, Vine, Youtube, Twitter };
 
 let namedEmbeds = {};
-export const embeds = [
-  new Audio(),
-  new Gist(),
-  new Github(),
-  new Flickr(),
-  new Instagram(),
-  new Spotify(),
-  new Youtube(),
-  new Twitter(auth.twitter),
-  new Video(),
-  new Vine(),
-  new Vimeo()
-];
+export const embeds = [];
+for (const embedName of providers) {
+  embeds.push(new list[embedName](auth[embedName.toLowerCase()]));
+}
 
 const RULES = {
   newline: SimpleMarkdown.defaultRules.newline,
@@ -61,6 +55,10 @@ export function process(tree) {
 }
 
 export default function(message) {
+  if (!active) {
+    // Returning empty array to emulate nothing was found.
+    return Promise.resolve([]);
+  }
   const tree = parse(message);
   return process(tree);
 }

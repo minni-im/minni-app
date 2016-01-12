@@ -25,6 +25,8 @@ export default class Message extends MessageRecord {
   }
 
   get singleEmbed() {
-    return this.embeds.size === 1 && this.content === this.embeds.get(0).get("url");
+    return this.embeds.size === 1 &&
+      this.content === this.embeds.get(0).get("url") &&
+      this.embeds.get(0).get("type") === "image";
   }
 }
