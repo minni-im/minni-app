@@ -27,7 +27,7 @@ class RoomCreate extends React.Component {
           <h3>Let's invite people!</h3>
         </div>
       </header>
-      <section className="panel panel--contrast">
+      <section className="panel panel--contrast panel--wrapper">
         <form onSubmit={this._onHandleSubmit.bind(this)}>
           {errors}
           <p className="block">
