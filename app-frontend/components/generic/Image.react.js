@@ -90,7 +90,6 @@ class ImageContainer extends React.Component {
       };
 
       if (this.isGIF()) {
-        console.log(this.props.src, "is a GIF");
         return <span className="image">
           <span className="image--gif">&#9658; GIF</span>
           <img {...props} />
@@ -101,7 +100,7 @@ class ImageContainer extends React.Component {
       //     return <img className="image image-static" {...props} src={this.state.staticFrame} />;
       //   }
       }
-      return <img className={classnames("image", classNames)} {...props} />;
+      return <img className={classnames("image", classNames, this.props.className)} {...props} />;
     }
   }
 

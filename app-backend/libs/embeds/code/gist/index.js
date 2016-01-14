@@ -1,6 +1,7 @@
 import Base from "../../base";
 
 const REGEXP_GIST = /^https:\/\/gist.github.com\/([a-zA-Z0-9_-]+)\/([a-zA-Z0-9]+)/;
+const AVATAR_SIZE = 300;
 
 export default class GistEmbed extends Base {
   constructor() {
@@ -39,6 +40,16 @@ export default class GistEmbed extends Base {
          })
        }
     };
+  }
+
+  extractThumbnail(data) {
+    return {
+      thumbnail: {
+        width: AVATAR_SIZE,
+        height: AVATAR_SIZE,
+        url: `${data.owner.avatar_url}&s=${AVATAR_SIZE}`
+      }
+    }
   }
 
   extractAuthor(data) {

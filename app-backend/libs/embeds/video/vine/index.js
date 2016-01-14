@@ -19,7 +19,8 @@ export default class VineEmbed extends Base {
 
   parse(capture) {
     return {
-      id: capture[1]
+      id: capture[1],
+      url: capture[0]
     };
   }
 }

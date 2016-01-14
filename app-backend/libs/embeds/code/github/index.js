@@ -36,8 +36,9 @@ export default class Github extends Base {
   extractData(data, { repo }) {
     return repo ? {
       type: "code.github.repo",
+      provider: data.provider,
       title: data.full_name,
-      description: data.description || "",
+      description: data.description || data.bio || "",
       thumbnail: {
         width: AVATAR_SIZE,
         height: AVATAR_SIZE,
@@ -49,6 +50,7 @@ export default class Github extends Base {
       }
     } : {
       type: "code.github.user",
+      provider: data.provider,
       title: data.login,
       thumbnail: {
         width: AVATAR_SIZE,
