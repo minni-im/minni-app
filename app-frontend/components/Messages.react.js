@@ -23,11 +23,11 @@ class Message extends React.Component {
       timestamp = <div className="message--timestamp">{message.dateCreated.format("hh:mm A")}</div>;
     }
 
-    let embeds;
     let content = <div className="message--content">
       {message.content}
     </div>;
 
+    let embeds;
     if (message.hasEmbeds()) {
       if (message.singleEmbed) {
         content = <Embed {...message.embeds.get(0).toJS()} />;
@@ -36,10 +36,7 @@ class Message extends React.Component {
           return <Embed key={index} {...embed.toJS()} />;
         }).toArray();
 
-        content = <div className="message--content">
-          {message.content}
-          <div className="message--embeds">{embeds}</div>
-        </div>;
+        embeds = <div className="message--embeds">{embeds}</div>;
       }
     }
 
@@ -52,6 +49,7 @@ class Message extends React.Component {
       {header}
       {timestamp}
       {content}
+      {embeds}
     </div>;
   }
 }

@@ -4,7 +4,7 @@ import Image from "./generic/Image.react";
 
 class EmbedWrapper extends React.Component {
   render() {
-    return <div className={this.props.className}>
+    return <div className={this.props.className} {...this.props}>
       <span className="embed-hide" title="Hide this preview">&times;</span>
       {this.props.children}
     </div>;
@@ -78,8 +78,14 @@ class OEmbed extends React.Component {
   }
 
   render() {
-    const { classNames } = this.props;
-    return <EmbedWrapper className={classnames("message--embed", classNames)}>
+    const { classNames, thumbnail: { width } } = this.props;
+    let style = {};
+    if (width) {
+      style["maxWidth"] = width;
+    }
+    return <EmbedWrapper
+      className={classnames("message--embed", classNames)}
+      style={style}>
       {this.renderProvider()}
       {this.renderThumbnail(true)}
       {this.renderTitle()}
@@ -108,8 +114,7 @@ class BackgroundCoverEmbed extends OEmbed {
       target="_blank"
       className="embed--thumbnail"
       style={{
-        "minWidth": width,
-        "background-image": `url(${thumbnailUrl})`}}>&nbsp;</a>;
+        "backgroundImage": `url(${thumbnailUrl})`}}>&nbsp;</a>;
   }
 
   renderAuthor() {
@@ -151,7 +156,6 @@ class SpotifyEmbed extends OEmbed {
 class GithubEmbed extends OEmbed {
   renderTitle() {
     const { title, provider } = this.props;
-    console.log(provider);
     const { url } = provider;
     return <h3><a href={url} target="_blank">{title}</a></h3>;
   }

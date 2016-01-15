@@ -903,16 +903,18 @@ header .user-info {
       background-color: @gray-lighter;
       padding: 0 10px;
       word-break: break-word;
+    }
 
-      .message--embeds {
-        border: 1px solid @gray-lighter;
-        border-radius: 0 0 4px 4px;
-      }
-
+    .message--embeds {
+      // border-radius: 4px;
+      // border: 1px solid @gray-lighter;
+      .clearfix();
     }
 
     .message--embed {
       position: relative;
+      border-radius: 4px;
+      border: 1px solid @gray-lighter;
 
       .embed-hide {
         cursor: pointer;
@@ -928,7 +930,7 @@ header .user-info {
     }
 
     .message--embed + .message--embed {
-      border-left: 1px solid @gray-lighter;
+      // border-left: 1px solid @gray-lighter;
     }
 
     .message--header, .message--timestamp {
@@ -964,29 +966,31 @@ header .user-info {
     .message--content {
       background-color: @light-blue;
       color: @color-light;
+    }
 
-      .message--embeds {
-        @embed-border-color: fadeout(@light-blue, 45%);
+    .message--embeds {
+      @embed-border-color: fadeout(@light-blue, 50%);
+      // border: 1px solid @embed-border-color;
+
+      .message--embed {
         border: 1px solid @embed-border-color;
-        .message--embed + .message--embed {
-          border-left: 1px solid @embed-border-color;
-        }
+      }
+
+      .embed--provider {
+        background-color: fadeout(@light-blue, 75%);
+      }
+
+      .message--embed + .message--embed {
+        // border-left: 1px solid @embed-border-color;
       }
     }
   }
 }
 
-.message--embeds {
-  margin: 0 -10px;
-  background-color: @white;
-  display: flex;
-  flex-flow: row;
-}
-
 .message--embed {
-  flex: 1;
+  display: block;
+  margin-bottom: 1px;
   color: @gray !important;
-  overflow: hidden;
   a {
     color: inherit;
   }
@@ -1012,13 +1016,17 @@ header .user-info {
     color: @gray-light;
     font-size: 11px;
   }
+}
 
+.message--embed:not(.embed-image) {
+  .clearfix;
 }
 
 .embed-image {
   display: inline-flex;
   margin-bottom: 1px;
   background: url(/images/transparent-bg-pattern.png);
+  border: none !important;
   .image, .image img {
     border-radius: 4px;
     vertical-align: middle;
@@ -1037,12 +1045,14 @@ header .user-info {
   }
 }
 
-.embed-audio-spotify,
-.embed-code-github-repo, .embed-code-github-user, .embed-code-gist {
-
+.embed-audio-spotify {
+  max-width: 400px;
   h3 {
     margin-left: 160px;
     margin-right: 10px;
+  }
+  .embed--provider {
+    background-image: url(/images/embeds/spotify/favicon.ico);
   }
 
   .embed--thumbnail, .embed--thumbnail .image {
@@ -1052,17 +1062,25 @@ header .user-info {
   }
 }
 
-.embed-audio-spotify {
-  .embed--provider {
-    background-image: url(/images/embeds/spotify/favicon.ico);
-  }
-}
-
 .embed-code-github-repo, .embed-code-github-user, .embed-code-gist {
-  min-width: 400px;
+  h3 {
+    margin-left: 10px;
+    margin-right: 106px;
+  }
   .embed--provider {
     background-image: url(/images/embeds/github/favicon.ico);
   }
+
+  .embed--author {
+    line-height: 16px;
+  }
+
+  .embed--thumbnail, .embed--thumbnail .image {
+    .square(96px);
+    float: right;
+    margin-left: 10px;
+  }
+
 }
 
 .embed-video-youtube, .embed-video-vine,
@@ -1117,6 +1135,7 @@ header .user-info {
 }
 
 .embed-web-twitter {
+  max-width: 600px;
   .embed--provider {
     background-image: url(/images/embeds/twitter/favicon.ico);
   }
