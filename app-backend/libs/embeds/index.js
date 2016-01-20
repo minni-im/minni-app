@@ -13,9 +13,10 @@ import Video from "./video/basic";
 import Vimeo from "./video/vimeo";
 import Vine from  "./video/vine";
 import Youtube from "./video/youtube";
+import Medium from "./web/medium";
 import Twitter from "./web/twitter";
 
-const list = { Audio, Spotify, Gist, Github, Flickr, Instagram, Video, Vimeo, Vine, Youtube, Twitter };
+const list = { Audio, Spotify, Gist, Github, Flickr, Instagram, Video, Vimeo, Vine, Youtube, Medium, Twitter };
 
 let namedEmbeds = {};
 export const embeds = [];
@@ -49,7 +50,8 @@ export function parse(message) {
 
 export function process(tree) {
   return Promise.all(tree.map(element => {
-    return namedEmbeds[element.type].process(element)
+    const embedProcessor = namedEmbeds[element.type];
+    return embedProcessor.process(element);
   }))
   .then(results => results.filter(result => result !== false));
 }

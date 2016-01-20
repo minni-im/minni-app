@@ -1,3 +1,4 @@
+jest.dontMock("../../base");
 jest.dontMock("../basic");
 
 const Video = require("../basic");

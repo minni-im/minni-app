@@ -97,6 +97,7 @@ export default class Base {
   }
 
   process(element, options = {}) {
+    options = Object.assign(Object.assign({}, this.options), options);
     const apiUrl = this.endpointUrl(element);
     return new Promise((resolve) => {
       fetch(apiUrl, options)
@@ -126,5 +127,51 @@ export default class Base {
           return resolve(false);
         });
     });
+  }
+}
+
+
+function empty() {
+  return {};
+}
+
+export class OpenGraph extends Base {
+  parse(capture) {
+    return {
+      url: capture[0]
+    }
+  }
+
+  endpointUrl({ url }) {
+    return `https://opengraph.io/api/1.0/site/${url}`;
+  }
+
+  extractTitle({ openGraph }) {
+    return { title: openGraph.title };
+  }
+
+  extractDescription({ openGraph }) {
+    return { description: openGraph.description };
+  }
+
+  extractProvider({ openGraph }) {
+    let provider = {
+      provider: {
+        name: openGraph.site_name
+      }
+    };
+
+    if (this.url) {
+      provider.provider.url = this.url;
+    }
+    return provider;
+  }
+
+  extractThumbnail({ openGraph }) {
+    return {
+      thumbnail: {
+        url: openGraph.image
+      }
+    }
   }
 }

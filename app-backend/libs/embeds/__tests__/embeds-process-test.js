@@ -184,6 +184,24 @@ describe("Embed processor", () => {
     })
   });
 
+  pit("should process medium opengraph url", function() {
+    const url = "https://medium.com/@benostrower/rey-is-a-kenobi-362b5af09849";
+    const tree = parse(`un peu de meidum sur #starwars ${url} attention ca spoile !`);
+
+    return process(tree).then(results => {
+      expect(results.length).toEqual(1);
+
+      console.log(results[0]);
+
+      let { type, provider } = results[0];
+      expect(type).toEqual("web.medium");
+      expect(provider).toEqual({
+        name: "Medium",
+        url: "https://medium.com"
+      });
+    })
+  });
+
   pit("should process twitter url", function() {
     const tree = parse(`yop yop https://twitter.com/patrickbrosset/status/681507091064946688`);
     return process(tree).then(results => {

@@ -10,10 +10,16 @@ const mappings = {
   "https://api.instagram.com/oembed/?url=http://instagram.com/p/V8UMy0LjpX/": "instagram",
 
   "https://api.twitter.com/1.1/statuses/show.json?id=681507091064946688": "twitter",
-  "https://api.twitter.com/oauth2/token": "twitter-auth-token"
+  "https://api.twitter.com/oauth2/token": "twitter-auth-token",
+  "https://opengraph.io/api/1.0/site/https://medium.com/@benostrower/rey-is-a-kenobi-362b5af09849": "medium"
 }
 
 function fake(url, options = {}) {
+  if (!(url in mappings)) {
+    return Promise.resolve({
+      status: 404
+    });
+  }
   const filename = `./${mappings[url]}`;
   return Promise.resolve(require.requireActual(filename));
 }

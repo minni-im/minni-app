@@ -1,3 +1,4 @@
+jest.dontMock("../../base");
 jest.dontMock("../basic");
 
 const Audio = require("../basic");

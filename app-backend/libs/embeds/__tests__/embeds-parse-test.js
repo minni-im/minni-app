@@ -1,5 +1,6 @@
 jest.dontMock("simple-markdown");
 jest.dontMock("../../../config");
+jest.dontMock("../base");
 jest.dontMock("../index");
 
 const fs = require.requireActual("fs");
@@ -139,6 +140,15 @@ describe("Embed parser", () => {
       const tree = parse(`https://instagr.am/p/V8UMy0LjpX/`);
       expect(tree.length).toEqual(1);
       expect(tree[0].id).toEqual("V8UMy0LjpX");
+    });
+  });
+
+  describe("Medium", function() {
+    it("should detect medium urls", function() {
+      const url = "https://medium.com/@benostrower/rey-is-a-kenobi-362b5af09849";
+      const tree = parse(`un peu de meidum sur #starwars ${url} attention ca spoile !`);
+      expect(tree.length).toEqual(1);
+      expect(tree[0].url).toEqual(url);
     });
   });
 
