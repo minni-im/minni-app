@@ -11,7 +11,8 @@ const mappings = {
 
   "https://api.twitter.com/1.1/statuses/show.json?id=681507091064946688": "twitter",
   "https://api.twitter.com/oauth2/token": "twitter-auth-token",
-  "https://opengraph.io/api/1.0/site/https://medium.com/@benostrower/rey-is-a-kenobi-362b5af09849": "medium"
+  "https://opengraph.io/api/1.0/site/https://medium.com/@benostrower/rey-is-a-kenobi-362b5af09849": "medium",
+  "http://codepen.io/api/oembed?format=json&url=http://codepen.io/captainbrosset/pen/lHpnK": "codepen"
 }
 
 function fake(url, options = {}) {

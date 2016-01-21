@@ -7,6 +7,7 @@ import Audio from "./audio/basic";
 import Spotify from "./audio/spotify";
 import Gist from "./code/gist";
 import Github from "./code/github";
+import CodePen from "./code/codepen";
 import Flickr from "./image/flickr";
 import Instagram from "./image/instagram";
 import Video from "./video/basic";
@@ -16,7 +17,7 @@ import Youtube from "./video/youtube";
 import Medium from "./web/medium";
 import Twitter from "./web/twitter";
 
-const list = { Audio, Spotify, Gist, Github, Flickr, Instagram, Video, Vimeo, Vine, Youtube, Medium, Twitter };
+const list = { Audio, Spotify, Gist, Github, CodePen, Flickr, Instagram, Video, Vimeo, Vine, Youtube, Medium, Twitter };
 
 let namedEmbeds = {};
 export const embeds = [];

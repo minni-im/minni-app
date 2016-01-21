@@ -190,14 +190,25 @@ describe("Embed processor", () => {
 
     return process(tree).then(results => {
       expect(results.length).toEqual(1);
-
-      console.log(results[0]);
-
       let { type, provider } = results[0];
       expect(type).toEqual("web.medium");
       expect(provider).toEqual({
         name: "Medium",
         url: "https://medium.com"
+      });
+    });
+  });
+
+  pit("should process codepen url", function() {
+    const url = "http://codepen.io/captainbrosset/pen/lHpnK";
+    const tree = parse(`tu sais comment marche les CSS Transforms? Regarde ce pen http://codepen.io/captainbrosset/pen/lHpnK`);
+    return process(tree).then(results => {
+      expect(results.length).toEqual(1);
+      let { type, provider } = results[0];
+      expect(type).toEqual("code.codepen");
+      expect(provider).toEqual({
+        name: "CodePen",
+        url: "http://codepen.io"
       });
     })
   });

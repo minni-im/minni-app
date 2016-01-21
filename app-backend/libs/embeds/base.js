@@ -10,7 +10,9 @@ export default class Base {
   }
 
   parse(capture) {
-    return {};
+    return {
+      url: capture[0]
+    };
   }
 
   extractData(data = {}, element) {

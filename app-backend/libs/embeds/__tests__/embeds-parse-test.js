@@ -152,6 +152,15 @@ describe("Embed parser", () => {
     });
   });
 
+  describe("CodePen", function() {
+    it("should detect codepen url", function() {
+      const url = "http://codepen.io/captainbrosset/pen/lHpnK";
+      const tree = parse(`tu sais comment marche les CSS Transforms? Regarde ce pen http://codepen.io/captainbrosset/pen/lHpnK`);
+      expect(tree.length).toEqual(1);
+      expect(tree[0].url).toEqual(url);
+    });
+  });
+
   it("should detect all urls from message", function() {
     const tree = parse(`Hello there ! please check these 2 links this morning: https://www.youtube.com/watch?v=4SbiiyRSIwo and https://twitter.com/patrickbrosset/status/675448727285448705 and
       https://example.com/foo/bar/baz.ogg`);
