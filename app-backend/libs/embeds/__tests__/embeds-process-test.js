@@ -87,45 +87,6 @@ describe("Embed processor", () => {
     });
   });
 
-  pit("should process all detected urls from message", function() {
-    const privateVimeo = "https://vimeo.com/120876824";
-    const tree = parse(`https://www.youtube.com/watch?v=4SbiiyRSIwo
-      and https://open.spotify.com/track/7Hj2D61IPaPICdGBXFj0cU
-      and ${privateVimeo}
-      and https://example.com/foo/bar/baz.webm`);
-
-    return process(tree).then(results => {
-      expect(results.length).toEqual(3);
-      {
-        let { type, provider, author } = results[0];
-        expect(type).toEqual("video.youtube");
-        expect(provider).toEqual({
-          name: "YouTube",
-          url: "https://www.youtube.com/"
-        });
-        expect(author).toBeDefined();
-
-      }
-
-      {
-        let { type, provider, author } = results[1];
-        expect(type).toEqual("audio.spotify");
-        expect(provider).toEqual({
-            name: "Spotify",
-            url: "https://www.spotify.com"
-        });
-        expect(author).not.toBeDefined();
-      }
-
-      {
-        let { type, provider, author } = results[2];
-        expect(type).toEqual("video");
-        expect(provider).not.toBeDefined();
-        expect(author).not.toBeDefined();
-      }
-    });
-  });
-
   pit("should process gist urls", function() {
     const tree = parse("This is solange: https://gist.github.com/bbaliguet/4e4b3d8ec2868ae63596 et ca envoie de la buche");
 
@@ -236,4 +197,43 @@ describe("Embed processor", () => {
     });
   });
 
+  pit("should process all detected urls from message", function() {
+    const privateVimeo = "https://vimeo.com/120876824";
+    const tree = parse(`https://www.youtube.com/watch?v=4SbiiyRSIwo
+      and https://open.spotify.com/track/7Hj2D61IPaPICdGBXFj0cU
+      and ${privateVimeo}
+      and https://example.com/foo/bar/baz.webm`);
+      
+    return process(tree).then(results => {
+
+      expect(results.length).toEqual(3);
+      {
+        let { type, provider, author } = results[0];
+        expect(type).toEqual("video.youtube");
+        expect(provider).toEqual({
+          name: "YouTube",
+          url: "https://www.youtube.com/"
+        });
+        expect(author).toBeDefined();
+
+      }
+
+      {
+        let { type, provider, author } = results[1];
+        expect(type).toEqual("audio.spotify");
+        expect(provider).toEqual({
+            name: "Spotify",
+            url: "https://www.spotify.com"
+        });
+        expect(author).not.toBeDefined();
+      }
+
+      {
+        let { type, provider, author } = results[2];
+        expect(type).toEqual("video");
+        expect(provider).not.toBeDefined();
+        expect(author).not.toBeDefined();
+      }
+    });
+  });
 });

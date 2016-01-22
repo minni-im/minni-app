@@ -149,6 +149,7 @@ class SpotifyEmbed extends OEmbed {
       {this.renderProvider()}
       {this.renderThumbnail()}
       {this.renderTitle()}
+      {this.renderDescription()}
     </EmbedWrapper>;
   }
 }
