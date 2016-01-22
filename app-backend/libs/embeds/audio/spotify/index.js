@@ -49,4 +49,14 @@ export default class SpotifyEmbed extends Base {
     }
     return {};
   }
+
+  extractThumbnail({ thumbnail_url }) {
+    return {
+      thumbnail: {
+        url: thumbnail_url.replace("/cover/", "/640/"),
+        width: 320,
+        height: 320
+      }
+    };
+  }
 };

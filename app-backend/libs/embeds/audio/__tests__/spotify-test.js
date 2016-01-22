@@ -16,9 +16,10 @@ describe("Spotify embed", function() {
     const data = {
       title: "Muse - Dead Inside"
     };
-    const result = embed.extractData(data, element);
-    expect(result.title).toEqual("Muse");
-    expect(result.description).toEqual("Dead Inside");
+    const { title } = embed.extractTitle(data, element);
+    const { description } = embed.extractDescription(data, element);
+    expect(title).toEqual("Muse");
+    expect(description).toEqual("Dead Inside");
   });
 
   it("should extract artist and album name from album url", function() {
@@ -28,9 +29,10 @@ describe("Spotify embed", function() {
     const data = {
       title: "Muse - Live At Rome Olympic Stadium"
     };
-    const result = embed.extractData(data, element);
-    expect(result.title).toEqual("Muse");
-    expect(result.description).toEqual("Live At Rome Olympic Stadium");
+    const { title } = embed.extractTitle(data, element);
+    const { description } = embed.extractDescription(data, element);
+    expect(title).toEqual("Muse");
+    expect(description).toEqual("Live At Rome Olympic Stadium");
   });
 
   it("should extract onwer and playlist name from user playlist url", function() {
@@ -40,9 +42,18 @@ describe("Spotify embed", function() {
     const data = {
       title: "#01/16 - Jan2016 MixTape"
     };
-    const result = embed.extractData(data, element);
-    expect(result.title).toEqual("benoua");
-    expect(result.description).toEqual("#01/16 - Jan2016 MixTape");
+    const { title } = embed.extractTitle(data, element);
+    const { description } = embed.extractDescription(data, element);
+    expect(title).toEqual("benoua");
+    expect(description).toEqual("#01/16 - Jan2016 MixTape");
+  });
+
+  it("should transform thumbnail url", function() {
+    const url = "https://d3rt1990lpmkn.cloudfront.net/cover/d83a086148afe6539dae524607cbe4b6ccdd0360";
+
+    const { thumbnail } = embed.extractThumbnail({ thumbnail_url: url });
+    expect(thumbnail.url).toEqual("https://d3rt1990lpmkn.cloudfront.net/640/d83a086148afe6539dae524607cbe4b6ccdd0360");
+    expect(thumbnail.width).toEqual(320);
   });
 
 });
