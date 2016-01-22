@@ -6,6 +6,7 @@ export default class VimeoEmbed extends Base {
   constructor() {
     super();
     this.name = "Vimeo";
+    this.type = "video.vimeo";
   }
 
   endpointUrl({ url }) {
