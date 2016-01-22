@@ -20,7 +20,7 @@ class OEmbed extends React.Component {
 
   renderDescription() {
     const { description } = this.props;
-    return description ? <p>{description}</p> : null;
+    return description ? <div>{description}</div> : null;
   }
 
   renderAuthor(prefix = "") {
@@ -77,22 +77,28 @@ class OEmbed extends React.Component {
     return <div></div>;
   }
 
-  render() {
-    const { classNames, thumbnail: { width } } = this.props;
-    let style = {};
-    if (width) {
-      style["maxWidth"] = width;
-    }
-    return <EmbedWrapper
-      className={classnames("message--embed", classNames)}
-      style={style}>
-      {this.renderProvider()}
-      {this.renderThumbnail(true)}
+  renderContent() {
+    return <div className="embed--content">
       {this.renderTitle()}
       {this.renderAuthor()}
       {this.renderDescription()}
       {this.renderHtml()}
       {this.renderMeta()}
+    </div>;
+  }
+
+  render() {
+    const { classNames, thumbnail } = this.props;
+    let style = {};
+    if (thumbnail && thumbnail.width) {
+      style["maxWidth"] = thumbnail.width;
+    }
+    return <EmbedWrapper
+      className={classnames("message--embed", classNames)}
+      style={style}>
+      {this.renderThumbnail(true)}
+      {this.renderContent()}
+      {this.renderProvider()}
     </EmbedWrapper>;
   }
 }
@@ -131,26 +137,41 @@ class TwitterEmbed extends OEmbed {
       <span className="embed--author">{name}</span>
     </h3>;
   }
-  render() {
-    const { classNames } = this.props;
-    return <EmbedWrapper className={classnames("message--embed", classNames)}>
-      {this.renderProvider()}
+
+  renderContent() {
+    return <div className="embed--content">
       {this.renderThumbnail()}
       {this.renderTitle()}
       {this.renderDescription()}
+    </div>;
+  }
+
+  render() {
+    const { classNames } = this.props;
+    return <EmbedWrapper className={classnames("message--embed", classNames)}>
+      {this.renderContent()}
+      {this.renderProvider()}
     </EmbedWrapper>;
   }
 }
 
 class SpotifyEmbed extends OEmbed {
-  render() {
-    const { classNames } = this.props;
-    return <EmbedWrapper className={classnames("message--embed", classNames)}>
-      {this.renderProvider()}
-      {this.renderThumbnail()}
+  renderThumbnail() {
+    const { url, thumbnail } = this.props;
+    return <a
+      href={url}
+      target="_blank"
+      className="embed--thumbnail"
+      style={{
+        "backgroundImage": `url(${thumbnail.url})`}}>
+    </a>;
+  }
+
+  renderContent() {
+    return <div className="embed--content">
       {this.renderTitle()}
       {this.renderDescription()}
-    </EmbedWrapper>;
+    </div>;
   }
 }
 
@@ -164,13 +185,18 @@ class GithubEmbed extends OEmbed {
 
 class AudioEmbed extends OEmbed {
   render() {
-    return <div></div>;
+    return <audio controls src={this.props.url}></audio>
   }
 }
 
-class VideoEmbed extends OEmbed {
-  render() {
-    return <div></div>;
+class VideoEmbed extends ImageEmbed {
+  renderThumbnail() {
+    return <video ref="video" onLoadedMetadata={this.guessSize.bind(this)} src={this.props.url} controls></video>;
+  }
+
+  guessSize(event) {
+    const { video } = this.refs;
+    console.log(video.videoWidth, video.videoHeight);
   }
 }
 
@@ -183,6 +209,12 @@ export default class Embed extends React.Component {
     };
 
     switch (type) {
+      case "audio":
+        return <AudioEmbed classNames={classNames} {...this.props} />;
+
+      case "video":
+        return <VideoEmbed classNames={classNames} {...this.props} />;
+
       case "image":
         return <ImageEmbed classNames={classNames} {...this.props} />;
 
@@ -193,6 +225,8 @@ export default class Embed extends React.Component {
       case "video.vine":
       case "image.flickr":
       case "image.instagram":
+      case "web.medium":
+      case "code.codepen":
         return <BackgroundCoverEmbed classNames={classNames} {...this.props} />;
 
       case "code.github.user":

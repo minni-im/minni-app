@@ -27,4 +27,20 @@ export default class FlickrEmbed extends Base {
       photoId: capture[2]
     };
   }
+
+  extractThumbnail(data) {
+    // Flickr image sizes info
+    // Square75: sq, Square150: q, Thumbnail: t
+    // Small240: s, Small320: n
+    // Medium500: m, Medium640: z, Medium800: c
+    // Large1024: l, Large1600: h, Large2048: k,
+    // Orignial: o
+
+    // Oembed returns Square150
+    const { width, url } = super.extractThumbnail(data).thumbnail;
+    return {
+      url: url.replace("_q.", "_z."),
+      width: 640
+    };
+  }
 }

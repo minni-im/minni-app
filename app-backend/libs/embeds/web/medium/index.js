@@ -2,7 +2,7 @@ import { OpenGraph } from "../../base";
 
 const REGEXP_MEDIUM = /^https:\/\/medium.com\/(@[\w-_0-9]+)\/([^\s$]*)/;
 const REGEXP_MEDIUM_IMAGE_SIZE = /\/max\/\d+\//;
-const THUMBNAIL_SIZE = 150;
+const THUMBNAIL_SIZE = 350;
 
 export default class MediumEmbed extends OpenGraph {
   constructor() {
