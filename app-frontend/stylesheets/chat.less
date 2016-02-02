@@ -112,7 +112,7 @@ body.chat {
     }
   }
   .x-tab-content {
-    flex: 1;
+    flex-grow: 1;
     background-color: @white;
     padding: 10px 15px;
   }
@@ -128,8 +128,9 @@ body.chat {
     background-color: @background-dark;
     color: @color-light;
     width: @main-sidebar-width;
+    flex-shrink: 0;
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column nowrap;
 
     h1 {
       height: @main-header-height;
@@ -151,7 +152,7 @@ body.chat {
     }
 
     > nav {
-      flex: 1;
+      flex-grow: 1;
       display: flex;
       flex-flow: column nowrap;
       justify-content: flex-start;
@@ -200,7 +201,7 @@ body.chat {
         }
 
         .name {
-          flex: 1;
+          flex-grow: 1;
           .text-overflow;
         }
 
@@ -273,7 +274,7 @@ body.chat {
   }
 
   > main {
-    flex: 1;
+    flex-grow: 1;
     display: flex;
     flex-flow: row nowrap;
 
@@ -285,13 +286,22 @@ body.chat {
 
       header {
         height: @main-header-height;
-        display: inline-flex;
+        flex-shrink: 0;
+        display: flex;
         flex-flow: row nowrap;
         justify-content: space-between;
+
+        .actions {
+          align-self: center;
+          margin-right: 5px;
+          .button {
+            margin-left: 5px;
+          }
+        }
       }
 
       section.panel {
-        flex: 1;
+        flex-grow: 1;
         overflow: auto;
         display: flex;
         flex-flow: column nowrap;
@@ -306,16 +316,6 @@ body.chat {
           line-height: 1.2em;
         }
 
-        header {
-          height: auto;
-          .actions {
-            align-self: center;
-            margin-right: 5px;
-            .button {
-              margin-left: 5px;
-            }
-          }
-        }
       }
 
       section.panel--contrast {
@@ -328,14 +328,14 @@ body.chat {
       }
 
       section .x-tabbar {
-        flex: 1;
+        flex-grow: 1;
       }
     }
 
     header {
       .header-info {
         flex: 1 1 50%;
-        display: inline-block;
+        // display: inline-block;
         padding: 0 10px;
         overflow: hidden;
 
@@ -390,11 +390,12 @@ body.chat {
     }
 
     > section {
-      flex: 1;
+      flex-grow: 1;
     }
 
     > aside {
       width: @content-sidebar-width;
+      flex-shrink: 0;
     }
   }
 }
@@ -450,7 +451,7 @@ header .user-info {
 .lobby {
   aside {
     background-color: @gray-lighter;
-
+    flex-shrink: 0;
     .coworker-all-alone {
       padding: 2em;
       align-self: center;
@@ -489,6 +490,7 @@ header .user-info {
       .room--name {
         font-weight: 700;
         margin-right: 10px;
+        flex-shrink: 0;
       }
 
       .room--topic {
@@ -556,8 +558,8 @@ header .user-info {
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
-  //width: @main-account-switcher-width;
-  flex: 0 0 @main-account-switcher-width;
+  width: @main-account-switcher-width;
+  // flex: 0 0 @main-account-switcher-width;
   transition: flex-basis 500ms;
   background-color: darken(@background-dark, 1%);
   padding: 5px 0;
@@ -701,6 +703,10 @@ header .user-info {
 }
 
 .room {
+  > section {
+    flex-basis: 50%;
+    flex-shrink: 0;
+  }
   > section + section {
     border-left: 1px solid darken(@gray-lighter, 5%);
   }
@@ -717,9 +723,9 @@ header .user-info {
     display: flex;
     flex-flow: column;
     border-top: 1px solid darken(@gray-lighter, 5%);
-
+    flex-shrink: 0;
     .composer {
-      flex: 1;
+      flex-grow: 1;
 
       display: flex;
       flex-flow: row nowrap;
@@ -742,7 +748,7 @@ header .user-info {
         border-radius: 0;
         overflow: auto;
         resize: none;
-        flex: 1;
+        flex-grow: 1;
         align-self: stretch;
         max-height: 180px;
         line-height: 20px;
@@ -820,7 +826,7 @@ header .user-info {
     }
 
     .typing-info {
-      flex: 3;
+      flex-grow: 3;
       display: flex;
       flex-flow: row;
       align-items: center;
@@ -830,7 +836,7 @@ header .user-info {
     }
 
     .contextual-info {
-      flex: 1;
+      flex-grow: 1;
       text-align: right;
     }
 
@@ -885,7 +891,7 @@ header .user-info {
     }
 
     .group-content {
-      flex: 1;
+      flex-grow: 1;
       font-weight: 400;
     }
 
