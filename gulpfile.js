@@ -147,7 +147,7 @@ if (RELEASE) {
   }));
 }
 gulp.task("less", function() {
-  return gulp.src(["./app-frontend/stylesheets/style.less"])
+  return gulp.src(["./assets/stylesheets/style.less"])
     .pipe(plumber())
     .pipe(less({
       plugins: lessPlugins
@@ -167,7 +167,7 @@ gulp.task("webpack", function(done) {
 
 gulp.task("watch", function() {
   gulp.watch([ "./public/**/*" ], ["static"]);
-  gulp.watch([ "./app-frontend/stylesheets/**/*.less" ], ["less"]);
+  gulp.watch([ "./assets/stylesheets/**/*.less" ], ["less"]);
   webpackBuild.watch({
     aggregateTimeout: 300
   }, webpackStats());
