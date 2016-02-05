@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router";
 
-export default class DashboardSidebar extends React.Component {
+export default class Sidebar extends React.Component {
   render() {
     return <header className="welcome">
       <h1>{Minni.name}</h1>

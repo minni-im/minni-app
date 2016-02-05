@@ -1,6 +1,10 @@
 import React from "react";
-
 import { Link } from "react-router";
+
+import { Container } from "flux/utils";
+
+import AccountStore from "../stores/AccountStore";
+
 
 class Dashboard extends React.Component {
   render() {
@@ -34,4 +38,21 @@ class Dashboard extends React.Component {
   }
 }
 
-export default Dashboard;
+class DashboardContainer extends React.Component {
+  static getStores() {
+    return [ AccountStore ];
+  }
+
+  static calculateState() {
+    return {
+      accounts: AccountStore.getAccounts()
+    };
+  }
+
+  render() {
+    return <Dashboard accounts={this.state.accounts} />;
+  }
+}
+
+const container = Container.create(DashboardContainer);
+export default container;

@@ -1,10 +1,23 @@
 import React from "react";
+import { Container } from "flux/utils";
 
-import TabBar, { TabPanel } from "./generic/TabBar.react";
+import TabBar, { TabPanel } from "../components/generic/TabBar.react";
+
+import SelectedAccountStore from "../stores/SelectedAccountStore";
 
 class Settings extends React.Component {
+  static getStores() {
+    return [ SelectedAccountStore ];
+  }
+
+  static calculateState() {
+    return {
+      account: SelectedAccountStore.getAccount()
+    };
+  }
+
   render() {
-    const { account } = this.props;
+    const { account } = this.state;
     return <main className="settings">
       <section>
         <header>
@@ -31,4 +44,5 @@ class Settings extends React.Component {
   }
 }
 
-export default Settings;
+const container = Container.create(Settings);
+export default container;

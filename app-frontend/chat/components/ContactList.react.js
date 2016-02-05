@@ -1,6 +1,6 @@
 import React from "react";
 
-import UserList from "../UserList.react";
+import UserList from "../../components/UserList.react";
 
 import Logger from "../../libs/Logger";
 const logger = Logger.create("ContactList");

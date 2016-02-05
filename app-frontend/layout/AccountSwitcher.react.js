@@ -2,14 +2,14 @@ import React from "react";
 import classnames from "classnames";
 import { Container } from "flux/utils";
 
-import Platform from "../../utils/PlatformUtils";
+import Platform from "../utils/PlatformUtils";
 
-import SelectedAccountStore from "../../stores/SelectedAccountStore";
-import SelectedRoomStore from "../../stores/SelectedRoomStore";
-import AccountStore from "../../stores/AccountStore";
-import UserStore from "../../stores/UserStore";
+import SelectedAccountStore from "../stores/SelectedAccountStore";
+import SelectedRoomStore from "../stores/SelectedRoomStore";
+import AccountStore from "../stores/AccountStore";
+import UserStore from "../stores/UserStore";
 
-import AccountRecord from "../../models/Account";
+import AccountRecord from "../models/Account";
 
 import { Link } from "react-router";
 

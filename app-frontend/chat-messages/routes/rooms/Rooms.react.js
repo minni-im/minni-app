@@ -2,12 +2,12 @@ import React from "react";
 import { Container } from "flux/utils";
 import classnames from "classnames";
 
-import Room from "./Room.react";
+import Room from "./components/Room.react";
 
-import RoomStore from "../stores/RoomStore";
-import SelectedRoomStore from "../stores/SelectedRoomStore";
+import RoomStore from "../../../stores/RoomStore";
+import SelectedRoomStore from "../../../stores/SelectedRoomStore";
 
-import Logger from "../libs/Logger";
+import Logger from "../../../libs/Logger";
 const logger = Logger.create("RoomsContainer.react");
 
 class RoomsContainer extends React.Component {

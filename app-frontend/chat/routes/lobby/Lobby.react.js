@@ -1,12 +1,20 @@
 import React from "react";
+import { Container } from "flux/utils";
 import { Link } from "react-router";
 import classnames from "classnames";
+import Immutable from "immutable";
 
-import RoomActionCreators from "../actions/RoomActionCreators";
+import AccountRoomStore from "../../../stores/AccountRoomStore";
+import SelectedAccountStore from "../../../stores/SelectedAccountStore";
+import AccountStore from "../../../stores/AccountStore";
+import RoomStore from "../../../stores/RoomStore";
+import UserStore from "../../../stores/UserStore";
 
-import { SettingsIcon, FavoriteIcon } from "../utils/IconsUtils";
+import RoomActionCreators from "../../../actions/RoomActionCreators";
 
-import Logger from "../libs/Logger";
+import { SettingsIcon, FavoriteIcon } from "../../../utils/IconsUtils";
+
+import Logger from "../../../libs/Logger";
 const logger = Logger.create("Lobby");
 
 class Room extends React.Component {
@@ -42,7 +50,7 @@ Room.defaultProps = {
   className: {}
 };
 
-export default class Lobby extends React.Component {
+class Lobby extends React.Component {
   render() {
     const { account, rooms } = this.props;
     if (!account) {
@@ -83,3 +91,26 @@ export default class Lobby extends React.Component {
     </section>;
   }
 }
+
+class LobbyContainer extends React.Component {
+  static getStores() {
+    return [ AccountStore, AccountRoomStore, SelectedAccountStore ];
+  }
+
+  static calculateState() {
+    const account = SelectedAccountStore.getAccount();
+    const rooms = account ? AccountRoomStore.getRooms(account.id) : Immutable.Set();
+    return {
+      viewer: UserStore.getConnectedUser(),
+      account,
+      rooms
+    };
+  }
+
+  render() {
+    return <Lobby {...this.state} />;
+  }
+}
+
+const container = Container.create(LobbyContainer);
+export default container;

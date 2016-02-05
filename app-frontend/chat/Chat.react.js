@@ -1,8 +1,4 @@
-import React, { PropTypes } from "react";
-
-import { dispatch } from "../Dispatcher";
-
-import Account from "../models/Account";
+import React from "react";
 
 class Chat extends React.Component {
 

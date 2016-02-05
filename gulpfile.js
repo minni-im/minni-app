@@ -34,7 +34,8 @@ var WEBPACK_CONFIG = {
   output: {
     path: "./dist/public/js",
     filename: RELEASE ? "[name]-bundle.[hash].min.js" : "[name]-bundle.js",
-    publicPath: "/",
+    chunkFilename: "[name].[chunkhash].js",
+    publicPath: "/js/",
     pathinfo: !RELEASE
   },
   plugins: [

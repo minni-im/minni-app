@@ -1,0 +1,46 @@
+.dashboard {
+  .panel {
+    padding: 5px !important;
+  }
+  .teams {
+    display: flex;
+    justify-content: flex-start;
+    flex-flow: row wrap;
+  }
+  .team {
+    display: flex;
+    flex-flow: column nowrap;
+
+    background-color: @background-light;
+    padding: 10px;
+    margin: 5px;
+    border: 3px solid @gray-lighter;
+    border-radius: 2px;
+    flex: 1 0 300px;
+
+
+    .name {
+      font-weight: 700;
+      text-transform: capitalize;
+    }
+    .description {
+      flex: 1;
+      min-height: 2rem;
+      min-height: 4rem;
+      color: @gray-light;
+      line-height: 1.5em;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      display: -webkit-box;
+    }
+
+    .actions {
+      align-self: flex-end;
+      margin-top: 10px;
+      text-align: right;
+    }
+  }
+}

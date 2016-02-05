@@ -4,17 +4,17 @@ import { Container } from "flux/utils";
 
 import classnames from "classnames";
 
-import AccountStore from "../../stores/AccountStore";
-import SelectedAccountStore from "../../stores/SelectedAccountStore";
-import ConnectedRoomStore from "../../stores/ConnectedRoomStore";
-import RoomStore from "../../stores/RoomStore";
-import SelectedRoomStore from "../../stores/SelectedRoomStore";
-import UnreadMessageStore from "../../stores/UnreadMessageStore";
+import AccountStore from "../stores/AccountStore";
+import SelectedAccountStore from "../stores/SelectedAccountStore";
+import ConnectedRoomStore from "../stores/ConnectedRoomStore";
+import RoomStore from "../stores/RoomStore";
+import SelectedRoomStore from "../stores/SelectedRoomStore";
+import UnreadMessageStore from "../stores/UnreadMessageStore";
 
-import { LobbyIcon, RoomIcons } from "../../utils/IconsUtils";
-import UserInfoPanel from "../UserInfoPanel.react";
+import { LobbyIcon, RoomIcons } from "../utils/IconsUtils";
+import UserInfoPanel from "../components/UserInfoPanel.react";
 
-import Logger from "../../libs/Logger";
+import Logger from "../libs/Logger";
 const logger = Logger.create("MainSideBar");
 
 class MainSidebar extends React.Component {
