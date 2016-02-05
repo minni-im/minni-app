@@ -1,7 +1,7 @@
 import React from "react";
 import browserHistory from "react-router";
 
-import { dispatch } from "../dispatchers/Dispatcher";
+import { dispatch } from "../Dispatcher";
 
 export default class AccountCreate extends React.Component {
   constructor(props) {

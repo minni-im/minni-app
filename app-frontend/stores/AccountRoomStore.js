@@ -1,4 +1,4 @@
-import Dispatcher from "../dispatchers/Dispatcher";
+import Dispatcher from "../Dispatcher";
 import Immutable from "immutable";
 
 import { MapStore } from "../libs/Flux";

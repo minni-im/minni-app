@@ -3,7 +3,7 @@ import { MapStore } from "../libs/Flux";
 
 import { ActionTypes } from "../Constants";
 
-import Dispatcher from "../dispatchers/Dispatcher";
+import Dispatcher from "../Dispatcher";
 import Room from "../models/Room";
 
 import SelectedAccountStore from "../stores/SelectedAccountStore";

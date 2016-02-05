@@ -1,4 +1,4 @@
-import Dispatcher from "../dispatchers/Dispatcher";
+import Dispatcher from "../Dispatcher";
 import { ReduceStore } from "../libs/Flux";
 import { ActionTypes } from "../Constants";
 

@@ -2,7 +2,7 @@ import { MapStore } from "../libs/Flux";
 
 import { ActionTypes } from "../Constants";
 
-import Dispatcher from "../dispatchers/Dispatcher";
+import Dispatcher from "../Dispatcher";
 import User from "../models/User";
 
 import Logger from "../libs/Logger";

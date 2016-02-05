@@ -1,4 +1,4 @@
-import { dispatch } from "../dispatchers/Dispatcher";
+import { dispatch } from "../Dispatcher";
 import { ActionTypes } from "../Constants";
 
 export default {

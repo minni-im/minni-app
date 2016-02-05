@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Router, Route, IndexRoute, browserHistory } from "react-router";
 
 import Flux from "./libs/Flux";
-import { dispatch } from "./dispatchers/Dispatcher";
+import { dispatch } from "./Dispatcher";
 
 // Patch for Immutable to have replace on OrderedMap
 import "./libs/Immutable";

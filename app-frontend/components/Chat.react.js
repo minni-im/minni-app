@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react";
 
-import { dispatch } from "../dispatchers/Dispatcher";
+import { dispatch } from "../Dispatcher";
 
 import Account from "../models/Account";
 

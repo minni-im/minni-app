@@ -1,7 +1,7 @@
 import Immutable from "immutable";
 import { ReduceStore } from "../libs/Flux";
 
-import Dispatcher from "../dispatchers/Dispatcher";
+import Dispatcher from "../Dispatcher";
 
 import AccountStore from "./AccountStore";
 import ConnectionStore from "./ConnectionStore";

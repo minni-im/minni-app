@@ -1,8 +1,8 @@
 import Immutable from "immutable";
 import { MapStore, withNoMutations } from "../libs/Flux";
 
-import Dispatcher from "../dispatchers/Dispatcher";
-import { dispatch } from "../dispatchers/Dispatcher";
+import Dispatcher from "../Dispatcher";
+import { dispatch } from "../Dispatcher";
 
 import { ActionTypes } from "../Constants";
 

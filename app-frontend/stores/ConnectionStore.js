@@ -1,5 +1,5 @@
 import { ReduceStore, withNoMutations } from "../libs/Flux";
-import Dispatcher, { dispatch } from "../dispatchers/Dispatcher";
+import Dispatcher, { dispatch } from "../Dispatcher";
 
 import { ActionTypes, SOCKETIO_OPTIONS } from "../Constants";
 

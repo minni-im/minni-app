@@ -1,4 +1,4 @@
-import { dispatch } from "../dispatchers/Dispatcher";
+import { dispatch } from "../Dispatcher";
 import { ActionTypes, EndPoints } from "../Constants";
 import { request } from "../utils/RequestUtils";
 

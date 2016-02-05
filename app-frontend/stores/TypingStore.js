@@ -1,5 +1,5 @@
 import Immutable from "immutable";
-import Dispatcher, { dispatch } from "../dispatchers/Dispatcher";
+import Dispatcher, { dispatch } from "../Dispatcher";
 import { MapStore } from "../libs/Flux";
 import { ActionTypes, TYPING_TIMEOUT } from "../Constants";
 

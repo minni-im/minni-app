@@ -1,6 +1,6 @@
 import Immutable from "immutable";
 
-import Dispatcher from "../dispatchers/Dispatcher";
+import Dispatcher from "../Dispatcher";
 import { MapStore } from "../libs/Flux";
 
 import Storage from "../libs/Storage";

@@ -1,6 +1,6 @@
 import Logger from "../libs/Logger";
 const logger = Logger.create("RoomActionCreators");
-import Dispatcher, { dispatch } from "../dispatchers/Dispatcher";
+import Dispatcher, { dispatch } from "../Dispatcher";
 import { ActionTypes, EndPoints } from "../Constants";
 import { request } from "../utils/RequestUtils";
 

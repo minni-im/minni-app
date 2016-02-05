@@ -1,7 +1,7 @@
 import Immutable from "immutable";
 import moment from "moment";
 
-import Dispatcher from "../dispatchers/Dispatcher";
+import Dispatcher from "../Dispatcher";
 import { MapStore } from "../libs/Flux";
 
 import { ActionTypes, MAX_MESSAGES_PER_ROOMS } from "../Constants";
