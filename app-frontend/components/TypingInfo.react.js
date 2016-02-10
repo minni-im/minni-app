@@ -35,7 +35,7 @@ class TypingInfo extends React.Component {
           }
         }, []);
     }
-    return <div className="typing-info">
+    return <div className="typing-info flex-spacer">
       {typingStream}
     </div>;
   }

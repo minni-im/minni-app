@@ -1,0 +1,63 @@
+.message--embeds {
+  .clearfix();
+}
+
+.message--embed {
+  position: relative;
+
+  .embed-hide {
+    cursor: pointer;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    .square(16px);
+    font-size: 16px;
+    line-height: 16px;
+    text-align: center;
+    color: @white;
+    z-index: 1;
+  }
+
+
+  .embed--provider {
+    background-color: lighten(@gray-lighter, 5%);
+    color: @gray-light;
+    border: 1px solid @gray-lighter;
+    border-radius: 0 0 4px 4px;
+    margin: 3px 0 0 0;
+    padding-left: 32px;
+    background-position: 10px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+  }
+
+}
+.embed-code-github-repo, .embed-code-github-user, .embed-code-gist {
+  .embed--provider {
+    background-image: url(/images/embeds/github/favicon.ico);
+  }
+}
+
+.embed-image-flickr .embed--provider {
+  background-image: url(/images/embeds/flickr/favicon.ico);
+}
+
+.embed-image-instagram .embed--provider {
+  background-image: url(/images/embeds/instagram/favicon.ico);
+}
+
+.embed-video-youtube .embed--provider {
+  background-image: url(/images/embeds/youtube/favicon.ico);
+}
+
+.embed-video-vine .embed--provider {
+  background-image: url(/images/embeds/vine/favicon.ico);
+}
+
+.embed-web-medium .embed--provider {
+  background-image: url(/images/embeds/medium/favicon.ico);
+}
+
+.embed-code-codepen .embed--provider {
+  background-image: url(/images/embeds/codepen/favicon.ico);
+}

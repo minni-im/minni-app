@@ -21,9 +21,9 @@ export default class Room extends React.Component {
     const { room } = this.props;
     const { name, topic } = room;
     const defaultValue = ComposerStore.getSavedText(room.id);
-    return <section className={classnames({"room--favorite": room.starred})}>
-      <header>
-        <div className="header-info">
+    return <section className={classnames("flex-vertical", "flex-spacer", {"room--favorite": room.starred})}>
+      <header className="flex-horizontal">
+        <div className="header-info flex-spacer">
           <h2>
             <span>{name}</span>
             <span className="icon icon--favorite" onClick={this._onRoomFavoriteToggle.bind(this)}><FavoriteIcon /></span>
@@ -32,10 +32,10 @@ export default class Room extends React.Component {
         </div>
       </header>
       <MessagesContainer room={room} />
-      <footer onClick={this._handleFooterOnClick.bind(this)}>
+      <footer className="flex-vertical" onClick={this._handleFooterOnClick.bind(this)}>
         <Composer ref="composer" room={room} defaultValue={defaultValue}
           onSubmit={this._handleSendMessage.bind(this)} />
-        <div className="footer">
+        <div className="footer flex-horizontal">
           <TypingInfo room={room} />
           <div className="contextual-info">
             <span className="formatting-tips has-tooltip">

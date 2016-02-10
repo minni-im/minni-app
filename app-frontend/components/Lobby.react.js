@@ -57,9 +57,9 @@ export default class Lobby extends React.Component {
       </Link>;
     }
 
-    return <section>
-      <header>
-        <div className="header-info">
+    return <section className="flex-vertical flex-spacer">
+      <header className="flex-horizontal">
+        <div className="header-info flex-spacer">
           <h2>Lobby</h2>
           <h3>{ account.description }</h3>
         </div>
@@ -67,7 +67,7 @@ export default class Lobby extends React.Component {
           {settingsIcon}
         </div>
       </header>
-      <section className="panel panel--wrapper">
+      <section className="panel panel--wrapper flex-spacer">
         <header>
           <h2>Rooms</h2>
           <div className="actions">

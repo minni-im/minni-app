@@ -1,0 +1,93 @@
+.room {
+  > section + section {
+    border-left: 1px solid darken(@gray-lighter, 5%);
+  }
+
+  > section > section {
+    flex: 1 0 0;
+  }
+
+  .room--favorite {
+    .icon--favorite {
+      svg {
+        fill: gold !important;
+      }
+    }
+  }
+
+  footer {
+    min-height: @main-footer-height;
+    overflow: hidden;
+    .composer {
+      align-items: flex-start;
+      justify-content: center;
+      margin-top: 6px;
+      padding-left: 10px;
+      padding-right: 10px;
+      position: relative;
+      border-bottom: 1px solid @gray-lighter;
+      transition: border 250ms linear;
+
+      textarea {
+        background-color: inherit;
+        padding: 10px 0 14px;
+        margin: 0;
+        border: none;
+        border-radius: 0;
+        overflow: auto;
+        resize: none;
+        flex-grow: 1;
+        align-self: stretch;
+        max-height: 180px;
+        line-height: 20px;
+      }
+
+      .action {
+        padding: 5px;
+        cursor: pointer;
+        transition: background-color 250ms;
+        border-radius: 3px;
+        svg {
+          .square(24px);
+          vertical-align: middle;
+          fill: @gray;
+        }
+      }
+
+      .action:hover {
+        background-color: @electric-blue;
+
+      }
+
+      .action + .action {
+        margin-left: 2px;
+      }
+
+      .suggestions {
+        display: none;
+      }
+    }
+
+    .composer.active {
+      border-bottom-color: darken(@gray-lighter, 5%);
+    }
+
+    .composer {
+      .action:hover {
+        background-color: @electric-blue;
+        svg {
+          fill: @background-light;
+        }
+      }
+    }
+
+    .footer {
+      margin: 0 10px;
+
+      .typing-info, .contextual-info {
+        font-size: 11px;
+        color: @gray-light;
+      }
+    }
+  }
+}

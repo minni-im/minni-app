@@ -1,5 +1,8 @@
 extends layout
 
+block styles
+  link(rel="stylesheet", href="/css/chat.css")
+    
 block header_scripts
   script(src="/socket.io/socket.io.js")
   script(src="/js/vendor-bundle.js")
@@ -13,13 +16,13 @@ block flash
 block footer_outer
   
 block main
-  #splashscreen
-    img(src="/images/logo-color.png")
-    p
-      | Please wait
-      br
-      | We are setuping your cloud office...
   #minni
+  #splashscreen
+    .splashscreen-inner
+      img(src="/images/logo-color.png")
+      h3 Please wait
+      p We are setuping your cloud office...
+  
   
 append scripts
   script(src="/js/minni-bundle.js")

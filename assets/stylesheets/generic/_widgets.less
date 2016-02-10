@@ -1,0 +1,32 @@
+.x-tabbar {
+  display: flex;
+  flex-flow: column nowrap;
+  .x-tabs {
+    border-bottom: 1px solid @gray-lighter;
+    padding: 0 10px;
+    a {
+      padding: 5px 10px;
+      display: inline-block;
+      position: relative;
+      top: 1px;
+      color: @gray-light;
+      vertical-align: bottom;
+      cursor: pointer;
+
+      &.x-tab-selected {
+        background-color: @white;
+        color: @color-dark;
+
+        border-top: 1px solid @gray-lighter;
+        border-left: 1px solid @gray-lighter;
+        border-right: 1px solid @gray-lighter;
+      }
+
+    }
+  }
+  .x-tab-content {
+    flex-grow: 1;
+    background-color: @white;
+    padding: 10px 15px;
+  }
+}

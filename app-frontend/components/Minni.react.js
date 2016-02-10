@@ -6,7 +6,7 @@ import SoundPlayer from "./generic/SoundPlayer.react";
 export default class MinniPanel extends React.Component {
   render() {
     const { content, sidebar } = this.props;
-    return <div className="minni-app">
+    return <div className="minni-app flex-horizontal flex-spacer">
       <AccountSwitcher />
       {sidebar ? sidebar : false}
       {content ? content : false}
