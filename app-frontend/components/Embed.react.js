@@ -20,7 +20,7 @@ class OEmbed extends React.Component {
 
   renderDescription() {
     const { description } = this.props;
-    return description ? <div>{description}</div> : null;
+    return description ? <div className="embed--description">{description}</div> : null;
   }
 
   renderAuthor(prefix = "") {
