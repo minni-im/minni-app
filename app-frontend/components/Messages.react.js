@@ -76,9 +76,9 @@ class MessageGroup extends React.Component {
     let classNames = {
       "message-group-me": this.props.viewer.id === user.id
     };
-    return <div className={classnames("message-group", classNames)}>
+    return <div className={classnames("message-group", "flex-horizontal", classNames)}>
       {avatar}
-      <div className="group-content">
+      <div className="group-content flex-spacer">
         {messages}
       </div>
     </div>;
@@ -134,7 +134,7 @@ export default class Messages extends React.Component {
         messages={content} />;
     });
 
-    return <section className="panel panel--contrast" ref="scroller" onScroll={this._handleScroll.bind(this)}>
+    return <section className="panel panel--contrast flex-vertical flex-spacer" ref="scroller" onScroll={this._handleScroll.bind(this)}>
       <div className="panel-wrapper messages">{messageGroupFinal}</div>
     </section>;
   }

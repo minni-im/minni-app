@@ -144,8 +144,8 @@ export default class Composer extends React.Component {
       </div>;
     });
 
-    return <div className="composer">
-      <textarea ref="textarea"
+    return <div className="composer flex-spacer flex-horizontal">
+      <textarea className="flex-spacer" ref="textarea"
         autoCorrect="off" autoComplete="off" spellCheck="true"
         placeholder="Type your message here"
         rows="1"

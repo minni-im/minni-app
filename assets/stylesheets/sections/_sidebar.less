@@ -1,0 +1,181 @@
+.minni-app > header {
+  .flex-vertical;
+  width: @main-sidebar-width;
+
+  h1 {
+    height: @main-header-height;
+    margin: 15px 0 15px;
+    text-indent: -9999px;
+    background: url(/images/logo.png) center center no-repeat;
+    background-size: 64px 64px;
+  }
+
+  h2.account {
+    font-weight: 400;
+    margin: 10px 20px;
+    text-transform: capitalize;
+  }
+
+  .user-info {
+    height: @main-user-info-height;
+    background-color: @dark-blue;
+
+    .user {
+      height: 100%;
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+
+      .user-avatar {
+        margin: 5px 10px;
+        position: relative;
+        img {
+          vertical-align: middle;
+          border-radius: 50%;
+          .square(42px);
+        }
+
+        #user.status-icon(@dark-blue);
+        .user-status-icon {
+          transition: background-color 250ms ease;
+          position: absolute;
+          bottom: -3px; right: -3px;
+        }
+      }
+      .user-name {
+        font-weight: 400;
+      }
+
+      .user-status {
+        font-weight: 300;
+        font-size: 11px;
+        line-height: 1.2em;
+      }
+    }
+
+    &:hover {
+      @background-color: lighten(@dark-blue, 8%);
+      cursor: pointer;
+      background-color: @background-color;
+
+      .user-status-icon {
+        border-color: @background-color !important;
+      }
+    }
+  }
+}
+
+.minni-app > header > nav {
+  overflow-y: auto;
+  overflow-x: hidden;
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    height: 40px;
+    align-items: center;
+
+    font-size: 13px;
+
+    padding-left: 15px;
+    padding-right: 15px;
+
+    .icon {
+      .square(28px);
+      svg {
+        .square(28px);
+        fill: @gray-light;
+        transition: fill 250ms;
+      }
+    }
+  }
+
+  a.room {
+
+    opacity: .5;
+    transition: opacity 250ms;
+    margin-bottom: 1px;
+
+    .unread {
+      display: inline-block;
+      padding: 1px 6px;
+      font-size: 11px;
+      line-height: 14px;
+      text-align: center;
+      border-radius: 12px;
+      border: solid 1px @room-unread-background-color;
+    }
+
+    .name {
+      flex-grow: 1;
+      .text-overflow;
+    }
+
+    .quit {
+      width: 0;
+      font-size: 24px;
+      text-align: right;
+      transition: all 250ms linear 750ms;
+      opacity: 0;
+    }
+
+    &:hover {
+      background-color: fade(@black, 15%);
+      opacity: 1;
+      .quit {
+        width: 24px;
+        opacity: 1;
+      }
+    }
+
+    &.room--selected {
+      background-color: @dark-blue;
+      opacity: 1;
+      .icon svg {
+        fill: @white;
+      }
+      .unread { display: none }
+      .quit {
+        width: 0;
+        opacity: 0;
+      }
+    }
+  }
+
+  a.room--unread {
+    opacity: 1;
+  }
+
+  .lobby, .separator {
+    margin-bottom: 5px;
+  }
+
+  .separator {
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: @white;
+    margin: 10px 5px;
+    max-height: 2em;
+  }
+
+  .lobby.selected {
+    background-color: fade(@black, 15%);
+  }
+}
+
+
+
+header.welcome {
+  justify-content: center;
+  text-align: center;
+
+  > h2, div, p {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .button {
+    width: @main-sidebar-width * 0.6;
+    align-self: center;
+  }
+}

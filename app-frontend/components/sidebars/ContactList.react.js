@@ -8,14 +8,14 @@ const logger = Logger.create("ContactList");
 export default class ContactList extends React.Component {
   render() {
     const teamSize = this.props.users.size;
-    return <aside>
+    return <aside className="flex-vertical">
       <header>
         <div className="header-info">
           <h2>Coworkers</h2>
           <h3>{teamSize} teammate{teamSize > 1 ? "s" : ""}</h3>
         </div>
       </header>
-      <section className="panel panel--wrapper">
+      <section className="panel panel--wrapper flex-vertical flex-spacer">
         {teamSize ? this.renderList() : this.renderEmptyList()}
       </section>
     </aside>;

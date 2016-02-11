@@ -147,8 +147,19 @@ if (RELEASE) {
   }));
 }
 gulp.task("less", function() {
-  return gulp.src(["./assets/stylesheets/style.less"])
-    .pipe(plumber())
+  return gulp.src([
+      "./assets/stylesheets/style.less",
+      "./assets/stylesheets/chat.less",
+    ])
+    .pipe(plumber({
+      errorHandler: function (error) {
+        gutil.log(
+            gutil.colors.cyan('Plumber') + gutil.colors.red(' found unhandled error:\n'),
+            error.toString()
+        );
+        this.emit('end');
+      }
+    }))
     .pipe(less({
       plugins: lessPlugins
     }))

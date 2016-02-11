@@ -1,0 +1,149 @@
+#minni {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  .flex-vertical;
+}
+
+.minni-app > main {
+  background-color: @background-light;
+  color: @color-dark;
+
+
+  > section, > aside {
+
+    header {
+      height: @main-header-height;
+      justify-content: space-between;
+
+      .header-info {
+        padding: 0 10px;
+        h2, h3 {
+          .text-overflow;
+          .icon {
+            cursor: pointer;
+            vertical-align: middle;
+            margin-left: 5px;
+            svg {
+              .square(24px);
+            }
+
+            &.icon--favorite {
+              svg {
+                fill: @gray-lighter;
+              }
+
+              &:hover {
+                svg {
+                  fill: gold;
+                }
+              }
+            }
+          }
+        }
+
+        h2 {
+          font-size: 28px;
+          line-height: 1.2em;
+          font-weight: 400;
+          margin: 6px 0 0;
+        }
+
+        h3 {
+          color: @gray-light;
+          font-size: 14px;
+          font-weight: 300;
+          margin: -2px 0 5px;
+        }
+
+      }
+
+      .actions {
+        align-self: center;
+        margin-right: 5px;
+        .button {
+          margin-left: 5px;
+        }
+      }
+    }
+
+    section.panel {
+      overflow-y: auto;
+      overflow-x: hidden;
+      h2, h3 {
+        color: @electric-blue;
+        font-weight: 300;
+      }
+
+      h2 {
+        font-size: 28px;
+        line-height: 1.2em;
+      }
+    }
+
+    section.panel--contrast {
+      background-color: @white;
+      border-top: 1px solid darken(@gray-lighter, 5%);
+    }
+
+    section.panel--wrapper {
+      padding: 10px;
+    }
+
+    footer {
+      border-top: 1px solid darken(@gray-lighter, 5%);
+
+      .formatting-tips {
+        padding-left: 24px;
+        background: url(/images/svgs/keyboard.svg) center left no-repeat;
+        background-size: 20px;
+        code {
+          background-color: fadeout(@black, 85%);
+          border: 1px solid fadeout(@black, 70%);
+          border-radius: 2px;
+          padding: 0 2px;
+        }
+
+        .tooltip-content {
+          margin-bottom: 5px;
+          right: -5px;
+
+          > span {
+            margin: 0 5px;
+          }
+        }
+      }
+    }
+  }
+
+  > section {
+
+  }
+
+  > aside {
+    width: @main-sidebar-width;
+  }
+}
+
+.room-create, .account-create {
+  .alerts {
+    display: inline-block;
+    .alert {
+      border-radius: 2px;
+      padding: 0 10px;
+    }
+  }
+}
+
+.room-create {
+  border-right: 1px dotted @gray;
+}
+
+.account-create {
+  
+  .panel--contrast {
+    border-bottom: 1px dotted @gray-light;
+  }
+}

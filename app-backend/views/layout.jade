@@ -37,7 +37,9 @@ html
     link(rel="icon", sizes="64x64 96x96 128x128", href="/images/logos/logo-x128.png")
     link(rel="icon", sizes="16x16 24x24", href="/favicon.ico")
 
-    link(rel="stylesheet", href="/css/style.css")
+    block styles
+      link(rel="stylesheet", href="/css/style.css")
+      
     script(type="text/javascript").
       window.Minni = {
         name: "#{name}",

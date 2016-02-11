@@ -44,11 +44,11 @@ class MainSidebar extends React.Component {
     } else {
       logo = <h2 className="account">{account.displayName}</h2>;
     }
-    return <header>
+    return <header className="flex-vertical">
       {logo}
-      <nav>
+      <nav className="flex-vertical flex-spacer">
         <Link to={`/chat/${account.name}/lobby`}
-          className="lobby" activeClassName="selected">
+          className="lobby flex-horizontal" activeClassName="selected">
           <span className="icon"><LobbyIcon /></span>
           <span className="name">Lobby</span>
         </Link>
@@ -61,7 +61,7 @@ class MainSidebar extends React.Component {
           const unreadCount = UnreadMessageStore.getUnreadCount(account.id, room.id);
 
           return <Link key={room.id}
-            className={classnames("room", {
+            className={classnames("room", "flex-horizontal", {
               "room--starred": room.starred,
               "room--selected": selected,
               "room--unread": unreadCount > 0

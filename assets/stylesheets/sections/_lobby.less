@@ -1,0 +1,93 @@
+.lobby {
+  > section > section {
+    flex: 1 0 0;
+  }
+
+  aside {
+    background-color: @gray-lighter;
+
+    .coworker-all-alone {
+      padding: 2em;
+      align-self: center;
+      text-align: center;
+      margin: auto 0;
+    }
+  }
+
+  .rooms--header {
+    height: auto;
+    margin-bottom: 15px;
+    .actions {
+      margin-right: 0;
+    }
+  }
+
+  .rooms--list {
+    .room {
+      padding: 5px;
+      color: inherit;
+      cursor: pointer;
+
+      .room--name {
+        font-weight: 700;
+        margin-right: 10px;
+      }
+
+      .room--topic {
+        .text-overflow;
+      }
+
+      .room--icon {
+        margin-left: 5px;
+        svg {
+          .square(24px);
+          fill: @gray-light;
+          vertical-align: middle;
+        }
+
+        &.icon--show-on-hover {
+          display: none;
+        }
+      }
+
+      &.room-favorite {
+        .icon--favorite {
+          svg {
+            fill: gold !important;
+          }
+        }
+      }
+
+      &:nth-child(odd) {
+        background-color: @gray-lighter;
+      }
+
+      &:hover {
+        background-color: @electric-blue;
+        color: @color-light;
+
+        .room--icon {
+          svg {
+            fill: @gray-dark;
+          }
+
+          &.icon--show-on-hover {
+            display: block;
+          }
+
+          &:hover {
+            svg {
+              fill: @background-light;
+            }
+          }
+        }
+
+        .icon--favorite:hover {
+          svg {
+            fill: gold;
+          }
+        }
+      }
+    }
+  }
+}
