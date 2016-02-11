@@ -1,11 +1,12 @@
 .account-switcher {
   .flex-vertical;
-  width: @main-account-switcher-width;
+  flex-basis: @main-account-switcher-width;
 
   background-color: darken(@background-dark, 1%);
   padding: 5px 0;
   border-right: 1px solid fade(@black, 30%);
-
+  transition: flex-basis 500ms;
+  overflow: hidden;
   .account {
     opacity: 0.35;
     transition: opacity 500ms;

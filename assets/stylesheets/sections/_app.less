@@ -92,10 +92,6 @@
       padding: 10px;
     }
 
-    // section .x-tabbar {
-    //   flex: 1 0 0;
-    // }
-
     footer {
       border-top: 1px solid darken(@gray-lighter, 5%);
 
@@ -128,5 +124,26 @@
 
   > aside {
     width: @main-sidebar-width;
+  }
+}
+
+.room-create, .account-create {
+  .alerts {
+    display: inline-block;
+    .alert {
+      border-radius: 2px;
+      padding: 0 10px;
+    }
+  }
+}
+
+.room-create {
+  border-right: 1px dotted @gray;
+}
+
+.account-create {
+  
+  .panel--contrast {
+    border-bottom: 1px dotted @gray-light;
   }
 }

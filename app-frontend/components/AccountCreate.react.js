@@ -25,8 +25,8 @@ export default class AccountCreate extends React.Component {
       title = `First thing first, create a new ${Minni.name} team`;
     }
 
-    return <main className="account-create">
-      <section>
+    return <main className="account-create flex-horizontal flex-spacer">
+      <section className="flex-spacer">
         <header>
           <div className="header-info">
             <h2>{title}</h2>

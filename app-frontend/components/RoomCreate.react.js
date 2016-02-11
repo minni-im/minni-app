@@ -20,7 +20,7 @@ class RoomCreate extends React.Component {
       </div>;
     }
 
-    return <section className="room-create">
+    return <section className="room-create flex-spacer">
       <header>
         <div className="header-info">
           <h2>Create a new room</h2>

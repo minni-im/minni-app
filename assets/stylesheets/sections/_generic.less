@@ -45,3 +45,21 @@
   font-size: 36px;
   line-height: 80px;
 }
+
+.alerts {
+  background-color: @background-light;
+  p {
+    padding: 5px 10px;
+    border-radius: 3px;
+  }
+
+  .alert-error {
+    background-color: @flash-messages-error;
+    color: @color-dark;
+  }
+
+  .alert-info, .alert-success {
+    background-color: @flash-messages-info;
+    color: @color-dark;
+  }
+}

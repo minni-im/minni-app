@@ -196,7 +196,7 @@ class GithubEmbed extends OEmbed {
 
 class AudioEmbed extends OEmbed {
   render() {
-    return <audio controls src={this.props.url}></audio>
+    return <audio className="embed-audio" controls src={this.props.url}></audio>
   }
 }
 
@@ -234,10 +234,10 @@ export default class Embed extends React.Component {
 
       case "video.youtube":
       case "video.vine":
-      case "image.flickr":
-      case "image.instagram":
         return <BackgroundCoverEmbed classNames={classNames} {...this.props} />;
 
+      case "image.flickr":
+      case "image.instagram":
       case "web.medium":
       case "code.codepen":
         return <BackgroundCoverEmbed
