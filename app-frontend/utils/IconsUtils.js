@@ -5,6 +5,7 @@ export default {
     RoomPublicIcon: require("../../public/images/svgs/room_public.svg.react"),
     RoomDisconnectedIcon: require("../../public/images/svgs/room_disconnected.svg.react")
   },
+  NoPreviewIcon: require("../../public/images/svgs/settings.svg.react"),
   SettingsIcon: require("../../public/images/svgs/settings.svg.react"),
   DashboardIcon: require("../../public/images/svgs/dashboard.svg.react"),
   PadlockIcon: require("../../public/images/svgs/padlock.svg.react"),

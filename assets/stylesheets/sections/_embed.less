@@ -1,22 +1,34 @@
 // Mixins
 .embedBackgroundFit() {
   padding-top: 52%;
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-position: 50% 50%, 50% 50%;
+  background-repeat: no-repeat, no-repeat;
+  background-size: cover, 64px 64px;
   box-sizing: border-box;
+}
+
+._embedTop {
+  position: absolute;
+  top: 0;left: 0;
+  right: 0; bottom: 0;
+  border-radius: 4px 4px 0 0;
 }
 
 .embedPlayOverlay() {
   position: relative;
   &:before {
     content: "";
-    position: absolute;
-    top: 0;left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 4px;
+    ._embedTop;
     background: rgba(0, 0, 0, 0.35) url(/images/embeds/video_overlay.png) center center no-repeat;
+  }
+}
+
+.embedThumbnailBorder() {
+  position: relative;
+  &:after {
+    content: "";
+    ._embedTop;
+    border: 1px solid fadeout(@black, 92%);
   }
 }
 
@@ -37,6 +49,7 @@
   h3 {
     color: @gray !important;
     font-weight: 700 !important;
+    .text-overflow;
   }
 
   .embed-hide {
@@ -75,6 +88,7 @@
     padding: 0 10px;
     border-left: 1px solid @gray-lighter;
     border-right: 1px solid @gray-lighter;
+    .clearfix;
   }
 
   .embed--description {
@@ -85,8 +99,33 @@
   }
 }
 
+
+.embed-image {
+  display: inline-block;
+  margin-bottom: 1px;
+  .image, .image img {
+    border-radius: 4px;
+    vertical-align: middle;
+  }
+
+  .image--gif  {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    color: @color-light;
+    background-color: fadeout(@black, 75%);
+    border-radius: 2px;
+
+    font-size: 10px;
+    line-height: 16px;
+    padding: 0 5px;
+  }
+}
+
 .embed-audio-spotify {
+  display: inline-block;
   width: 200px;
+  margin-right: 1px;
   .embed--thumbnail {
     display: block;
     border-radius: 4px 4px 0 0;
@@ -113,6 +152,7 @@
     border-radius: 4px 4px 0 0;
     min-height: 200px;
     .embedBackgroundFit;
+    .embedThumbnailBorder;
   }
 }
 
@@ -125,7 +165,7 @@
 
 .embed-code-gist, .embed-code-github-repo, .embed-code-github-user {
   h3 {
-    margin-right: 106px;
+    margin-right: 25px;
   }
   .embed--author {
     line-height: 16px;
@@ -138,13 +178,49 @@
   }
   .embed--thumbnail, .embed--thumbnail .image {
     .square(64px);
-    float: right;
-    margin-left: 10px;
-    border-radius: 0 4px 0 0;
+    float: left;
+    margin-right: 10px;
+    border-radius: 4px 0 0 0;
   }
 
   .embed--description {
     white-space: normal;
+  }
+}
+
+.embed-web-twitter {
+  display: inline-block;
+
+  .embed--description {
+    white-space: normal;
+  }
+
+  .embed--content {
+    border-top: 1px solid @gray-lighter;
+    border-radius: 4px 4px 0 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  .embed--thumbnail {
+    .square(64px);
+    float: left;
+    margin: 5px 10px 5px 0;
+    border-radius: 2px;
+  }
+
+  .embed--author {
+    display: inline-block;
+    margin: 0 5px;
+    font-weight: 400;
+    font-size: 12px;
+  }
+}
+
+
+.embed-web-twitter, .embed-code-gist, .embed-code-github-repo, .embed-code-github-user {
+  .embed-hide {
+    color: @gray !important;
   }
 }
 
@@ -182,4 +258,8 @@
 
 .embed-code-codepen .embed--provider {
   background-image: url(/images/embeds/codepen/favicon.ico);
+}
+
+.embed-web-twitter .embed--provider {
+  background-image: url(/images/embeds/twitter/favicon.ico);
 }

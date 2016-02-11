@@ -114,18 +114,29 @@ class ImageEmbed extends OEmbed {
 
 class BackgroundCoverEmbed extends OEmbed {
   renderThumbnail() {
-    const { url, thumbnail } = this.props;
+    const { url, thumbnail, fallbackCover } = this.props;
     const { url: thumbnailUrl, width } = thumbnail;
+    const style = {
+      "backgroundImage": `url(${thumbnailUrl})`
+    };
+
+    if (fallbackCover) {
+      style.backgroundImage += `, url(${fallbackCover})`;
+    }
+
     return <a href={url}
       target="_blank"
       className="embed--thumbnail"
-      style={{
-        "backgroundImage": `url(${thumbnailUrl})`}}>&nbsp;</a>;
+      style={style}>&nbsp;</a>;
   }
 
   renderAuthor() {
     return super.renderAuthor("by");
   }
+}
+
+BackgroundCoverEmbed.defaultProps = {
+  fallbackCover: false
 }
 
 class TwitterEmbed extends OEmbed {
@@ -225,9 +236,14 @@ export default class Embed extends React.Component {
       case "video.vine":
       case "image.flickr":
       case "image.instagram":
+        return <BackgroundCoverEmbed classNames={classNames} {...this.props} />;
+
       case "web.medium":
       case "code.codepen":
-        return <BackgroundCoverEmbed classNames={classNames} {...this.props} />;
+        return <BackgroundCoverEmbed
+          classNames={classNames}
+          fallbackCover="/images/svgs/no-eye.svg"
+          {...this.props} />;
 
       case "code.github.user":
       case "code.github.repo":
