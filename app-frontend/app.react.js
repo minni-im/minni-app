@@ -86,5 +86,4 @@ ReactDOM.render((
           onEnter={selectRooms} />
       </Route>
     </Route>
-  </Router>
-), document.querySelector("#minni"));
+  </Router>), document.querySelector("#minni"));

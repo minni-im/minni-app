@@ -65,9 +65,12 @@ function handleConnectionstart() {
 }
 
 function handleConnectionOpen() {
-  const appHolder = document.querySelector("#minni");
-  setTimeout(()=> {
-    appHolder.classList.add("fadein");
+  const appHolder = document.querySelector("#splashscreen");
+  setTimeout(() => {
+    document.body.classList.add("loaded");
+    setTimeout(() => {
+      appHolder.classList.add("splashscreen--hidden");
+    }, 500);
   }, 1000);
 }
 

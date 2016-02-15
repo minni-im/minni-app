@@ -75,7 +75,7 @@ class AccountSwitcher extends React.Component {
         selected={selectedAccountSlug === account.slug} index={index + 1}/>;
     });
 
-    return <div className="account-switcher">
+    return <div className="account-switcher" style={{flexBasis: "auto"}}>
       {links}
       <Link to="/create" className="account create" activeClassName="account-selected">
         <div>+</div>
