@@ -19,7 +19,7 @@
       border-radius: 3px;
       text-align: center;
       color: @gray-light;
-      text-transform: uppercase;
+      text-transform: capitalize;
       font-weight: 400;
       font-size: 20px;
     }
@@ -44,7 +44,7 @@
     align-self: center;
   }
 
-  a.account:not(.create):after {
+  a.account:not(.create)[data-kbd-modifier]:after {
     display: block;
     content: attr(data-kbd-modifier) "+" attr(data-kbd-index);
     color: @gray-light;

@@ -71,8 +71,10 @@ class AccountSwitcher extends React.Component {
     }
 
     let links = accounts.toArray().map((account, index) => {
-      return <Account key={account.slug} account={account} keyboardShorcut={true}
-        selected={selectedAccountSlug === account.slug} index={index + 1}/>;
+      return <Account key={account.slug} account={account}
+        selected={selectedAccountSlug === account.slug}
+        index={index + 1}
+      />;
     });
 
     return <div className="account-switcher" style={{flexBasis: "auto"}}>
