@@ -24,7 +24,7 @@ class MessagesContainer extends React.Component {
 
   componentDidMount() {
     if (this.state.messages.size === 0) {
-      RoomActionCreators.fetchMessages(this.props.room.id, null, null, MAX_MESSAGES_PER_ROOMS);
+      RoomActionCreators.fetchMessages(this.props.room.id);
     }
   }
 

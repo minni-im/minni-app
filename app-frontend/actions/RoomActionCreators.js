@@ -1,7 +1,7 @@
 import Logger from "../libs/Logger";
 const logger = Logger.create("RoomActionCreators");
 import Dispatcher, { dispatch } from "../Dispatcher";
-import { ActionTypes, EndPoints } from "../Constants";
+import { ActionTypes, EndPoints, MAX_MESSAGES_PER_ROOMS } from "../Constants";
 import { request } from "../utils/RequestUtils";
 
 import SelectedAccountStore from "../stores/SelectedAccountStore";
@@ -63,7 +63,7 @@ export default {
       });
   },
 
-  fetchMessages(roomId, latest, oldest, limit) {
+  fetchMessages(roomId, latest, oldest, limit = MAX_MESSAGES_PER_ROOMS) {
     if (!Dispatcher.isDispatching()) {
       dispatch({
         type: ActionTypes.LOAD_MESSAGES,
