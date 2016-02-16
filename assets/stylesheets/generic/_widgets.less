@@ -30,3 +30,92 @@
     padding: 10px 15px;
   }
 }
+
+
+.dialog__backdrop {
+  align-items: center;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  right: 0;
+  top: 0;
+  transition: background-color .2s esae-in;
+
+
+  &.dialog-enter,
+  &.dialog-leave.dialog-leave-active {
+    background-color: fade(rgb(1, 1, 1), 0%);
+  }
+
+  &,
+  &.dialog-enter.dialog-enter-active,
+  &.dialog-leave {
+    background-color: fade(rgb(1, 1, 1), 72.5%);
+  }
+}
+
+.dialog {
+  max-width: 90%;
+  opacity: 1;
+  position: relative;
+  transition: opacity .2s ease-in-out;
+  overflow: hidden;
+  // IE needs a horizontal margin values to properly center flex item
+  margin: auto 0;
+
+  display: flex;
+  flex-flow: column nowrap;
+
+  color: @color-dark;
+  background-color: @background-light;
+  border-radius: 4px;
+
+  .dialog-enter &,
+  .dialog-leave.dialog-leave-active & {
+    opacity: 0;
+  }
+
+  &,
+  .dialog-enter.dialog-enter-active &,
+  .dialog-leave & {
+    opacity: 1;
+  }
+}
+
+.dialog__header {
+  #layout.header();
+  display: flex;
+  flex-flow: row nowrap;
+  background-color: @electric-blue;
+  color: @color-light;
+
+  .header-info {
+    flex: 1;
+    min-width: 1px;
+
+    h3 {
+      color: @color-light;
+    }
+  }
+}
+
+.dialog__content {
+  #layout.panel();
+  flex: 1;
+  min-height: 1px;
+  padding: 10px;
+
+  h2, h3 {
+    border-bottom: 1px solid fadeout(@electric-blue, 80%);
+  }
+}
+
+.dialog__action-buttons {
+  #layout.header-actions();
+  margin-right: 15px;
+  .button {
+    background-color: @dark-blue;
+  }
+}

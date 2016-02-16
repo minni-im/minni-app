@@ -22,4 +22,12 @@ export default class Settings extends SettingsRecord {
   isRoomStarred(roomId) {
     return this.starred.rooms.indexOf(roomId) !== -1;
   }
+
+  get soundEnabled() {
+    return this.global.notification.sound;
+  }
+
+  getSoundVolume() {
+    return this.global.notification.soundVolume;
+  }
 }

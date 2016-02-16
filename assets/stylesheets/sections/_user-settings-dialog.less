@@ -1,0 +1,37 @@
+.user-settings-dialog {
+  .size(800px, 450px);
+
+  .dialog__content {
+    padding: 0 !important;
+    overflow: hidden;
+    display: flex;
+    flex-flow: column;
+
+    .x-tabbar {
+      flex: 1;
+      min-height: 1px;
+    }
+
+    .x-tabs {
+      background-color: @electric-blue;
+      border-bottom-color: @electric-blue;
+      .x-tab {
+        color: @color-light;
+      }
+
+      .x-tab-selected {
+        color: @color-dark;
+        border-top: 1px dotted @gray;
+        border-left: 1px dotted @gray;
+        border-right: 1px dotted @gray;
+      }
+    }
+
+    .x-tab-content {
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+
+  }
+}

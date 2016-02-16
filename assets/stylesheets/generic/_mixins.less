@@ -57,6 +57,82 @@
   }
 }
 
+#layout {
+  .header-actions() {
+    align-self: center;
+    margin-right: 5px;
+    .button {
+      margin-left: 5px;
+    }
+  }
+
+  .header() {
+    height: @main-header-height;
+    justify-content: space-between;
+
+    .header-info {
+      padding: 0 10px;
+      h2, h3 {
+        .text-overflow;
+        .icon {
+          cursor: pointer;
+          vertical-align: middle;
+          margin-left: 5px;
+          svg {
+            .square(24px);
+          }
+
+          &.icon--favorite {
+            svg {
+              fill: @gray-lighter;
+            }
+
+            &:hover {
+              svg {
+                fill: gold;
+              }
+            }
+          }
+        }
+      }
+
+      h2 {
+        font-size: 28px;
+        line-height: 1.2em;
+        font-weight: 400;
+        margin: 6px 0 0;
+      }
+
+      h3 {
+        color: @gray-light;
+        font-size: 14px;
+        font-weight: 300;
+        margin: -2px 0 5px;
+      }
+
+    }
+
+    .actions {
+      .header-actions();
+    }
+  }
+
+  .panel() {
+    overflow-y: auto;
+    overflow-x: hidden;
+    h2, h3 {
+      color: @electric-blue;
+      font-weight: 300;
+    }
+
+    h2 {
+      font-size: 28px;
+      line-height: 1.2em;
+    }
+  }
+}
+
+
 #user {
   .status-icon(@background-color: @background-light, @with-status: true) {
     .user-status-icon when (@with-status = true) {
