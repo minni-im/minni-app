@@ -55,7 +55,7 @@ export default class AccountCreate extends React.Component {
               </p>
 
               <div>
-                <button disabled={!this.state.valid}>Create</button>
+                <button className="button-primary" disabled={!this.state.valid}>Create</button>
               </div>
 
             </form>

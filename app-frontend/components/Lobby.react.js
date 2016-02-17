@@ -71,7 +71,7 @@ export default class Lobby extends React.Component {
         <header className="rooms--header flex-horizontal">
           <h2 className="flex-spacer">Rooms</h2>
           <div className="actions">
-            <Link to={`/chat/${account.name}/create`} className="button">Create a room</Link>
+            <Link to={`/chat/${account.name}/create`} className="button button-primary">Create a room</Link>
           </div>
         </header>
         <div className="rooms--list">

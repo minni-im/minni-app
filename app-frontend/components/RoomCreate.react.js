@@ -69,7 +69,7 @@ class RoomCreate extends React.Component {
           </div> : false}
 
           <p>
-            <button>Create</button>
+            <button className="button-primary">Create</button>
           </p>
 
         </form>

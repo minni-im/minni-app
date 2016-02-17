@@ -119,3 +119,42 @@
     background-color: @dark-blue;
   }
 }
+
+.setting-item {
+  margin: 10px 0;
+  .setting-item--info {
+    > div {
+      .text-overflow;
+      line-height: 20px;
+    }
+    em {
+      font-size: 12px;
+      line-height: 12px;
+      color: @gray-light;
+    }
+  }
+
+  .setting-item--toggle {
+    margin-left: 15px;
+
+    .button {
+      font-size: 11px;
+    }
+    .button + .button {
+      margin-left: -3px;
+    }
+
+    .button:first-child {
+      border-radius: 2px 0 0 2px;
+    }
+
+    .button:last-child {
+      border-radius: 0 2px 2px 0;
+    }
+
+    .button-highlight {
+      border-color: @gray-light;
+    }
+  }
+
+}

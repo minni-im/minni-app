@@ -20,11 +20,12 @@ input.error, textarea.error {
 }
 
 button, input[type=submit], .button {
-  background-color: @electric-blue;
-  color: @color-light;
+  background-color: @gray-lighter;
+  color: @color-dark;
+
   font-size: 12px;
   border-radius: 1px;
-  border: 1px solid @dark-blue;
+  border: 1px solid @gray-light;
   padding: 6px 15px;
   cursor: pointer;
 
@@ -33,13 +34,22 @@ button, input[type=submit], .button {
   }
 }
 
+.button-primary {
+  background-color: @electric-blue;
+  color: @color-light;
+  border-color: @dark-blue;
+}
+
 .button-secondary {
   border-color: darken(@dark-orange, 15%);
   background-color: @dark-orange;
   color: @gray-darker;
-  &:hover {
-    box-shadow: 0 -1px 0 fadeout(@black, 75%) inset, 0 -2px 0 fadeout(@black, 75%) inset;
-  }
+}
+
+.button-highlight {
+  border-color: darken(@light-orange, 15%);
+  background-color: @light-orange;
+  color: @color-dark;
 }
 
 button, input[type=submit] {

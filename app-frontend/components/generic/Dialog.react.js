@@ -103,7 +103,7 @@ class DialogBase extends React.Component {
     };
 
     if ( button.isPrimary || this.props.buttons.length === 1 ) {
-      classes["is-primary"] = true;
+      classes["button-primary"] = true;
     }
 
     if ( button.additionalClassNames ) {

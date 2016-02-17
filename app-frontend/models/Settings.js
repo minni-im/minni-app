@@ -3,6 +3,7 @@ import Immutable from "immutable";
 
 export const DEFAULT_SETTINGS = {
   global: {
+    clock24: false,
     notification: {
       desktop: false,
       sound: true,
@@ -19,6 +20,10 @@ export const DEFAULT_SETTINGS = {
 const SettingsRecord = Immutable.Record(DEFAULT_SETTINGS);
 
 export default class Settings extends SettingsRecord {
+  getValue(key) {
+    return false;
+  }
+
   isRoomStarred(roomId) {
     return this.starred.rooms.indexOf(roomId) !== -1;
   }

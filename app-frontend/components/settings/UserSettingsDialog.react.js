@@ -2,6 +2,8 @@ import React from "react";
 import Dialog from "../generic/Dialog.react";
 import TabBar, { TabPanel } from "../generic/TabBar.react";
 
+import SettingItem from "./SettingItem.react";
+
 import UserStore from "../../stores/UserStore";
 
 export default class UserSettingsDialog extends React.Component {
@@ -120,10 +122,40 @@ export default class UserSettingsDialog extends React.Component {
   }
 
   renderGeneral() {
+    const { settings } = this.state.user;
     return (
       <TabPanel label="General">
+        <SettingItem
+          title="Use 24hr clock."
+          settings={ settings }
+          key="global.clock24"
+          />
         <h3>Emoji &amp; emoticons</h3>
+        <SettingItem
+          title="Allows emoticons replacement."
+          settings={ settings }
+          key="global.emoticons"
+          >We support standard emoticons &amp; emojis. Hints available <a href="http://www.emoji-cheat-sheet.com/" target="_blank">here</a>.</SettingItem>
+
+        <SettingItem
+          title="Type of emoticons."
+          desc="You can specify the set of emojis to be used."
+          settings={ settings }
+          key="global.emojis_type"
+          choices={ [
+            { label: "Apple", value: "apple" },
+            { label: "Twitter", value: "twitter" },
+            { label: "Hangouts", value: "hangouts" }
+          ] }
+          />
+
         <h3>Rooms settings</h3>
+        <SettingItem
+          settings={ settings }
+          key="global.rooms.preview"
+          title="Show inline preview of files."
+          desc="Images such as gifs, sounds &amp; videos such as Youtube, Vimeo, etc.. will be embedded inline."
+          />
       </TabPanel>
     );
   }
