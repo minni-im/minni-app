@@ -28,6 +28,10 @@ export default (app) => {
     req.io.route("me:revokeToken");
   });
 
+  app.post("/api/me/settings", requireLogin, function(req) {
+    req.io.route("me:settings");
+  });
+
 
   /* =Socket routes= */
 
@@ -103,6 +107,17 @@ export default (app) => {
           res.redirect("profile");
           return;
         }
+        res.status(500).json({ ok: false, message: errorMessage, errors: error });
+      });
+    },
+
+    settings(req, res) {
+      let user = req.user;
+      user.settings = req.body;
+      user.save().then(() => {
+        res.status(200).json({ ok: true });
+      }, (error) => {
+        let errorMessage = "Oh noes! Something went wrong! Apparently, that didn't work. Please try again.";
         res.status(500).json({ ok: false, message: errorMessage, errors: error });
       });
     }

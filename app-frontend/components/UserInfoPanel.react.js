@@ -1,7 +1,7 @@
 import React from "react";
 import { Container } from "flux/utils";
 
-import UserSettingsDialog from "./settings/UserSettingsDialog.react";
+import UserSettingsDialogContainer from "./settings/UserSettingsDialogContainer.react";
 import { SettingsIcon } from "../utils/IconsUtils";
 
 import UserStore from "../stores/UserStore";
@@ -40,7 +40,7 @@ class UserInfoPanel extends React.Component {
       </div>
       <div className="user-settings icon"
         onClick={this.onSettingsClick} >
-        <UserSettingsDialog
+        <UserSettingsDialogContainer
           visible={ showSettingsDialog }
           onClose={ this.onCloseDialog } />
         <SettingsIcon />

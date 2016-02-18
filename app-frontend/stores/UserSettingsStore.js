@@ -17,7 +17,8 @@ const DEFAULT_SETTINGS = {
     emoticons: true,
     emojis_type: "twitter",
     rooms: {
-      preview: true,
+      image_preview: true,
+      links_preview: false,
       emphasis: true,
       enter: true
     },
@@ -46,6 +47,10 @@ function handleConnectionOpen( state, { user } ) {
 class UserSettingsStore extends MapStore {
   initialize() {
     this.addAction( ActionTypes.CONNECTION_OPEN, handleConnectionOpen );
+  }
+
+  getSettings() {
+    return this.getState().toJS();
   }
 
   isRoomStarred({ id }) {

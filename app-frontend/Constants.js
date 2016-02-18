@@ -49,8 +49,9 @@ export const ActionTypes = keyMirror({
   LOAD_MESSAGES_SUCCESS: null,
   LOAD_MESSAGES_FAILURE: null,
 
-  MODAL_PUSH: null,
-  MODAL_POP: null,
+  SETTINGS_UPDATE: null,
+  SETTINGS_UPDATE_SUCCESS: null,
+  SETTINGS_UPDATE_FAILURE: null,
 
   TYPING_START: null,
   TYPING_STOP: null,
@@ -102,11 +103,12 @@ export const EMBED_OPTIONS = {
 };
 
 export const EndPoints = {
-  ACCOUNT_ROOMS: (accountId) => `/api/accounts/${accountId}/rooms`,
-  ACCOUNT_USERS: (accountId) => `/api/accounts/${accountId}/users`,
-  ROOM_STAR: (roomId) => `/api/rooms/${roomId}/star`,
-  ROOM_UNSTAR: (roomId) => `/api/rooms/${roomId}/unstar`,
-  ROOM_MESSAGES: (roomId) => `/api/rooms/${roomId}/messages`,
+  ACCOUNT_ROOMS: accountId => `/api/accounts/${accountId}/rooms`,
+  ACCOUNT_USERS: accountId => `/api/accounts/${accountId}/users`,
+  ROOM_STAR: roomId => `/api/rooms/${roomId}/star`,
+  ROOM_UNSTAR: roomId => `/api/rooms/${roomId}/unstar`,
+  ROOM_MESSAGES: roomId => `/api/rooms/${roomId}/messages`,
+  USER_SETTINGS: `/api/me/settings`, 
   MESSAGES: `/api/messages/`,
   TYPING: roomId => `/api/rooms/${roomId}/typing`
 };

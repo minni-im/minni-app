@@ -4,19 +4,32 @@ import TabBar, { TabPanel } from "../generic/TabBar.react";
 
 import SettingItem from "./SettingItem.react";
 
-import UserStore from "../../stores/UserStore";
+import { updateSettings } from "../../actions/SettingsActionCreators";
+
+const NOTIFICATION_GRANTED = "granted";
+
+function checkPermission() {
+  if (window.Notification && window.Notification.permission) {
+    return window.Notification.permission;
+  }
+}
+
+function grantPermission(callback) {
+  window.Notification.requestPermission(function(permission) {
+    return callback(permission === NOTIFICATION_GRANTED, permission);
+  });
+}
 
 export default class UserSettingsDialog extends React.Component {
   constructor(props) {
     super(props);
-    const user = UserStore.getConnectedUser();
     this.state = {
       selectedTab: 1,
-      user,
-      settings: user.settings
+      notifGranted: checkPermission() === NOTIFICATION_GRANTED
     };
 
     this.onCloseDialog = this.onCloseDialog.bind(this);
+    this.onGrantNotificationClick = this.onGrantNotificationClick.bind(this);
   }
 
   render() {
@@ -38,6 +51,7 @@ export default class UserSettingsDialog extends React.Component {
           {this.renderGeneral()}
           {this.renderNotifications()}
           {this.renderPlugins()}
+          {this.renderConnections()}
         </TabBar>
       </Dialog>
     )
@@ -53,7 +67,7 @@ export default class UserSettingsDialog extends React.Component {
       lastname,
       nickname,
       email,
-      gravatar_email } = this.state.user;
+      gravatar_email } = this.props.user;
 
     return (
       <TabPanel label="Information">
@@ -115,33 +129,33 @@ export default class UserSettingsDialog extends React.Component {
             />
           </div>
         </section>
-
-        <h3>Login services</h3>
-        <p>One-click Login is not yet configurable in the chat application. You can modify it on your profile page <a href="/profile" target="_blank">here</a></p>
       </TabPanel>
     );
   }
 
   renderGeneral() {
-    const { settings } = this.state.user;
     return (
       <TabPanel label="General">
         <SettingItem
           setting="global.clock24"
           title="Use 24hr clock."
-          settings={ settings }
           />
-        <h3>Emoji &amp; emoticons</h3>
+
         <SettingItem
-          title="Allows emoticons replacement."
-          settings={ settings }
+          setting="global.rooms.enter"
+          title="Enter sends messages. Shift+Enter adds a new line."
+          desc="When disabled, Enter adds a new line, and Shit+Enter sends messages."
+          />
+
+        <h3>Emojis</h3>
+        <SettingItem
+          title="Allows emoticons replacement in typed text."
           setting="global.emoticons"
           >We support standard emoticons &amp; emojis. Hints available <a href="http://www.emoji-cheat-sheet.com/" target="_blank">here</a>.</SettingItem>
 
         <SettingItem
-          title="Type of emoticons."
+          title="Type of emojis."
           desc="You can specify the set of emojis to be used."
-          settings={ settings }
           setting="global.emojis_type"
           choices={ [
             { label: "Apple", value: "apple" },
@@ -150,57 +164,60 @@ export default class UserSettingsDialog extends React.Component {
           ] }
           />
 
-        <h3>Rooms settings</h3>
+        <h3>Text &amp; images</h3>
         <SettingItem
-          settings={ settings }
-          setting="global.rooms.preview"
-          title="Show inline preview of files."
-          desc="Images such as gifs, sounds &amp; videos such as Youtube, Vimeo, etc.. will be embedded inline."
+          setting="global.rooms.image_preview"
+          title="Show inline preview of images."
+          desc="Images links such as jpegs, gifs &amp; lolcats will be embedded inline."
+          />
+        <SettingItem
+          setting="global.rooms.links_preview"
+          title="Show inline preview of websites."
+          desc="Show information of websites urls pasted into the chat."
           />
 
+        <h3>Appearence</h3>
+
         <SettingItem
-          settings={ settings }
           setting="global.rooms.emphasis"
-          title="Emphasis your chat message by using a different highlight color."
+          title="Emphasis your chat message."
+          desc="Use a different background color for all your messages."
           />
 
-        <SettingItem
-          settings={ settings }
-          setting="global.rooms.enter"
-          title="Enter sends messages. Shift+Enter adds a new line."
-          desc="When disabled, Enter adds a new line, and Shit+Enter sends messages."
-          />
       </TabPanel>
     );
   }
 
   renderNotifications() {
-    const { settings } = this.state.user;
     return (
       <TabPanel label="Notifications">
         <h3>Desktop notification</h3>
-        <SettingItem
-          settings={ settings }
-          setting="global.notification.desktop"
-          title="Show inline preview of files."
-          desc="Images such as gifs, sounds &amp; videos such as Youtube, Vimeo, etc.. will be embedded inline."
-          />
+        { this.state.notifGranted ?
+          <SettingItem
+            setting="global.notification.desktop"
+            title="Show inline preview of files."
+            desc="Images such as gifs, sounds &amp; videos such as Youtube, Vimeo, etc.. will be embedded inline."
+          /> :
+          <div className="setting-item flex-horizontal">
+            <div className="flex-spacer">Use the native broswer&#39;s or operating system ability to display desktop notifications.</div>
+            <button
+              className="button-secondary"
+              onClick={ this.onGrantNotificationClick }
+            >Grant permissions</button>
+          </div> }
 
         <h3>Sound blips</h3>
         <SettingItem
-          settings={ settings }
           setting="global.notification.sound"
           title="Play a sound to notify new messages."
           />
 
         <SettingItem
-          settings={ settings }
           setting="global.notification.mentions"
           title="Play a different sound when notified in @mentions."
           />
 
         <SettingItem
-          settings={ settings }
           setting="global.notification.sound_volume"
           title="Audio volume for notification."
           choices={ [
@@ -214,11 +231,36 @@ export default class UserSettingsDialog extends React.Component {
   }
 
   renderPlugins() {
-    const { settings } = this.state.user;
+    const { settings } = this.state;
     return (
       <TabPanel label="Plugins">
         <h3>Alias</h3>
       </TabPanel>
     );
+  }
+
+  renderConnections() {
+    return (
+      <TabPanel label="Connections">
+        <h3>One click login services</h3>
+        <p>One-click Login is not yet configurable in the chat application. You can modify it on your profile page <a href="/profile" target="_blank">here</a></p>
+      </TabPanel>
+    );
+  }
+
+  onGrantNotificationClick() {
+    grantPermission( ( granted, permission ) => {
+      this.setState( {
+        notifGranted: granted
+      } );
+
+      updateSettings( {
+        global: {
+          notification: {
+            desktop: true
+          }
+        }
+      } );
+    } );
   }
 }

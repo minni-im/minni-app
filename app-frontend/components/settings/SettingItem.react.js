@@ -80,7 +80,6 @@ export default class SettingItem extends React.Component {
 
 
 SettingItem.PropTypes = {
-  settings: PropTypes.object.isRequired,
   setting: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   desc: PropTypes.string,
