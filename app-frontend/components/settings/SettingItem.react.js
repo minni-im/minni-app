@@ -1,17 +1,29 @@
 import React, { PropTypes } from "react";
 import classnames from "classnames";
 
+import UserSettingsStore from "../../stores/UserSettingsStore";
+
 import { noop } from "../../utils/FunctionUtils";
 
 export default class SettingItem extends React.Component {
   constructor( props ) {
     super( props );
-
     this.state = {
-      value: this.props.settings.getValue( this.props.key )
+      value: this.getValueFromStore( this.props.setting )
     };
-
     this.onToggleClick = this.onToggleClick.bind( this );
+  }
+
+  getValueFromStore( key ) {
+    return UserSettingsStore.getValue( key );
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if ( nextProps.setting !== this.props.setting ) {
+      this.setState( {
+        value: this.getValueFromStore(nextProps.setting)
+      } );
+    }
   }
 
   render() {
@@ -35,6 +47,7 @@ export default class SettingItem extends React.Component {
             return (
               <span key={ `setting-${index}` }
                 data-value={ value }
+                data-value-type={ typeof value }
                 className={ classnames( "button", "button-small", {
                   "button-highlight": value === this.state.value
                 } ) }
@@ -47,6 +60,20 @@ export default class SettingItem extends React.Component {
   }
 
   onToggleClick( event ) {
+    const { value, valueType } = event.target.dataset;
+    let newValue = value;
+    if ( valueType === "number" ) {
+      newValue = parseInt( value, 10 );
+    } else if ( valueType === "boolean" ) {
+      newValue = value === "true";
+    }
+    if ( newValue !== this.state.value ) {
+      const oldValue = this.state.value;
+      this.setState( {
+        value: newValue
+      } );
+      this.props.onChange( this.props.setting, newValue, oldValue );
+    }
 
   }
 }
@@ -54,7 +81,7 @@ export default class SettingItem extends React.Component {
 
 SettingItem.PropTypes = {
   settings: PropTypes.object.isRequired,
-  key: PropTypes.string.isRequired,
+  setting: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   desc: PropTypes.string,
   onChange: PropTypes.func,

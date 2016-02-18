@@ -6,8 +6,7 @@ import clickOutside from "click-outside";
 
 import RootChild from "./RootChild.react";
 
-
-function noop() {}
+import { noop } from "../../utils/FunctionUtils";
 
 class DialogBase extends React.Component {
   componentDidMount() {

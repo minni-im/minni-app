@@ -7,18 +7,17 @@ import Dispatcher from "../Dispatcher";
 import Room from "../models/Room";
 
 import SelectedAccountStore from "../stores/SelectedAccountStore";
-import UserStore from "../stores/UserStore";
+import UserSettingsStore from "../stores/UserSettingsStore";
 
 import Logger from "../libs/Logger";
 const logger = Logger.create("RoomStore");
 
 function handleLoadRoomsSuccess(state, { rooms }) {
-  const user = UserStore.getConnectedUser();
   logger.info(rooms.length, `new room(s)`);
   return state.withMutations(map => {
     rooms.forEach(room => {
       Object.assign(room, {
-        starred: user.settings.isRoomStarred(room.id)
+        starred: UserSettingsStore.isRoomStarred(room)
       });
       map.set(room.id, new Room(room));
     });

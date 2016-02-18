@@ -15,7 +15,7 @@ export default class TabBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: 0
+      selected: this.props.selected
     };
   }
 

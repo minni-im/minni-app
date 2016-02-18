@@ -115,9 +115,6 @@
 .dialog__action-buttons {
   #layout.header-actions();
   margin-right: 15px;
-  .button {
-    background-color: @dark-blue;
-  }
 }
 
 .setting-item {
@@ -139,9 +136,16 @@
 
     .button {
       font-size: 11px;
+      border-color: fadeout(@black, 85%);
+      position: relative;
+      z-index: 1;
+
+      &:not(.button-highlight) {
+        box-shadow: inset 0px 0px 2px 1px fadeout(@black, 90%);
+      }
     }
     .button + .button {
-      margin-left: -3px;
+      margin-left: -2px;
     }
 
     .button:first-child {
@@ -153,7 +157,7 @@
     }
 
     .button-highlight {
-      border-color: @gray-light;
+      z-index: 2;
     }
   }
 

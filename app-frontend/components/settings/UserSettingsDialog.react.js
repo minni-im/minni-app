@@ -11,6 +11,7 @@ export default class UserSettingsDialog extends React.Component {
     super(props);
     const user = UserStore.getConnectedUser();
     this.state = {
+      selectedTab: 1,
       user,
       settings: user.settings
     };
@@ -20,7 +21,7 @@ export default class UserSettingsDialog extends React.Component {
 
   render() {
     let buttons = [
-      { action: 'save', label: "Save" },
+      { action: "save", label: "Save" }
     ];
 
     return (
@@ -32,7 +33,7 @@ export default class UserSettingsDialog extends React.Component {
         additionalClassNames="user-settings-dialog panel"
         onClose={ this.onCloseDialog }
       >
-        <TabBar>
+        <TabBar selected={ this.state.selectedTab }>
           {this.renderInformation()}
           {this.renderGeneral()}
           {this.renderNotifications()}
@@ -126,22 +127,22 @@ export default class UserSettingsDialog extends React.Component {
     return (
       <TabPanel label="General">
         <SettingItem
+          setting="global.clock24"
           title="Use 24hr clock."
           settings={ settings }
-          key="global.clock24"
           />
         <h3>Emoji &amp; emoticons</h3>
         <SettingItem
           title="Allows emoticons replacement."
           settings={ settings }
-          key="global.emoticons"
+          setting="global.emoticons"
           >We support standard emoticons &amp; emojis. Hints available <a href="http://www.emoji-cheat-sheet.com/" target="_blank">here</a>.</SettingItem>
 
         <SettingItem
           title="Type of emoticons."
           desc="You can specify the set of emojis to be used."
           settings={ settings }
-          key="global.emojis_type"
+          setting="global.emojis_type"
           choices={ [
             { label: "Apple", value: "apple" },
             { label: "Twitter", value: "twitter" },
@@ -152,24 +153,68 @@ export default class UserSettingsDialog extends React.Component {
         <h3>Rooms settings</h3>
         <SettingItem
           settings={ settings }
-          key="global.rooms.preview"
+          setting="global.rooms.preview"
           title="Show inline preview of files."
           desc="Images such as gifs, sounds &amp; videos such as Youtube, Vimeo, etc.. will be embedded inline."
+          />
+
+        <SettingItem
+          settings={ settings }
+          setting="global.rooms.emphasis"
+          title="Emphasis your chat message by using a different highlight color."
+          />
+
+        <SettingItem
+          settings={ settings }
+          setting="global.rooms.enter"
+          title="Enter sends messages. Shift+Enter adds a new line."
+          desc="When disabled, Enter adds a new line, and Shit+Enter sends messages."
           />
       </TabPanel>
     );
   }
 
   renderNotifications() {
+    const { settings } = this.state.user;
     return (
       <TabPanel label="Notifications">
         <h3>Desktop notification</h3>
+        <SettingItem
+          settings={ settings }
+          setting="global.notification.desktop"
+          title="Show inline preview of files."
+          desc="Images such as gifs, sounds &amp; videos such as Youtube, Vimeo, etc.. will be embedded inline."
+          />
+
         <h3>Sound blips</h3>
+        <SettingItem
+          settings={ settings }
+          setting="global.notification.sound"
+          title="Play a sound to notify new messages."
+          />
+
+        <SettingItem
+          settings={ settings }
+          setting="global.notification.mentions"
+          title="Play a different sound when notified in @mentions."
+          />
+
+        <SettingItem
+          settings={ settings }
+          setting="global.notification.sound_volume"
+          title="Audio volume for notification."
+          choices={ [
+            { label: "Loud", value: 100 },
+            { label: "Medium", value: 50 },
+            { label: "Low", value: 25 },
+          ] }
+          />
       </TabPanel>
     );
   }
 
   renderPlugins() {
+    const { settings } = this.state.user;
     return (
       <TabPanel label="Plugins">
         <h3>Alias</h3>
