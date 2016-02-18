@@ -55,8 +55,8 @@ UserSchema
     }
     return `https://secure.gravatar.com/avatar/${hash}?s=${size}`;
   })
-  .method("toJSON", function toJSON() {
-    return {
+  .method("toAPI", function toAPI(currentUser = false) {
+    let json = {
       id: this.id,
       firstname: this.firstname,
       lastname: this.lastname,
@@ -64,9 +64,14 @@ UserSchema
       fullname: this.fullname,
       picture: this.avatar(160),
       email: this.email,
-      providers: this.providers,
-      settings: this.settings
+      gravatarEmail: this.gravatarEmail,
+      providers: this.providers
     };
+
+    if ( currentUser ) {
+      json.settings = this.settings;
+    }
+    return json;
   })
   .method("authenticate", function authenticate(password) {
     return new Promise((resolve, reject) => {

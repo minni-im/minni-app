@@ -24,7 +24,7 @@ export default (app) => {
           if (!user) {
             return res.sendStatus(404);
           }
-          res.json(user);
+          res.json(user.toAPI(req.user.id === userId));
         }, (error) => {
           console.error(error);
           res.status(400).json(error);

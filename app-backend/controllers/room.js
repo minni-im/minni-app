@@ -176,7 +176,7 @@ export default (app) => {
       console.log(`'${req.user.id}' is joining '${socketKey}'`);
       req.socket.join(socketKey);
       req.socket.broadcast.to(socketKey).emit("users:join", {
-        user: req.user.toJSON(),
+        user: req.user.toAPI(),
         accountId,
         roomId
       });
@@ -190,7 +190,7 @@ export default (app) => {
       console.log(`'${req.user.id}' is leaving '${socketKey}'`);
       req.socket.leave(socketKey);
       req.socket.broadcast.to(socketKey).emit("users:leave", {
-        user: req.user.toJSON(),
+        user: req.user.toAPI(),
         accountId,
         roomId
       });

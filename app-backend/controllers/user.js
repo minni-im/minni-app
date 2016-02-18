@@ -33,7 +33,7 @@ export default (app) => {
 
   app.io.route("me", {
     whoami(req, res) {
-      res.json(req.user);
+      res.json(req.user.toAPI(true));
     },
 
     generateToken(req, res) {

@@ -32,7 +32,7 @@ export default (app) => {
             const socketKey = `${accountId}:${roomId}`;
             socket.join(socketKey);
             socket.broadcast.to(socketKey).emit("users:join", {
-              user: user.toJSON(),
+              user: user.toAPI(),
               accountId,
               roomId
             });
@@ -59,10 +59,12 @@ export default (app) => {
           .map(room => {
             return room.toAPI(user.id === room.adminId);
           });
-        const finalUsers = results.slice(size);
+        const finalUsers = results
+          .slice(size)
+          .map(user => user.toAPI());
 
         socket.emit("connected", {
-          user,
+          user: user.toAPI(true),
           accounts,
           rooms: finalRooms,
           users: finalUsers
@@ -79,7 +81,7 @@ export default (app) => {
   app.io.route("disconnect", (req) => {
     const { user } = req;
     console.log(`'${user.id}' is disconnected`, req.isSocket);
-    app.io.emit("users:disconnect", { user: user.toJSON(), rooms: req.socket.rooms });
+    app.io.emit("users:disconnect", { user: user.toAPI(), rooms: req.socket.rooms });
   });
 
 };
