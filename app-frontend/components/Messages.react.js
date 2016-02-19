@@ -1,6 +1,9 @@
 import React from "react";
 import classnames from "classnames";
 
+
+import { clearDimensions, updateDimensions } from "../actions/DimensionActionCreators";
+
 import Logger from "../libs/Logger";
 const logger = Logger.create("Messages.react");
 
@@ -106,6 +109,11 @@ class MessageTimestamp extends React.Component {
 }
 
 export default class Messages extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.onHandleScroll = this.onHandleScroll.bind(this);
+  }
   componentDidMount() {
     this.restoreScroll();
   }
@@ -128,9 +136,13 @@ export default class Messages extends React.Component {
   }
 
   restoreScroll() {
-    // TODO: if user previously scrolled up, restore here.
-
-    this.scrollToBottom();
+    // If the user previously scrolled then restore their position.
+    const { scrollTop } = this.props.dimensions;
+    if ( scrollTop !== null ) {
+      this.scrollTo(scrollTop)
+    } else {
+      this.scrollToBottom();
+    }
   }
 
   isAtBottom() {
@@ -162,9 +174,13 @@ export default class Messages extends React.Component {
         messages={content} />;
     });
 
-    return <section className="panel panel--contrast flex-vertical flex-spacer" ref="scroller" onScroll={this._handleScroll.bind(this)}>
-      <div className="panel-wrapper messages">{messageGroupFinal}</div>
-    </section>;
+    return (
+      <section className="panel panel--contrast flex-vertical flex-spacer"
+        ref="scroller"
+        onScroll={ this.onHandleScroll }>
+        <div className="panel-wrapper messages">{ messageGroupFinal }</div>
+      </section>
+    );
   }
 
   regroupMessages(messages) {
@@ -202,7 +218,22 @@ export default class Messages extends React.Component {
     return messageStream;
   }
 
-  _handleScroll() {
-    //logger.warn("scrolling...");
+  onHandleScroll( event ) {
+    // Nothing to compute about dimensions. It's empty
+    if ( this.props.messages.size === 0 ) { return; }
+
+    const { scroller } = this.refs;
+    // TODO: At the top of the scroller node. We should loadMore()
+
+    // If at the bottom we can clear dimensions.
+    if ( scroller.scrollHeight === scroller.scrollTop + scroller.offsetHeight ) {
+      clearDimensions( this.props.room );
+    }
+    // Otherwise keep track of the current dimensions to use to offset calculation.
+    else {
+      updateDimensions( this.props.room, {
+        scrollTop: scroller.scrollTop
+      } );
+    }
   }
 }

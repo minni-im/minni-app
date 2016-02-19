@@ -60,7 +60,8 @@ export const ActionTypes = keyMirror({
   TYPING_START: null,
   TYPING_STOP: null,
 
-
+  UPDATE_DIMENSIONS: null,
+  
   LOAD_IMAGE_SUCCESS: null,
   LOAD_IMAGE_FAILURE: null
 });
