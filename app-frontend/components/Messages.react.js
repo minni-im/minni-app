@@ -12,7 +12,7 @@ import Embed from "./Embed.react";
 
 class Message extends React.Component {
   render() {
-    const { message } = this.props;
+    const { message, renderEmbeds, inlineImages } = this.props;
     let header, timestamp;
     if (this.props.first) {
       header = <div className="message--header">
@@ -28,15 +28,17 @@ class Message extends React.Component {
     </div>;
 
     let embeds;
-    if (message.hasEmbeds()) {
-      if (message.singleEmbed) {
+    if ( message.hasEmbeds() ) {
+      if ( inlineImages && message.singleEmbed ) {
         content = <Embed {...message.embeds.get(0).toJS()} />;
       } else {
-        embeds = message.embeds.map((embed, index) => {
-          return <Embed key={index} {...embed.toJS()} />;
-        }).toArray();
+        if ( renderEmbeds ) {
+          embeds = message.embeds.map((embed, index) => {
+            return <Embed key={index} {...embed.toJS()} />;
+          }).toArray();
 
-        embeds = <div className="message--embeds">{embeds}</div>;
+          embeds = <div className="message--embeds">{embeds}</div>;
+        }
       }
     }
 
@@ -56,7 +58,9 @@ class Message extends React.Component {
 
 Message.propTypes = {
   first: React.PropTypes.bool,
-  message: React.PropTypes.object.isRequired
+  message: React.PropTypes.object.isRequired,
+  renderEmbeds: React.PropTypes.bool,
+  inlineImages: React.PropTypes.bool
 };
 
 Message.defaultProps = {
@@ -70,7 +74,9 @@ class MessageGroup extends React.Component {
     const messages = this.props.messages.map((message, i) => {
       return <Message key={message.id}
         first={i === 0}
-        message={message} />;
+        message={message}
+        renderEmbeds={ this.props.renderEmbeds }
+        inlineImages={ this.props.inlineImages } />;
     });
     const avatar = <Avatar user={user} />;
     let classNames = {
@@ -86,7 +92,9 @@ class MessageGroup extends React.Component {
 }
 
 MessageGroup.propTypes = {
-  messages: React.PropTypes.array.isRequired
+  messages: React.PropTypes.array.isRequired,
+  renderEmbeds: React.PropTypes.bool,
+  inlineImages: React.PropTypes.bool
 };
 
 class MessageTimestamp extends React.Component {
@@ -102,14 +110,32 @@ export default class Messages extends React.Component {
     this.restoreScroll();
   }
 
-  componentDidUpdate(prevProps, nextProps) {
+  componentDidUpdate(prevProps, prevState) {
     this.scrollToBottom();
+    // // This would affect the overall scroll size. We don't bother, let's move back to bottom
+    // if ( prevProps.renderEmbeds !== this.props.renderEmbeds ||
+    //   prevProps.inlineImages !== this.props.inlineImages ) {
+    //     this.scrollToBottom();
+    // } // Last message has changed.
+    // else if (this.props.messages.last() !== prevProps.messages.last()) {
+    //   const latestMessage = this.props.messages.last();
+    //   const currentUser = this.props.viewer;
+    //   if (latestMessage && latestMessage.user.id === currentUser.id || this.isAtBottom()) {
+    //     this.scrollToBottom();
+    //   }
+    // }
+
   }
 
   restoreScroll() {
     // TODO: if user previously scrolled up, restore here.
 
     this.scrollToBottom();
+  }
+
+  isAtBottom() {
+    const { scroller } = this.refs;
+    return scroller.scrollTop + scroller.clientHeight === scroller.scrollHeight;
   }
 
   scrollTo(offset) {
@@ -131,6 +157,8 @@ export default class Messages extends React.Component {
 
       return <MessageGroup key={content[0].id}
         viewer={this.props.viewer}
+        renderEmbeds={ this.props.renderEmbeds }
+        inlineImages={ this.props.inlineImages }
         messages={content} />;
     });
 

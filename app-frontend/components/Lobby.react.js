@@ -23,7 +23,7 @@ class Room extends React.Component {
         "room-favorite": room.starred,
         "room-public": room.public,
         "room-private": room.private
-      })} key={room.id} title={title}>
+      })} title={title}>
       <div className="room--name">{room.name}</div>
       <div className="room--topic flex-spacer">{room.topic}</div>
       {settingsIcon}
@@ -38,10 +38,6 @@ class Room extends React.Component {
   }
 }
 
-Room.defaultProps = {
-  className: {}
-};
-
 export default class Lobby extends React.Component {
   render() {
     const { account, rooms } = this.props;
@@ -51,10 +47,14 @@ export default class Lobby extends React.Component {
 
     let settingsIcon;
     if (account.isUserAdmin(this.props.viewer.id)) {
-      settingsIcon = <Link to={`/settings/${account.name}`} title="Edit this team's settings"
-        className="icon" activeClassName="icon--active">
-        <SettingsIcon />
-      </Link>;
+      settingsIcon =
+        <Link
+          to={ `/settings/${account.name}` }
+          title="Edit this team's settings"
+          className="icon"
+          activeClassName="icon--active">
+          <SettingsIcon />
+        </Link>;
     }
 
     return <section className="flex-vertical flex-spacer">
@@ -71,12 +71,17 @@ export default class Lobby extends React.Component {
         <header className="rooms--header flex-horizontal">
           <h2 className="flex-spacer">Rooms</h2>
           <div className="actions">
-            <Link to={`/chat/${account.name}/create`} className="button button-primary">Create a room</Link>
+            <Link
+              to={ `/chat/${account.name}/create` }
+              className="button button-primary">Create a room</Link>
           </div>
         </header>
         <div className="rooms--list">
           {rooms.toArray().map(room => {
-            return <Room key={room.id} room={room} accountName={account.name} viewer={this.props.viewer}/>;
+            return <Room key={room.id}
+              room={room}
+              accountName={account.name}
+              viewer={this.props.viewer} />;
           })}
         </div>
       </section>

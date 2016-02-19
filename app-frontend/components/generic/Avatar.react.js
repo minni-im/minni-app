@@ -21,14 +21,15 @@ export default class Avatar extends React.Component {
     </div>;
   }
 }
-
+Avatar.SIZE = AVATAR_SIZES;
 Avatar.propTypes = {
   user: React.PropTypes.instanceOf(User).isRequired,
   typing: React.PropTypes.bool,
   size: React.PropTypes.oneOf([
     AVATAR_SIZES.SMALL,
     AVATAR_SIZES.MEDIUM,
-    AVATAR_SIZES.LARGE
+    AVATAR_SIZES.LARGE,
+    AVATAR_SIZES.XLARGE
   ]),
   status: React.PropTypes.oneOf([
     USER_STATUS.OFFLINE,

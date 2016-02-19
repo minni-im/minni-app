@@ -53,6 +53,10 @@ export const ActionTypes = keyMirror({
   SETTINGS_UPDATE_SUCCESS: null,
   SETTINGS_UPDATE_FAILURE: null,
 
+  PROFILE_UPDATE: null,
+  PROFILE_UPDATE_SUCCESS: null,
+  PROFILE_UPDATE_FAILURE: null,
+
   TYPING_START: null,
   TYPING_STOP: null,
 
@@ -64,7 +68,8 @@ export const ActionTypes = keyMirror({
 export const AVATAR_SIZES = keyMirror({
   SMALL: null,
   MEDIUM: null,
-  LARGE: null
+  LARGE: null,
+  XLARGE: null
 });
 
 export const MessageStreamTypes = keyMirror({
@@ -108,7 +113,8 @@ export const EndPoints = {
   ROOM_STAR: roomId => `/api/rooms/${roomId}/star`,
   ROOM_UNSTAR: roomId => `/api/rooms/${roomId}/unstar`,
   ROOM_MESSAGES: roomId => `/api/rooms/${roomId}/messages`,
-  USER_SETTINGS: `/api/me/settings`, 
+  USER_SETTINGS: `/api/me/settings`,
+  USER_PROFILE: `/api/me`,
   MESSAGES: `/api/messages/`,
   TYPING: roomId => `/api/rooms/${roomId}/typing`
 };

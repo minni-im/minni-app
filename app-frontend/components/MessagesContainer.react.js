@@ -6,19 +6,21 @@ import RoomActionCreators from "../actions/RoomActionCreators";
 
 import MessageStore from "../stores/MessageStore";
 import UserStore from "../stores/UserStore";
+import UserSettingsStore from "../stores/UserSettingsStore";
 
 import Messages from "./Messages.react";
 
 class MessagesContainer extends React.Component {
   static getStores() {
-    //TODO: add UserSettingsStore when it will be created
-    return [ UserStore, MessageStore ];
+    return [ UserStore, UserSettingsStore, MessageStore ];
   }
 
   static calculateState(prevProps, nextProps) {
     return {
       viewer: UserStore.getConnectedUser(),
-      messages: MessageStore.getMessages(nextProps.room.id)
+      messages: MessageStore.getMessages(nextProps.room.id),
+      renderEmbeds: UserSettingsStore.getValue("global.rooms.links_preview"),
+      inlineImages: UserSettingsStore.getValue("global.rooms.image_preview")
     };
   }
 
@@ -29,7 +31,14 @@ class MessagesContainer extends React.Component {
   }
 
   render() {
-    return <Messages room={this.props.room} messages={this.state.messages} viewer={this.state.viewer}/>;
+    return (
+      <Messages
+        room={ this.props.room }
+        messages={ this.state.messages }
+        viewer={ this.state.viewer }
+        renderEmbeds={ this.state.renderEmbeds }
+        inlineImages={ this.state.inlineImages } />
+    );
   }
 }
 

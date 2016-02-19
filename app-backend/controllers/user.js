@@ -6,19 +6,24 @@ export default (app) => {
 
   app.route("/profile")
     .all(requireLogin)
-    .get((req, res) => {
+    .get(function(req, res) {
       res.render("profile", {
         title: "Your profile",
         providers: auth.providers
       });
     })
-    .post((req) => {
+    .post(function(req) {
       req.io.route("me:profile");
     });
 
-  app.get("/api/me", requireLogin, function(req) {
-    req.io.route("me:whoami");
-  });
+  app.route("/api/me")
+    .all(requireLogin)
+    .get(function(req) {
+      req.io.route("me:whoami");
+    })
+    .post(function(req) {
+      req.io.route("me:profile");
+    });
 
   app.get("/api/me/token/generate", requireLogin, function(req) {
     req.io.route("me:generateToken");
@@ -92,16 +97,16 @@ export default (app) => {
       if (lastname) { user.lastname = lastname; }
       if (nickname) { user.nickname = nickname; }
       if (email) { user.email = email; }
-      if (gravatarEmail) { user.gravatarEmail = gravatarEmail; }
+      if (gravatarEmail) { user.gravatarEmail = gravatarEmail == "" ? null : gravatarEmail; }
 
-      user.save().then(() => {
-        if (!req.isSocket) {
-          res.redirect("/profile");
+      user.save().then((newUser) => {
+        if (req.accepts("text/html")) {
+          return res.redirect("/profile");
         }
-        res.status(200).json({ ok: true });
+        res.status(200).json({ ok: true, user: newUser.toAPI(true) });
       }, (error) => {
         let errorMessage = "Oh noes! Something went wrong! Apparently, that didn't work. Please try again.";
-        if (!req.isSocket) {
+        if (req.accepts("text/html")) {
           console.error(error);
           req.flash("error", errorMessage);
           res.redirect("profile");

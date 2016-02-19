@@ -38,19 +38,47 @@ const DEFAULT_SETTINGS = {
   }
 };
 
+const defaultValues = Immutable.fromJS(DEFAULT_SETTINGS);
+let saveOnGoing = false;
+
 function handleConnectionOpen( state, { user } ) {
-  const settings = deepExtend(DEFAULT_SETTINGS, user.settings);
-  logger.info(settings);
-  return Immutable.fromJS(settings);
+  logger.info(user.settings);
+  return state.set("data", Immutable.fromJS(user.settings || {}));
+}
+
+function handleSettingsUpdateStart(state) {
+  return state.set("saveOnGoing", true);
+}
+
+function handleSettingsUpdate(state, { settings }) {
+  state = state.set("saveOnGoing", false);
+  return state.set("data", Immutable.fromJS(settings));
 }
 
 class UserSettingsStore extends MapStore {
   initialize() {
     this.addAction( ActionTypes.CONNECTION_OPEN, handleConnectionOpen );
+    this.addAction( ActionTypes.SETTINGS_UPDATE, handleSettingsUpdateStart );
+    this.addAction( ActionTypes.SETTINGS_UPDATE_SUCCESS, handleSettingsUpdate );
+  }
+
+  getInitialState() {
+    return Immutable.fromJS({
+      saveOnGoing: false,
+      data: {}
+    });
+  }
+
+  isSaveOnGoing() {
+    return this.getState().get("saveOnGoing", false);
   }
 
   getSettings() {
-    return this.getState().toJS();
+    return this.getState().get("data").toJS();
+  }
+
+  getSettingsWithDefault() {
+    return deepExtend(DEFAULT_SETTINGS, this.getState().get("data").toJS());
   }
 
   isRoomStarred({ id }) {
@@ -62,7 +90,10 @@ class UserSettingsStore extends MapStore {
   }
 
   getValue(key) {
-    return this.getState().getIn(key.split("."));
+    const split = key.split(".");
+    const defaultValue = defaultValues.getIn(split);
+    const value = this.getState().get("data").getIn(split, defaultValue);
+    return value;
   }
 }
 

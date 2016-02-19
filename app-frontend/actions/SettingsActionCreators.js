@@ -1,14 +1,15 @@
 import deepExtend from "deep-extend";
 
-import Logger from "../libs/Logger";
-const logger = Logger.create("SettingActionCreators");
 import Dispatcher, { dispatch } from "../Dispatcher";
 import { ActionTypes, EndPoints } from "../Constants";
 import { request } from "../utils/RequestUtils";
 
 import UserSettingsStore from "../stores/UserSettingsStore";
 
-export function updateSettings(settings) {
+import Logger from "../libs/Logger";
+const logger = Logger.create("SettingActionCreators");
+
+export function updateSettings( settings ) {
   settings = deepExtend(
     UserSettingsStore.getSettings(),
     settings
@@ -19,7 +20,7 @@ export function updateSettings(settings) {
     settings
   } );
 
-  request( EndPoints.USER_SETTINGS, {
+  return request( EndPoints.USER_SETTINGS, {
     method: "POST",
     body: settings
   } ).then( ( { ok, message } ) => {
@@ -35,5 +36,6 @@ export function updateSettings(settings) {
         settings
       } );
     }
+    return { ok, message };
   });
 }

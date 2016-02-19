@@ -25,8 +25,10 @@
     &:after {
       content: attr(data-initials);
       position: absolute;
-      width: 100%;
-      height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       text-align: center;
       font-weight: 300;
     }
@@ -45,6 +47,13 @@
   background-size: 80px;
   font-size: 36px;
   line-height: 80px;
+}
+
+.avatar-xlarge {
+  .square(160px);
+  background-size: 160px;
+  font-size: 48px;
+  line-height: 160px;
 }
 
 .alerts {

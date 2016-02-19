@@ -30,12 +30,17 @@ function handleConnectionOpen(state, { user, users }) {
   return handleUsersAdd(state, { users});
 }
 
+function handleProfileUpdate(state, { user }) {
+  return handleUserAdd(state, { user });
+}
+
 class UserStore extends MapStore {
 
   initialize() {
     this.addAction(ActionTypes.CONNECTION_OPEN, handleConnectionOpen);
     this.addAction(ActionTypes.LOAD_USER_SUCCESS, handleUserAdd);
     this.addAction(ActionTypes.LOAD_USERS_SUCCESS, handleUsersAdd);
+    this.addAction(ActionTypes.PROFILE_UPDATE_SUCCESS, handleProfileUpdate);
   }
 
   getUsers(usersId, except = []) {

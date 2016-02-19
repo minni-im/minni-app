@@ -21,7 +21,7 @@ class UserInfoPanel extends React.Component {
   constructor(props) {
     super(props);
     this.onSettingsClick = this.onSettingsClick.bind(this);
-    this.onCloseDialog = this.onCloseDialog.bind(this);
+    this.onUserSettingsCloseDialog = this.onUserSettingsCloseDialog.bind(this);
   }
 
   render() {
@@ -42,7 +42,7 @@ class UserInfoPanel extends React.Component {
         onClick={this.onSettingsClick} >
         <UserSettingsDialogContainer
           visible={ showSettingsDialog }
-          onClose={ this.onCloseDialog } />
+          onClose={ this.onUserSettingsCloseDialog } />
         <SettingsIcon />
       </div>
     </div>;
@@ -52,7 +52,7 @@ class UserInfoPanel extends React.Component {
     this.setState( { showSettingsDialog: true } );
   }
 
-  onCloseDialog() {
+  onUserSettingsCloseDialog( action ) {
     this.setState( { showSettingsDialog: false } );
   }
 }
