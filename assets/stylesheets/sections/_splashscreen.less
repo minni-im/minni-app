@@ -1,3 +1,20 @@
+@keyframes stroke {
+  to {
+    stroke-dashoffset: -1328;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(.95);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+
 #splashscreen {
   position: absolute;
   top: 0;
@@ -19,8 +36,25 @@
 
 .splashscreen-inner {
   text-align: center;
-  img {
-    .square(200px);
+  svg {
+    .square(256px);
+    & .bubble {
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1328;
+      stroke-dashoffset: 1328;
+      transform-origin: center center;
+
+      animation-name: pulse, stroke;
+      animation-duration: 1s, 2s;
+      animation-timing-function: ease-in-out, linear;
+      animation-iteration-count: infinite, infinite;
+    }
+
+    & .letter {
+      transform-origin: center center;
+      animation: pulse 1s ease-in-out infinite;
+    }
   }
 }
 

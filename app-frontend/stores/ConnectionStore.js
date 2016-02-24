@@ -71,7 +71,7 @@ function handleConnectionOpen() {
     setTimeout(() => {
       appHolder.classList.add("splashscreen--hidden");
     }, 500);
-  }, 1000);
+  }, 1500);
 }
 
 function handleRoomJoin({accountSlug, roomSlug}) {
