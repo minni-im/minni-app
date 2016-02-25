@@ -27,7 +27,7 @@ class Message extends React.Component {
     }
 
     let content = <div className="message--content">
-      {message.content}
+      {message.contentParsed}
     </div>;
 
     let embeds;

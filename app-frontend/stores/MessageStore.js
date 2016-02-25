@@ -9,7 +9,12 @@ import { ActionTypes, MAX_MESSAGES_PER_ROOMS } from "../Constants";
 import UserStore from "../stores/UserStore";
 import RoomStore from "../stores/RoomStore";
 
+import { parseContent } from "../utils/MarkupUtils";
+
 import Message from "../models/Message";
+
+import Logger from  "../libs/Logger";
+const logger = Logger.create("MessageStore");
 
 function transformMessage(message) {
   message.dateCreated = moment(message.dateCreated);
@@ -17,6 +22,9 @@ function transformMessage(message) {
   if (message.dateEdited) {
     message.dateEdited = moment(message.dateEdited);
   }
+
+  message.contentParsed = parseContent(message.content);
+
   message.user = UserStore.getUser(message.userId);
   message.embeds = Immutable.fromJS(message.embeds || []);
   return new Message(message);

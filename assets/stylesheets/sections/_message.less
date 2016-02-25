@@ -31,6 +31,11 @@
       margin-bottom: 1px;
       border-radius: 4px;
       background-color: @gray-lighter;
+
+      a {
+        color: @electric-blue;
+        text-decoration: underline;
+      }
     }
 
     .message--header, .message--timestamp {
@@ -70,6 +75,51 @@
     .message--content {
       background-color: @light-blue;
       color: @color-light;
+
+      a {
+        color: inherit;
+      }
     }
+  }
+}
+
+.message-group {
+  .language {
+    font-size: 11px;
+    line-height: 18px;
+    background-color: fadeout(@white, 25%);
+    margin: 0 -10px;
+    padding: 0 10px;
+  }
+
+  code:not(.hljs) {
+    font-family: "Source Code Pro", "Consolas";
+    font-size: 12px;
+    line-height: 28px;
+    background-color: fadeout(@white, 60%);
+    display: inline-block;
+    &:before, &:after {
+      content: '\00a0';
+      letter-spacing: -0.2em;
+    }
+  }
+
+  code.hljs {
+    background-color: fadeout(@white, 60%);
+    padding: .5em 0;
+  }
+
+  .mention {
+    background-color: @mention-background-color;
+    display: inline-block;
+    &:before, &:after {
+      content: '\00a0';
+    }
+  }
+}
+
+.message-group-me {
+  .mention {
+    background-color: fadeout(@black, 85%);
   }
 }

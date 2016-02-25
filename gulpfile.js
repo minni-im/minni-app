@@ -19,7 +19,7 @@ var VERBOSE = argv.verbose;
 var WEBPACK_CONFIG = {
   progress: true,
   debug: !RELEASE,
-  devtool: RELEASE ? false : "#inline-source-map",
+  devtool: RELEASE ? false : "cheap-module-eval-source-map",
   entry: {
     vendor: [
       "react",

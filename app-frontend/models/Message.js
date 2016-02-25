@@ -7,6 +7,7 @@ const MessageRecord = Immutable.Record({
   type: undefined,
   subType: undefined,
   content: undefined,
+  contentParsed: undefined,
   embeds: [],
   attachments: [],
   nonce: null,

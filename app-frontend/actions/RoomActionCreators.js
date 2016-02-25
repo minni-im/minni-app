@@ -96,7 +96,7 @@ export default {
     logger.info(`sending message '${text}' to roomId:${roomId}`);
     createMessage(roomId, text).then(rawMessage => {
       // Optimistic UI pattern. First display it, then send it to the server
-      this.receiveMessage(roomId, rawMessage, true);
+      this.receiveMessage(roomId, { ...rawMessage }, true);
 
       request(EndPoints.MESSAGES, {
         method: "PUT",
