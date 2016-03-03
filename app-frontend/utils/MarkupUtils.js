@@ -61,9 +61,9 @@ function createRules() {
         if ( node.lang && highlight.getLanguage(node.lang) !== null ) {
           const code = highlight.highlight(node.lang, node.content);
           return (
-            <div>
-              <div className="language">{ code.language }</div>
-              <pre key={ state.key }>
+            <div key={ state.key }>
+              <div className="language">{`</> `}{ code.language }</div>
+              <pre>
                 <code
                   className={`hljs ${code.language}`}
                   dangerouslySetInnerHTML={ { __html: code.value } }></code>
