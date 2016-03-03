@@ -1,6 +1,8 @@
 extends layout
 
 block styles
+  link(rel="prefetch", href="/videos/minni-animated-logo.webm")
+  link(rel="prefetch", href="/videos/minni-animated-logo.mp4")
   link(rel="stylesheet", href="/css/hljs-default.min.css")
   link(rel="stylesheet", href="/css/chat.css")
     
@@ -20,7 +22,9 @@ block main
   #minni
   #splashscreen
     .splashscreen-inner
-      include ../../public/logo.svg
+      video(autoplay=true, loop=true, style="background-color: transparent; width:242px; height:246px")
+        source(src="/videos/minni-animated-logo.webm", type="video/webm")
+        source(src="/videos/minni-animated-logo.mp4", type="video/mp4")
       h3 Please be patient
       p We are setting up your cloud office...
 
