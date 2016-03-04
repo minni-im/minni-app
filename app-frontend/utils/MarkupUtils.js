@@ -8,6 +8,7 @@ const DEFAULT_LINK_RULE = SimpleMarkdown.defaultRules.paragraph;
 function createRules() {
   return {
     newline: SimpleMarkdown.defaultRules.newline,
+    paragraph: SimpleMarkdown.defaultRules.paragraph,
     escape: SimpleMarkdown.defaultRules.escape,
     link: {
       ...DEFAULT_LINK_RULE,
@@ -46,8 +47,13 @@ function createRules() {
 
     codeBlock: {
       order: SimpleMarkdown.defaultRules.codeBlock.order,
-      match( source ) {
-        return /^```(([A-z0-9\-]+?)\n+)?\n*?([^]+?)```/.exec(source);
+      match( source, state, lookBehind ) {
+        const match = /^(`{3,})(?:([A-z0-9\-]+?)\n+)?\n*?([^]+?)\1/.exec( source );
+        // We only detect code block (or also known as code fence) that compose the entire message. If text is detected before, we let the inlineCode matcher do the job
+        if (match && lookBehind.trim() === "") {
+          return match;
+        }
+        return null;
       },
 
       parse( capture ) {
@@ -61,26 +67,31 @@ function createRules() {
         if ( node.lang && highlight.getLanguage(node.lang) !== null ) {
           const code = highlight.highlight(node.lang, node.content);
           return (
-            <div key={ state.key }>
-              <div className="language">{`</> `}{ code.language }</div>
+            <div className="message--code-block" key={ state.key }>
+              <div className="language">{`</> ${code.language}`}</div>
               <pre>
                 <code
                   className={`hljs ${code.language}`}
                   dangerouslySetInnerHTML={ { __html: code.value } }></code>
               </pre>
-
             </div>
           );
         } else {
+          const code = highlight.highlightAuto(node.content);
           return (
-            <pre key={ state.key }>
-              <code className="hljs">{ node.content }</code>
-            </pre>
+            <div className="message--code-block" key={ state.key }>
+              <div className="language">{`<?> Is it some '${code.language}' ?`}</div>
+              <pre>
+                <code className="hljs">{ node.content }</code>
+              </pre>
+            </div>
           );
         }
 
       }
     },
+
+    blockQuote: SimpleMarkdown.defaultRules.blockQuote,
 
     mention: {
       order: SimpleMarkdown.defaultRules.text.order,
@@ -111,7 +122,7 @@ function createRules() {
 export function parseContent( content = "", inline = true, state = {} ) {
   const rules = createRules();
   const parser = SimpleMarkdown.parserFor( rules );
-  const output = SimpleMarkdown.outputFor( SimpleMarkdown.ruleOutput( rules, "react" ) );
+  const output = SimpleMarkdown.reactFor(SimpleMarkdown.ruleOutput( rules, "react" ));
 
   if ( !inline ) {
     content = `${content}\n\n`;

@@ -23,7 +23,7 @@ function transformMessage(message) {
     message.dateEdited = moment(message.dateEdited);
   }
 
-  message.contentParsed = parseContent(message.content);
+  message.contentParsed = parseContent(message.content, false);
 
   message.user = UserStore.getUser(message.userId);
   message.embeds = Immutable.fromJS(message.embeds || []);

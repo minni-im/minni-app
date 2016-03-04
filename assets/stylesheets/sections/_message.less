@@ -2,6 +2,10 @@ code {
   font: 12px/18px "Source Code Pro", "Consolas";
 }
 
+.hljs {
+  overflow: hidden;
+}
+
 .messages {
   padding: 10px;
 
@@ -88,39 +92,61 @@ code {
 }
 
 .message-group {
-  .language {
-    font-size: 11px;
-    margin: 0 -10px;
+  blockquote {
+    // quotes: "“" "”" "‘" "’";
+    font-family: 'Hoefler Text', Georgia, serif;
+    @color: fadeout(@color-dark, 25%);
+    color: @color;
+    background-color: fadeout(@white, 55%);
+
+    font-style: italic;
+
+    margin: 5px -5px;
+    border-left: 3px solid;
     padding: 0 10px;
+
+    .paragraph {
+      display: inline-block;
+    }
+  }
+
+  .paragraph + blockquote {
+    margin-top: 0px;
   }
 
   code:not(.hljs) {
     line-height: 28px;
     background-color: fadeout(@white, 60%);
     display: inline-block;
-    &:before, &:after {
+    &::before, &::after {
       content: '\00a0';
       letter-spacing: -0.2em;
     }
   }
 
-  pre {
+  .message--code-block {
     margin: 0 -10px;
-    background-color: fadeout(@white, 25%);
-    code.hljs {
-      background-color: fadeout(@white, 60%);
-      padding: .5em 10px;
-      border-left: 1px solid @gray-lighter;
-      border-right: 1px solid @gray-lighter;
-      border-bottom: 1px solid @gray-lighter;
-      border-radius: 0 0 4px 4px;
+    .language {
+      font-size: 11px;
+      padding: 0 10px;
     }
+    pre {
+      code.hljs {
+        background-color: #fdfdfd;
+        padding: .5em 10px;
+        border: 1px solid @gray-lighter;
+      }
+    }
+  }
+
+  span + .message--code-block {
+    border-top: 1px solid @white;
   }
 
   .mention {
     background-color: @mention-background-color;
     display: inline-block;
-    &:before, &:after {
+    &::before, &::after {
       content: '\00a0';
     }
   }
@@ -131,9 +157,17 @@ code {
     background-color: fadeout(@black, 85%);
   }
 
-  pre code.hljs {
-    border-left-color: @electric-blue;
-    border-right-color: @electric-blue;
-    border-bottom-color: @electric-blue;
+  blockquote {
+    @color: fadeout(@color-light, 25%);
+    color: @color;
+    background-color: fadeout(@white, 75%);
   }
+
+  .message--code-block {
+    pre code.hljs {
+      border-color: @electric-blue;
+      background-color: @gray-lighter;
+    }
+  }
+
 }
