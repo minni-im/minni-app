@@ -1,3 +1,4 @@
+/* eslint global-require: 0 */
 import fs from "fs";
 import path from "path";
 import express from "express.oi";
@@ -11,16 +12,16 @@ import auth from "./auth";
 import config from "./config";
 import expressLocals from "./express-locals";
 
-let RedisStore = connectRedis(express.session);
+const RedisStore = connectRedis(express.session);
 const app = express();
 
 app.http().io();
 
-let sessionStore = new RedisStore({
+const sessionStore = new RedisStore({
   host: process.env.REDIS_PORT_6379_TCP_ADDR || config.redis.host,
   port: process.env.REDIS_PORT_6379_TCP_PORT || config.redis.port
 });
-let session = {
+const session = {
   key: config.session.key,
   store: sessionStore,
   secret: config.session.secret,
@@ -36,7 +37,7 @@ let session = {
 app.set("view engine", "jade");
 app.set("views", path.join(__dirname, "views"));
 
-let bootstrap = () => {
+function bootstrap() {
   app.use(cookieParser());
   app.io.session(session);
 
@@ -50,22 +51,23 @@ let bootstrap = () => {
   expressLocals.setup(app);
 
   fs.readdirSync(path.join(__dirname, "controllers")).forEach(ctrl => {
-    require("./controllers/" + ctrl)(app);
+    require(`./controllers/${ctrl}`).default(app);
   });
 
-  let port = config.port;
-  let host = config.host;
+  const { port, host } = config;
+
 
   app.listen(port, host);
   console.log("Minni application started and listenning on http://%s:%s", host, port);
-};
+}
 
 const couchDBHost = process.env.COUCHDB_PORT_5984_TCP_ADDR || config.couchdb.host;
 const couchDBPort = process.env.COUCHDB_PORT_5984_TCP_PORT || config.couchdb.port;
 
 recorder.connect(`http://${couchDBHost}:${couchDBPort}`, config.couchdb.name, () => {
   fs.readdirSync(path.join(__dirname, "models")).forEach(model => {
-    require("./models/" + model);
+    console.log("Loading model class", model);
+    require(`./models/${model}`);
   });
   bootstrap();
 });

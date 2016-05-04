@@ -1,4 +1,11 @@
-process.title = "minni";
+require("babel-register")({
+  presets: [
+    "es2015"
+  ],
+  plugins: [
+    "transform-object-rest-spread",
+    "transform-class-properties"
+  ]
+});
 
-require("babel/register");
 require("./app-backend");
