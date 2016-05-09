@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import recorder from "tape-recorder";
 import crypto from "crypto";
 
-let UserSchema = new recorder.Schema({
+const UserSchema = new recorder.Schema({
   firstname: String,
   lastname: String,
   nickname: String,
@@ -25,8 +25,14 @@ UserSchema.virtual({
   initials: {
     get() {
       if (this.firstname && this.lastname) {
-        return this.firstname[0].toUpperCase() + this.lastname[0].toUpperCase();
+        return [
+          this.firstname,
+          this.lastname
+        ].map(text => text[0])
+        .map(letter => letter.toUpperCase())
+        .join("");
       }
+      return this.nickname[0].toUpperCase();
     }
   },
   fullname: {
@@ -56,7 +62,7 @@ UserSchema
     return `https://secure.gravatar.com/avatar/${hash}?s=${size}`;
   })
   .method("toAPI", function toAPI(currentUser = false) {
-    let json = {
+    const json = {
       id: this.id,
       firstname: this.firstname,
       lastname: this.lastname,
@@ -68,7 +74,7 @@ UserSchema
       providers: this.providers
     };
 
-    if ( currentUser ) {
+    if (currentUser) {
       json.settings = this.settings;
     }
     return json;
@@ -78,7 +84,8 @@ UserSchema
       bcrypt.compare(password, this.password, (error, isMatch) => {
         if (error) {
           console.error(error);
-          return reject(error);
+          reject(error);
+          return;
         }
         if (!isMatch) {
           resolve(false);
@@ -89,28 +96,27 @@ UserSchema
     });
   })
   .method("linkProvider", function linkProvider(provider, token, profile) {
-    this.providers[provider] = profile._json.id;
+    this.providers[provider] = profile._json.id; // eslint-disable-line no-underscore-dangle
     return this.save();
   })
   .method("generateToken", function generateToken() {
     return new Promise((resolve, reject) => {
-
       crypto.randomBytes(24, (errorRandom, buffer) => {
-        let password = buffer.toString("hex");
+        const password = buffer.toString("hex");
 
         bcrypt.hash(password, 10, (errorHash, hash) => {
           if (errorHash) {
-            return reject(errorHash);
+            reject(errorHash);
+            return;
           }
           this.token = hash;
-          let userToken = new Buffer(`${this.id}:${password}`).toString("base64");
+          const userToken = new Buffer(`${this.id}:${password}`).toString("base64");
 
           this.save().then(() => {
-              resolve(userToken);
-            }, (error) => {
-              reject(error);
-            });
-
+            resolve(userToken);
+          }, (error) => {
+            reject(error);
+          });
         });
       });
     });
@@ -118,19 +124,18 @@ UserSchema
 
 UserSchema
   .static("findByToken", function findByToken(token) {
-    let [userId, hash] = new Buffer(token, "base64").toString("ascii").split(":");
+    const [userId, hash] = new Buffer(token, "base64").toString("ascii").split(":");
 
     return this.findById(userId)
-      .then(user => {
-        return new Promise((resolve, reject) => {
-          bcrypt.compare(hash, user.token, (errorHash, isMatch) => {
-            if (errorHash) {
-              return reject(errorHash);
-            }
-            return resolve(isMatch ? user : false);
-          });
+      .then(user => new Promise((resolve, reject) => {
+        bcrypt.compare(hash, user.token, (errorHash, isMatch) => {
+          if (errorHash) {
+            reject(errorHash);
+            return;
+          }
+          resolve(isMatch ? user : false);
         });
-      });
+      }));
   })
   .static("authenticate", function authenticate(identifier, password) {
     return this.where("email", { key: identifier })
@@ -154,9 +159,7 @@ UserSchema
   })
   .static("findByProviderId", function findByProviderId(provider, id) {
     return this.where("byProviderId", { key: [provider, id] })
-      .then((users) => {
-        return users[0];
-      });
-});
+      .then(users => users[0]);
+  });
 
 export default recorder.model("User", UserSchema);

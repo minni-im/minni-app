@@ -15,14 +15,15 @@ export default class LocalAuth {
     passport.use(new LocalStrategy({
       usernameField: "username",
       passwordField: "password"
-    }, function localAuthVerify(identifier, password, done) {
-      let User = recorder.model("User");
+    }, (identifier, password, done) => {
+      const User = recorder.model("User");
       User.authenticate(identifier, password)
         .then((user) => {
           if (user) {
-            return done(null, user);
+            done(null, user);
+            return;
           }
-          return done(null, false, {
+          done(null, false, {
             message: `Username/password for '${identifier}' is incorrect`
           });
         }, (error) => {

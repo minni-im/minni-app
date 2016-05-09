@@ -1,6 +1,6 @@
 import recorder from "tape-recorder";
 
-let AuditSchema = new recorder.Schema({
+const AuditSchema = new recorder.Schema({
   userId: String,
   accountId: String,
   roomId: String

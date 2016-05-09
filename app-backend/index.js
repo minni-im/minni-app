@@ -56,7 +56,6 @@ function bootstrap() {
 
   const { port, host } = config;
 
-
   app.listen(port, host);
   console.log("Minni application started and listenning on http://%s:%s", host, port);
 }

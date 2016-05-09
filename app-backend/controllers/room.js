@@ -1,4 +1,3 @@
-import extend from "deep-extend";
 import recorder from "tape-recorder";
 
 import { requireLogin } from "../middlewares/auth";
@@ -6,49 +5,61 @@ import { requireValidAccount } from "../middlewares/account";
 import { requireValidRoom } from "../middlewares/room";
 
 export default (app) => {
-
   app.get("/api/accounts/:accountId/rooms",
-    requireLogin, requireValidAccount,
-    (req, res) => {
+    requireLogin,
+    requireValidAccount,
+    (req) => {
       req.io.route("rooms:list");
     });
 
   app.put("/api/accounts/:accountId/rooms/",
-    requireLogin, requireValidAccount,
+    requireLogin,
+    requireValidAccount,
     (req) => {
       req.io.route("rooms:create");
     });
 
-  app.post("/api/rooms/:roomId/star", requireLogin, requireValidRoom, (req) => {
-    req.io.route("rooms:star");
-  });
+  app.post("/api/rooms/:roomId/star",
+    requireLogin,
+    requireValidRoom,
+    (req) => {
+      req.io.route("rooms:star");
+    });
 
-  app.post("/api/rooms/:roomId/unstar", requireLogin, requireValidRoom, (req) => {
-    req.io.route("rooms:unstar");
-  });
+  app.post("/api/rooms/:roomId/unstar",
+    requireLogin, requireValidRoom,
+    (req) => {
+      req.io.route("rooms:unstar");
+    });
 
-  app.get("/api/rooms/:roomId/messages", requireLogin, requireValidRoom, (req) => {
-    req.io.route("rooms:messages");
-  });
+  app.get("/api/rooms/:roomId/messages",
+    requireLogin,
+    requireValidRoom,
+    (req) => {
+      req.io.route("rooms:messages");
+    });
 
-  app.post("/api/rooms/:roomId/typing", requireLogin, requireValidRoom, (req) => {
-    req.io.route("rooms:typing");
-  });
+  app.post("/api/rooms/:roomId/typing",
+    requireLogin,
+    requireValidRoom,
+    (req) => {
+      req.io.route("rooms:typing");
+    });
 
   app.io.route("rooms", {
     star(req, res) {
       const { room, user } = req;
-      let { settings } = user;
+      const { settings } = user;
       if (!settings.starred) {
         settings.starred = { rooms: [] };
       }
-      let { rooms } = user.settings.starred;
+      const { rooms } = user.settings.starred;
 
       if (rooms.indexOf(room.id) === -1) {
         rooms.push(room.id);
       }
 
-      user.save().then(newUser => {
+      user.save().then(() => {
         res.json({
           ok: true,
           message: `Room '${room.name}' has been starred`
@@ -56,7 +67,7 @@ export default (app) => {
       }, error => {
         res.json({
           ok: false,
-          message: `We did not managed to star the room. Please try again later.`,
+          message: "We did not managed to star the room. Please try again later.",
           errors: error
         });
       });
@@ -66,15 +77,16 @@ export default (app) => {
       const { room, user } = req;
       let { rooms } = user.settings.starred;
       if (!rooms || (rooms && rooms.indexOf(room.id) === -1)) {
-        return res.json({
+        res.json({
           ok: true,
           message: "Nothing to be done."
         });
+        return;
       }
 
       rooms = rooms.splice(rooms.indexOf(room.id), 1);
 
-      user.save().then(newUser => {
+      user.save().then(() => {
         res.json({
           ok: true,
           message: `Room '${room.name}' has been unstarred`
@@ -82,7 +94,7 @@ export default (app) => {
       }, error => {
         res.json({
           ok: false,
-          message: `We did not managed to unstar the room. Please try again later.`,
+          message: "We did not managed to unstar the room. Please try again later.",
           errors: error
         });
       });
@@ -93,15 +105,16 @@ export default (app) => {
       Room.where("accountId", { key: req.params.accountId })
         .then(rooms => {
           const { user } = req;
-          rooms = rooms.filter(room => {
-            return room.public || room.private && room.usersId.indexOf(user.id) !== -1;
-          }).map(room => {
-            return room.toAPI(user.id === room.adminId);
-          });
+          rooms = rooms
+            .filter(room => (
+              room.public ||
+              room.private && room.usersId.indexOf(user.id) !== -1
+            ))
+            .map(room => room.toAPI(user.id === room.adminId));
 
           res.json({
             ok: true,
-            rooms: rooms
+            rooms
           });
         }, error => {
           res.json({
@@ -118,17 +131,18 @@ export default (app) => {
       const { user, account } = req;
 
       if (!account.userBelongTo(user.id)) {
-        return res.json({
+        res.json({
           ok: false,
-          message: `You are not allowed to create a room in this account.`
+          message: "You are not allowed to create a room in this account."
         });
+        return;
       }
 
-      let room = new Room({
+      const room = new Room({
         name,
         topic,
         type,
-        accountId: accountId,
+        accountId,
         usersId,
         adminId: user.id
       });
@@ -142,7 +156,7 @@ export default (app) => {
       }, error => {
         res.json({
           ok: false,
-          message: `Creation of new room failed.`,
+          message: "Creation of new room failed.",
           errors: error
         });
       });

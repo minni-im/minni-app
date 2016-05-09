@@ -12,7 +12,6 @@ function sanitizeName(name) {
 }
 
 export default (app) => {
-
   /* =Routes= */
   app.get([
     "/",
@@ -24,15 +23,12 @@ export default (app) => {
     const Account = recorder.model("Account");
     Account.getListForUser(req.user.id).then((accounts) => {
       res.render("chat", {
-        accounts: accounts.map(account => {
-          return account.toAPI(req.user.id === account.adminId);
-        })
+        accounts: accounts.map(account => account.toAPI(req.user.id === account.adminId))
       });
     });
   });
 
   /* =API routes= */
-
   app.get("/api/accounts/", requireLogin, (req) => {
     req.io.route("accounts:list");
   });
@@ -64,7 +60,7 @@ export default (app) => {
   /* =Socket routes= */
   app.io.route("accounts", {
     check(req, res) {
-      let name = sanitizeName(req.query.name);
+      const name = sanitizeName(req.query.name);
       const Account = recorder.model("Account");
       Account.where("name", { key: name }).then(accounts => {
         if (accounts.length) {
@@ -98,7 +94,7 @@ export default (app) => {
       }, error => {
         res.json({
           ok: false,
-          message: `This resource does not exist`,
+          message: "This resource does not exist",
           errors: error
         });
       });
@@ -126,63 +122,61 @@ export default (app) => {
     },
 
     create(req, res) {
-      let name = sanitizeName(req.body.name);
-      let description = req.body.description;
+      const name = sanitizeName(req.body.name);
+      const description = req.body.description;
       const Account = recorder.model("Account");
       const { user } = req;
 
       function genericFail(error) {
         return res.json({
           ok: false,
-          message: `Creation of new account failed.`,
+          message: "Creation of new account failed.",
           errors: error
         });
       }
 
-      let account = new Account({
-        name: name,
-        description: description,
+      const account = new Account({
+        name,
+        description,
         adminId: user.id,
-        usersId: [ user.id ]
+        usersId: [user.id]
       });
 
       account.save().then(savedAccount => {
         const Room = recorder.model("Room");
-        let room = new Room({
+        const room = new Room({
           name: "The General Room",
           topic: "This is room is for team-wide communication. All team members can access this room.",
           adminId: user.id,
           accountId: savedAccount.id
         });
 
-        room.save().then(savedRoom => {
-          return res.status(201).json({
-            ok: true,
-            message: `Account '${name}' succesfully created.`,
-            account: savedAccount.toAPI(true),
-            room: savedRoom.toAPI(true)
-          });
-        }, genericFail);
+        room.save().then(savedRoom => res.status(201).json({
+          ok: true,
+          message: `Account '${name}' succesfully created.`,
+          account: savedAccount.toAPI(true),
+          room: savedRoom.toAPI(true)
+        }), genericFail);
       }, genericFail);
     },
 
     update(req, res) {
-
+      // TODO: to be implemented
     },
 
     delete(req, res) {
-
+      // TODO: to be implemented
     },
 
     users(req, res) {
       const User = recorder.model("User");
-      //TODO improve by fetching a list of known ID directly instead of looping
-      Promise.all(req.account.usersId.map(userId => {
-        return User.findById(userId);
-      })).then(users => {
+      // TODO improve by fetching a list of known ID directly instead of looping
+      Promise.all(
+        req.account.usersId.map(userId => User.findById(userId))
+      ).then(users => {
         res.json({
           ok: true,
-          users: users
+          users
         });
       }, error => {
         res.json({
@@ -193,5 +187,4 @@ export default (app) => {
       });
     }
   });
-
 };

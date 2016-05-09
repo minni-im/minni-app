@@ -1,5 +1,5 @@
 import recorder from "tape-recorder";
-import { requireLogin, requireLoginRedirect } from "../middlewares/auth";
+import { requireLogin } from "../middlewares/auth";
 
 import embed from "../libs/embeds";
 
@@ -13,14 +13,14 @@ export default (app) => {
       const Message = recorder.model("Message");
       const nonce = req.body.nonce;
       const { content, accountId, roomId, userId, embeds } = req.body;
-      let message = new Message({ content, userId, roomId, embeds });
+      const message = new Message({ content, userId, roomId, embeds });
 
       message.save().then(newMessage => {
-        let json = newMessage.toAPI();
+        const json = newMessage.toAPI();
         const socketKey = `${accountId}:${message.roomId}`;
         res.status(201).json({
           ok: true,
-          message: nonce ? Object.assign(json, {nonce}) : json
+          message: nonce ? Object.assign(json, { nonce }) : json
         });
         app.io.in(socketKey).emit("messages:create", json);
 
@@ -31,7 +31,6 @@ export default (app) => {
               app.io.in(socketKey).emit("messages:update", embeddedMessage.toAPI());
             });
           }
-
         }, error => {
           app.io.in(socketKey).emit("messages:update-failed", {
             id: json.id,
@@ -43,7 +42,7 @@ export default (app) => {
         res.json({
           ok: false,
           body: req.body,
-          message: `Message creation failed`,
+          message: "Message creation failed",
           errors: error
         });
       });

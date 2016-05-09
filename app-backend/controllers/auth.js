@@ -6,23 +6,22 @@ import { requireLoginRedirect } from "../middlewares/auth";
 import { requireEmailRedirect, requireProfileInfoRedirect } from "../middlewares/profile";
 
 
-let oauthProvidersInfo =
+const oauthProvidersInfo =
   Object.keys(auth.providers)
     .filter((p) => (p !== "local"))
     .map((name) => {
-      let { logo } = auth.providers[name];
+      const { logo } = auth.providers[name];
       return { name, logo };
     });
 
 
 export default (app) => {
-
   /* =Parameters= */
   app.param("provider", (req, res, next, provider) => {
     if (provider in auth.providers) {
       next();
     } else {
-      return res.status(400).json({
+      res.status(400).json({
         status: "error",
         message: `'${provider}' is not a supported provider`
       });
@@ -56,13 +55,13 @@ export default (app) => {
       req.io.route("auth:resetpassword");
     });
 
-  app.get("/logout", function(req, res) {
+  app.get("/logout", (req, res) => {
     req.logout();
     res.redirect("/");
   });
 
 
-  let signupViewOptions = {
+  const signupViewOptions = {
     title: "Sign Up",
     providers: oauthProvidersInfo,
     fields: {}
@@ -73,38 +72,39 @@ export default (app) => {
       res.render("signup", signupViewOptions);
     })
     .post((req, res) => {
-      let { username, email, password } = req.body;
-      let errors = [];
+      const { username, email, password } = req.body;
+      const errors = [];
 
       if (!username) { errors.push("Username"); }
       if (!email) { errors.push("Email address"); }
       if (!password) { errors.push("Password"); }
 
-      let newSignupViewOptions = Object.assign({}, signupViewOptions, { fields: req.body });
+      const newSignupViewOptions = Object.assign({}, signupViewOptions, { fields: req.body });
 
       if (errors.length > 0) {
         res.flash("error", `${errors.join(", ")} ${errors.length > 0 ? "are" : "is"} mandatory`);
-        return res.render("signup", newSignupViewOptions);
+        res.render("signup", newSignupViewOptions);
+        return;
       }
 
-      bcrypt.hash(password, 10, function(error, hash) {
+      bcrypt.hash(password, 10, (error, hash) => {
         if (error) {
           res.flash("error", error);
-          return res.render("signup", newSignupViewOptions);
+          res.render("signup", newSignupViewOptions);
         }
 
-        let User = recorder.model("User");
-        let user = new User({
+        const User = recorder.model("User");
+        const user = new User({
           nickname: username,
-          email: email,
+          email,
           password: hash
         });
 
         user.save()
-          .then(function() {
+          .then(() => {
             req.flash("info", "Your account has been created. Please try to logging in now!");
             res.redirect(auth.providers.local.successRedirect);
-          }, function(err) {
+          }, (err) => {
             console.error(err);
             res.flash("error", "Sorry, we could not process your request");
             res.render("signup", newSignupViewOptions);
@@ -114,7 +114,7 @@ export default (app) => {
 
   // Registering auth providers routes and middlewares
   for (let provider in auth.providers) {
-    if (provider !== "local") {
+    if (auth.providers.hasOwnProperty(provider) && provider !== "local") {
       app.get(`/login/${provider}`, auth.initialize(provider));
       app.get(`/signup/${provider}`, auth.authenticate(provider));
       app.get(`/auth/${provider}/callback`, auth.authenticate(provider));
@@ -126,8 +126,7 @@ export default (app) => {
   /* =Socket routes= */
   app.io.route("auth", {
     resetpassword(req, res) {
-
+      // TODO to be implemented
     }
   });
-
 };

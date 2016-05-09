@@ -6,7 +6,7 @@ const TYPE = {
   PRIVATE: 2
 };
 
-let RoomSchema = new recorder.Schema({
+const RoomSchema = new recorder.Schema({
   name: String,
   topic: String,
   type: {
@@ -48,7 +48,6 @@ RoomSchema.method("toAPI", function toAPI(admin = false) {
     lastUpdated: this.lastUpdated,
     lastMsgUserId: this.lastMsgUserId
   };
-
 });
 
 export default recorder.model("Room", RoomSchema);
