@@ -1,8 +1,9 @@
----
-  globals:
-    __DEV__: false
-    Minni: false
-  env:
-    browser: true
-  rules:
-    new-cap: 0
+globals:
+  __DEV__: false
+  Minni: false
+
+env:
+  browser: true
+
+rules:
+  new-cap: 0

@@ -1,7 +1,7 @@
-jest.dontMock("simple-markdown");
-jest.dontMock("../../../config");
-jest.dontMock("../base");
-jest.dontMock("../index");
+jest.unmock("simple-markdown");
+jest.unmock("../../../config");
+jest.unmock("../base");
+jest.unmock("../index");
 
 const fs = require.requireActual("fs");
 const path = require.requireActual("path");
@@ -14,7 +14,7 @@ function dontMockFolder(folder) {
     }
     const stats = fs.lstatSync(path.join(dir, file));
     if (stats.isDirectory()) {
-      jest.dontMock(`../${folder}/${file}`)
+      jest.unmock(`../${folder}/${file}`)
     }
   });
 }

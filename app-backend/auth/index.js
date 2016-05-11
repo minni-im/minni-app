@@ -10,11 +10,12 @@ import settings from "../config";
 import plugins from "../plugins";
 
 let enabledProviders = [];
-let providersSettings = {};
+const providersSettings = {};
 
 function getProviders() {
   if (!settings.auth.providers) {
-    throw new Error("No auth provider found! You have to specify at least one in your setting.yml file.");
+    throw new Error(`No auth provider found!
+You have to specify at least one in your setting.yml file.`);
   }
   return settings.auth.providers.map(provider => {
     let Provider;
@@ -32,24 +33,22 @@ function getProviders() {
 }
 
 function getProvider(key) {
-  return enabledProviders.map( p => {
-    return p.key === key ? p : false;
-  })
-  .filter(item => { return item !== false; })[0].provider;
+  return enabledProviders
+    .map(p => p.key === key ? p : false) // eslint-disable-line no-confusing-arrow
+    .filter(item => item !== false)[0].provider;
 }
 
-function setup (app, session) {
-
+function setup(app, session) {
   passport.use(new BearerStrategy((token, done) => {
-    let User = recorder.model("User");
+    const User = recorder.model("User");
     User.findByToken(token)
       .then(user => {
         if (user) {
           user.usingToken = true;
         }
-        return done(null, user);
+        done(null, user);
       }, error => {
-        return done(error);
+        done(error);
       });
   }));
 
@@ -57,8 +56,8 @@ function setup (app, session) {
     done(null, user.id);
   });
 
-  passport.deserializeUser(function(id, done) {
-    let User = recorder.model("User");
+  passport.deserializeUser((id, done) => {
+    const User = recorder.model("User");
     User.findById(id).then(user => done(null, user), error => done(error));
   });
 
@@ -73,7 +72,7 @@ function setup (app, session) {
   app.use((req, res, next) => {
     if (req.query.returnTo) {
       if (req.query.returnTo[0] !== "/") {
-        req.query.returnTo = "/" + req.query.returnTo;
+        req.query.returnTo = `/${req.query.returnTo}`;
       }
       req.session.returnTo = req.query.returnTo;
     }
@@ -83,14 +82,14 @@ function setup (app, session) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  let ioSession = Object.assign({}, session, {
-    cookieParser: cookieParser,
-    passport: passport
+  const ioSession = Object.assign({}, session, {
+    cookieParser,
+    passport
   });
-  let psiAuth = passportSocketIo.authorize(ioSession);
-
+  const psiAuth = passportSocketIo.authorize(ioSession);
+  /* eslint-disable no-underscore-dangle */
   app.io.use((socket, next) => {
-    let User = recorder.model("User");
+    const User = recorder.model("User");
     if (socket.request._query && socket.request._query.token) {
       User.findByToken(socket.request._query.token)
         .then(user => {
@@ -106,6 +105,7 @@ function setup (app, session) {
       psiAuth(socket, next);
     }
   });
+  /* eslint-disable */
 }
 
 function action(type) {
@@ -117,7 +117,7 @@ function action(type) {
 
 export default {
   providers: providersSettings,
-  setup: setup,
+  setup,
   initialize: action("initialize"),
   connect: action("connect"),
   authenticate: action("authenticate"),

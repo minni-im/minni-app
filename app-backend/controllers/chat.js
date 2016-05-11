@@ -1,7 +1,6 @@
 import recorder from "tape-recorder";
 
 export default (app) => {
-
   app.io.on("connection", (socket) => {
     const { user } = socket.request;
     console.log(`'${user.id}' is connecting`);
@@ -53,15 +52,11 @@ export default (app) => {
       Promise.all([...rooms, ...users]).then(results => {
         const finalRooms = results
           .slice(0, size)
-          .reduce((flat, flatRooms) => {
-            return flat.concat(flatRooms);
-          }, [])
-          .map(room => {
-            return room.toAPI(user.id === room.adminId);
-          });
+          .reduce((flat, flatRooms) => flat.concat(flatRooms), [])
+          .map(room => room.toAPI(user.id === room.adminId));
         const finalUsers = results
           .slice(size)
-          .map(user => user.toAPI());
+          .map(finalUser => finalUser.toAPI());
 
         socket.emit("connected", {
           user: user.toAPI(true),
@@ -69,8 +64,6 @@ export default (app) => {
           rooms: finalRooms,
           users: finalUsers
         });
-
-
       }).catch(ex => {
         console.log(`Socket connection failed [sid: ${socket.id}, id:${user.id}]`);
         console.error(ex);
@@ -83,5 +76,4 @@ export default (app) => {
     console.log(`'${user.id}' is disconnected`, req.isSocket);
     app.io.emit("users:disconnect", { user: user.toAPI(), rooms: req.socket.rooms });
   });
-
 };

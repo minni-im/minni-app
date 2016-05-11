@@ -2,7 +2,7 @@ import recorder from "tape-recorder";
 
 const MAX_MESSAGES_COUNT = 50;
 
-let MessageSchema = new recorder.Schema({
+const MessageSchema = new recorder.Schema({
   dateEdited: String,
   content: String,
   roomId: String,
@@ -19,7 +19,7 @@ let MessageSchema = new recorder.Schema({
 });
 
 MessageSchema.method("toAPI", function toAPI() {
-  let json = {
+  const json = {
     id: this.id,
     roomId: this.roomId,
     userId: this.userId,
@@ -41,9 +41,13 @@ MessageSchema.view("historyByRoomAndDate", {
   }`
 });
 
-MessageSchema.static("getHistory", function getHistory(roomId, latest = new Date().toISOString(), oldest = 0, count = MAX_MESSAGES_COUNT) {
+MessageSchema.static("getHistory", function getHistory(
+    roomId,
+    latest = new Date().toISOString(),
+    oldest = 0,
+    count = MAX_MESSAGES_COUNT) {
   const range = latest && oldest;
-  let options = {
+  const options = {
     startkey: [roomId, {}],
     endkey: [roomId, null],
     descending: true,
