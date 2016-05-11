@@ -8,12 +8,23 @@ import flash from "flash";
 import connectRedis from "connect-redis";
 import recorder from "tape-recorder";
 
-import auth from "./auth";
+import { setup as authSetup } from "./auth";
 import config from "./config";
 import expressLocals from "./express-locals";
 
 const RedisStore = connectRedis(express.session);
 const app = express();
+
+const asciiLogo = (banner) => `══════════════════════════════════════════════════════
+███╗   ███╗██╗███╗   ██╗███╗   ██╗██╗   ██╗███╗   ███╗
+████╗ ████║██║████╗  ██║████╗  ██║██║   ██║████╗ ████║
+██╔████╔██║██║██╔██╗ ██║██╔██╗ ██║██║   ██║██╔████╔██║
+██║╚██╔╝██║██║██║╚██╗██║██║╚██╗██║██║   ██║██║╚██╔╝██║
+██║ ╚═╝ ██║██║██║ ╚████║██║ ╚████║██║██╗██║██║ ╚═╝ ██║
+╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚═╝╚═╝╚═╝╚═╝     ╚═╝
+╔════════════════════════════════════════════════════╝
+║ ${banner}
+╚═════════════════════════════════════════════════════`;
 
 app.http().io();
 
@@ -41,7 +52,7 @@ function bootstrap() {
   app.use(cookieParser());
   app.io.session(session);
 
-  auth.setup(app, session);
+  authSetup(app, session);
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({
@@ -63,10 +74,12 @@ function bootstrap() {
 const couchDBHost = process.env.COUCHDB_PORT_5984_TCP_ADDR || config.couchdb.host;
 const couchDBPort = process.env.COUCHDB_PORT_5984_TCP_PORT || config.couchdb.port;
 
+console.log(asciiLogo("Starting application server"));
+
 recorder.connect(`http://${couchDBHost}:${couchDBPort}`, config.couchdb.name, () => {
   fs.readdirSync(path.join(__dirname, "models")).forEach(model => {
-    console.log("Loading model class", model);
     require(`./models/${model}`);
+    console.log(`Model '${model}' has been loaded`);
   });
   bootstrap();
 });

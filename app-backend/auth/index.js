@@ -7,7 +7,7 @@ import BearerStrategy from "passport-http-bearer";
 import LocalProvider from "./local";
 
 import settings from "../config";
-import plugins from "../plugins";
+import { getPlugin } from "../plugins";
 
 let enabledProviders = [];
 const providersSettings = {};
@@ -22,7 +22,7 @@ You have to specify at least one in your setting.yml file.`);
     if (provider === "local") {
       Provider = LocalProvider;
     } else {
-      Provider = plugins.getPlugin(provider, "auth");
+      Provider = getPlugin(provider, "auth");
     }
 
     return {
@@ -38,7 +38,7 @@ function getProvider(key) {
     .filter(item => item !== false)[0].provider;
 }
 
-function setup(app, session) {
+export function setup(app, session) {
   passport.use(new BearerStrategy((token, done) => {
     const User = recorder.model("User");
     User.findByToken(token)
@@ -115,11 +115,8 @@ function action(type) {
   };
 }
 
-export default {
-  providers: providersSettings,
-  setup,
-  initialize: action("initialize"),
-  connect: action("connect"),
-  authenticate: action("authenticate"),
-  disconnect: action("disconnect")
-};
+export const providers = providersSettings;
+export const initialize = action("initialize");
+export const connect = action("connect");
+export const authenticate = action("authenticate");
+export const disconnect = action("disconnect");

@@ -1,16 +1,23 @@
 import bcrypt from "bcryptjs";
 import recorder from "tape-recorder";
 
-import auth from "../auth";
+import {
+    providers,
+    initialize,
+    authenticate,
+    connect,
+    disconnect } from "../auth";
 import { requireLoginRedirect } from "../middlewares/auth";
-import { requireEmailRedirect, requireProfileInfoRedirect } from "../middlewares/profile";
+import {
+  requireEmailRedirect,
+  requireProfileInfoRedirect } from "../middlewares/profile";
 
 
 const oauthProvidersInfo =
-  Object.keys(auth.providers)
+  Object.keys(providers)
     .filter((p) => (p !== "local"))
     .map((name) => {
-      const { logo } = auth.providers[name];
+      const { logo } = providers[name];
       return { name, logo };
     });
 
@@ -18,7 +25,7 @@ const oauthProvidersInfo =
 export default (app) => {
   /* =Parameters= */
   app.param("provider", (req, res, next, provider) => {
-    if (provider in auth.providers) {
+    if (provider in providers) {
       next();
     } else {
       res.status(400).json({
@@ -32,9 +39,13 @@ export default (app) => {
   app.use(requireEmailRedirect);
 
   /* =Routes= */
-  app.get("/", requireLoginRedirect, requireProfileInfoRedirect, (req, res) => {
-    res.render("chat");
-  });
+  app.get("/",
+    requireLoginRedirect,
+    requireProfileInfoRedirect,
+    (req, res) => {
+      res.render("chat");
+    }
+  );
 
   app.route("/login")
     .get((req, res) => {
@@ -43,7 +54,7 @@ export default (app) => {
         providers: oauthProvidersInfo
       });
     })
-    .post(auth.authenticate("local"));
+    .post(authenticate("local"));
 
   app.route("/login/reset-password")
     .get((req, res) => {
@@ -103,7 +114,7 @@ export default (app) => {
         user.save()
           .then(() => {
             req.flash("info", "Your account has been created. Please try to logging in now!");
-            res.redirect(auth.providers.local.successRedirect);
+            res.redirect(providers.local.successRedirect);
           }, (err) => {
             console.error(err);
             res.flash("error", "Sorry, we could not process your request");
@@ -113,13 +124,13 @@ export default (app) => {
     });
 
   // Registering auth providers routes and middlewares
-  for (let provider in auth.providers) {
-    if (auth.providers.hasOwnProperty(provider) && provider !== "local") {
-      app.get(`/login/${provider}`, auth.initialize(provider));
-      app.get(`/signup/${provider}`, auth.authenticate(provider));
-      app.get(`/auth/${provider}/callback`, auth.authenticate(provider));
-      app.get(`/connect/${provider}`, requireLoginRedirect, auth.connect(provider));
-      app.get(`/connect/${provider}/revoke`, requireLoginRedirect, auth.disconnect(provider));
+  for (let provider in providers) {
+    if (providers.hasOwnProperty(provider) && provider !== "local") {
+      app.get(`/login/${provider}`, initialize(provider));
+      app.get(`/signup/${provider}`, authenticate(provider));
+      app.get(`/auth/${provider}/callback`, authenticate(provider));
+      app.get(`/connect/${provider}`, requireLoginRedirect, connect(provider));
+      app.get(`/connect/${provider}/revoke`, requireLoginRedirect, disconnect(provider));
     }
   }
 
