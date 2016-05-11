@@ -1,4 +1,3 @@
-import Immutable from "immutable";
 import { MapStore } from "../libs/Flux";
 
 import { ActionTypes } from "../Constants";
@@ -13,7 +12,7 @@ import Logger from "../libs/Logger";
 const logger = Logger.create("RoomStore");
 
 function handleLoadRoomsSuccess(state, { rooms }) {
-  logger.info(rooms.length, `new room(s)`);
+  logger.info(rooms.length, "new room(s)");
   return state.withMutations(map => {
     rooms.forEach(room => {
       Object.assign(room, {
@@ -32,7 +31,7 @@ function handleRoomFavorite(state, { type, roomId }) {
 
 function handleRoomFavoriteFailure(state, { message }) {
   logger.error(message);
-  return handleRoomFavorite(...arguments);
+  return handleRoomFavorite(state, { message });
 }
 
 class RoomStore extends MapStore {
@@ -56,10 +55,14 @@ class RoomStore extends MapStore {
   }
 
   getRooms(...roomSlugs) {
-    let rooms = this.getState().filter(room => {
-      return roomSlugs.indexOf(room.slug) !== -1;
-    });
-    return rooms;
+    return this.getState()
+      .filter(room => roomSlugs.indexOf(room.slug) !== -1);
+  }
+
+  getRoomsBySelectedAccount(...roomSlugs) {
+    const selectedAccount = SelectedAccountStore.getAccount();
+    return this.getRooms(...roomSlugs)
+      .filter(room => room.accountId === selectedAccount.id);
   }
 
   getRoomsById(...ids) {

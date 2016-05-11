@@ -26,7 +26,9 @@ const RoomRecord = Immutable.Record({
 
 export default class Room extends RoomRecord {
 
-  // TODO: This constructor is not clean. We should not execute this action in here. Should be moved to a component.
+  // TODO: This constructor is not clean.
+  // We should not execute this action in here.
+  // Should be moved to a component.
   constructor(props) {
     super(props);
     RoomActionCreators.fetchMessages(this.id);
