@@ -1,17 +1,18 @@
 import React from "react";
+import { browserHistory } from "react-router";
 
-import { createRoom } from "../actions/AccountActionCreators";
+import SelectedAccountStore from "../stores/SelectedAccountStore";
+import UserStore from "../stores/UserStore";
+
+import AccountActionCreators from "../actions/AccountActionCreators";
+
 
 class RoomCreate extends React.Component {
-  static propTypes = {
-    currentAccount: React.PropTypes.object.required
-  }
-
   constructor(props) {
     super(props);
 
-    this.onHandleSubmit.bind(this);
-    this.onRoomTypeChanged.bind(this);
+    this.onHandleSubmit = this.onHandleSubmit.bind(this);
+    this.onRoomTypeChanged = this.onRoomTypeChanged.bind(this);
   }
 
   state = {
@@ -20,18 +21,40 @@ class RoomCreate extends React.Component {
   }
 
   onHandleSubmit(event) {
+    const account = SelectedAccountStore.getAccount();
     event.preventDefault();
     const { name, topic } = this.refs;
     if (name.value.length === 0) {
+      this.setState({
+        message: "You must specify a name"
+      });
+      this.refs.name.focus();
       return;
     }
-
-    createRoom(
-      this.props.currentAccount.id,
+    AccountActionCreators.createRoom(
+      account,
       name.value,
       topic.value,
       this.state.type,
       this.state.usersId
+    ).then(
+      ({ ok, error }) => {
+        console.log("---- then createRoom", ok, error);
+        if (ok) {
+          browserHistory.push({ pathname: `/chat/${account.slug}/lobby` });
+          return;
+        }
+        this.setState({
+          message: error
+        });
+        this.refs.name.focus();
+      },
+      ({ error }) => {
+        console.log("--- ERROR", arguments);
+        this.setState({
+          message: error
+        });
+      }
     );
   }
 
@@ -43,6 +66,7 @@ class RoomCreate extends React.Component {
   }
 
   render() {
+    const account = SelectedAccountStore.getAccount();
     let errors;
     if (this.state.message) {
       errors = (
@@ -68,6 +92,7 @@ class RoomCreate extends React.Component {
                 <span>Name</span>
                 <input
                   ref="name"
+                  autoFocus
                   placeholder="Give a name to your room"
                 />
               </label>
@@ -117,8 +142,9 @@ class RoomCreate extends React.Component {
               this.state.type === 2 ?
               (
                 <div className="coworkers-picker">
-                  {this.props.currentAccount.usersId
-                    .map(userId => <div className="coworker">{userId}</div>)}
+                  {account.usersId
+                    .filter(userId => userId !== UserStore.getConnectedUser().id)
+                    .map(userId => <div key={userId} className="coworker">{userId}</div>)}
                 </div>
               ) : false}
 

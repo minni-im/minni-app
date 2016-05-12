@@ -66,7 +66,8 @@ export default {
       });
   },
 
-  createRoom(accountId, name, topic, type, usersId = []) {
+  createRoom(account, name, topic, type, usersId = []) {
+    const { id: accountId } = account;
     logger.info(`Creating new room '${name}' for account:${accountId}`);
     dispatch({
       type: ActionTypes.ROOM_CREATE,
@@ -83,19 +84,21 @@ export default {
       }
     }).then(({ ok, room, errors }) => {
       if (ok) {
+        logger.info("About to dispatch ROOM_CREATE_SUCCESS", room, ok);
         dispatch({
           type: ActionTypes.ROOM_CREATE_SUCCESS,
           accountId,
           room
         });
-      } else {
-        dispatch({
-          type: ActionTypes.ROOM_CREATE_FAILURE,
-          accountId,
-          room,
-          errors
-        });
+        return { ok, room };
       }
+      dispatch({
+        type: ActionTypes.ROOM_CREATE_FAILURE,
+        accountId,
+        room,
+        errors
+      });
+      return { ok: false, errors };
     }, (error) => {
       dispatch({
         type: ActionTypes.ROOM_CREATE_FAILURE,
@@ -103,6 +106,7 @@ export default {
         name,
         error
       });
+      return error;
     });
   }
 };

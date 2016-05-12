@@ -12,7 +12,11 @@ import Lobby from "./Lobby.react";
 
 class LobbyContainer extends React.Component {
   static getStores() {
-    return [ AccountStore, AccountRoomStore, SelectedAccountStore ];
+    return [
+      AccountStore,
+      AccountRoomStore,
+      SelectedAccountStore
+    ];
   }
 
   static calculateState() {
