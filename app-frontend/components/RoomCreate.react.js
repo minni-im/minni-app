@@ -39,7 +39,6 @@ class RoomCreate extends React.Component {
       this.state.usersId
     ).then(
       ({ ok, error }) => {
-        console.log("---- then createRoom", ok, error);
         if (ok) {
           browserHistory.push({ pathname: `/chat/${account.slug}/lobby` });
           return;
@@ -48,14 +47,7 @@ class RoomCreate extends React.Component {
           message: error
         });
         this.refs.name.focus();
-      },
-      ({ error }) => {
-        console.log("--- ERROR", arguments);
-        this.setState({
-          message: error
-        });
-      }
-    );
+      });
   }
 
   onRoomTypeChanged(event) {

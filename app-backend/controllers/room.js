@@ -148,6 +148,9 @@ export default (app) => {
       });
 
       room.save().then(newRoom => {
+        app.io.in(accountId).emit("room:create", {
+          room: room.toAPI()
+        });
         res.status(201).json({
           ok: true,
           message: `Room '${name}' has been successfully created`,

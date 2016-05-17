@@ -84,7 +84,6 @@ export default {
       }
     }).then(({ ok, room, errors }) => {
       if (ok) {
-        logger.info("About to dispatch ROOM_CREATE_SUCCESS", room, ok);
         dispatch({
           type: ActionTypes.ROOM_CREATE_SUCCESS,
           accountId,
@@ -99,14 +98,6 @@ export default {
         errors
       });
       return { ok: false, errors };
-    }, (error) => {
-      dispatch({
-        type: ActionTypes.ROOM_CREATE_FAILURE,
-        accountId,
-        name,
-        error
-      });
-      return error;
     });
   }
 };

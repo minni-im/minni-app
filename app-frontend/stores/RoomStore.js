@@ -52,8 +52,7 @@ class RoomStore extends MapStore {
     this.addAction(
       ActionTypes.ROOM_CREATE_SUCCESS,
       (state, { room }) => {
-        logger.info("--- ROOM_CREATE_SUCCESS", room);
-        return this.handleLoadRoomsSuccess(state, { rooms: [room] });
+        return handleLoadRoomsSuccess(state, { rooms: [room] });
       });
   }
 
