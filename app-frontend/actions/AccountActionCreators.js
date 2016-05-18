@@ -89,7 +89,6 @@ export default {
           accountId,
           room
         });
-        return { ok, room };
       }
       dispatch({
         type: ActionTypes.ROOM_CREATE_FAILURE,
@@ -97,7 +96,7 @@ export default {
         room,
         errors
       });
-      return { ok: false, errors };
+      return { ok, room, errors };
     });
   }
 };

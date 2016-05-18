@@ -51,9 +51,7 @@ class RoomStore extends MapStore {
       handleRoomFavoriteFailure);
     this.addAction(
       ActionTypes.ROOM_CREATE_SUCCESS,
-      (state, { room }) => {
-        return handleLoadRoomsSuccess(state, { rooms: [room] });
-      });
+      (state, { room }) => handleLoadRoomsSuccess(state, { rooms: [room] }));
   }
 
   get(roomId) {

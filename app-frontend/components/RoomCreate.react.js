@@ -11,7 +11,7 @@ class RoomCreate extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onHandleSubmit = this.onHandleSubmit.bind(this);
+    this.onCreateClick = this.onCreateClick.bind(this);
     this.onRoomTypeChanged = this.onRoomTypeChanged.bind(this);
   }
 
@@ -20,9 +20,8 @@ class RoomCreate extends React.Component {
     usersId: []
   }
 
-  onHandleSubmit(event) {
+  onCreateClick() {
     const account = SelectedAccountStore.getAccount();
-    event.preventDefault();
     const { name, topic } = this.refs;
     if (name.value.length === 0) {
       this.setState({
@@ -38,13 +37,13 @@ class RoomCreate extends React.Component {
       this.state.type,
       this.state.usersId
     ).then(
-      ({ ok, error }) => {
+      ({ ok, errors }) => {
         if (ok) {
           browserHistory.push({ pathname: `/chat/${account.slug}/lobby` });
           return;
         }
         this.setState({
-          message: error
+          message: errors
         });
         this.refs.name.focus();
       });
@@ -77,7 +76,7 @@ class RoomCreate extends React.Component {
           </div>
         </header>
         <section className="panel panel--contrast panel--wrapper">
-          <form onSubmit={this.onHandleSubmit}>
+          <form>
             {errors}
             <p className="block">
               <label>
@@ -138,12 +137,13 @@ class RoomCreate extends React.Component {
                     .filter(userId => userId !== UserStore.getConnectedUser().id)
                     .map(userId => <div key={userId} className="coworker">{userId}</div>)}
                 </div>
-              ) : false}
+              ) :
+              false
+            }
 
             <p>
-              <button className="button-primary">Create</button>
+              <button className="button-primary" onClick={this.onCreateClick}>Create</button>
             </p>
-
           </form>
         </section>
       </section>
