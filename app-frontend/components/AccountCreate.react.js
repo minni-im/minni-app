@@ -85,7 +85,7 @@ export default class AccountCreate extends React.Component {
 
     return (
       <main className="account-create flex-horizontal flex-spacer">
-        <section className="flex-spacer">
+        <section className="flex-spacer flex-center">
           <header>
             <div className="header-info">
               <h2>{title}</h2>

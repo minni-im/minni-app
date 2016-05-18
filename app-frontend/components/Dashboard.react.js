@@ -1,37 +1,49 @@
 import React from "react";
+import { Map } from "immutable";
 
-import { Link } from "react-router";
-
-class Dashboard extends React.Component {
-  render() {
-    const { accounts } = this.props;
-    let list = accounts.toArray().map(account => {
-      const url = `/chat/${account.slug}/lobby`;
-      return <div key={account.slug} className="team">
-        <div className="name">{account.displayName}</div>
-        <div className="description">{account.description}</div>
-        <div className="actions">
-          <a href={url} className="button" target="_blank">Connect</a>
+const Dashboard = (props) => {
+  const { accounts } = props;
+  let list = accounts.toArray().map(account => {
+    const url = `/chat/${account.slug}/lobby`;
+    return (
+      <div key={account.slug} className="team flex-horizontal">
+        <div className="flex-spacer">
+          <div className="name">{account.displayName}</div>
+          <div className="description">{account.description}</div>
+          <div className="members">{
+            account.usersId.length > 0 ?
+            <span>{account.usersId.length} team member(s)</span> :
+            "Seems there is no members in this team"
+          }</div>
         </div>
-      </div>;
-    });
+        <div className="actions flex-center">
+          <a href={url} className="button button-secondary" target="_blank">Open in a new tab</a>
+        </div>
+      </div>
+    );
+  });
 
-    return <main className="dashboard">
-      <section>
+  return (
+    <main className="dashboard flex-horizontal flex-spacer">
+      <section className="flex-spacer flex-center">
         <header>
           <div className="header-info">
             <h2>Dashboard</h2>
             <h3>Your team(s)</h3>
           </div>
         </header>
-        <section className="panel panel--contrast">
+        <section className="panel panel--contrast panel--wrapper">
           <div className="teams">
             {list}
           </div>
         </section>
       </section>
-    </main>;
-  }
-}
+    </main>
+  );
+};
+
+Dashboard.propTypes = {
+  accounts: React.PropTypes.instanceOf(Map)
+};
 
 export default Dashboard;

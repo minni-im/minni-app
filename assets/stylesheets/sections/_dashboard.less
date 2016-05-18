@@ -1,0 +1,25 @@
+.dashboard {
+  .team {
+    padding: 10px;
+    border-radius: 3px;
+    .name {
+      text-transform: capitalize;
+      font-weight: 700;
+    }
+
+    .description {
+      font-style: italic;
+      .text-overflow;
+    }
+
+    .members {
+      font-size: 12px;
+      color: @gray-light;
+      line-height: 18px;
+    }
+
+    &:nth-child(odd) {
+      background-color: @gray-lighter;
+    }
+  }
+}
