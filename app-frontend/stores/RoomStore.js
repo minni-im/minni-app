@@ -37,13 +37,21 @@ function handleRoomFavoriteFailure(state, { message }) {
 class RoomStore extends MapStore {
   initialize() {
     this.waitFor(SelectedAccountStore);
-    this.addAction(ActionTypes.LOAD_ROOMS_SUCCESS,
-      ActionTypes.CONNECTION_OPEN, handleLoadRoomsSuccess);
-
-    this.addAction(ActionTypes.ROOM_STAR,
-      ActionTypes.ROOM_UNSTAR, handleRoomFavorite);
-    this.addAction(ActionTypes.ROOM_STAR_FAILURE,
-      ActionTypes.ROOM_UNSTAR_FAILURE, handleRoomFavoriteFailure);
+    this.addAction(
+      ActionTypes.LOAD_ROOMS_SUCCESS,
+      ActionTypes.CONNECTION_OPEN,
+      handleLoadRoomsSuccess);
+    this.addAction(
+      ActionTypes.ROOM_STAR,
+      ActionTypes.ROOM_UNSTAR,
+      handleRoomFavorite);
+    this.addAction(
+      ActionTypes.ROOM_STAR_FAILURE,
+      ActionTypes.ROOM_UNSTAR_FAILURE,
+      handleRoomFavoriteFailure);
+    this.addAction(
+      ActionTypes.ROOM_CREATE_SUCCESS,
+      (state, { room }) => handleLoadRoomsSuccess(state, { rooms: [room] }));
   }
 
   get(roomId) {

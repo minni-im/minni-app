@@ -29,6 +29,10 @@ export const ActionTypes = keyMirror({
   ROOMS_SELECT: null,
   ROOMS_DESELECT: null,
 
+  ROOM_CREATE: null,
+  ROOM_CREATE_SUCCESS: null,
+  ROOM_CREATE_FAILURE: null,
+
   ROOM_JOIN: null,
   ROOM_LEAVE: null,
 
@@ -61,7 +65,7 @@ export const ActionTypes = keyMirror({
   TYPING_STOP: null,
 
   UPDATE_DIMENSIONS: null,
-  
+
   LOAD_IMAGE_SUCCESS: null,
   LOAD_IMAGE_FAILURE: null
 });
@@ -114,8 +118,8 @@ export const EndPoints = {
   ROOM_STAR: roomId => `/api/rooms/${roomId}/star`,
   ROOM_UNSTAR: roomId => `/api/rooms/${roomId}/unstar`,
   ROOM_MESSAGES: roomId => `/api/rooms/${roomId}/messages`,
-  USER_SETTINGS: `/api/me/settings`,
-  USER_PROFILE: `/api/me`,
-  MESSAGES: `/api/messages/`,
+  USER_SETTINGS: "/api/me/settings",
+  USER_PROFILE: "/api/me",
+  MESSAGES: "/api/messages",
   TYPING: roomId => `/api/rooms/${roomId}/typing`
 };

@@ -48,20 +48,55 @@ export default {
       type: ActionTypes.LOAD_ROOMS,
       accountId
     });
-    return request(EndPoints.ACCOUNT_ROOMS(accountId)).then(({ ok, rooms, message, errors }) => {
+    return request(EndPoints.ACCOUNT_ROOMS(accountId))
+      .then(({ ok, rooms, errors }) => {
+        if (ok) {
+          dispatch({
+            type: ActionTypes.LOAD_ROOMS_SUCCESS,
+            accountId,
+            rooms
+          });
+        } else {
+          dispatch({
+            type: ActionTypes.LOAD_ROOMS_FAILURE,
+            accountId,
+            errors
+          });
+        }
+      });
+  },
+
+  createRoom(account, name, topic, type, usersId = []) {
+    const { id: accountId } = account;
+    logger.info(`Creating new room '${name}' for account:${accountId}`);
+    dispatch({
+      type: ActionTypes.ROOM_CREATE,
+      accountId,
+      name
+    });
+    return request(EndPoints.ACCOUNT_ROOMS(accountId), {
+      method: "PUT",
+      body: {
+        name,
+        topic,
+        type,
+        usersId
+      }
+    }).then(({ ok, room, errors }) => {
       if (ok) {
         dispatch({
-          type: ActionTypes.LOAD_ROOMS_SUCCESS,
+          type: ActionTypes.ROOM_CREATE_SUCCESS,
           accountId,
-          rooms
-        });
-      } else {
-        dispatch({
-          type: ActionTypes.LOAD_ROOMS_FAILURE,
-          accountId,
-          errors
+          room
         });
       }
+      dispatch({
+        type: ActionTypes.ROOM_CREATE_FAILURE,
+        accountId,
+        room,
+        errors
+      });
+      return { ok, room, errors };
     });
   }
 };

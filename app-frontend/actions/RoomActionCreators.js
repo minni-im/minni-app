@@ -46,7 +46,10 @@ export default {
       roomId
     });
     const url = isStarred ? EndPoints.ROOM_UNSTAR(roomId) : EndPoints.ROOM_STAR(roomId);
-    return request(url, {method: "POST"}).then(({ ok, message, errors }) => {
+    return request(
+        url,
+        { method: "POST" }
+      ).then(({ ok, message, errors }) => {
         if (ok) {
           dispatch({
             type: isStarred ? ActionTypes.ROOM_UNSTAR_SUCCESS : ActionTypes.ROOM_STAR_SUCCESS,
@@ -71,25 +74,24 @@ export default {
       });
     }
     return request(EndPoints.ROOM_MESSAGES(roomId), {
-        params: {
-          limit
-        }
-      })
-      .then(({ok, messages, errors}) => {
-        if (ok) {
-          dispatch({
-            type: ActionTypes.LOAD_MESSAGES_SUCCESS,
-            roomId,
-            messages
-          });
-        } else {
-          dispatch({
-            type: ActionTypes.LOAD_MESSAGES_FAILURE,
-            roomId,
-            errors
-          });
-        }
-      });
+      params: {
+        limit
+      }
+    }).then(({ ok, messages, errors }) => {
+      if (ok) {
+        dispatch({
+          type: ActionTypes.LOAD_MESSAGES_SUCCESS,
+          roomId,
+          messages
+        });
+      } else {
+        dispatch({
+          type: ActionTypes.LOAD_MESSAGES_FAILURE,
+          roomId,
+          errors
+        });
+      }
+    });
   },
 
   sendMessage(roomId, text) {

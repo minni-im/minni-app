@@ -1,125 +1,153 @@
 import React from "react";
+import { browserHistory } from "react-router";
 
-import browserHistory from "react-router";
-import { dispatch } from "../Dispatcher";
+import SelectedAccountStore from "../stores/SelectedAccountStore";
+import UserStore from "../stores/UserStore";
+
+import AccountActionCreators from "../actions/AccountActionCreators";
+
 
 class RoomCreate extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      type: 1,
-      usersId: []
-    };
+
+    this.onCreateClick = this.onCreateClick.bind(this);
+    this.onRoomTypeChanged = this.onRoomTypeChanged.bind(this);
+  }
+
+  state = {
+    type: 1,
+    usersId: []
+  }
+
+  onCreateClick() {
+    const account = SelectedAccountStore.getAccount();
+    const { name, topic } = this.refs;
+    if (name.value.length === 0) {
+      this.setState({
+        message: "You must specify a name"
+      });
+      this.refs.name.focus();
+      return;
+    }
+    AccountActionCreators.createRoom(
+      account,
+      name.value,
+      topic.value,
+      this.state.type,
+      this.state.usersId
+    ).then(
+      ({ ok, errors }) => {
+        if (ok) {
+          browserHistory.push({ pathname: `/chat/${account.slug}/lobby` });
+          return;
+        }
+        this.setState({
+          message: errors
+        });
+        this.refs.name.focus();
+      });
+  }
+
+  onRoomTypeChanged(event) {
+    const type = parseInt(event.target.value, 10);
+    if (type !== this.state.type) {
+      this.setState({ type });
+    }
   }
 
   render() {
+    const account = SelectedAccountStore.getAccount();
     let errors;
     if (this.state.message) {
-      errors = <div className="alerts">
-        <div className="alert alert-error">{this.state.message}</div>
-      </div>;
-    }
-
-    return <section className="room-create flex-spacer">
-      <header>
-        <div className="header-info">
-          <h2>Create a new room</h2>
-          <h3>Let's invite people!</h3>
+      errors = (
+        <div className="alerts">
+          <div className="alert alert-error">{this.state.message}</div>
         </div>
-      </header>
-      <section className="panel panel--contrast panel--wrapper">
-        <form onSubmit={this._onHandleSubmit.bind(this)}>
-          {errors}
-          <p className="block">
-            <label>
-              <span>Name</span>
-              <input ref="name" placeholder="Give a name to your room" />
-            </label>
-          </p>
+      );
+    }
 
-          <p className="block">
-            <label>
-              <span>Topic</span>
-              <input ref="topic" placeholder="Describe your room, what should it be used for ?"/>
-            </label>
-          </p>
-
-          <h3>Access Control</h3>
-
-          <div className="inline-block">
-            <label>
-              <input type="radio" value={1} defaultChecked name="type" onChange={this._onRoomTypeChanged.bind(this)}/>
-              <span>Public room</span>
-            </label>
-            <span className="info">Anyone in the team can access this room.</span>
+    return (
+      <section className="room-create flex-spacer">
+        <header>
+          <div className="header-info">
+            <h2>Create a new room</h2>
+            <h3>Let's invite people!</h3>
           </div>
+        </header>
+        <section className="panel panel--contrast panel--wrapper">
+          <form>
+            {errors}
+            <p className="block">
+              <label>
+                <span>Name</span>
+                <input
+                  ref="name"
+                  autoFocus
+                  placeholder="Give a name to your room"
+                />
+              </label>
+            </p>
 
-          <div className="inline-block">
-            <label>
-              <input type="radio" value={2} name="type" onChange={this._onRoomTypeChanged.bind(this)}/>
-              <span>Private room</span>
-            </label>
-            <span className="info">Only selected team members will see the room in their lobby.</span>
-          </div>
+            <p className="block">
+              <label>
+                <span>Topic</span>
+                <input
+                  ref="topic"
+                  placeholder="Describe your room, what should it be used for ?"
+                />
+              </label>
+            </p>
 
-          {this.state.type === 2 ? <div className="coworkers-picker">
-            {this.props.currentAccount.usersId.map(userId => {
-              return <div className="coworker">{userId}</div>;
-            })}
-          </div> : false}
+            <h3>Access Control</h3>
 
-          <p>
-            <button className="button-primary">Create</button>
-          </p>
+            <div className="inline-block">
+              <label>
+                <input
+                  type="radio"
+                  value={1}
+                  defaultChecked
+                  name="type"
+                  onChange={this.onRoomTypeChanged}
+                />
+                <span>Public room</span>
+              </label>
+              <span className="info">Anyone in the team can access this room.</span>
+            </div>
 
-        </form>
+            <div className="inline-block">
+              <label>
+                <input
+                  type="radio"
+                  value={2}
+                  name="type"
+                  onChange={this.onRoomTypeChanged}
+                />
+                <span>Private room</span>
+              </label>
+              <span className="info">Only selected team members will see the room
+              in their lobby.</span>
+            </div>
+
+            {
+              this.state.type === 2 ?
+              (
+                <div className="coworkers-picker">
+                  {account.usersId
+                    .filter(userId => userId !== UserStore.getConnectedUser().id)
+                    .map(userId => <div key={userId} className="coworker">{userId}</div>)}
+                </div>
+              ) :
+              false
+            }
+
+            <p>
+              <button className="button-primary" onClick={this.onCreateClick}>Create</button>
+            </p>
+          </form>
+        </section>
       </section>
-    </section>;
-  }
-
-  _onHandleSubmit(event) {
-    event.preventDefault();
-    const { name, topic } = this.refs;
-    if (name.value.length === 0) {
-      return;
-    }
-    fetch(`/api/accounts/${this.props.currentAccount.id}/rooms/`, {
-      method: "PUT",
-      credentials: "same-origin",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        name: name.value,
-        topic: topic.value,
-        type: this.state.type
-      })
-    }).then(response => {
-      return response.json();
-    }).then(payload => {
-      if (payload.ok) {
-        const room = payload.room;
-        dispatch({
-          type: "room/add",
-          room
-        });
-        browserHistory.push(`/chat/${this.props.currentAccount.name}/lobby`);
-      } else {
-        this.setState({
-          message: payload.message
-        });
-      }
-    });
-  }
-
-  _onRoomTypeChanged(event) {
-    const type = parseInt(event.target.value, 10);
-    if (type !== this.state.type) {
-      this.setState({
-        "type": type
-      });
-    }
+    );
   }
 }
 
