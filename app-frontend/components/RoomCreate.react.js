@@ -141,7 +141,7 @@ class RoomCreate extends React.Component {
               false
             }
 
-            <p>
+            <p className="actions">
               <button className="button-primary" onClick={this.onCreateClick}>Create</button>
             </p>
           </form>
