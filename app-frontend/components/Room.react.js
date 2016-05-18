@@ -37,6 +37,7 @@ export default class Room extends React.Component {
           onSubmit={this._handleSendMessage.bind(this)} />
         <div className="footer flex-horizontal">
           <TypingInfo room={room} />
+          &nbsp;
           <div className="contextual-info">
             <span className="formatting-tips has-tooltip">
               Formatting Tips

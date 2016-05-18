@@ -2,12 +2,11 @@ import React from "react";
 import classnames from "classnames";
 import { Container } from "flux/utils";
 
-import Platform from "../../utils/PlatformUtils";
+import { isOSX } from "../../utils/PlatformUtils";
 
 import SelectedAccountStore from "../../stores/SelectedAccountStore";
 import SelectedRoomStore from "../../stores/SelectedRoomStore";
 import AccountStore from "../../stores/AccountStore";
-import UserStore from "../../stores/UserStore";
 
 import AccountRecord from "../../models/Account";
 
@@ -19,7 +18,7 @@ class Account extends React.Component {
     let keyboard = {};
     if (keyboardShorcut) {
       keyboard = {
-        "data-kbd-modifier": Platform.isOSX() ? "⌘" : "CTRL",
+        "data-kbd-modifier": isOSX() ? "⌘" : "CTRL",
         "data-kbd-index": this.props.index
       };
     }

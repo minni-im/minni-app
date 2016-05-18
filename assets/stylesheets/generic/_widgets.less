@@ -162,3 +162,53 @@
   }
 
 }
+
+.popover-container {
+  position: relative;
+}
+
+.popover {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background-color: @background-light;
+  color: @color-dark;
+}
+
+.popover-up {
+  bottom: 100%;
+}
+
+.menu {
+  li {
+    padding: 5px;
+    cursor: pointer;
+    color: @gray-light;
+
+    a {
+      display: block;
+      color: inherit;
+    }
+
+    .icon svg {
+      .square(20px);
+      fill: @gray-light;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    &.separator {
+      padding: 0;
+      border-bottom: 1px dotted @gray-light;
+    }
+
+    &:hover {
+      color: @color-dark;
+      background-color: @gray-lighter;
+      .icon svg {
+        fill: @color-dark;
+      }
+    }
+  }
+}

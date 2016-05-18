@@ -5,16 +5,10 @@ import { MapStore } from "../libs/Flux";
 import AccountStore from "./AccountStore";
 import RoomStore from "./RoomStore";
 
-import Logger from "../libs/Logger";
-const logger = Logger.create("AccountRoomStore");
-
 function syncFromRoomChange(state) {
-  logger.info("New Room added... should be executed");
   return state.withMutations(map => {
     RoomStore.getState().forEach(room => {
-      map.update(room.accountId, Immutable.Set(), (list) => {
-        return list.add(room);
-      });
+      map.update(room.accountId, Immutable.Set(), (list) => list.add(room));
     });
   });
 }
