@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import keyMirror from "keymirror";
 import classnames from "classnames";
 
@@ -24,7 +25,7 @@ class Popover extends React.Component {
     super(props);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onButtonClicked = this.onButtonClicked.bind(this);
-
+    this.onBlur = this.onBlur.bind(this);
     this.focusOnOpen = false;
   }
 
@@ -52,6 +53,20 @@ class Popover extends React.Component {
     } else {
       this.open();
     }
+  }
+
+  onBlur(event) {
+    const target = event.nativeEvent.relatedTarget;
+    if (target &&
+      ReactDOM
+        .findDOMNode(this.refs.popoverContainer)
+        .contains(target)
+      ) {
+      return;
+    }
+    this.setState({
+      visible: false
+    });
   }
 
   open() {
@@ -116,6 +131,7 @@ class Popover extends React.Component {
         className={classnames("popover-container", this.props.className)}
         ref="popoverContainer"
         onKeyDown={this.onKeyDown}
+        onBlur={this.onBlur}
       >
         {wrapperComponent}
         {popoverComponent}
