@@ -67,7 +67,11 @@ export const ActionTypes = keyMirror({
   UPDATE_DIMENSIONS: null,
 
   LOAD_IMAGE_SUCCESS: null,
-  LOAD_IMAGE_FAILURE: null
+  LOAD_IMAGE_FAILURE: null,
+
+  SLASHCOMMAND_QUERY: null,
+  SLASHCOMMAND_QUERY_SUCCESS: null,
+  SLASHCOMMAND_QUERY_FAILURE: null
 });
 
 export const AVATAR_SIZES = keyMirror({
@@ -121,5 +125,6 @@ export const EndPoints = {
   USER_SETTINGS: "/api/me/settings",
   USER_PROFILE: "/api/me",
   MESSAGES: "/api/messages",
-  TYPING: roomId => `/api/rooms/${roomId}/typing`
+  TYPING: roomId => `/api/rooms/${roomId}/typing`,
+  SLASH_COMMAND: "/api/command"
 };

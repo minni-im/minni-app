@@ -1,15 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import { SmileyIcon, UploadIcon } from "../utils/IconsUtils";
+import { SmileyIcon } from "../utils/IconsUtils";
 
 import ComposerActionCreators from "../actions/ComposerActionCreators";
 import UploadActionCreators from "../actions/UploadActionCreators";
 
+import Room from "../models/Room";
 import TypingUtils from "../utils/TypingUtils";
 
-import Logger from "../libs/Logger";
-const logger = Logger.create("Composer.react");
+// import Logger from "../libs/Logger";
+// const logger = Logger.create("Composer.react");
 
 const KEYCODES = {
   UP: 38,
@@ -34,7 +35,7 @@ function extractFileName(htmlString) {
     if (filename) {
       filename = filename.replace(/\..+$/, "");
       if (filename) {
-        return filename + ".png";
+        return `${filename}.png`;
       }
     }
   }
@@ -43,20 +44,39 @@ function extractFileName(htmlString) {
 
 
 export default class Composer extends React.Component {
-  componentWillUnmount() {
-    ComposerActionCreators.saveCurrentText(this.props.room.id, this.refs.textarea.value.trim());
+  constructor(props) {
+    super(props);
+    this.handleTextareaFocus = this.handleTextareaFocus.bind(this);
+    this.handleTextareaBlur = this.handleTextareaBlur.bind(this);
+    this.handleOnChange = this.handleOnChange.bind(this);
+    this.handleOnKeyPress = this.handleOnKeyPress.bind(this);
+    this.handleOnKeyUp = this.handleOnKeyUp.bind(this);
+    this.handleOnKeyDown = this.handleOnKeyDown.bind(this);
+    this.handleOnPaste = this.handleOnPaste.bind(this);
+  }
+
+  state = {
+    results: []
   }
 
   componentDidMount() {
     const { textarea } = this.refs;
-    this._lineHeight = parseInt(window.getComputedStyle(this.refs.textarea, null).getPropertyValue("line-height"), 10);
-    this._computeTextAreaHeight(1);
-    this._moveCursorAtEnd();
+    this.lineHeight = parseInt(
+      window
+        .getComputedStyle(textarea, null)
+        .getPropertyValue("line-height"),
+      10);
+    this.computeTextAreaHeight(1);
+    this.moveCursorAtEnd();
+  }
+
+  componentWillUnmount() {
+    ComposerActionCreators.saveCurrentText(this.props.room.id, this.refs.textarea.value.trim());
   }
 
   clearValue() {
     this.refs.textarea.value = "";
-    this._computeTextAreaHeight(1);
+    this.computeTextAreaHeight(1);
     ComposerActionCreators.saveCurrentText(this.props.room.id, "");
   }
 
@@ -64,28 +84,34 @@ export default class Composer extends React.Component {
     this.refs.textarea.focus();
   }
 
-  _moveCursorAtEnd() {
+  moveCursorAtEnd() {
     const { textarea } = this.refs;
     textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
   }
 
-  _computeTextAreaHeight(numberOfLine) {
+  computeTextAreaHeight(numberOfLine) {
     const { textarea } = this.refs;
-    textarea.style.height = `${numberOfLine * this._lineHeight}px`;
+    textarea.style.height = `${numberOfLine * this.lineHeight}px`;
     textarea.scrollTop = textarea.offsetHeight;
   }
 
-  _handleTextareaFocus() {
-    ReactDOM.findDOMNode(this).classList.toggle("active");
+  handleTextareaFocus() {
+    ReactDOM.findDOMNode(this).classList.add("active");
+    this.setState({ focused: true });
   }
 
-  _handleOnChange(event) {
+  handleTextareaBlur() {
+    ReactDOM.findDOMNode(this).classList.remove("active");
+    this.setState({ focused: false });
+  }
+
+  handleOnChange(event) {
     const text = event.target.value;
-    this._computeTextAreaHeight(text.split("\n").length);
+    this.computeTextAreaHeight(text.split("\n").length);
     TypingUtils.sendTyping(this.props.room.id);
   }
 
-  _handleOnKeyPress(event) {
+  handleOnKeyPress(event) {
     switch (event.which) {
       case KEYCODES.ENTER:
         const value = this.refs.textarea.value;
@@ -96,19 +122,20 @@ export default class Composer extends React.Component {
             this.clearValue();
           }
         }
-
+        break;
+      default:
     }
   }
 
-  _handleOnKeyUp(event) {
-    //TODO compute typeahead autocompletion here.
+  handleOnKeyUp() {
+    this.shouldWeAutocomplete();
   }
 
-  _handleOnKeyDown(event) {
+  handleOnKeyDown(event) {
     //TODO forward event to active typeahead
   }
 
-  _handleOnPaste(event) {
+  handleOnPaste(event) {
     const { clipboardData } = event;
     if (!clipboardData || !clipboardData.items) {
       return;
@@ -116,9 +143,10 @@ export default class Composer extends React.Component {
 
     for (let i = 0; i < clipboardData.items.length; i++) {
       const clipboardItem = clipboardData.items[i];
+      let fileBlob;
       switch (clipboardItem.type) {
         case "image/png":
-          let fileBlob = clipboardItem.getAsFile();
+          fileBlob = clipboardItem.getAsFile();
 
           // In chrome, some files will have an additional
           // html node that contains the filename.
@@ -131,36 +159,30 @@ export default class Composer extends React.Component {
             UploadActionCreators.upload(this.props.room.id, [fileBlob]);
           }
           break;
+        default:
       }
     }
   }
 
+  shouldWeAutocomplete() {
+    const { value } = this.refs.textarea;
+    const results = [];
+    if (value.length > 3) {
+      results.push("yo");
+    }
+    this.setState({ results });
+  }
+
   render() {
-    const { room } = this.props;
-
-    let actions = [ SmileyIcon ].map((action, index) => {
-      return <div className="icon action" key={`action-${index}`}>
+    let actions = [SmileyIcon].map((action, index) => (
+      <div className="icon action" key={`action-${index}`}>
         {React.createElement(action)}
-      </div>;
-    });
+      </div>)
+    );
 
-    return <div className="composer flex-spacer flex-horizontal">
-      <textarea className="flex-spacer" ref="textarea"
-        autoCorrect="off" autoComplete="off" spellCheck="true"
-        placeholder="Type your message here"
-        rows="1"
-        onFocus={this._handleTextareaFocus.bind(this)}
-        onBlur={this._handleTextareaFocus.bind(this)}
-        onChange={this._handleOnChange.bind(this)}
-        onKeyPress={this._handleOnKeyPress.bind(this)}
-        onKeyUp={this._handleOnKeyUp.bind(this)}
-        onKeyDown={this._handleOnKeyDown.bind(this)}
-        onPaste={this._handleOnPaste.bind(this)}
-        defaultValue={this.props.defaultValue} />
-
-      {actions}
-
-      <div className="suggestions">
+    let autocomplete;
+    if (this.state.focused && this.state.results && this.state.results.length > 0) {
+      autocomplete = (<div className="suggestions">
         <div className="suggestions-header">
           Fecthing image from <a href="https://buukkit.appspot.com/" target="_blank">https://buukkit.appspot.com/</a>
         </div>
@@ -169,13 +191,41 @@ export default class Composer extends React.Component {
           <div>Prout</div>
           <div>Prout</div>
         </div>
+      </div>);
+    }
+
+    return (
+      <div
+        className="composer flex-spacer flex-horizontal"
+      >
+        <textarea
+          className="flex-spacer"
+          ref="textarea"
+          autoCorrect="off"
+          autoComplete="off"
+          spellCheck="true"
+          placeholder="Type your message here"
+          rows="1"
+          onFocus={this.handleTextareaFocus}
+          onBlur={this.handleTextareaBlur}
+          onChange={this.handleOnChange}
+          onKeyPress={this.handleOnKeyPress}
+          onKeyUp={this.handleOnKeyUp}
+          onKeyDown={this.handleOnKeyDown}
+          onPaste={this.handleOnPaste}
+          defaultValue={this.props.defaultValue}
+        />
+        {actions}
+        {autocomplete}
       </div>
-    </div>;
+    );
   }
 }
 
 Composer.propTypes = {
-  onSubmit: React.PropTypes.func.isRequired
+  onSubmit: React.PropTypes.func.isRequired,
+  defaultValue: React.PropTypes.string,
+  room: React.PropTypes.instanceOf(Room)
 };
 
 Composer.defautProps = {

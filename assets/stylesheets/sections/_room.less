@@ -17,7 +17,7 @@
 
   footer {
     min-height: @main-footer-height;
-    overflow: hidden;
+
     .composer {
       align-items: flex-start;
       justify-content: center;
@@ -64,7 +64,35 @@
       }
 
       .suggestions {
-        display: none;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 100%;
+        margin-bottom: 5px;
+        background-color: @background-light;
+        border-bottom: 1px dotted @gray-light;
+
+        .suggestions-header {
+          padding: 5px 10px;
+          background-color: @electric-blue;
+          color: @color-light;
+          a {
+            color: inherit;
+            text-decoration: underline;
+          }
+        }
+
+        .suggestions-list {
+          > div {
+            cursor: pointer;
+            padding: 3px 10px;
+            color: @gray-light;
+            &:hover {
+              background-color: @gray-lighter;
+              color: @color-dark;
+            }
+          }
+        }
       }
     }
 
