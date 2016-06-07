@@ -70,26 +70,47 @@
         bottom: 100%;
         margin-bottom: 5px;
         background-color: @background-light;
+        border-top: 1px dotted @gray-light;
         border-bottom: 1px dotted @gray-light;
 
         .suggestions-header {
           padding: 5px 10px;
-          background-color: @electric-blue;
-          color: @color-light;
+          background-color: @gray-lighter;
+          color: @electric-blue;
           a {
-            color: inherit;
+            color: @dark-blue;
             text-decoration: underline;
           }
         }
 
         .suggestions-list {
-          > div {
-            cursor: pointer;
-            padding: 3px 10px;
+        }
+
+        .suggestion-item {
+          cursor: pointer;
+          padding: 3px 10px;
+          color: @color-dark;
+
+          .flex-horizontal;
+          > div:first-child {
+            .flex-spacer;
+          }
+          
+          .suggestion-item--info {
+            font-style: italic;
             color: @gray-light;
-            &:hover {
-              background-color: @gray-lighter;
-              color: @color-dark;
+          }
+
+          &:hover {
+            background-color: @gray-lighter;
+            color: @color-dark;
+          }
+
+          &.suggestion-item--active {
+            background-color: @electric-blue;
+            color: @color-light;
+            .suggestion-item--info {
+              color: inherit;
             }
           }
         }
