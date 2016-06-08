@@ -8,28 +8,31 @@ import { ActionTypes } from "../Constants";
 import Logger from "../libs/Logger";
 const logger = Logger.create("SlashCommandStore");
 
-function handleQuery(state, { command, query }) {
-  return state;
+function handleQuery(state, { command }) {
+  const commandStore = state.get(command, Immutable.Map());
+  return state.set(command, commandStore);
 }
 
 function handleQuerySuccess(state, { command, query, results }) {
-  return state;
+  const commandStore = state.get(command);
+  return state.set(command, commandStore.set(query, results));
 }
 
-
-function handleQueryFailure(state, {}) {
+function handleQueryFailure(state) {
   return state;
 }
 
 class SlashCommandStore extends MapStore {
   initialize() {
-    this.onAction(ActionTypes.SLASHCOMMAND_QUERY, handleQuery);
-    this.onAction(ActionTypes.SLASHCOMMAND_QUERY_SUCCESS, handleQuerySuccess);
-    this.onAction(ActionTypes.SLASHCOMMAND_QUERY_FAILURE, handleQueryFailure);
+    this.addAction(ActionTypes.SLASHCOMMAND_QUERY, handleQuery);
+    this.addAction(ActionTypes.SLASHCOMMAND_QUERY_SUCCESS, handleQuerySuccess);
+    this.addAction(ActionTypes.SLASHCOMMAND_QUERY_FAILURE, handleQueryFailure);
   }
 
   getResults(command, query) {
-
+    return this.getState()
+      .get(command, Immutable.Map())
+      .get(query, []);
   }
 }
 

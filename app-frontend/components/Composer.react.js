@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import classnames from "classnames";
+import { Container } from "flux/utils";
 
 import { SmileyIcon } from "../utils/IconsUtils";
 
@@ -10,8 +11,13 @@ import { search as SlashCommandSearch } from "../actions/SlashCommandActionCreat
 
 import Room from "../models/Room";
 
+import SlashCommandStore from "../stores/SlashCommandStore";
+import UserStore from "../stores/UserStore";
+
 import TypingUtils from "../utils/TypingUtils";
 import RegexUtils from "../utils/RegexUtils";
+
+import Avatar from "./generic/Avatar.react";
 
 // import Logger from "../libs/Logger";
 // const logger = Logger.create("Composer.react");
@@ -29,6 +35,7 @@ const KEYCODES = {
 };
 
 const COMMAND_ENABLED = () => true;
+const COMMAND_DISABLED = () => false;
 
 const COMMANDS = [
   {
@@ -36,21 +43,19 @@ const COMMANDS = [
     title: "Buukkit",
     description: "Search animated gifs on http://buukkit.appspot.com",
     enabled: COMMAND_ENABLED,
-    integration: true,
+    typeahead: true,
     images: true
   }, {
     command: "me",
     title: "Me",
     description: "What are you doing ?",
-    enabled: COMMAND_ENABLED,
-    integration: false,
-    images: false
+    enabled: COMMAND_DISABLED
   }, {
     command: "giphy",
     title: "Giphy",
     description: "Search animated gifs from Giphy",
-    enabled: COMMAND_ENABLED,
-    integration: true,
+    enabled: COMMAND_DISABLED,
+    typeahead: true,
     images: true
   }
 ];
@@ -60,23 +65,31 @@ const ROOM_SENTINEL = "#";
 const EMOJI_SENTINEL = ":";
 const COMMAND_SENTINEL = "/";
 const PREFIX_RE = new RegExp(`${MENTION_SENTINEL}|${ROOM_SENTINEL}|${EMOJI_SENTINEL}|^${COMMAND_SENTINEL}`);
-const COMMAND_RE = new RegExp(`^/(${COMMANDS.filter(c => c.integration).map(c => c.command).join("|")})\\s(.+)`, "i");
+
+const COMMAND_RE_TEXT = `^/(${COMMANDS.filter(c => c.typeahead)
+    .map(c => c.command)
+    .join("|")
+  })\\s(.+)`;
+const COMMAND_RE = new RegExp(COMMAND_RE_TEXT, "i");
 const WHITESPACE_RE = /(\t|\s)/;
 
-const TYPE_MENTION = 1;
-const TYPE_EMOJI = 2;
-const TYPE_COMMAND = 3;
-const TYPE_INTEGRATION = 4;
-const TYPE_ROOM = 5;
+const TYPEAHEAD_NONE = 0;
+const TYPEAHEAD_MENTION = 1;
+const TYPEAHEAD_EMOJI = 2;
+const TYPEAHEAD_COMMAND = 3;
+const TYPEAHEAD_COMMAND_RESULTS = 4;
+const TYPEAHEAD_ROOM = 5;
 
 class TypeAheadResults extends React.Component {
   static propTypes = {
     results: React.PropTypes.array,
+    command: React.PropTypes.object,
     onSelect: React.PropTypes.func.isRequired
   }
 
   constructor(props) {
     super(props);
+    this.trailingSpace = true;
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
   }
@@ -86,7 +99,7 @@ class TypeAheadResults extends React.Component {
   }
 
   handleKeyDown(event) {
-    const { results } = this.props;
+    const results = this.props.results || this.state.results;
     if (results == null || results.length === 0) {
       return;
     }
@@ -119,13 +132,13 @@ class TypeAheadResults extends React.Component {
   }
 
   handleSelect(event = null) {
-    const { results } = this.props;
+    const results = this.props.results || this.state.results;
     const value = results[this.state.selectedIndex];
     const text = this.transformSelectionToText(value);
     if (event) {
       event.preventDefault();
     }
-    this.props.onSelect(text);
+    this.props.onSelect(text, this.trailingSpace);
   }
 
   transformSelectionToText(value) {
@@ -133,6 +146,18 @@ class TypeAheadResults extends React.Component {
   }
 
   render() {
+    const results = this.props.results || this.state.results;
+    if (!this.props.command && (results == null || results.length === 0)) {
+      return null;
+    }
+    const classNames = {
+      suggestions: true
+    };
+    if (this.props.command) {
+      classNames[`suggestions-${this.props.command.command}`] = true;
+      classNames["suggestions-images"] = !!this.props.command.images;
+    }
+
     let header;
     if (this.renderHeader) {
       header = (
@@ -146,15 +171,16 @@ class TypeAheadResults extends React.Component {
       className: classnames("suggestion-item", {
         "suggestion-item--active": this.state.selectedIndex === index
       }),
-      onMouseDown: this.handleSelect
+      onMouseDown: this.handleSelect,
+      onMouseEnter: () => this.setState({ selectedIndex: index })
     });
     const suggestions = (
       <div className="suggestions-list">
-        {this.props.results.map(suggestionMapper)}
+        {results.map(suggestionMapper)}
       </div>
     );
     return (
-      <div className="suggestions">
+      <div className={classnames(classNames)}>
         {header}
         {suggestions}
       </div>
@@ -168,7 +194,7 @@ class CommandTypeAhead extends TypeAheadResults {
   }
 
   renderHeader() {
-    return "Slash Commands /";
+    return "Slash Commands";
   }
 
   renderRow({ command, description }, props) {
@@ -183,16 +209,82 @@ class CommandTypeAhead extends TypeAheadResults {
   }
 }
 
-class MentionTypeAhead extends TypeAheadResults {
+class SlashCommandTypeAheadResultsContainer extends TypeAheadResults {
+  static getStores() {
+    return [
+      SlashCommandStore
+    ];
+  }
+
+  static calculateState(prevProps, nextProps) {
+    const results = SlashCommandStore.getResults(nextProps.command.command, nextProps.query);
+    return {
+      selectedIndex: 0,
+      results: results.slice(0, 6)
+    };
+  }
+
+  constructor(props) {
+    super(props);
+    // We don't wnat to append an extra space after the url;
+    this.trailingSpace = false;
+  }
+
+  transformSelectionToText(result) {
+    return result;
+  }
+
   renderHeader() {
+    return (
+      <div>{this.props.command.title} results matching <strong>{this.props.query}</strong></div>
+    );
+  }
+
+  renderRow(result, props) {
+    function getName(url) {
+      return url.split("/").pop();
+    }
+    return (
+      <div
+        style={{
+          backgroundImage: `url(${result})`
+        }}
+        {...props}
+        title={getName(result)}
+      ></div>
+    );
+  }
+}
+
+const SlashCommandTypeAheadResults = Container.create(
+  SlashCommandTypeAheadResultsContainer,
+  { withProps: true }
+);
+
+class MentionTypeAhead extends TypeAheadResults {
+  transformSelectionToText(user) {
+    return MENTION_SENTINEL + user.nickname;
+  }
+
+  renderHeader() {
+    if (this.props.prefix.length > 1) {
+      return (
+        <div>Coworkers matching {MENTION_SENTINEL}<strong>{this.props.prefix.slice(1)}</strong></div>
+      );
+    }
     return "Coworkers & Bots";
   }
+
   renderRow(user, props) {
     return (
       <div {...props}>
-        <div>{MENTION_SENTINEL}{user.nickname}</div>
+        <div>
+          <Avatar size={Avatar.SIZE.SMALL} user={user} />
+          {user.fullname}{" "}
+          <em>({MENTION_SENTINEL}{user.nickname})</em>
+        </div>
         <div className="suggestion-item--info">
-          {user.fullname}
+          {user.status}
         </div>
       </div>
     );
@@ -376,7 +468,7 @@ export default class Composer extends React.Component {
     const end = selectionEnd;
     let results;
     let prefix;
-    let type;
+    let type = TYPEAHEAD_NONE;
 
     const match = value.match(COMMAND_RE);
     if (match) {
@@ -387,7 +479,7 @@ export default class Composer extends React.Component {
       }
       SlashCommandSearch(integration, query);
       this.setState({
-        type: TYPE_INTEGRATION,
+        type: TYPEAHEAD_COMMAND_RESULTS,
         integration,
         query,
         command: COMMANDS.filter(c => c.command === integration)[0],
@@ -402,26 +494,34 @@ export default class Composer extends React.Component {
       if (PREFIX_RE.test(value[start])) {
         if (start === 0 || WHITESPACE_RE.test(value[start - 1])) {
           prefix = value.slice(start, end);
-          const regex = new RegExp(`^${RegexUtils.escape(prefix.slice(1))}`, "i");
-          const test = v => regex.test(v);
+          if (this.state.prefix !== prefix) {
+            const regex = new RegExp(`^${RegexUtils.escape(prefix.slice(1))}`, "i");
+            const test = v => regex.test(v);
 
-          switch (prefix[0]) {
-            case MENTION_SENTINEL:
-              type = TYPE_MENTION;
-              break;
-            case COMMAND_SENTINEL:
-              results = COMMANDS.filter(({ command, enabled }) =>
-                enabled(command) && test(command)
-              ).slice(0, 10);
-              type = TYPE_COMMAND;
-              break;
-            case EMOJI_SENTINEL:
-              type = TYPE_EMOJI;
-              break;
-            case ROOM_SENTINEL:
-              type = TYPE_ROOM;
-              break;
-            default:
+            switch (prefix[0]) {
+              case MENTION_SENTINEL:
+                type = TYPEAHEAD_MENTION;
+                results = UserStore.getAll()
+                  .filter(user => user.nickname.indexOf(prefix.slice(1)) === 0)
+                  .slice(0, 10);
+                break;
+              case COMMAND_SENTINEL:
+                type = TYPEAHEAD_COMMAND;
+                results = COMMANDS.filter(({ command, enabled }) =>
+                  enabled(command) && test(command)
+                ).slice(0, 10);
+                break;
+              case EMOJI_SENTINEL:
+                type = TYPEAHEAD_EMOJI;
+                break;
+              case ROOM_SENTINEL:
+                type = TYPEAHEAD_ROOM;
+                break;
+              default:
+            }
+          } else {
+            type = this.state.type;
+            results = this.state.results;
           }
         }
         break;
@@ -432,11 +532,13 @@ export default class Composer extends React.Component {
     this.setState({ type, results, prefix, start, end, integration: null, command: null });
   }
 
-  performAutocomplete(text) {
+  performAutocomplete(text, trailingSpace = true) {
     const { textarea } = this.refs;
     const before = textarea.value.slice(0, this.state.start);
     const after = textarea.value.slice(this.state.end);
-    text += " ";
+    if (trailingSpace) {
+      text += " ";
+    }
     textarea.value = before + text + after;
     textarea.selectionEnd = before.length + text.length + 1;
     this.shouldWeAutocomplete();
@@ -450,16 +552,20 @@ export default class Composer extends React.Component {
     );
 
     let autocomplete;
-    const autocompleteComponent = this.state.focused && {
-      [TYPE_MENTION]: MentionTypeAhead,
-      [TYPE_EMOJI]: EmojiTypeAhead,
-      [TYPE_COMMAND]: CommandTypeAhead,
-      [TYPE_ROOM]: RoomTypeAhead
+    const autocompleteComponent = /* this.state.focused && */{
+      [TYPEAHEAD_MENTION]: MentionTypeAhead,
+      [TYPEAHEAD_EMOJI]: EmojiTypeAhead,
+      [TYPEAHEAD_COMMAND]: CommandTypeAhead,
+      [TYPEAHEAD_COMMAND_RESULTS]: SlashCommandTypeAheadResults,
+      [TYPEAHEAD_ROOM]: RoomTypeAhead
     }[this.state.type];
     if (autocompleteComponent) {
       autocomplete = React.createElement(autocompleteComponent, {
         ref: "suggestions",
-        key: this.state.prefix,
+        key: this.state.query || this.state.prefix,
+        prefix: this.state.prefix,
+        command: this.state.command,
+        query: this.state.query,
         results: this.state.results,
         type: this.state.prefix,
         onSelect: this.performAutocomplete

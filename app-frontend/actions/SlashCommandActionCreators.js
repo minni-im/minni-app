@@ -6,20 +6,18 @@ import Logger from "../libs/Logger";
 const logger = Logger.create("SlashCommandActionCreators");
 
 
-export function search(integration, query) {
+export function search(command, query) {
   dispatch({
     type: ActionTypes.SLASHCOMMAND_QUERY,
-    integration,
+    command,
     query
   });
-  return request(
-    `${EndPoints.SLASH_COMMAND}/${integration}/search?q=${encodeURIComponent(query)}`, {
-      method: "POST"
-    }).then(({ ok, results, errors }) => {
+  return request(`${EndPoints.SLASH_COMMAND}/${command}/search?q=${encodeURIComponent(query)}`)
+    .then(({ ok, results, errors }) => {
       if (ok) {
         dispatch({
           type: ActionTypes.SLASHCOMMAND_QUERY_SUCCESS,
-          integration,
+          command,
           query,
           results
         });
@@ -28,7 +26,7 @@ export function search(integration, query) {
       logger.error(errors);
       dispatch({
         type: ActionTypes.SLASHCOMMAND_QUERY_FAILURE,
-        integration,
+        command,
         query,
         errors
       });
