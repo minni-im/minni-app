@@ -184,9 +184,17 @@ class CommandTypeAhead extends TypeAheadResults {
 }
 
 class MentionTypeAhead extends TypeAheadResults {
-  renderRow() {
+  renderHeader() {
+    return "Coworkers & Bots";
+  }
+  renderRow(user, props) {
     return (
-      <div></div>
+      <div {...props}>
+        <div>{MENTION_SENTINEL}{user.nickname}</div>
+        <div className="suggestion-item--info">
+          {user.fullname}
+        </div>
+      </div>
     );
   }
 }
@@ -364,10 +372,9 @@ export default class Composer extends React.Component {
 
   shouldWeAutocomplete() {
     const { value, selectionStart, selectionEnd } = this.refs.textarea;
-    let results = [];
-
     let start = selectionStart;
     const end = selectionEnd;
+    let results;
     let prefix;
     let type;
 
@@ -382,12 +389,13 @@ export default class Composer extends React.Component {
       this.setState({
         type: TYPE_INTEGRATION,
         integration,
-        command: COMMANDS.filter(c => c.command === integration)[0],
         query,
+        command: COMMANDS.filter(c => c.command === integration)[0],
         results: null,
         start: 0,
         end: value.length
       });
+      return;
     }
 
     do {

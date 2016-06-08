@@ -13,11 +13,8 @@ export function search(integration, query) {
     query
   });
   return request(
-    `${EndPoints.SLASH_COMMAND}/${integration}/search`, {
-      method: "POST",
-      params: {
-        q: query
-      }
+    `${EndPoints.SLASH_COMMAND}/${integration}/search?q=${encodeURIComponent(query)}`, {
+      method: "POST"
     }).then(({ ok, results, errors }) => {
       if (ok) {
         dispatch({

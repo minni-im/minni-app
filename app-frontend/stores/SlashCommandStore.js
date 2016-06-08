@@ -5,7 +5,7 @@ import { MapStore } from "../libs/Flux";
 
 import { ActionTypes } from "../Constants";
 
-import Logger from  "../libs/Logger";
+import Logger from "../libs/Logger";
 const logger = Logger.create("SlashCommandStore");
 
 function handleQuery(state, { command, query }) {
