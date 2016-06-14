@@ -41,8 +41,7 @@
   position: fixed;
   right: 0;
   top: 0;
-  transition: background-color .2s esae-in;
-
+  transition: background-color .2s ease-in-out;
 
   &.dialog-enter,
   &.dialog-leave.dialog-leave-active {
@@ -52,7 +51,7 @@
   &,
   &.dialog-enter.dialog-enter-active,
   &.dialog-leave {
-    background-color: fade(rgb(1, 1, 1), 72.5%);
+    background-color: fade(rgb(1, 1, 1), 80%);
   }
 }
 
@@ -60,7 +59,7 @@
   max-width: 90%;
   opacity: 1;
   position: relative;
-  transition: opacity .2s ease-in-out;
+  transition: opacity .2s ease-in, transform .2s ease-in;
   overflow: hidden;
   // IE needs a horizontal margin values to properly center flex item
   margin: auto 0;
@@ -75,12 +74,14 @@
   .dialog-enter &,
   .dialog-leave.dialog-leave-active & {
     opacity: 0;
+    transform: scale(.95);
   }
 
   &,
   .dialog-enter.dialog-enter-active &,
   .dialog-leave & {
     opacity: 1;
+    transform: scale(1);
   }
 }
 
