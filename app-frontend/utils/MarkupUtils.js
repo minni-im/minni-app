@@ -132,7 +132,7 @@ function createRules() {
               title={`:${name}:`}
               className="emoji"
               draggable={false}
-              src={`/images/emoji/emojione/svg/${unicode}.svg`}
+              src={`/images/emoji/emojione/${unicode}.svg`}
             />
           );
         }

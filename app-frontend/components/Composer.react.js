@@ -314,7 +314,7 @@ class EmojiTypeAhead extends TypeAheadResults {
           draggable={false}
           alt={""}
           title={`:${emoji.name}:`}
-          src={`/images/emoji/emojione/svg/${emoji.unicode[0]}.svg`}
+          src={`/images/emoji/emojione/${emoji.unicode[0]}.svg`}
         />
         &nbsp;
         {`${EMOJI_SENTINEL}${emoji.name}${EMOJI_SENTINEL}`}
