@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import classnames from "classnames";
 import { Container } from "flux/utils";
+import { ALL as EMOJIS } from "emojify";
 
 import { SmileyIcon } from "../utils/IconsUtils";
 
@@ -64,7 +65,9 @@ const MENTION_SENTINEL = "@";
 const ROOM_SENTINEL = "#";
 const EMOJI_SENTINEL = ":";
 const COMMAND_SENTINEL = "/";
-const PREFIX_RE = new RegExp(`${MENTION_SENTINEL}|${ROOM_SENTINEL}|${EMOJI_SENTINEL}|^${COMMAND_SENTINEL}`);
+const PREFIX_RE = new RegExp(
+  `${MENTION_SENTINEL}|${ROOM_SENTINEL}|${EMOJI_SENTINEL}|^${COMMAND_SENTINEL}`
+);
 
 const COMMAND_RE_TEXT = `^/(${COMMANDS.filter(c => c.typeahead)
     .map(c => c.command)
@@ -82,6 +85,7 @@ const TYPEAHEAD_ROOM = 5;
 
 class TypeAheadResults extends React.Component {
   static propTypes = {
+    className: React.PropTypes.string,
     results: React.PropTypes.array,
     command: React.PropTypes.object,
     onSelect: React.PropTypes.func.isRequired
@@ -180,7 +184,7 @@ class TypeAheadResults extends React.Component {
       </div>
     );
     return (
-      <div className={classnames(classNames)}>
+      <div className={classnames(classNames, this.props.className)}>
         {header}
         {suggestions}
       </div>
@@ -292,9 +296,29 @@ class MentionTypeAhead extends TypeAheadResults {
 }
 
 class EmojiTypeAhead extends TypeAheadResults {
-  renderRow() {
+  transformSelectionToText(emoji) {
+    return EMOJI_SENTINEL + emoji.name + EMOJI_SENTINEL;
+  }
+
+  renderHeader() {
     return (
-      <div></div>
+      <div>Emojis matching <strong>{this.props.prefix}</strong></div>
+    );
+  }
+
+  renderRow(emoji, props) {
+    return (
+      <div {...props}>
+        <img
+          className="emoji"
+          draggable={false}
+          alt={""}
+          title={`:${emoji.name}:`}
+          src={`/images/emoji/emojione/svg/${emoji.unicode[0]}.svg`}
+        />
+        &nbsp;
+        {`${EMOJI_SENTINEL}${emoji.name}${EMOJI_SENTINEL}`}
+      </div>
     );
   }
 }
@@ -513,6 +537,21 @@ export default class Composer extends React.Component {
                 break;
               case EMOJI_SENTINEL:
                 type = TYPEAHEAD_EMOJI;
+                if (prefix.length > 2) {
+                  results = Object.keys(EMOJIS)
+                    .reduce((matching, emoji) => {
+                      if (test(emoji)) {
+                        matching.push({
+                          name: emoji,
+                          ...EMOJIS[emoji]
+                        });
+                      }
+                      return matching;
+                    }, [])
+                    .slice(0, 10);
+                } else {
+                  results = [];
+                }
                 break;
               case ROOM_SENTINEL:
                 type = TYPEAHEAD_ROOM;
@@ -553,15 +592,17 @@ export default class Composer extends React.Component {
 
     let autocomplete;
     const autocompleteComponent = /* this.state.focused && */{
-      [TYPEAHEAD_MENTION]: MentionTypeAhead,
-      [TYPEAHEAD_EMOJI]: EmojiTypeAhead,
-      [TYPEAHEAD_COMMAND]: CommandTypeAhead,
-      [TYPEAHEAD_COMMAND_RESULTS]: SlashCommandTypeAheadResults,
-      [TYPEAHEAD_ROOM]: RoomTypeAhead
+      [TYPEAHEAD_MENTION]: [MentionTypeAhead, "suggestions-mention"],
+      [TYPEAHEAD_EMOJI]: [EmojiTypeAhead, "suggestions-emoji"],
+      [TYPEAHEAD_COMMAND]: [CommandTypeAhead, "suggestions-command"],
+      [TYPEAHEAD_COMMAND_RESULTS]: [SlashCommandTypeAheadResults, "suggestions-command-results"],
+      [TYPEAHEAD_ROOM]: [RoomTypeAhead, "suggestions-room"]
     }[this.state.type];
     if (autocompleteComponent) {
-      autocomplete = React.createElement(autocompleteComponent, {
+      const [component, className] = autocompleteComponent;
+      autocomplete = React.createElement(component, {
         ref: "suggestions",
+        className,
         key: this.state.query || this.state.prefix,
         prefix: this.state.prefix,
         command: this.state.command,
