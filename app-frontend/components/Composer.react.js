@@ -1,10 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import classnames from "classnames";
-import { Container } from "flux/utils";
 import { ALL as EMOJIS } from "emojify";
 
 import { SmileyIcon } from "../utils/IconsUtils";
+
+import CommandTypeAhead, { COMMAND_SENTINEL } from "./typeahead/CommandResults.react";
+import EmojiTypeAhead, { EMOJI_SENTINEL } from "./typeahead/EmojiResults.react";
+import MentionTypeAhead, { MENTION_SENTINEL } from "./typeahead/MentionResults.react";
+import RoomTypeAhead, { ROOM_SENTINEL } from "./typeahead/RoomResults.react";
+import SlashCommandTypeAhead from "./typeahead/SlashCommandResults.react";
+
 
 import ComposerActionCreators from "../actions/ComposerActionCreators";
 import UploadActionCreators from "../actions/UploadActionCreators";
@@ -12,28 +17,14 @@ import { search as SlashCommandSearch } from "../actions/SlashCommandActionCreat
 
 import Room from "../models/Room";
 
-import SlashCommandStore from "../stores/SlashCommandStore";
+import UserSettingsStore from "../stores/UserSettingsStore";
 import UserStore from "../stores/UserStore";
+import AccountRoomStore from "../stores/AccountRoomStore";
+import SelectedAccountStore from "../stores/SelectedAccountStore";
 
+import { KEYCODES } from "../utils/KeyboardUtils";
 import TypingUtils from "../utils/TypingUtils";
 import RegexUtils from "../utils/RegexUtils";
-
-import Avatar from "./generic/Avatar.react";
-
-// import Logger from "../libs/Logger";
-// const logger = Logger.create("Composer.react");
-
-const KEYCODES = {
-  UP: 38,
-  DOWN: 40,
-  ENTER: 13,
-  LEFT: 37,
-  RIGHT: 39,
-  PAGE_UP: 33,
-  PAGE_DOWN: 34,
-  ESCAPE: 27,
-  TAB: 9
-};
 
 const COMMAND_ENABLED = () => true;
 const COMMAND_DISABLED = () => false;
@@ -61,10 +52,6 @@ const COMMANDS = [
   }
 ];
 
-const MENTION_SENTINEL = "@";
-const ROOM_SENTINEL = "#";
-const EMOJI_SENTINEL = ":";
-const COMMAND_SENTINEL = "/";
 const PREFIX_RE = new RegExp(
   `${MENTION_SENTINEL}|${ROOM_SENTINEL}|${EMOJI_SENTINEL}|^${COMMAND_SENTINEL}`
 );
@@ -82,254 +69,6 @@ const TYPEAHEAD_EMOJI = 2;
 const TYPEAHEAD_COMMAND = 3;
 const TYPEAHEAD_COMMAND_RESULTS = 4;
 const TYPEAHEAD_ROOM = 5;
-
-class TypeAheadResults extends React.Component {
-  static propTypes = {
-    className: React.PropTypes.string,
-    results: React.PropTypes.array,
-    command: React.PropTypes.object,
-    onSelect: React.PropTypes.func.isRequired
-  }
-
-  constructor(props) {
-    super(props);
-    this.trailingSpace = true;
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleSelect = this.handleSelect.bind(this);
-  }
-
-  state = {
-    selectedIndex: 0
-  }
-
-  handleKeyDown(event) {
-    const results = this.props.results || this.state.results;
-    if (results == null || results.length === 0) {
-      return;
-    }
-    let selectedIndex = this.state.selectedIndex;
-    switch (event.which) {
-      case KEYCODES.TAB:
-      case KEYCODES.ENTER:
-        event.preventDefault();
-        this.handleSelect();
-        break;
-
-      case KEYCODES.UP:
-        event.preventDefault();
-        if (--selectedIndex < 0) {
-          selectedIndex = results.length - 1;
-        }
-        this.setState({ selectedIndex });
-        break;
-
-      case KEYCODES.DOWN:
-        event.preventDefault();
-        if (++selectedIndex >= results.length) {
-          selectedIndex = 0;
-        }
-        this.setState({ selectedIndex });
-        break;
-
-      default:
-    }
-  }
-
-  handleSelect(event = null) {
-    const results = this.props.results || this.state.results;
-    const value = results[this.state.selectedIndex];
-    const text = this.transformSelectionToText(value);
-    if (event) {
-      event.preventDefault();
-    }
-    this.props.onSelect(text, this.trailingSpace);
-  }
-
-  transformSelectionToText(value) {
-    return value;
-  }
-
-  render() {
-    const results = this.props.results || this.state.results;
-    if (!this.props.command && (results == null || results.length === 0)) {
-      return null;
-    }
-    const classNames = {
-      suggestions: true
-    };
-    if (this.props.command) {
-      classNames[`suggestions-${this.props.command.command}`] = true;
-      classNames["suggestions-images"] = !!this.props.command.images;
-    }
-
-    let header;
-    if (this.renderHeader) {
-      header = (
-        <div className="suggestions-header">
-          {this.renderHeader()}
-        </div>
-      );
-    }
-    const suggestionMapper = (result, index) => this.renderRow(result, {
-      key: index,
-      className: classnames("suggestion-item", {
-        "suggestion-item--active": this.state.selectedIndex === index
-      }),
-      onMouseDown: this.handleSelect,
-      onMouseEnter: () => this.setState({ selectedIndex: index })
-    });
-    const suggestions = (
-      <div className="suggestions-list">
-        {results.map(suggestionMapper)}
-      </div>
-    );
-    return (
-      <div className={classnames(classNames, this.props.className)}>
-        {header}
-        {suggestions}
-      </div>
-    );
-  }
-}
-
-class CommandTypeAhead extends TypeAheadResults {
-  transformSelectionToText(value) {
-    return COMMAND_SENTINEL + value.command;
-  }
-
-  renderHeader() {
-    return "Slash Commands";
-  }
-
-  renderRow({ command, description }, props) {
-    return (
-      <div {...props}>
-        <div>{COMMAND_SENTINEL + command}</div>
-        <div className="suggestion-item--info">
-          {description}
-        </div>
-      </div>
-    );
-  }
-}
-
-class SlashCommandTypeAheadResultsContainer extends TypeAheadResults {
-  static getStores() {
-    return [
-      SlashCommandStore
-    ];
-  }
-
-  static calculateState(prevProps, nextProps) {
-    const results = SlashCommandStore.getResults(nextProps.command.command, nextProps.query);
-    return {
-      selectedIndex: 0,
-      results: results.slice(0, 6)
-    };
-  }
-
-  constructor(props) {
-    super(props);
-    // We don't wnat to append an extra space after the url;
-    this.trailingSpace = false;
-  }
-
-  transformSelectionToText(result) {
-    return result;
-  }
-
-  renderHeader() {
-    return (
-      <div>{this.props.command.title} results matching <strong>{this.props.query}</strong></div>
-    );
-  }
-
-  renderRow(result, props) {
-    function getName(url) {
-      return url.split("/").pop();
-    }
-    return (
-      <div
-        style={{
-          backgroundImage: `url(${result})`
-        }}
-        {...props}
-        title={getName(result)}
-      ></div>
-    );
-  }
-}
-
-const SlashCommandTypeAheadResults = Container.create(
-  SlashCommandTypeAheadResultsContainer,
-  { withProps: true }
-);
-
-class MentionTypeAhead extends TypeAheadResults {
-  transformSelectionToText(user) {
-    return MENTION_SENTINEL + user.nickname;
-  }
-
-  renderHeader() {
-    if (this.props.prefix.length > 1) {
-      return (
-        <div>Coworkers matching {MENTION_SENTINEL}<strong>{this.props.prefix.slice(1)}</strong></div>
-      );
-    }
-    return "Coworkers & Bots";
-  }
-
-  renderRow(user, props) {
-    return (
-      <div {...props}>
-        <div>
-          <Avatar size={Avatar.SIZE.SMALL} user={user} />
-          {user.fullname}{" "}
-          <em>({MENTION_SENTINEL}{user.nickname})</em>
-        </div>
-        <div className="suggestion-item--info">
-          {user.status}
-        </div>
-      </div>
-    );
-  }
-}
-
-class EmojiTypeAhead extends TypeAheadResults {
-  transformSelectionToText(emoji) {
-    return EMOJI_SENTINEL + emoji.name + EMOJI_SENTINEL;
-  }
-
-  renderHeader() {
-    return (
-      <div>Emojis matching <strong>{this.props.prefix}</strong></div>
-    );
-  }
-
-  renderRow(emoji, props) {
-    return (
-      <div {...props}>
-        <img
-          className="emoji"
-          draggable={false}
-          alt={""}
-          title={`:${emoji.name}:`}
-          src={`/images/emoji/emojione/${emoji.unicode[0]}.svg`}
-        />
-        &nbsp;
-        {`${EMOJI_SENTINEL}${emoji.name}${EMOJI_SENTINEL}`}
-      </div>
-    );
-  }
-}
-
-class RoomTypeAhead extends TypeAheadResults {
-  renderRow() {
-    return (
-      <div></div>
-    );
-  }
-}
 
 function extractFileName(htmlString) {
   const div = document.createElement("div");
@@ -525,36 +264,30 @@ export default class Composer extends React.Component {
             switch (prefix[0]) {
               case MENTION_SENTINEL:
                 type = TYPEAHEAD_MENTION;
-                results = UserStore.getAll()
-                  .filter(user => user.nickname.indexOf(prefix.slice(1)) === 0)
-                  .slice(0, 10);
+                results = this.processMentionSentinelResults(prefix);
                 break;
+
               case COMMAND_SENTINEL:
-                type = TYPEAHEAD_COMMAND;
-                results = COMMANDS.filter(({ command, enabled }) =>
-                  enabled(command) && test(command)
-                ).slice(0, 10);
+                if (start === 0) {
+                  type = TYPEAHEAD_COMMAND;
+                  results = COMMANDS.filter(({ command, enabled }) =>
+                    enabled(command) && test(command)
+                  ).slice(0, 10);
+                }
                 break;
+
               case EMOJI_SENTINEL:
                 type = TYPEAHEAD_EMOJI;
                 if (prefix.length > 2) {
-                  results = Object.keys(EMOJIS)
-                    .reduce((matching, emoji) => {
-                      if (test(emoji)) {
-                        matching.push({
-                          name: emoji,
-                          ...EMOJIS[emoji]
-                        });
-                      }
-                      return matching;
-                    }, [])
-                    .slice(0, 10);
-                } else {
-                  results = [];
+                  results = this.processEmojiSentinelResults(test);
                 }
                 break;
+
               case ROOM_SENTINEL:
                 type = TYPEAHEAD_ROOM;
+                if (prefix.length > 3) {
+                  results = this.processRoomSentinelResults(test);
+                }
                 break;
               default:
             }
@@ -569,6 +302,37 @@ export default class Composer extends React.Component {
       }
     } while (--start >= 0);
     this.setState({ type, results, prefix, start, end, integration: null, command: null });
+  }
+
+  processMentionSentinelResults(prefix) {
+    return UserStore.getAll()
+    .filter(user =>
+      user.nickname.startsWith(prefix.slice(1))
+    )
+    .slice(0, 10);
+  }
+
+  processEmojiSentinelResults(test) {
+    return Object.keys(EMOJIS)
+      .reduce((matching, emoji) => {
+        if (
+          test(emoji) &&
+          // TODO: This should come from emojify
+          EMOJIS[emoji].mask & { emojione: 1, apple: 2, twitter: 4 }[UserSettingsStore.getValue("global.emojis_type")]) {
+          matching.push(emoji);
+        }
+        return matching;
+      }, [])
+      .slice(0, 10);
+  }
+
+  processRoomSentinelResults(test) {
+    const connectedAccount = SelectedAccountStore.getAccount();
+    const rooms = AccountRoomStore.getRooms(connectedAccount.id);
+    return rooms
+      .filter(room => room !== this.props.room && test(room.slug))
+      .toArray()
+      .slice(0, 10);
   }
 
   performAutocomplete(text, trailingSpace = true) {
@@ -595,7 +359,7 @@ export default class Composer extends React.Component {
       [TYPEAHEAD_MENTION]: [MentionTypeAhead, "suggestions-mention"],
       [TYPEAHEAD_EMOJI]: [EmojiTypeAhead, "suggestions-emoji"],
       [TYPEAHEAD_COMMAND]: [CommandTypeAhead, "suggestions-command"],
-      [TYPEAHEAD_COMMAND_RESULTS]: [SlashCommandTypeAheadResults, "suggestions-command-results"],
+      [TYPEAHEAD_COMMAND_RESULTS]: [SlashCommandTypeAhead, "suggestions-command-results"],
       [TYPEAHEAD_ROOM]: [RoomTypeAhead, "suggestions-room"]
     }[this.state.type];
     if (autocompleteComponent) {

@@ -1,5 +1,27 @@
+kbd {
+  display: inline-block;
+  background-color: @background-light;
+  color: @gray-light;
+  border: 1px solid darken(@gray-lighter, 8%);
+  font-family: Menlo, Monaco, Consolas;
+  border-radius: 3px;
+  min-width: 26px;
+  text-align: center;
+  text-transform: lowercase;
+  font-size: 1.5em;
+  vertical-align: middle;
+
+  &.text {
+    font-size: 12px;
+  }
+}
+
 .emoji {
   display: inline-block;
   vertical-align: middle;
   .square(24px);
+
+  & + span {
+    margin-left: 5px;
+  }
 }

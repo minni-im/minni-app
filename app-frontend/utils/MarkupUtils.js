@@ -1,7 +1,7 @@
 import React from "react"; // needed for the jsx below.
 import SimpleMarkdown from "simple-markdown";
 import highlight from "highlight.js";
-import { ALL as EMOJIS } from "emojify";
+import Emoji from "../components/Emoji.react";
 
 const DEFAULT_LINK_RULE = SimpleMarkdown.defaultRules.link;
 
@@ -100,47 +100,21 @@ function createRules() {
     },
 
     blockQuote: SimpleMarkdown.defaultRules.blockQuote,
+
     emoji: {
       order: SimpleMarkdown.defaultRules.text.order,
       match(source) {
-        return /^:([^\s:]+?):/.exec(source);
+        return /^:([a-zA-Z0-9-_+]+):(:skin-tone-((?:1\-2|[3-6])):)?/.exec(source);
       },
       parse(capture) {
         const name = capture[1];
-        const emoji = EMOJIS[name];
-        return {
-          unicode: emoji && emoji.unicode[0],
-          name,
-        };
+        return { name, skinTone: capture[2] && capture[3] };
       },
       react(node, output, state) {
-        // TODO: Should return an Emoji React Component
-        const { name, unicode } = node;
-        if (unicode) {
-          const alt = unicode.split("-")
-            .map(u => (u === "200d"
-              ? "&zwj;"
-              : String.fromCodePoint(
-                  parseInt(u, 16)
-                )
-            ))
-            .join("");
-          return (
-            <img
-              key={state.key}
-              alt={alt}
-              title={`:${name}:`}
-              className="emoji"
-              draggable={false}
-              src={`/images/emoji/emojione/${unicode}.svg`}
-            />
-          );
-        }
-        return (
-          <span>:{node.name}:</span>
-        );
+        return <Emoji key={state.key} shortname={node.name} skinTone={node.skinTone} />;
       }
     },
+
     mention: {
       order: SimpleMarkdown.defaultRules.text.order,
       match(source, state, lookBehind) {
@@ -160,6 +134,36 @@ function createRules() {
         return (
           <b className="mention" key={state.key}>@{node.name}</b>
         );
+      }
+    },
+
+    room: {
+      order: SimpleMarkdown.defaultRules.text.order,
+      match(source) {
+        return /^<#(\d+)>/.exec(source);
+      },
+      parse(capture) {
+
+      },
+
+      handleClick(e) {
+
+      },
+
+      react(node, output, state) {
+        return (
+          <span
+            key={state.key}
+            onClick={this.handleClick}
+          />
+        )
+      }
+    },
+
+    hashtag: {
+      order: SimpleMarkdown.defaultRules.text.order,
+      match() {
+        return null;
       }
     }
   };
