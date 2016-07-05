@@ -13,10 +13,13 @@ export default class MentionTypeAhead extends TypeAheadResults {
   renderHeader() {
     if (this.props.prefix.length > 1) {
       return (
-        <div>Coworkers matching {MENTION_SENTINEL}<strong>{this.props.prefix.slice(1)}</strong></div>
+        <div>
+          People &amp; Bots matching
+          &quot;<strong>{MENTION_SENTINEL}{this.props.prefix.slice(1)}</strong>&quot;
+        </div>
       );
     }
-    return "Coworkers & Bots";
+    return "People & Bots";
   }
 
   renderRow(user, props) {
@@ -24,8 +27,8 @@ export default class MentionTypeAhead extends TypeAheadResults {
       <div {...props}>
         <div>
           <Avatar size={Avatar.SIZE.SMALL} user={user} />
-          {user.fullname}{" "}
-          <em>({MENTION_SENTINEL}{user.nickname})</em>
+          <strong>{user.nickname}</strong>
+          {` - ${user.fullname}`}
         </div>
         <div className="suggestion-item--info">
           {user.status}

@@ -10,14 +10,20 @@ export default class RoomTypeAhead extends TypeAheadResults {
 
   renderHeader() {
     return (
-      <div>Rooms matching <strong>{this.props.prefix.slice(0)}</strong></div>
+      <div>
+        Rooms matching
+        &quot;<strong>{this.props.prefix}</strong>&quot;
+      </div>
     );
   }
 
   renderRow(room, props) {
     return (
       <div {...props}>
-        <div>{room.name} <em>{`${ROOM_SENTINEL}${room.slug}`}</em></div>
+        <div>
+          <strong>{`${ROOM_SENTINEL}${room.slug}`}</strong>
+          {` - ${room.name}`}
+        </div>
       </div>
     );
   }

@@ -327,10 +327,18 @@ export default class Composer extends React.Component {
   }
 
   processRoomSentinelResults(test) {
+    const user = UserStore.getConnectedUser();
     const connectedAccount = SelectedAccountStore.getAccount();
     const rooms = AccountRoomStore.getRooms(connectedAccount.id);
     return rooms
       .filter(room => room !== this.props.room && test(room.slug))
+      .filter(room => room.public)
+      .filter(room =>
+        room.private && (
+          room.usersId.includes(user.id) ||
+          room.isUserAdmin(user.id)
+        )
+      )
       .toArray()
       .slice(0, 10);
   }

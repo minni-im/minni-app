@@ -12,7 +12,10 @@ export default class EmojiTypeAhead extends TypeAheadResults {
 
   renderHeader() {
     return (
-      <div>Emojis matching <strong>{this.props.prefix}</strong></div>
+      <div>
+        Emojis matching
+        &quot;<strong>{`${EMOJI_SENTINEL}${this.props.prefix}`}</strong>&quot;
+      </div>
     );
   }
 
