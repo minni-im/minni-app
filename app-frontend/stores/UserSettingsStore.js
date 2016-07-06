@@ -8,7 +8,7 @@ import { ActionTypes } from "../Constants";
 import Dispatcher from "../Dispatcher";
 
 import Logger from "../libs/Logger";
-const logger = Logger.create( "UserSettingsStore" );
+const logger = Logger.create("UserSettingsStore");
 
 
 const DEFAULT_SETTINGS = {
@@ -39,9 +39,8 @@ const DEFAULT_SETTINGS = {
 };
 
 const defaultValues = Immutable.fromJS(DEFAULT_SETTINGS);
-let saveOnGoing = false;
 
-function handleConnectionOpen( state, { user } ) {
+function handleConnectionOpen(state, { user }) {
   logger.info(user.settings);
   return state.set("data", Immutable.fromJS(user.settings || {}));
 }
@@ -57,9 +56,9 @@ function handleSettingsUpdate(state, { settings }) {
 
 class UserSettingsStore extends MapStore {
   initialize() {
-    this.addAction( ActionTypes.CONNECTION_OPEN, handleConnectionOpen );
-    this.addAction( ActionTypes.SETTINGS_UPDATE, handleSettingsUpdateStart );
-    this.addAction( ActionTypes.SETTINGS_UPDATE_SUCCESS, handleSettingsUpdate );
+    this.addAction(ActionTypes.CONNECTION_OPEN, handleConnectionOpen);
+    this.addAction(ActionTypes.SETTINGS_UPDATE, handleSettingsUpdateStart);
+    this.addAction(ActionTypes.SETTINGS_UPDATE_SUCCESS, handleSettingsUpdate);
   }
 
   getInitialState() {
@@ -94,6 +93,14 @@ class UserSettingsStore extends MapStore {
     const defaultValue = defaultValues.getIn(split);
     const value = this.getState().get("data").getIn(split, defaultValue);
     return value;
+  }
+
+  getEmojiProviderInfo() {
+    const name = this.getValue("global.emojis_type");
+    return {
+      name,
+      type: { apple: "png", emojione: "svg", twitter: "svg" }[name]
+    };
   }
 }
 

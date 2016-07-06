@@ -17,7 +17,7 @@
 
   footer {
     min-height: @main-footer-height;
-    overflow: hidden;
+
     .composer {
       align-items: flex-start;
       justify-content: center;
@@ -64,7 +64,93 @@
       }
 
       .suggestions {
-        display: none;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 100%;
+        margin-bottom: 5px;
+        background-color: @background-light;
+        border-top: 1px dotted @gray-light;
+        border-bottom: 1px dotted @gray-light;
+
+        .suggestions-header {
+          padding: 5px 10px;
+          background-color: @gray-lighter;
+          color: @gray-light;
+          a {
+            color: @dark-blue;
+            text-decoration: underline;
+          }
+
+          .flex-horizontal;
+          > *:first-child {
+            .flex-spacer;
+          }
+
+          .header-help {
+
+          }
+        }
+
+        .suggestion-item {
+          cursor: pointer;
+          padding: 3px 10px;
+          color: @color-dark;
+
+          .flex-horizontal;
+          > div:first-child {
+            .flex-spacer;
+          }
+
+          .avatar {
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 5px;
+          }
+
+          em {
+            color: @gray-light;
+          }
+
+          .suggestion-item--info {
+            font-style: italic;
+            color: @gray-light;
+          }
+
+          &.suggestion-item--active {
+            background-color: @electric-blue;
+            color: @color-light;
+            .suggestion-item--info, em {
+              color: inherit;
+            }
+          }
+        }
+      }
+
+      .suggestions-images {
+        .suggestions-list {
+          .flex-horizontal;
+        }
+
+        .suggestion-item {
+          height: 200px;
+          flex: 1;
+          max-width: 250px;
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: 50% 50%;
+
+          &.suggestion-item--active {
+            box-shadow: 4px 4px 0 @electric-blue inset,
+              -4px -4px 0 @electric-blue inset;
+          }
+        }
+      }
+
+      .suggestions-emoji {
+        .suggestion-item {
+          display: inline-block;
+        }
       }
     }
 

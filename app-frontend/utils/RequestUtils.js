@@ -6,15 +6,13 @@ export function request(url, options = {}) {
   options = Object.assign({
     credentials: "same-origin",
     headers: {
-      "Accept": "application/json",
+      Accept: "application/json",
       "Content-Type": "application/json"
     }
   }, options);
 
   const params = Object.keys(options.params || {})
-    .map(key => {
-      return `${key}=${encodeURIComponent(options.params[key])}`;
-    })
+    .map(key => `${key}=${encodeURIComponent(options.params[key])}`)
     .join("&");
 
   function getUrl() {

@@ -57,6 +57,12 @@ class UserStore extends MapStore {
   getConnectedUser() {
     return this.get(connectedUserId);
   }
+
+  getAll() {
+    return this.getState()
+      .filter(user => user.id !== connectedUserId)
+      .toArray();
+  }
 }
 
 const instance = new UserStore(Dispatcher);

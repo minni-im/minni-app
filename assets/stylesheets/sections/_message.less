@@ -39,6 +39,7 @@ code {
       margin-bottom: 1px;
       border-radius: 4px;
       background-color: @gray-lighter;
+      user-select: text;
 
       a {
         color: @electric-blue;
@@ -151,6 +152,10 @@ code {
     &::before, &::after {
       content: '\00a0';
     }
+  }
+
+  .emoji {
+    margin: 2px 0;
   }
 }
 
