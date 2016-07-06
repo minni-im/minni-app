@@ -15,7 +15,7 @@ export default class MentionTypeAhead extends TypeAheadResults {
       return (
         <div>
           People &amp; Bots matching
-          &quot;<strong>{MENTION_SENTINEL}{this.props.prefix.slice(1)}</strong>&quot;
+          &quot;<strong>{this.props.prefix}</strong>&quot;
         </div>
       );
     }

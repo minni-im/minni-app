@@ -14,7 +14,7 @@ export default class EmojiTypeAhead extends TypeAheadResults {
     return (
       <div>
         Emojis matching
-        &quot;<strong>{`${EMOJI_SENTINEL}${this.props.prefix}`}</strong>&quot;
+        &quot;<strong>{this.props.prefix}</strong>&quot;
       </div>
     );
   }

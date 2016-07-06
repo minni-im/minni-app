@@ -91,8 +91,7 @@ export default class TypeAheadResults extends React.Component {
         <div className="header-help">
           <kbd className="text">Tab</kbd>&nbsp; or &nbsp;
           <kbd>↑</kbd> <kbd>↓</kbd>&nbsp; to navigate &nbsp;
-          <kbd>↵</kbd>&nbsp; to select &nbsp;
-          <kbd className="text">Esc</kbd>&nbsp; to dismiss
+          <kbd>↵</kbd>&nbsp; to select
         </div>
       </div>
     );

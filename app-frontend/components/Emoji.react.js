@@ -1,15 +1,14 @@
 import React, { PropTypes } from "react";
 import { Container } from "flux/utils";
-import { ALL as EMOJIS } from "emojify";
+import {
+  ALL as EMOJIS,
+  MASK_BY_PROVIDER,
+  SKIN_TONE_INDEX
+} from "emojify";
 
 import UserSettingsStore from "../stores/UserSettingsStore";
 
 import Emoji from "./generic/Emoji.react";
-
-// TODO: This should come from emojify
-const MASK_BY_PROVIDER = { emojione: 1, apple: 2, twitter: 4 };
-
-const SKIN_TONE_MAPPING = { "1-2": 0, 3: 1, 4: 2, 5: 3, 6: 4 };
 
 class EmojiContainer extends React.Component {
   static propTypes = {
@@ -36,7 +35,7 @@ class EmojiContainer extends React.Component {
     let unicode;
     if (emoji && MASK_BY_PROVIDER[provider.name] & emoji.mask) {
       if (skinTone) {
-        unicode = emoji.skin_variations[SKIN_TONE_MAPPING[skinTone]];
+        unicode = emoji.skin_variations[SKIN_TONE_INDEX[skinTone]];
         src = `/images/emoji/${provider.name}/${unicode}.${provider.type}`;
       } else {
         unicode = emoji.unicode[0];

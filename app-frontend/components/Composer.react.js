@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { ALL as EMOJIS } from "emojify";
+import { ALL as EMOJIS, MASK_BY_PROVIDER } from "emojify";
 
 import { SmileyIcon } from "../utils/IconsUtils";
 
@@ -317,8 +317,8 @@ export default class Composer extends React.Component {
       .reduce((matching, emoji) => {
         if (
           test(emoji) &&
-          // TODO: This should come from emojify
-          EMOJIS[emoji].mask & { emojione: 1, apple: 2, twitter: 4 }[UserSettingsStore.getValue("global.emojis_type")]) {
+          EMOJIS[emoji].mask & MASK_BY_PROVIDER[UserSettingsStore.getValue("global.emojis_type")]
+        ) {
           matching.push(emoji);
         }
         return matching;
@@ -332,11 +332,12 @@ export default class Composer extends React.Component {
     const rooms = AccountRoomStore.getRooms(connectedAccount.id);
     return rooms
       .filter(room => room !== this.props.room && test(room.slug))
-      .filter(room => room.public)
       .filter(room =>
-        room.private && (
-          room.usersId.includes(user.id) ||
-          room.isUserAdmin(user.id)
+        room.public || (
+          room.private && (
+            room.usersId.includes(user.id) ||
+            room.isUserAdmin(user.id)
+          )
         )
       )
       .toArray()
