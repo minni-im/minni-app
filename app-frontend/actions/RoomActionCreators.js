@@ -23,6 +23,16 @@ export default {
     });
   },
 
+  leaveRoom(accountSlug, roomSlug) {
+    if (ConnectedRoomStore.isRoomConnected(accountSlug, roomSlug)) {
+      dispatch({
+        type: ActionTypes.ROOM_LEAVE,
+        accountSlug,
+        roomSlug
+      });
+    }
+  },
+
   selectRoom(accountSlug, roomSlug) {
     this.joinRoom(accountSlug, roomSlug);
     dispatch({

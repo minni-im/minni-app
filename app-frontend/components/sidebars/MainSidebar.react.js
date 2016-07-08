@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { Container } from "flux/utils";
 
 import classnames from "classnames";
+import RoomActionCreators from "../../actions/RoomActionCreators";
 
 import { isOSX } from "../../utils/PlatformUtils";
 
@@ -41,6 +42,7 @@ class MainSidebar extends React.Component {
   constructor(props) {
     super(props);
     this.onRoomClicked = this.onRoomClicked.bind(this);
+    this.onRoomLeaveClicked = this.onRoomLeaveClicked.bind(this);
   }
 
   onRoomClicked(event) {
@@ -52,6 +54,14 @@ class MainSidebar extends React.Component {
       const slugs = SelectedRoomStore.getRooms().add(event.currentTarget.dataset.slug).toArray();
       this.context.router.push(`/chat/${this.state.account.slug}/messages/${slugs}`);
     }
+  }
+
+  onRoomLeaveClicked(event) {
+    event.preventDefault();
+    RoomActionCreators.leaveRoom(
+      this.state.account.slug,
+      event.target.parentNode.dataset.slug
+    );
   }
 
   render() {
@@ -106,7 +116,11 @@ class MainSidebar extends React.Component {
                   </span>
                   <span className="name">{parseTitle(room.name)}</span>
                   {unreadCount > 0 ? <span className="unread">{unreadCount}</span> : false}
-                  <span className="quit" title="Quit this room">×</span>
+                  <span
+                    className="quit"
+                    title="Leave this room"
+                    onClick={this.onRoomLeaveClicked}
+                  >×</span>
                 </Link>
               );
             })}

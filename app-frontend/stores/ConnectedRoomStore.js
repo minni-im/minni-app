@@ -13,8 +13,6 @@ import SelectedAccountStore from "./SelectedAccountStore";
 
 import Storage from "../libs/Storage";
 
-import RoomActionCreators from "../actions/RoomActionCreators";
-
 import Logger from "../libs/Logger";
 const logger = Logger.create("ConnectedRoomStore");
 
@@ -30,22 +28,20 @@ function handleNewAccount(state, { account }) {
 function handleRoomJoin(state, { accountSlug, roomSlug }) {
   const { id: accountId } = AccountStore.getAccount(accountSlug);
   const { id: roomId } = RoomStore.getRoom(roomSlug);
-  state = state.update(accountId, Immutable.Set(), map => {
-    return map.add(roomId);
-  });
+  state = state.update(accountId, Immutable.Set(), map => map.add(roomId));
   Storage.set(CONNECTED_ROOMS, state.toJS());
   return state;
 }
 
 function handleRoomLeave(state, { accountSlug, roomSlug }) {
-  logger.warn("handleRoomLeave", accountSlug, roomSlug);
-  let connectedRooms = state.get(accountSlug);
-  state = state.set(accountSlug, connectedRooms.remove(roomSlug));
+  const { id: accountId } = AccountStore.getAccount(accountSlug);
+  const { id: roomId } = RoomStore.getRoom(roomSlug);
+  state = state.update(accountId, Immutable.Set(), map => map.remove(roomId));
   Storage.set(CONNECTED_ROOMS, state.toJS());
   return state;
 }
 
-function handleConnectionOpen({accounts}) {
+function handleConnectionOpen() {
   __connected = true;
 }
 
@@ -61,7 +57,7 @@ class ConnectedRoomStore extends MapStore {
   }
 
   getInitialState() {
-    let list = Storage.get(CONNECTED_ROOMS);
+    const list = Storage.get(CONNECTED_ROOMS);
     if (!list) { return Immutable.Map(); }
     return Immutable.fromJS(list).map(i => i.toSet());
   }

@@ -6,7 +6,7 @@ import RoomActionCreators from "../actions/RoomActionCreators";
 import MessagesContainer from "./MessagesContainer.react";
 import Composer from "./Composer.react";
 import TypingInfo from "./TypingInfo.react";
-import { FavoriteIcon } from "../utils/IconsUtils";
+import { FavoriteIcon, CloseIcon } from "../utils/IconsUtils";
 import { parseTitle } from "../utils/MarkupUtils";
 
 import ComposerStore from "../stores/ComposerStore";
@@ -16,6 +16,7 @@ import { MAX_MESSAGE_LENGTH } from "../Constants";
 export default class Room extends React.Component {
   constructor(props) {
     super(props);
+    this.handleRoomLeave = this.handleRoomLeave.bind(this);
     this.handleRoomFavoriteToggle = this.handleRoomFavoriteToggle.bind(this);
     this.handleFooterOnClick = this.handleFooterOnClick.bind(this);
     this.handleSendMessage = this.handleSendMessage.bind(this);
@@ -34,7 +35,7 @@ export default class Room extends React.Component {
       return false;
     }
     if (message.length > MAX_MESSAGE_LENGTH) {
-      //TODO show an alert message here
+      // TODO: show an alert message here
       return false;
     }
     RoomActionCreators.sendMessage(this.props.room.id, message);
@@ -45,9 +46,28 @@ export default class Room extends React.Component {
     this.focusComposer();
   }
 
-  handleRoomFavoriteToggle(event) {
+  handleRoomFavoriteToggle() {
     const { room } = this.props;
     RoomActionCreators.toggleFavorite(room.id, room.starred);
+  }
+
+  handleRoomLeave(event) {
+    const { room } = this.props;
+    /* eslint-disable */
+    let [app, accountSlug, messages, roomSlugs] = document.location.pathname.slice(1).split("/");
+    /* eslint-enable  */
+    const multipleRooms = roomSlugs.includes(",");
+    if (!multipleRooms) {
+      this.context.router.push(`/chat/${accountSlug}/lobby`);
+    } else {
+      roomSlugs = roomSlugs.split(",");
+      roomSlugs.splice(roomSlugs.indexOf(room.slug), 1);
+      this.context.router.push(`/chat/${accountSlug}/messages/${roomSlugs.join(",")}`);
+    }
+
+    if (!(multipleRooms && event.shiftKey)) {
+      RoomActionCreators.leaveRoom(accountSlug, room.slug);
+    }
   }
 
   render() {
@@ -68,6 +88,13 @@ export default class Room extends React.Component {
               ><FavoriteIcon /></span>
             </h2>
             <h3>{parseTitle(topic)}</h3>
+          </div>
+          <div className="actions">
+            <span
+              className="icon"
+              onClick={this.handleRoomLeave}
+              title="Leave this room (Shift+Click will just deselect it)"
+            ><CloseIcon /></span>
           </div>
         </header>
         <MessagesContainer room={room} />
@@ -103,3 +130,7 @@ export default class Room extends React.Component {
     );
   }
 }
+
+Room.contextTypes = {
+  router: React.PropTypes.object.isRequired
+};

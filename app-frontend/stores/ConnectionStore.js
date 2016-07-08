@@ -42,7 +42,7 @@ socket.on("messages:update", (message) => {
   RoomActionCreators.updateMessage(message.roomId, message);
 });
 
-socket.on("users:join", ({user, roomId}) => {
+socket.on("users:join", ({ user, roomId }) => {
   logger.warn(`${user.fullname} has joined ${roomId}`);
 });
 
@@ -74,10 +74,16 @@ function handleConnectionOpen() {
   }, 1500);
 }
 
-function handleRoomJoin({accountSlug, roomSlug}) {
+function handleRoomJoin({ accountSlug, roomSlug }) {
   const accountId = AccountStore.getAccount(accountSlug).id;
   const roomId = RoomStore.getRoom(roomSlug).id;
   socket.emit("rooms:join", { accountId, roomId });
+}
+
+function handleRoomLeave({ accountSlug, roomSlug }) {
+  const accountId = AccountStore.getAccount(accountSlug).id;
+  const roomId = RoomStore.getRoom(roomSlug).id;
+  socket.emit("rooms:leave", { accountId, roomId });
 }
 
 class ConnectionStore extends ReduceStore {
@@ -87,6 +93,7 @@ class ConnectionStore extends ReduceStore {
     this.addAction(ActionTypes.CONNECTION_OPEN, withNoMutations(handleConnectionOpen));
 
     this.addAction(ActionTypes.ROOM_JOIN, withNoMutations(handleRoomJoin));
+    this.addAction(ActionTypes.ROOM_LEAVE, withNoMutations(handleRoomLeave));
   }
 
   getInitialState() {

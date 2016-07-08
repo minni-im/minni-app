@@ -60,7 +60,12 @@
 #layout {
   .header-actions() {
     align-self: center;
-    margin-right: 5px;
+    margin-right: 10px;
+
+    .icon {
+      margin-left: 10px;
+    }
+
     .button {
       margin-left: 5px;
     }
@@ -76,10 +81,9 @@
         .text-overflow;
         .icon {
           cursor: pointer;
-          vertical-align: middle;
           margin-left: 5px;
           svg {
-            .square(24px);
+            .square(1em);
           }
 
           &.icon--favorite {
