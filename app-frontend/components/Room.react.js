@@ -7,7 +7,7 @@ import MessagesContainer from "./MessagesContainer.react";
 import Composer from "./Composer.react";
 import TypingInfo from "./TypingInfo.react";
 import { FavoriteIcon } from "../utils/IconsUtils";
-import { parseContent } from "../utils/MarkupUtils";
+import { parseTitle } from "../utils/MarkupUtils";
 
 import ComposerStore from "../stores/ComposerStore";
 
@@ -61,13 +61,13 @@ export default class Room extends React.Component {
         <header className="flex-horizontal">
           <div className="header-info flex-spacer">
             <h2>
-              <span>{name}</span>
+              <span>{parseTitle(name)}</span>
               <span
                 className="icon icon--favorite"
                 onClick={this.handleRoomFavoriteToggle}
               ><FavoriteIcon /></span>
             </h2>
-            <h3>{parseContent(topic)}</h3>
+            <h3>{parseTitle(topic)}</h3>
           </div>
         </header>
         <MessagesContainer room={room} />

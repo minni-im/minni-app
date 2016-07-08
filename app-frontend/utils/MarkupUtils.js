@@ -162,15 +162,27 @@ function createRules() {
 
     hashtag: {
       order: SimpleMarkdown.defaultRules.text.order,
-      match() {
+      match(source, state, lookBehind) {
+        if (/^|[^a-zA-Z0-9_!#$%&*@＠]/.test(lookBehind)) {
+          return /^#([a-zA-Z0-9_-]{1,20})/.exec(source);
+        }
         return null;
+      },
+      parse(capture) {
+        return {
+          content: capture[1]
+        };
+      },
+      react(node, output, state) {
+        return (
+          <b key={state.key} className="hashtag">#{node.content}</b>
+        );
       }
     }
   };
 }
 
-export function parseContent(content = "", inline = true, state = {}) {
-  const rules = createRules();
+function createContentParser(rules, content = "", inline= true, state = {}) {
   const parser = SimpleMarkdown.parserFor(rules);
   const output = SimpleMarkdown.reactFor(SimpleMarkdown.ruleOutput(rules, "react"));
 
@@ -179,4 +191,28 @@ export function parseContent(content = "", inline = true, state = {}) {
   }
 
   return output(parser(content, { inline, ...state }));
+}
+
+export function parseContent(content, inline, state) {
+  return createContentParser(createRules(), content, inline, state);
+}
+
+export function parseTitle(content, withLink = true) {
+  const defaultRules = createRules();
+  let rules = {
+    emoji: defaultRules.emoji,
+    text: defaultRules.text
+  };
+  if (withLink) {
+    rules = {
+      link: defaultRules.link,
+      url: defaultRules.url,
+      ...rules
+    };
+  }
+  return createContentParser(rules, content);
+}
+
+export function parseTitleWithoutLinks(content) {
+  return parseTitle(content, false);
 }

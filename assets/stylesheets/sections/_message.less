@@ -38,12 +38,16 @@ code {
       padding: 0 10px;
       margin-bottom: 1px;
       border-radius: 4px;
-      background-color: @gray-lighter;
+      background-color: @message-background-color;
       user-select: text;
 
       a {
         color: @electric-blue;
         text-decoration: underline;
+      }
+
+      .emoji {
+        .square(24px);
       }
     }
 
@@ -82,8 +86,8 @@ code {
 
   .message-group-me {
     .message--content {
-      background-color: @light-blue;
-      color: @color-light;
+      background-color: @message-me-background-color;
+      color: @message-me-color;
 
       a {
         color: inherit;

@@ -14,6 +14,8 @@ import SelectedRoomStore from "../../stores/SelectedRoomStore";
 import UnreadMessageStore from "../../stores/UnreadMessageStore";
 
 import { LobbyIcon, RoomIcons, LogoutIcon } from "../../utils/IconsUtils";
+import { parseTitle } from "../../utils/MarkupUtils";
+
 import UserInfoPanel from "../UserInfoPanel.react";
 import Popover from "../generic/Popover.react";
 
@@ -102,7 +104,7 @@ class MainSidebar extends React.Component {
                   <span className="icon">
                     <RoomIcons.RoomPublicIcon />
                   </span>
-                  <span className="name">{room.name}</span>
+                  <span className="name">{parseTitle(room.name)}</span>
                   {unreadCount > 0 ? <span className="unread">{unreadCount}</span> : false}
                   <span className="quit" title="Quit this room">×</span>
                 </Link>
