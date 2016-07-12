@@ -161,6 +161,16 @@ code {
   .emoji {
     margin: 2px 0;
   }
+
+  .hashtag--room {
+    display: inline-block;
+    background-color: fadeout(@black, 85%);
+    text-decoration: none !important;
+
+    &:before, &:after {
+      content: '\00a0';
+    }
+  }
 }
 
 .message-group-me {

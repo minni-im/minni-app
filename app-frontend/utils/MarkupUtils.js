@@ -1,10 +1,13 @@
 import React from "react"; // needed for the jsx below.
 import SimpleMarkdown from "simple-markdown";
 import highlight from "highlight.js";
+import { Link } from "react-router";
+
 import Emoji from "../components/Emoji.react";
 
 import UserStore from "../stores/UserStore";
 import RoomStore from "../stores/RoomStore";
+import SelectedAccountStore from "../stores/SelectedAccountStore";
 
 const DEFAULT_LINK_RULE = SimpleMarkdown.defaultRules.link;
 
@@ -143,11 +146,13 @@ const DEFAULT_RULES = {
   room: {
     order: SimpleMarkdown.defaultRules.text.order,
     match(source) {
-      return /^<#([0-9a-z]{32})>/.exec(source);
+      return /^<#([0-9a-z-]{32})>/.exec(source);
     },
     parse(capture) {
+      const accountSlug = SelectedAccountStore.getAccount().slug;
       const room = RoomStore.get(capture[1]);
       return {
+        accountSlug,
         roomSlug: room.slug,
         content: [{
           type: "text",
@@ -155,18 +160,13 @@ const DEFAULT_RULES = {
         }]
       };
     },
-    handleClick(event) {
-      const slug = event.target.dataset.roomSlug;
-      console.log("room slug clicked", slug);
-    },
     react(node, output, state) {
       return (
-        <span
+        <Link
           key={state.key}
           className="hashtag hashtag--room"
-          onClick={this.handleClick}
-          data-room-slug={node.roomSlug}
-        >{output(node.content, state)}</span>
+          to={`/chat/${node.accountSlug}/messages/${node.roomSlug}`}
+        >{output(node.content, state)}</Link>
       );
     }
   },
@@ -196,7 +196,7 @@ export function getDefaultRules() {
   return { ...DEFAULT_RULES };
 }
 
-function createContentParser(rules, content = "", inline= true, state = {}) {
+function createContentParser(rules, content = "", inline = true, state = {}) {
   const parser = SimpleMarkdown.parserFor(rules);
   const output = SimpleMarkdown.reactFor(SimpleMarkdown.ruleOutput(rules, "react"));
 
