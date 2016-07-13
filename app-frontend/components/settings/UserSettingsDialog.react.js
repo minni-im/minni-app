@@ -13,6 +13,7 @@ import { updateSettings } from "../../actions/SettingsActionCreators";
 import Logger from "../../libs/Logger";
 const logger = Logger.create("UserSettingsDialog");
 
+import AliasSettings from "minni-composer-aliases/plugin/Settings.react";
 
 const NOTIFICATION_GRANTED = "granted";
 
@@ -288,7 +289,7 @@ export default class UserSettingsDialog extends React.Component {
   renderPlugins() {
     return (
       <TabPanel label="Plugins">
-        <h3>Alias</h3>
+        <AliasSettings />
       </TabPanel>
     );
   }
