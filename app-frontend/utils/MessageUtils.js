@@ -1,8 +1,11 @@
 import Long from "long";
 import twitter from "twitter-text";
 
+import { PLUGIN_TYPES } from "../Constants";
+
 import ImageActionCreators from "../actions/ImageActionCreators";
 
+import PluginsStore from "../stores/PluginsStore";
 import ImageStore from "../stores/ImageStore";
 import UserStore from "../stores/UserStore";
 import SelectedAccountStore from "../stores/SelectedAccountStore";
@@ -15,7 +18,6 @@ const REGEX_IMAGE = /\.(?:jpe?g|png|gif|webp|bmp|tiff|svg)$/i;
 function createNonce() {
   return Long.fromNumber(new Date().getTime()).multiply(1000.0).subtract(1420070400000).shiftLeft(22);
 }
-
 
 function extractImages(message) {
   const potentialImages = twitter.extractUrls(message.content);
@@ -49,14 +51,23 @@ function extractImages(message) {
 }
 
 export function createMessage(roomId, content, subType) {
-  return extractImages({
+  const composerPlugins = PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER);
+  const message = {
     id: createNonce().toString(),
     roomId,
     content,
     type: "chat",
     accountId: SelectedAccountStore.getAccount().id,
     userId: UserStore.getConnectedUser().id
-  });
+  };
+
+  const preProcessors = composerPlugins
+    .map(plugin => plugin.execute)
+    .concat(extractImages);
+
+  return preProcessors.reduce(
+    (onGoing, processor) => onGoing.then(m => processor(m))
+    , Promise.resolve(message));
 }
 
 export function createSystemMessage(roomId, content, subType) {

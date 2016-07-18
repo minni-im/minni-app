@@ -10,6 +10,7 @@ module.exports = {
   context: path.join(__dirname, "./app-frontend"),
   entry: {
     minni: "./app.react.js",
+    plugins: glob.sync(path.join(__dirname, "app-frontend", "plugins", "**", "Plugin.js")),
     vendor: [
       "react",
       "react-dom",
@@ -37,6 +38,9 @@ module.exports = {
     pathinfo: !RELEASE
   },
   resolve: {
+    alias: {
+      "minni-plugins-toolkit": path.join(__dirname, "app-frontend", "libs", "PluginsToolkit.js")
+    },
     fallback: path.join(__dirname, "node_modules")
   },
   resolveLoader: {

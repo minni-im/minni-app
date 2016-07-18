@@ -10,10 +10,12 @@ import SettingItem from "./SettingItem.react";
 import User from "../../models/User";
 import { updateSettings } from "../../actions/SettingsActionCreators";
 
+import PluginsStore from "../../stores/PluginsStore";
+import { PLUGIN_TYPES } from "../../Constants";
+
 import Logger from "../../libs/Logger";
 const logger = Logger.create("UserSettingsDialog");
 
-import AliasSettings from "minni-composer-aliases/plugin/Settings.react";
 
 const NOTIFICATION_GRANTED = "granted";
 
@@ -287,9 +289,18 @@ export default class UserSettingsDialog extends React.Component {
   }
 
   renderPlugins() {
+    const plugins = PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER)
+      .filter(plugin => !!plugin.SettingsPanel)
+      .map(plugin => plugin.SettingsPanel)
+      .map((Panel, index) => (
+        <Panel
+          key={index}
+          onChange={this.onSettingChange}
+        />
+      ));
     return (
       <TabPanel label="Plugins">
-        <AliasSettings />
+        {plugins}
       </TabPanel>
     );
   }

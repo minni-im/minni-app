@@ -30,7 +30,6 @@ const DEFAULT_SETTINGS = {
     }
   },
   plugins: {
-    aliases: {}
   },
   starred: {
     rooms: [],
@@ -92,7 +91,7 @@ class UserSettingsStore extends MapStore {
     const split = key.split(".");
     const defaultValue = defaultValues.getIn(split);
     const value = this.getState().get("data").getIn(split, defaultValue);
-    return value;
+    return value.toJSON ? value.toJSON() : value;
   }
 
   getEmojiProviderInfo() {

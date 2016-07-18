@@ -17,7 +17,6 @@ import { search as SlashCommandSearch } from "../actions/SlashCommandActionCreat
 
 import Room from "../models/Room";
 
-import ComposerPluginsStore from "../stores/ComposerPluginsStore";
 import UserSettingsStore from "../stores/UserSettingsStore";
 import UserStore from "../stores/UserStore";
 import AccountRoomStore from "../stores/AccountRoomStore";
