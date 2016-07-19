@@ -1,7 +1,11 @@
 import React, { Component, PropTypes } from "react";
-import { SettingsStore, SettingItem } from "../../libs/PluginsToolkit";
+import { SettingsStore, UI } from "../../libs/PluginsToolkit";
+
+const { SettingItem } = UI;
 
 export default class Settings extends Component {
+  static category = "plugins"
+
   static propTypes = {
     onChange: PropTypes.func.isRequired
   }

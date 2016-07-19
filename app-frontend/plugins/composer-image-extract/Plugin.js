@@ -3,11 +3,11 @@ import { Constants, register as PluginRegister } from "../../libs/PluginsToolkit
 import ImageActionCreators from "../../actions/ImageActionCreators";
 import ImageStore from "../../stores/ImageStore";
 
-const { PLUGIN_TYPES } = Constants;
+const { COMPOSER_TEXT } = Constants.PLUGIN_TYPES;
 const REGEX_IMAGE = /\.(?:jpe?g|png|gif|webp|bmp|tiff|svg)$/i;
 
-PluginRegister("ImageExtractor", PLUGIN_TYPES.COMPOSER, {
-  execute(message) {
+PluginRegister("ImageExtractor", COMPOSER_TEXT, {
+  encodeMessage(message) {
     const potentialImages = twitter.extractUrls(message.content);
     if (!potentialImages.length) {
       return Promise.resolve(message);

@@ -6,16 +6,16 @@ import PluginsStore from "../stores/PluginsStore";
 import UserStore from "../stores/UserStore";
 import SelectedAccountStore from "../stores/SelectedAccountStore";
 
-import Logger from "../libs/Logger";
-const logger = Logger.create("MessageUtils");
-
 function createNonce() {
-  return Long.fromNumber(new Date().getTime()).multiply(1000.0).subtract(1420070400000).shiftLeft(22);
+  return Long.fromNumber(new Date().getTime())
+    .multiply(1000.0)
+    .subtract(1420070400000)
+    .shiftLeft(22);
 }
 
 export function createMessage(roomId, content) {
-  const composerPlugins = PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER);
-  const preProcessors = composerPlugins.map(plugin => plugin.execute);
+  const composerPlugins = PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_TEXT);
+  const preProcessors = composerPlugins.map(plugin => plugin.encodeMessage);
 
   const message = {
     id: createNonce().toString(),
@@ -26,9 +26,8 @@ export function createMessage(roomId, content) {
     userId: UserStore.getConnectedUser().id
   };
 
-  return preProcessors.reduce(
-    (onGoing, processor) => onGoing.then(m => processor(m))
-    , Promise.resolve(message));
+  return preProcessors.reduce((onGoing, processor) =>
+    onGoing.then(processor), Promise.resolve(message));
 }
 
 export function createSystemMessage(roomId, content, subType) {

@@ -1,7 +1,7 @@
 import { Constants, register as PluginRegister, SettingsStore } from "../../libs/PluginsToolkit";
 import SettingsPanel from "./Settings.react";
 
-const { PLUGIN_TYPES } = Constants;
+const { COMPOSER_TEXT } = Constants.PLUGIN_TYPES;
 
 const MATCHING = (alias) => `(?:^|\\s+)${alias}(?:\\s+|$)`;
 const SUPER_ALIAS = /(.*)(\/.+\/.+\/)$/;
@@ -38,8 +38,10 @@ function replaceAliases(text) {
   return text;
 }
 
-const AliasPlugin = {
-  execute(message) {
+PluginRegister("Aliases", COMPOSER_TEXT, {
+  SettingsPanel,
+
+  encodeMessage(message) {
     const enabled = SettingsStore.getValue("plugins.aliases.active");
     if (!enabled) {
       return Promise.resolve(message);
@@ -47,9 +49,4 @@ const AliasPlugin = {
     message.content = replaceAliases(message.content);
     return Promise.resolve(message);
   }
-};
-
-PluginRegister("Aliases", PLUGIN_TYPES.COMPOSER, {
-  ...AliasPlugin,
-  SettingsPanel
 });

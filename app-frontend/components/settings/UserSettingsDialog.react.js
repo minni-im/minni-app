@@ -13,6 +13,8 @@ import { updateSettings } from "../../actions/SettingsActionCreators";
 import PluginsStore from "../../stores/PluginsStore";
 import { PLUGIN_TYPES } from "../../Constants";
 
+import { camelize } from "../../utils/TextUtils";
+
 import Logger from "../../libs/Logger";
 const logger = Logger.create("UserSettingsDialog");
 
@@ -94,6 +96,126 @@ export default class UserSettingsDialog extends React.Component {
         }
       });
     });
+  }
+
+  generateGeneral() {
+    return [
+      <section>
+        <SettingItem
+          setting="global.clock24"
+          title="Use 24hr clock."
+          onChange={this.onSettingChange}
+        />
+        <SettingItem
+          setting="global.rooms.enter"
+          title="Enter sends messages. Shift+Enter adds a new line."
+          desc="When disabled, Enter adds a new line, and Shit+Enter sends messages."
+          onChange={this.onSettingChange}
+        />
+      </section>,
+      <section className="emojis">
+        <h3>Emojis</h3>
+        <SettingItem
+          title="Allows emoticons replacement in typed text."
+          setting="global.emoticons"
+          onChange={this.onSettingChange}
+        >We support standard emoticons &amp; emojis. Hints available <a href="http://www.emoji-cheat-sheet.com/" target="_blank">here</a>.</SettingItem>
+
+        <SettingItem
+          title="Type of emojis."
+          desc="You can specify the set of emojis to be used."
+          setting="global.emojis_type"
+          choices={[
+            { label: "Apple", value: "apple" },
+            { label: "Emojione", value: "emojione" },
+            { label: "Twitter", value: "twitter" }
+          ]}
+          onChange={this.onSettingChange}
+        />
+      </section>,
+      <section>
+        <h3>Text &amp; images</h3>
+        <SettingItem
+          setting="global.rooms.image_preview"
+          title="Show inline preview of images."
+          desc="Images links such as jpegs, gifs &amp; lolcats will be embedded inline."
+          onChange={this.onSettingChange}
+        />
+        <SettingItem
+          setting="global.rooms.links_preview"
+          title="Show inline preview of websites."
+          desc="Show information of websites urls pasted into the chat."
+          onChange={this.onSettingChange}
+        />
+      </section>,
+      <section>
+        <h3>Appearence</h3>
+        <SettingItem
+          setting="global.rooms.emphasis"
+          title="Emphasis your chat message."
+          desc="Use a different background color for all your messages."
+          onChange={this.onSettingChange}
+        />
+      </section>
+    ];
+  }
+
+  generateNotifications() {
+    const activation = (
+      this.state.notifGranted ?
+        <SettingItem
+          setting="global.notification.desktop"
+          title="Use the native broswer&#39;s or operating system ability to display desktop notifications."
+          onChange={this.onSettingChange}
+        /> :
+        <div className="setting-item flex-horizontal">
+          <div className="flex-spacer">Use the native broswer&#39;s or operating system ability to display desktop notifications.</div>
+          <button
+            className="button-secondary"
+            onClick={this.onGrantNotificationClick}
+          >Grant permissions</button>
+        </div>
+      );
+    return [
+      <section>
+        <h3>Desktop notification</h3>
+        {activation}
+        <h3>Sound blips</h3>
+        <SettingItem
+          setting="global.notification.sound"
+          title="Play a sound to notify new messages."
+          onChange={this.onSettingChange}
+        />
+
+        <SettingItem
+          setting="global.notification.mentions"
+          title="Play a different sound when notified in @mentions."
+          onChange={this.onSettingChange}
+        />
+
+        <SettingItem
+          setting="global.notification.sound_volume"
+          title="Audio volume for notification."
+          choices={[
+            { label: "Loud", value: 100 },
+            { label: "Medium", value: 50 },
+            { label: "Low", value: 25 },
+          ]}
+          onChange={this.onSettingChange}
+        />
+      </section>
+    ];
+  }
+
+  generateConnections() {
+    return [
+      <section>
+        <h3>One click login services</h3>
+        <p>One-click Login is not yet configurable in the chat application.
+          You can modify it on your profile page
+          <a href="/profile" target="_blank">here</a></p>
+      </section>
+    ];
   }
 
   renderProfile() {
@@ -180,146 +302,38 @@ export default class UserSettingsDialog extends React.Component {
     );
   }
 
-  renderGeneral() {
-    return (
-      <TabPanel label="General">
-        <SettingItem
-          setting="global.clock24"
-          title="Use 24hr clock."
-          onChange={this.onSettingChange}
-        />
-
-        <SettingItem
-          setting="global.rooms.enter"
-          title="Enter sends messages. Shift+Enter adds a new line."
-          desc="When disabled, Enter adds a new line, and Shit+Enter sends messages."
-          onChange={this.onSettingChange}
-        />
-
-        <h3>Emojis</h3>
-        <SettingItem
-          title="Allows emoticons replacement in typed text."
-          setting="global.emoticons"
-          onChange={this.onSettingChange}
-        >We support standard emoticons &amp; emojis. Hints available <a href="http://www.emoji-cheat-sheet.com/" target="_blank">here</a>.</SettingItem>
-
-        <SettingItem
-          title="Type of emojis."
-          desc="You can specify the set of emojis to be used."
-          setting="global.emojis_type"
-          choices={[
-            { label: "Apple", value: "apple" },
-            { label: "Emojione", value: "emojione" },
-            { label: "Twitter", value: "twitter" }
-          ]}
-          onChange={this.onSettingChange}
-        />
-
-        <h3>Text &amp; images</h3>
-        <SettingItem
-          setting="global.rooms.image_preview"
-          title="Show inline preview of images."
-          desc="Images links such as jpegs, gifs &amp; lolcats will be embedded inline."
-          onChange={this.onSettingChange}
-        />
-        <SettingItem
-          setting="global.rooms.links_preview"
-          title="Show inline preview of websites."
-          desc="Show information of websites urls pasted into the chat."
-          onChange={this.onSettingChange}
-        />
-
-        <h3>Appearence</h3>
-
-        <SettingItem
-          setting="global.rooms.emphasis"
-          title="Emphasis your chat message."
-          desc="Use a different background color for all your messages."
-          onChange={this.onSettingChange}
-        />
-      </TabPanel>
-    );
-  }
-
-  renderNotifications() {
-    const activation = (
-      this.state.notifGranted ?
-        <SettingItem
-          setting="global.notification.desktop"
-          title="Use the native broswer&#39;s or operating system ability to display desktop notifications."
-          onChange={this.onSettingChange}
-        /> :
-        <div className="setting-item flex-horizontal">
-          <div className="flex-spacer">Use the native broswer&#39;s or operating system ability to display desktop notifications.</div>
-          <button
-            className="button-secondary"
-            onClick={this.onGrantNotificationClick}
-          >Grant permissions</button>
-        </div>
-      );
-    return (
-      <TabPanel label="Notifications">
-        <h3>Desktop notification</h3>
-        {activation}
-        <h3>Sound blips</h3>
-        <SettingItem
-          setting="global.notification.sound"
-          title="Play a sound to notify new messages."
-          onChange={this.onSettingChange}
-        />
-
-        <SettingItem
-          setting="global.notification.mentions"
-          title="Play a different sound when notified in @mentions."
-          onChange={this.onSettingChange}
-        />
-
-        <SettingItem
-          setting="global.notification.sound_volume"
-          title="Audio volume for notification."
-          choices={[
-            { label: "Loud", value: 100 },
-            { label: "Medium", value: 50 },
-            { label: "Low", value: 25 },
-          ]}
-          onChange={this.onSettingChange}
-        />
-      </TabPanel>
-    );
-  }
-
-  renderPlugins() {
-    const plugins = PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER)
-      .filter(plugin => !!plugin.SettingsPanel)
-      .map(plugin => plugin.SettingsPanel)
-      .map((Panel, index) => (
-        <Panel
-          key={index}
-          onChange={this.onSettingChange}
-        />
-      ));
-    return (
-      <TabPanel label="Plugins">
-        {plugins}
-      </TabPanel>
-    );
-  }
-
-  renderConnections() {
-    return (
-      <TabPanel label="Connections">
-        <h3>One click login services</h3>
-        <p>One-click Login is not yet configurable in the chat application.
-          You can modify it on your profile page
-          <a href="/profile" target="_blank">here</a></p>
-      </TabPanel>
-    );
-  }
-
   render() {
-    let buttons = [
+    const buttons = [
       { action: "save", label: "Save" }
     ];
+
+    const categories = {
+      general: [].concat(this.generateGeneral()),
+      notifications: [].concat(this.generateNotifications()),
+      connections: [].concat(this.generateConnections())
+    };
+
+    PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_TEXT)
+      .filter(plugin => !!plugin.SettingsPanel)
+      .map(plugin => plugin.SettingsPanel)
+      .forEach(panel => {
+        const { category } = panel;
+        categories[category] = (categories[category] || []).concat(panel);
+      });
+
+    const tabs = Object.keys(categories).map(category => {
+      const contentSections = categories[category]
+        .map((Section, index) => (
+          React.isValidElement(Section) ?
+            React.cloneElement(Section, { key: index }) :
+            <Section key={index} onChange={this.onSettingChange} />
+        ));
+      return (
+        <TabPanel key={category} label={camelize(category)}>
+          {contentSections}
+        </TabPanel>
+      );
+    });
 
     return (
       <Dialog
@@ -332,10 +346,7 @@ export default class UserSettingsDialog extends React.Component {
       >
         <TabBar selected={this.state.selectedTab}>
           {this.renderProfile()}
-          {this.renderGeneral()}
-          {this.renderNotifications()}
-          {this.renderPlugins()}
-          {this.renderConnections()}
+          {tabs}
         </TabBar>
       </Dialog>
     );

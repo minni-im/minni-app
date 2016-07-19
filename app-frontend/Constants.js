@@ -78,8 +78,9 @@ export const ActionTypes = keyMirror({
 });
 
 export const PLUGIN_TYPES = keyMirror({
-  COMPOSER: null,
-  TYPEAHEAD: null
+  COMPOSER_TYPEAHEAD: null,
+  COMPOSER_TEXT: null,
+  COMPOSER_ACTION: null
 });
 
 export const AVATAR_SIZES = keyMirror({
