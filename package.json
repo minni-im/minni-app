@@ -82,7 +82,6 @@
     "lodash": "^3.10.0",
     "long": "^3.0.1",
     "minni-auth-github": "minni-im/minni-auth-github",
-    "minni-composer-aliases": "github:minni-im/minni-composer-aliases",
     "moment": "^2.10.6",
     "node-fetch": "^1.3.3",
     "node-libs-browser": "^0.5.2",
