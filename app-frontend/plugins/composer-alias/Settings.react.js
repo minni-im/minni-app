@@ -60,13 +60,13 @@ export default class Settings extends Component {
     const rows = Object.keys(aliases)
       .map((alias, index) => (
         <tr key={index}>
-          <td>{alias}</td>
-          <td>{aliases[alias]}</td>
-          <td>
+          <td className="user-select">{alias}</td>
+          <td className="user-select">{aliases[alias]}</td>
+          <td className="user-noselect">
             <span
               data-alias={alias}
               title="delete this alias"
-              className="item-action"
+              className="item-action actionable"
               onClick={this.removeAlias}
             >×</span>
           </td>
@@ -74,7 +74,7 @@ export default class Settings extends Component {
       ));
 
     const table = active ? (
-      <table>
+      <table className="setting-table">
         <tbody>
           {rows}
         </tbody>
@@ -97,7 +97,7 @@ export default class Settings extends Component {
             </td>
             <td>
               <button
-                className="highlight button-small"
+                className="button-small button-secondary"
                 onClick={this.addAlias}
               >Add</button>
             </td>
