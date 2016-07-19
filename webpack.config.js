@@ -10,7 +10,13 @@ module.exports = {
   context: path.join(__dirname, "./app-frontend"),
   entry: {
     minni: "./app.react.js",
-    plugins: glob.sync(path.join(__dirname, "app-frontend", "plugins", "**", "Plugin.js")),
+    plugins: glob.sync(
+      path.join(__dirname, "app-frontend", "plugins", "**", "Plugin.js")
+    ).concat(
+      glob.sync(
+        path.join(__dirname, "node_modules", "minni-*", "frontend", "Plugin.js")
+      )
+    ),
     vendor: [
       "react",
       "react-dom",
