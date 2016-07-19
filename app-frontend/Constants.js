@@ -71,7 +71,16 @@ export const ActionTypes = keyMirror({
 
   SLASHCOMMAND_QUERY: null,
   SLASHCOMMAND_QUERY_SUCCESS: null,
-  SLASHCOMMAND_QUERY_FAILURE: null
+  SLASHCOMMAND_QUERY_FAILURE: null,
+
+  PLUGIN_REGISTER: null,
+  PLUGIN_UNREGISTER: null
+});
+
+export const PLUGIN_TYPES = keyMirror({
+  COMPOSER_TYPEAHEAD: null,
+  COMPOSER_TEXT: null,
+  COMPOSER_ACTION: null
 });
 
 export const AVATAR_SIZES = keyMirror({

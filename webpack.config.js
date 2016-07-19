@@ -1,5 +1,6 @@
 const webpack = require("webpack");
 const path = require("path");
+const glob = require("glob");
 
 const nodeEnv = process.env.NODE_ENV || "development";
 const RELEASE = nodeEnv === "production";
@@ -9,8 +10,26 @@ module.exports = {
   context: path.join(__dirname, "./app-frontend"),
   entry: {
     minni: "./app.react.js",
+    plugins: glob.sync(
+      path.join(__dirname, "app-frontend", "plugins", "**", "Plugin.js")
+    ).concat(
+      glob.sync(
+        path.join(__dirname, "node_modules", "minni-*", "frontend", "Plugin.js")
+      )
+    ),
     vendor: [
       "react",
+      "react-dom",
+      "react-router",
+      "immutable",
+      "flux",
+      "flux/utils",
+      "long",
+      "classnames",
+      "deep-extend",
+      "highlight.js",
+      "click-outside",
+      "keymirror",
       "moment",
       "emojify",
       "lodash",
@@ -24,15 +43,32 @@ module.exports = {
     publicPath: "/",
     pathinfo: !RELEASE
   },
+  resolve: {
+    alias: {
+      "minni-plugins-toolkit": path.join(__dirname, "app-frontend", "libs", "PluginsToolkit.js")
+    },
+    fallback: path.join(__dirname, "node_modules")
+  },
+  resolveLoader: {
+    fallback: path.join(__dirname, "node_modules")
+  },
   module: {
     loaders: [
       {
         test: /\.js$/,
-        exclude: /node_modules/,
-        loaders: "babel-loader"
+        include: [
+          path.join(__dirname, "app-frontend"),
+          path.join(__dirname, "public", "images", "svgs")
+        ].concat(
+          glob.sync(path.join(__dirname, "node_modules", "minni-composer-*"), { realpath: true })
+        ),
+        loader: "babel-loader",
+        query: {
+          babelrc: path.resolve(".babelrc")
+        }
       }, {
         test: /\.json$/,
-        loaders: "json"
+        loader: "json"
       }
     ],
   },
@@ -43,6 +79,7 @@ module.exports = {
       minChunks: Infinity
     }),
     new webpack.LoaderOptionsPlugin({
+      comments: RELEASE,
       minimize: RELEASE,
       debug: !RELEASE
     })
