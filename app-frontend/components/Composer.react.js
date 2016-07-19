@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { ALL as EMOJIS, MASK_BY_PROVIDER } from "emojify";
 
+import { PLUGIN_TYPES } from "../Constants";
+
 import { SmileyIcon } from "../utils/IconsUtils";
 
 import CommandTypeAhead, { COMMAND_SENTINEL } from "./typeahead/CommandResults.react";
@@ -20,47 +22,49 @@ import Room from "../models/Room";
 import UserSettingsStore from "../stores/UserSettingsStore";
 import UserStore from "../stores/UserStore";
 import AccountRoomStore from "../stores/AccountRoomStore";
+import PluginsStore from "../stores/PluginsStore";
 import SelectedAccountStore from "../stores/SelectedAccountStore";
 
 import { KEYCODES } from "../utils/KeyboardUtils";
 import TypingUtils from "../utils/TypingUtils";
 import RegexUtils from "../utils/RegexUtils";
 
-const COMMAND_ENABLED = () => true;
-const COMMAND_DISABLED = () => false;
+// const COMMAND_ENABLED = () => true;
+// const COMMAND_DISABLED = () => false;
+//
+// const COMMANDS = [
+//   {
+//     command: "gif",
+//     title: "Buukkit",
+//     description: "Search animated gifs on http://buukkit.appspot.com",
+//     enabled: COMMAND_ENABLED,
+//     typeahead: true,
+//     images: true
+//   }, {
+//     command: "me",
+//     title: "Me",
+//     description: "What are you doing ?",
+//     enabled: COMMAND_DISABLED
+//   }, {
+//     command: "giphy",
+//     title: "Giphy",
+//     description: "Search animated gifs from Giphy",
+//     enabled: COMMAND_DISABLED,
+//     typeahead: true,
+//     images: true
+//   }
+// ];
 
-const COMMANDS = [
-  {
-    command: "gif",
-    title: "Buukkit",
-    description: "Search animated gifs on http://buukkit.appspot.com",
-    enabled: COMMAND_ENABLED,
-    typeahead: true,
-    images: true
-  }, {
-    command: "me",
-    title: "Me",
-    description: "What are you doing ?",
-    enabled: COMMAND_DISABLED
-  }, {
-    command: "giphy",
-    title: "Giphy",
-    description: "Search animated gifs from Giphy",
-    enabled: COMMAND_DISABLED,
-    typeahead: true,
-    images: true
-  }
-];
 
-const PREFIX_RE = new RegExp(
-  `${MENTION_SENTINEL}|${ROOM_SENTINEL}|${EMOJI_SENTINEL}|^${COMMAND_SENTINEL}`
-);
+// const PREFIX_RE = new RegExp(
+//   `${MENTION_SENTINEL}|${ROOM_SENTINEL}|${EMOJI_SENTINEL}|^${COMMAND_SENTINEL}`
+// );
 
-const COMMAND_RE_TEXT = `^/(${COMMANDS.filter(c => c.typeahead)
-    .map(c => c.command)
-    .join("|")
-  })\\s(.+)`;
-const COMMAND_RE = new RegExp(COMMAND_RE_TEXT, "i");
+// const COMMAND_RE_TEXT = `^/(${COMMANDS.filter(c => c.typeahead)
+//     .map(c => c.command)
+//     .join("|")
+//   })\\s(.+)`;
+// const COMMAND_RE = new RegExp(COMMAND_RE_TEXT, "i");
 const WHITESPACE_RE = /(\t|\s)/;
 
 const TYPEAHEAD_NONE = 0;
@@ -231,27 +235,39 @@ export default class Composer extends React.Component {
     const end = selectionEnd;
     let results;
     let prefix;
-    let type = TYPEAHEAD_NONE;
+    let type = null;
 
-    const match = value.match(COMMAND_RE);
-    if (match) {
-      const integration = match[1];
-      const query = match[2];
-      if (this.state.integration === integration && this.state.query === query) {
-        return;
-      }
-      SlashCommandSearch(integration, query);
-      this.setState({
-        type: TYPEAHEAD_COMMAND_RESULTS,
-        integration,
-        query,
-        command: COMMANDS.filter(c => c.command === integration)[0],
-        results: null,
-        start: 0,
-        end: value.length
-      });
-      return;
-    }
+    const PLUGINS = PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_TYPEAHEAD);
+    const PLUGINS_SENTINEL = PLUGINS.map(plugin => plugin.SENTINEL);
+
+    const PREFIX_RE = new RegExp(PLUGINS
+      .map(plugin => plugin.PREFIX || plugin.SENTINEL)
+      .join("|"));
+
+    const PLUGINS_COMPONENTS = PLUGINS.reduce((dict, plugin) => {
+      dict[plugin.name] = plugin.ResultsPanel;
+      return dict;
+    }, {});
+
+    // const match = value.match(COMMAND_RE);
+    // if (match) {
+    //   const integration = match[1];
+    //   const query = match[2];
+    //   if (this.state.integration === integration && this.state.query === query) {
+    //     return;
+    //   }
+    //   SlashCommandSearch(integration, query);
+    //   this.setState({
+    //     type: TYPEAHEAD_COMMAND_RESULTS,
+    //     integration,
+    //     query,
+    //     command: COMMANDS.filter(c => c.command === integration)[0],
+    //     results: null,
+    //     start: 0,
+    //     end: value.length
+    //   });
+    //   return;
+    // }
 
     do {
       if (PREFIX_RE.test(value[start])) {
@@ -261,36 +277,44 @@ export default class Composer extends React.Component {
             const regex = new RegExp(`^${RegexUtils.escape(prefix.slice(1))}`, "i");
             const test = v => regex.test(v);
 
-            switch (prefix[0]) {
-              case MENTION_SENTINEL:
-                type = TYPEAHEAD_MENTION;
-                results = this.processMentionSentinelResults(prefix);
+            for (const { name, SENTINEL } of PLUGINS) {
+              if (prefix[0] === SENTINEL) {
+                type = name;
+                console.log("Matching", name);
                 break;
-
-              case COMMAND_SENTINEL:
-                if (start === 0) {
-                  type = TYPEAHEAD_COMMAND;
-                  results = COMMANDS.filter(({ command, enabled }) =>
-                    enabled(command) && test(command)
-                  ).slice(0, 10);
-                }
-                break;
-
-              case EMOJI_SENTINEL:
-                type = TYPEAHEAD_EMOJI;
-                if (prefix.length > 2) {
-                  results = this.processEmojiSentinelResults(test);
-                }
-                break;
-
-              case ROOM_SENTINEL:
-                type = TYPEAHEAD_ROOM;
-                if (prefix.length > 3) {
-                  results = this.processRoomSentinelResults(test);
-                }
-                break;
-              default:
+              }
             }
+      //
+      //       switch (prefix[0]) {
+      //         case MENTION_SENTINEL:
+      //           type = TYPEAHEAD_MENTION;
+      //           results = this.processMentionSentinelResults(prefix);
+      //           break;
+      //
+      //         case COMMAND_SENTINEL:
+      //           if (start === 0) {
+      //             type = TYPEAHEAD_COMMAND;
+      //             results = COMMANDS.filter(({ command, enabled }) =>
+      //               enabled(command) && test(command)
+      //             ).slice(0, 10);
+      //           }
+      //           break;
+      //
+      //         case EMOJI_SENTINEL:
+      //           type = TYPEAHEAD_EMOJI;
+      //           if (prefix.length > 2) {
+      //             results = this.processEmojiSentinelResults(test);
+      //           }
+      //           break;
+      //
+      //         case ROOM_SENTINEL:
+      //           type = TYPEAHEAD_ROOM;
+      //           if (prefix.length > 3) {
+      //             results = this.processRoomSentinelResults(test);
+      //           }
+      //           break;
+      //         default:
+      //       }
           } else {
             type = this.state.type;
             results = this.state.results;
