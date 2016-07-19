@@ -1,6 +1,6 @@
 import React from "react";
 import { Container } from "flux/utils";
-import TypeAheadResults from "./TypeAheadResults.react";
+import TypeAheadResults from "../../components/typeahead/TypeAheadResults.react";
 
 import SlashCommandStore from "../../stores/SlashCommandStore";
 

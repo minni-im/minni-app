@@ -16,7 +16,7 @@ function escapeExpr(text) {
 }
 
 function replaceAliases(text) {
-  const aliases = SettingsStore.getValue("plugins.aliases.list");
+  const aliases = SettingsStore.getValue("plugins.aliases.list", {});
   Object.keys(aliases).forEach(alias => {
     const subst = aliases[alias];
     if (alias.startsWith("/") && alias.endsWith("/")) {

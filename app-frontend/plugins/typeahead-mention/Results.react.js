@@ -1,11 +1,13 @@
 import React from "react";
 
-import TypeAheadResults from "./TypeAheadResults.react";
-import Avatar from "../generic/Avatar.react";
+import TypeAheadResults from "../../components/typeahead/TypeAheadResults.react";
+import { UI } from "../../libs/PluginsToolkit";
 
-export const MENTION_SENTINEL = "@";
+const { Avatar } = UI;
 
-export default class MentionTypeAhead extends TypeAheadResults {
+const MENTION_SENTINEL = "@";
+
+export default class extends TypeAheadResults {
   transformSelectionToText(user) {
     return MENTION_SENTINEL + user.nickname;
   }

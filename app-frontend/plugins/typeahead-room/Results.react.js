@@ -1,9 +1,10 @@
 import React from "react";
-import TypeAheadResults from "./TypeAheadResults.react";
 
-export const ROOM_SENTINEL = "#";
+import TypeAheadResults from "../../components/typeahead/TypeAheadResults.react";
 
-export default class RoomTypeAhead extends TypeAheadResults {
+const ROOM_SENTINEL = "#";
+
+export default class extends TypeAheadResults {
   transformSelectionToText(room) {
     return ROOM_SENTINEL + room.slug;
   }
