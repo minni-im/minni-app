@@ -1,5 +1,5 @@
 import twitter from "twitter-text";
-import { Constants, register as PluginRegister } from "../../libs/PluginsToolkit";
+import { Constants, register as PluginRegister } from "minni-plugins-toolkit";
 import ImageActionCreators from "../../actions/ImageActionCreators";
 import ImageStore from "../../stores/ImageStore";
 

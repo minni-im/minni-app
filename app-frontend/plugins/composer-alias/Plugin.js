@@ -1,4 +1,4 @@
-import { Constants, register as PluginRegister, SettingsStore } from "../../libs/PluginsToolkit";
+import { Constants, register as PluginRegister, SettingsStore } from "minni-plugins-toolkit";
 import SettingsPanel from "./Settings.react";
 
 const { COMPOSER_TEXT } = Constants.PLUGIN_TYPES;
@@ -16,7 +16,7 @@ function escapeExpr(text) {
 }
 
 function replaceAliases(text) {
-  const aliases = SettingsStore.getValue("plugins.aliases.list");
+  const aliases = SettingsStore.getValue("plugins.aliases.list", {});
   Object.keys(aliases).forEach(alias => {
     const subst = aliases[alias];
     if (alias.startsWith("/") && alias.endsWith("/")) {

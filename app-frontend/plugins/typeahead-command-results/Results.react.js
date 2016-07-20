@@ -1,10 +1,19 @@
 import React from "react";
 import { Container } from "flux/utils";
-import TypeAheadResults from "./TypeAheadResults.react";
 
+import { UI } from "minni-plugins-toolkit";
+const { TypeaheadResults } = UI;
+
+// TODO: We need to find a way for plugins to create their own stores.
 import SlashCommandStore from "../../stores/SlashCommandStore";
 
-class SlashCommandResults extends TypeAheadResults {
+function filename(url) {
+  return url.split("/").pop();
+}
+
+
+class SlashCommandResults extends TypeaheadResults {
+  static className = "suggestions-command-results";
   static getStores() {
     return [
       SlashCommandStore
@@ -30,8 +39,20 @@ class SlashCommandResults extends TypeAheadResults {
   }
 
   renderHeader() {
+    let name;
+    if (this.state.results && this.state.results.length) {
+      name = (
+        <span>
+          &nbsp;-&nbsp;
+          <em>{filename(this.state.results[this.state.selectedIndex])}</em>
+        </span>
+      );
+    }
     return (
-      <div>{this.props.command.title} results matching <strong>{this.props.query}</strong></div>
+      <div>
+        {this.props.command.title} results matching <strong>{this.props.query}</strong>
+        {name}
+      </div>
     );
   }
 

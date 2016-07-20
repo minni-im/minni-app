@@ -32,6 +32,8 @@ import RoomCreate from "./components/RoomCreate.react";
 import MutliRoomContainer from "./components/MutliRoomContainer.react";
 import Rooms from "./components/RoomsContainer.react";
 
+import "./libs/PluginsToolkit";
+
 function selectAccount(meta) {
   AccountActionCreators.selectAccount(meta.params.accountSlug);
 }

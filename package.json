@@ -7,7 +7,8 @@
     "test": "jest",
     "svg": "svg2react",
     "build": "webpack --progress",
-    "watch": "webpack --progress --watch --debug"
+    "watch": "webpack --progress --watch --debug",
+    "build:prod": "NODE_ENV=production webpack"
   },
   "repository": {
     "type": "git",

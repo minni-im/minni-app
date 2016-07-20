@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from "react";
-import { SettingsStore, UI } from "../../libs/PluginsToolkit";
+import { SettingsStore, UI } from "minni-plugins-toolkit";
 
 const { SettingItem } = UI;
 

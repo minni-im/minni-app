@@ -1,11 +1,13 @@
 import React from "react";
 
-import TypeAheadResults from "./TypeAheadResults.react";
-import Avatar from "../generic/Avatar.react";
+import { UI } from "minni-plugins-toolkit";
+const { Avatar, TypeaheadResults } = UI;
 
-export const MENTION_SENTINEL = "@";
+const MENTION_SENTINEL = "@";
 
-export default class MentionTypeAhead extends TypeAheadResults {
+export default class extends TypeaheadResults {
+  static className = "suggestions-mention";
+
   transformSelectionToText(user) {
     return MENTION_SENTINEL + user.nickname;
   }

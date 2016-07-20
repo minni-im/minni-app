@@ -1,9 +1,13 @@
 import React from "react";
-import TypeAheadResults from "./TypeAheadResults.react";
 
-export const COMMAND_SENTINEL = "/";
+import { UI } from "minni-plugins-toolkit";
+const { TypeaheadResults } = UI;
 
-export default class CommandResults extends TypeAheadResults {
+const COMMAND_SENTINEL = "/";
+
+export default class extends TypeaheadResults {
+  static className = "suggestions-command";
+
   transformSelectionToText(value) {
     return COMMAND_SENTINEL + value.command;
   }

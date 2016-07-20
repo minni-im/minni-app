@@ -1,11 +1,13 @@
 import React from "react";
-import TypeAheadResults from "./TypeAheadResults.react";
-import Emoji from "../Emoji.react";
 
+import { UI } from "minni-plugins-toolkit";
+const { Emoji, TypeaheadResults } = UI;
 
-export const EMOJI_SENTINEL = ":";
+const EMOJI_SENTINEL = ":";
 
-export default class EmojiTypeAhead extends TypeAheadResults {
+export default class extends TypeaheadResults {
+  static className = "suggestions-emoji";
+
   transformSelectionToText(emoji) {
     return EMOJI_SENTINEL + emoji + EMOJI_SENTINEL;
   }
