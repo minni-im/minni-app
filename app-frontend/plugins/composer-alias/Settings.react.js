@@ -19,8 +19,8 @@ export default class Settings extends Component {
   }
 
   state = {
-    active: SettingsStore.getValue("plugins.aliases.active"),
-    aliases: SettingsStore.getValue("plugins.aliases.list")
+    active: SettingsStore.getValue("plugins.aliases.active", false),
+    aliases: SettingsStore.getValue("plugins.aliases.list", {})
   }
 
   onActivateChange(key, newValue) {
@@ -115,6 +115,7 @@ export default class Settings extends Component {
         <h3>Aliases</h3>
         <SettingItem
           setting="plugins.aliases.active"
+          default={false}
           title="Replaces expressions in your outgoing messages"
           onChange={this.onActivateChange}
         />

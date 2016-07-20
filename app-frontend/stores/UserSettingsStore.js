@@ -10,7 +10,6 @@ import Dispatcher from "../Dispatcher";
 import Logger from "../libs/Logger";
 const logger = Logger.create("UserSettingsStore");
 
-
 const DEFAULT_SETTINGS = {
   global: {
     clock24: false,
@@ -18,7 +17,7 @@ const DEFAULT_SETTINGS = {
     emojis_type: "twitter",
     rooms: {
       image_preview: true,
-      links_preview: false,
+      links_preview: true,
       emphasis: true,
       enter: true
     },
@@ -29,8 +28,7 @@ const DEFAULT_SETTINGS = {
       sound_volume: 50
     }
   },
-  plugins: {
-  },
+  plugins: {},
   starred: {
     rooms: [],
     messages: []
@@ -79,19 +77,22 @@ class UserSettingsStore extends MapStore {
     return deepExtend(DEFAULT_SETTINGS, this.getState().get("data").toJS());
   }
 
+  getValue(key, fallbackValue) {
+    const split = key.split(".");
+    const defaultValue = defaultValues.getIn(split);
+    const value = this.getState().get("data").getIn(split, defaultValue);
+    if (value !== undefined) {
+      return value.toJSON ? value.toJSON() : value;
+    }
+    return fallbackValue;
+  }
+
   isRoomStarred({ id }) {
     return this.getValue("starred.rooms").includes(id);
   }
 
   isMessageStarred({ id }) {
     return this.getValue("starred.messages").includes(id);
-  }
-
-  getValue(key) {
-    const split = key.split(".");
-    const defaultValue = defaultValues.getIn(split);
-    const value = this.getState().get("data").getIn(split, defaultValue);
-    return value.toJSON ? value.toJSON() : value;
   }
 
   getEmojiProviderInfo() {
