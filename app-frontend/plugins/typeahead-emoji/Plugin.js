@@ -1,5 +1,5 @@
 import { ALL as EMOJIS, MASK_BY_PROVIDER } from "emojify";
-import { Constants, register as PluginRegister, SettingsStore } from "../../libs/PluginsToolkit";
+import { Constants, register as PluginRegister, SettingsStore } from "minni-plugins-toolkit";
 import ResultsPanel from "./Results.react";
 
 const { COMPOSER_TYPEAHEAD } = Constants.PLUGIN_TYPES;

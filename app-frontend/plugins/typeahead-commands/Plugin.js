@@ -1,4 +1,4 @@
-import { Constants, register as PluginRegister, PluginsStore } from "../../libs/PluginsToolkit";
+import { Constants, register as PluginRegister, PluginsStore } from "minni-plugins-toolkit";
 import ResultsPanel from "./Results.react";
 
 const {

@@ -1,4 +1,4 @@
-import { Constants, register as PluginRegister, SettingsStore } from "../../libs/PluginsToolkit";
+import { Constants, register as PluginRegister, SettingsStore } from "minni-plugins-toolkit";
 import SettingsPanel from "./Settings.react";
 
 const { COMPOSER_TEXT } = Constants.PLUGIN_TYPES;

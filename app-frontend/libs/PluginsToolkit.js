@@ -2,12 +2,15 @@ import { ActionTypes, PLUGIN_TYPES } from "../Constants";
 import { dispatch } from "../Dispatcher";
 
 import Emoji from "../components/Emoji.react";
+import TypeaheadResults from "../components/TypeaheadResults.react";
 
 import Avatar from "../components/generic/Avatar.react";
 import Badge from "../components/generic/Badge.react";
 import Dialog from "../components/generic/Dialog.react";
 import TabBar from "../components/generic/TabBar.react";
 import SettingItem from "../components/settings/SettingItem.react";
+
+import "../stores/SlashCommandStore";
 
 const { PLUGIN_REGISTER, PLUGIN_UNREGISTER } = ActionTypes;
 
@@ -40,5 +43,6 @@ export const UI = {
   Dialog,
   Emoji,
   TabBar,
-  SettingItem
+  SettingItem,
+  TypeaheadResults
 };

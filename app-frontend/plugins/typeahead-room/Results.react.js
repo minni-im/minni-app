@@ -1,10 +1,12 @@
 import React from "react";
 
-import TypeAheadResults from "../../components/typeahead/TypeAheadResults.react";
+import { UI } from "minni-plugins-toolkit";
+const { TypeaheadResults } = UI;
 
 const ROOM_SENTINEL = "#";
 
-export default class extends TypeAheadResults {
+export default class extends TypeaheadResults {
+  static className = "suggestions-room";
   transformSelectionToText(room) {
     return ROOM_SENTINEL + room.slug;
   }

@@ -21,6 +21,7 @@ module.exports = {
       "react",
       "react-dom",
       "react-router",
+      "react-addons-css-transition-group",
       "immutable",
       "flux",
       "flux/utils",
@@ -75,6 +76,13 @@ module.exports = {
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
       name: "vendor",
+      chunks: ["minni", "plugins"],
+      filename: RELEASE ? "[name]-bundle.[hash].min.js" : "[name]-bundle.js",
+      minChunks: Infinity
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "minni",
+      chunks: ["plugins"],
       filename: RELEASE ? "[name]-bundle.[hash].min.js" : "[name]-bundle.js",
       minChunks: Infinity
     }),

@@ -276,7 +276,6 @@ export default class Composer extends React.Component {
     if (autocompleteComponent) {
       autocomplete = React.createElement(autocompleteComponent, {
         ref: "suggestions",
-        className: "",
         key: this.state.query || this.state.prefix,
         prefix: this.state.prefix,
         command: this.state.command,

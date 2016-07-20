@@ -1,9 +1,9 @@
 import React, { PropTypes } from "react";
 import classnames from "classnames";
 
-import { KEYCODES } from "../../utils/KeyboardUtils";
+import { KEYCODES } from "../utils/KeyboardUtils";
 
-export default class TypeAheadResults extends React.Component {
+export default class TypeaheadResults extends React.Component {
   static propTypes = {
     className: PropTypes.string,
     results: PropTypes.array,
@@ -71,15 +71,11 @@ export default class TypeAheadResults extends React.Component {
 
   render() {
     const results = this.props.results || this.state.results;
-    if (results == null || results.length === 0) {
-      if (!this.props.command) {
-        return null;
-      }
-      return <span>Loading...</span>;
-    }
     const classNames = {
-      suggestions: true
+      suggestions: true,
+      [this.constructor.className || ""]: true
     };
+
     if (this.props.command) {
       classNames[`suggestions-${this.props.command.command}`] = true;
       classNames["suggestions-images"] = !!this.props.command.images;
@@ -96,21 +92,35 @@ export default class TypeAheadResults extends React.Component {
       </div>
     );
 
-    const suggestionMapper = (result, index) => this.renderRow(result, {
-      key: index,
-      className: classnames("suggestion-item", {
-        "suggestion-item--active": this.state.selectedIndex === index
-      }),
-      onMouseDown: this.handleSelect,
-      onMouseEnter: () => this.setState({ selectedIndex: index })
-    });
-    const suggestions = (
-      <div className="suggestions-list">
-        {results.map(suggestionMapper)}
-      </div>
-    );
+    if (results == null || results.length === 0 && !this.props.command) {
+      return null;
+    }
+
+    let suggestions;
+    if (results.length) {
+      const suggestionMapper = (result, index) => this.renderRow(result, {
+        key: index,
+        className: classnames("suggestion-item", {
+          "suggestion-item--active": this.state.selectedIndex === index
+        }),
+        onMouseDown: this.handleSelect,
+        onMouseEnter: () => this.setState({ selectedIndex: index })
+      });
+      suggestions = (
+        <div className="suggestions-list">
+          {results.map(suggestionMapper)}
+        </div>
+      );
+    } else {
+      suggestions = (
+        <div className="suggestions-list" style={{ justifyContent: "center" }}>
+          Loading...
+        </div>
+      );
+    }
+
     return (
-      <div className={classnames(classNames, this.props.className)}>
+      <div className={classnames(classNames)}>
         {header}
         {suggestions}
       </div>

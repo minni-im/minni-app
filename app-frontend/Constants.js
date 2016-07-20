@@ -77,12 +77,12 @@ export const ActionTypes = keyMirror({
   PLUGIN_UNREGISTER: null
 });
 
-export const PLUGIN_TYPES = keyMirror({
-  COMPOSER_TYPEAHEAD: null,
-  COMPOSER_TEXT: null,
-  COMPOSER_ACTION: null,
-  COMPOSER_COMMAND: null
-});
+export const PLUGIN_TYPES = {
+  COMPOSER_TYPEAHEAD: 1 << 0,
+  COMPOSER_TEXT: 1 << 1,
+  COMPOSER_ACTION: 1 << 2,
+  COMPOSER_COMMAND: 1 << 3
+};
 
 export const AVATAR_SIZES = keyMirror({
   SMALL: null,

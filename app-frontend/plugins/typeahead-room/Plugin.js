@@ -2,7 +2,7 @@ import UserStore from "../../stores/UserStore";
 import SelectedAccountStore from "../../stores/SelectedAccountStore";
 import AccountRoomStore from "../../stores/AccountRoomStore";
 
-import { Constants, register as PluginRegister } from "../../libs/PluginsToolkit";
+import { Constants, register as PluginRegister } from "minni-plugins-toolkit";
 import ResultsPanel from "./Results.react";
 
 const { COMPOSER_TYPEAHEAD } = Constants.PLUGIN_TYPES;
