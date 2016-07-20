@@ -46,7 +46,7 @@ const ENCODING_RULES = {
     order: DEFAULT_RULES.room.order,
     match(source, state, lookBehind) {
       if (/^|[\s]+/.test(lookBehind)) {
-        const match = source.match(/^#([a-z0-9-]{1,20})/);
+        const match = source.match(/^#([a-z0-9-]{1,30})/);
         if (match) {
           return state.rooms
             .filter(({ slug }) => slug === match[1])
