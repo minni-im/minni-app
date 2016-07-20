@@ -22,6 +22,7 @@ class EmojiContainer extends React.Component {
 
   static calculateState() {
     return {
+      active: UserSettingsStore.getValue("global.emoticons"),
       provider: UserSettingsStore.getEmojiProviderInfo()
     };
   }
@@ -29,10 +30,14 @@ class EmojiContainer extends React.Component {
   render() {
     const { shortname, skinTone } = this.props;
     const emoji = EMOJIS[shortname];
-    const { provider } = this.state;
+    const { provider, active } = this.state;
     let name = shortname;
     let src;
     let unicode;
+    if (!active) {
+      return <span>{`:${name}:`}</span>;
+    }
+
     if (emoji && MASK_BY_PROVIDER[provider.name] & emoji.mask) {
       if (skinTone) {
         unicode = emoji.skin_variations[SKIN_TONE_INDEX[skinTone]];
