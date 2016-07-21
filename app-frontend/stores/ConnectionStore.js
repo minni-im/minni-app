@@ -3,13 +3,14 @@ import Dispatcher, { dispatch } from "../Dispatcher";
 
 import { ActionTypes, SOCKETIO_OPTIONS } from "../Constants";
 
-import AccountActionCreators from "../actions/AccountActionCreators";
 import RoomActionCreators from "../actions/RoomActionCreators";
 
 import AccountStore from "../stores/AccountStore";
 import RoomStore from "../stores/RoomStore";
 import ConnectedRoomStore from "../stores/ConnectedRoomStore";
 import UserStore from "../stores/UserStore";
+
+import * as ActivityWatcherUtils from "../utils/ActivityWatcherUtils";
 
 import Logger from "../libs/Logger";
 const logger = Logger.create("ConnectionStore");
@@ -72,6 +73,7 @@ function handleConnectionOpen() {
       appHolder.classList.add("splashscreen--hidden");
     }, 500);
   }, 1500);
+  ActivityWatcherUtils.initialize();
 }
 
 function handleRoomJoin({ accountSlug, roomSlug }) {

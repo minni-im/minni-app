@@ -1,6 +1,6 @@
 import { MapStore } from "../libs/Flux";
 
-import { ActionTypes } from "../Constants";
+import { ActionTypes, USER_STATUS } from "../Constants";
 
 import Dispatcher from "../Dispatcher";
 import User from "../models/User";
@@ -25,13 +25,22 @@ function handleUserAdd(state, { user }) {
 
 function handleConnectionOpen(state, { user, users }) {
   connectedUserId = user.id;
+  user.status = USER_STATUS.ONLINE;
   state = state.set(user.id, new User(user));
   logger.info("Registering logged in user", user.fullname);
-  return handleUsersAdd(state, { users});
+  return handleUsersAdd(state, { users });
 }
 
 function handleProfileUpdate(state, { user }) {
   return handleUserAdd(state, { user });
+}
+
+function handleStatusUpdate(state, { userId, status }) {
+  if (!userId) {
+    userId = connectedUserId;
+  }
+  logger.warn("User status update", userId, status);
+  return state.update(userId, user => user.set("status", status));
 }
 
 class UserStore extends MapStore {
@@ -41,6 +50,8 @@ class UserStore extends MapStore {
     this.addAction(ActionTypes.LOAD_USER_SUCCESS, handleUserAdd);
     this.addAction(ActionTypes.LOAD_USERS_SUCCESS, handleUsersAdd);
     this.addAction(ActionTypes.PROFILE_UPDATE_SUCCESS, handleProfileUpdate);
+
+    this.addAction(ActionTypes.USER_STATUS, handleStatusUpdate);
   }
 
   getUsers(usersId, except = []) {

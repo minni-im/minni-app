@@ -1,6 +1,8 @@
 import React from "react";
 import { Container } from "flux/utils";
 
+import UserStatus from "./UserStatus.react";
+import UserStatusIcon from "./UserStatusIcon.react";
 import UserSettingsDialogContainer from "./settings/UserSettingsDialogContainer.react";
 import { SettingsIcon } from "../utils/IconsUtils";
 
@@ -41,11 +43,11 @@ class UserInfoPanel extends React.Component {
         <div className="user flex-horizontal flex-spacer">
           <div className="user-avatar">
             <img src={user.picture} alt="User avatar" />
-            <div className="user-status-icon" data-status="2"></div>
+            <UserStatusIcon status={user.status} />
           </div>
           <div className="flex-spacer">
             <div className="user-name" title={user.fullname}>{user.fullname}</div>
-            <div className="user-status">online</div>
+            <UserStatus status={user.status} />
           </div>
         </div>
         <div
