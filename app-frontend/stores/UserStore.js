@@ -9,6 +9,7 @@ import Logger from "../libs/Logger";
 const logger = Logger.create("UserStore");
 
 let connectedUserId;
+let forcedStatus = false;
 
 function handleUsersAdd(state, { users }) {
   state = state.withMutations(map => {
@@ -35,11 +36,12 @@ function handleProfileUpdate(state, { user }) {
   return handleUserAdd(state, { user });
 }
 
-function handleStatusUpdate(state, { userId, status }) {
+function handleStatusUpdate(state, { userId, status, force }) {
   if (!userId) {
     userId = connectedUserId;
+    forcedStatus = force;
   }
-  logger.warn("User status update", userId, status);
+  
   return state.update(userId, user => user.set("status", status));
 }
 

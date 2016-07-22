@@ -13,5 +13,12 @@ export default function UserStatusIcon(props) {
 }
 
 UserStatusIcon.propTypes = {
-  status: React.PropTypes.oneOf([0, 1, 2, 4, 8, 16])
+  status: React.PropTypes.oneOf([
+    USER_STATUS.OFFLINE,
+    USER_STATUS.CONNECTING,
+    USER_STATUS.ONLINE,
+    USER_STATUS.IDLE,
+    USER_STATUS.AWAY,
+    USER_STATUS.DND
+  ])
 };

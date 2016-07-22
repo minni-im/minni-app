@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router";
+import classnames from "classnames";
 import { Container } from "flux/utils";
 
-import classnames from "classnames";
+import * as ActivityActionCreators from "../../actions/ActivityActionCreators";
 import RoomActionCreators from "../../actions/RoomActionCreators";
 
 import { isOSX } from "../../utils/PlatformUtils";
@@ -131,15 +132,33 @@ class MainSidebar extends React.Component {
           buttonComponent={<UserInfoPanel />}
         >
           <ul className="menu">
-            <li tabIndex={2} onClick={closeUserInfoPopover}>
+            <li
+              tabIndex={2}
+              onClick={() => {
+                ActivityActionCreators.setAway();
+                closeUserInfoPopover();
+              }}
+            >
               <span className="user-status-icon" data-status="4"></span>
               Away
             </li>
-            <li tabIndex={1} onClick={closeUserInfoPopover}>
+            <li
+              tabIndex={1}
+              onClick={() => {
+                ActivityActionCreators.setDnd();
+                closeUserInfoPopover();
+              }}
+            >
               <span className="user-status-icon" data-status="5"></span>
               Do not disturb
             </li>
-            <li tabIndex={3} onClick={closeUserInfoPopover}>
+            <li
+              tabIndex={3}
+              onClick={() => {
+                ActivityActionCreators.setOnline();
+                closeUserInfoPopover();
+              }}
+            >
               <span className="user-status-icon" data-status="2"></span>
               Online
             </li>

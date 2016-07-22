@@ -1,5 +1,7 @@
 import Immutable from "immutable";
 
+import { USER_STATUS } from "../Constants";
+
 const UserRecord = Immutable.Record({
   id: undefined,
   firstname: undefined,
@@ -9,7 +11,7 @@ const UserRecord = Immutable.Record({
   email: undefined,
   gravatarEmail: undefined,
   picture: "/images/1x1.gif",
-  status: 0
+  status: USER_STATUS.OFFLINE
 });
 
 export default class User extends UserRecord {

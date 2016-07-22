@@ -9,14 +9,6 @@ export function setOnline(userId) {
   });
 }
 
-export function setOffline(userId) {
-  dispatch({
-    type: ActionTypes.USER_STATUS,
-    status: USER_STATUS.OFFLINE,
-    userId
-  });
-}
-
 export function setIdle(userId) {
   dispatch({
     type: ActionTypes.USER_STATUS,
@@ -30,5 +22,29 @@ export function setAway(userId) {
     type: ActionTypes.USER_STATUS,
     status: USER_STATUS.AWAY,
     userId
+  });
+}
+
+export function forceAway() {
+  dispatch({
+    type: ActionTypes.USER_STATUS,
+    status: USER_STATUS.AWAY,
+    force: true
+  });
+}
+
+export function setDnd(userId) {
+  dispatch({
+    type: ActionTypes.USER_STATUS,
+    status: USER_STATUS.DND,
+    userId
+  });
+}
+
+export function forceDnd() {
+  dispatch({
+    type: ActionTypes.USER_STATUS,
+    status: USER_STATUS.DND,
+    force: true
   });
 }
