@@ -1,48 +1,37 @@
-import { dispatch } from "../Dispatcher";
+import { dispatchAsync } from "../Dispatcher";
 import { ActionTypes, USER_STATUS } from "../Constants";
 
-export function setOnline(userId) {
-  dispatch({
+
+export function setStatus(userId, status) {
+  dispatchAsync({
     type: ActionTypes.USER_STATUS,
-    status: USER_STATUS.ONLINE,
+    status,
     userId
   });
+}
+
+export function setOnline(userId) {
+  setStatus(userId, USER_STATUS.ONLINE);
 }
 
 export function setIdle(userId) {
-  dispatch({
-    type: ActionTypes.USER_STATUS,
-    status: USER_STATUS.IDLE,
-    userId
-  });
+  setStatus(userId, USER_STATUS.IDLE);
 }
 
 export function setAway(userId) {
-  dispatch({
-    type: ActionTypes.USER_STATUS,
-    status: USER_STATUS.AWAY,
-    userId
-  });
+  setStatus(userId, USER_STATUS.AWAY);
 }
 
 export function forceAway() {
-  dispatch({
+  dispatchAsync({
     type: ActionTypes.USER_STATUS,
     status: USER_STATUS.AWAY,
     force: true
   });
 }
 
-export function setDnd(userId) {
-  dispatch({
-    type: ActionTypes.USER_STATUS,
-    status: USER_STATUS.DND,
-    userId
-  });
-}
-
 export function forceDnd() {
-  dispatch({
+  dispatchAsync({
     type: ActionTypes.USER_STATUS,
     status: USER_STATUS.DND,
     force: true

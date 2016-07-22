@@ -34,6 +34,18 @@ export default (app) => {
           console.error(error);
           res.status(400).json(error);
         });
+    },
+
+    status(req) {
+      if (!req.isSocket) return;
+      const { userId, status, accountIds } = req.data;
+      accountIds.forEach(accountId => {
+        req.socket.broadcast.to(accountId).emit("users:status", {
+          userId,
+          accountId,
+          status
+        });
+      });
     }
   });
 };

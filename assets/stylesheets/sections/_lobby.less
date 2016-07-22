@@ -12,6 +12,47 @@
       text-align: center;
       margin: auto 0;
     }
+
+    .user-info {
+      align-items: center;
+      margin-left: -10px;
+      margin-right: -10px;
+      cursor: default;
+      padding: 2px 10px;
+
+      .user-avatar {
+        position: relative;
+        margin: 5px 10px 5px 0;
+        #user.status-icon(@gray-lighter);
+        .user-status-icon {
+          transition: background-color 250ms ease;
+          position: absolute;
+          bottom: -3px; right: -3px;
+        }
+      }
+      .user-name {
+        .text-overflow;
+        font-weight: 400;
+      }
+
+      .user-status {
+        font-weight: 300;
+        font-size: 11px;
+        line-height: 1em;
+        color: @gray;
+        font-style: italic;
+      }
+
+      &:hover {
+        background-color: @background-light;
+
+        .user-avatar {
+          .user-status-icon {
+            border-color: @background-light;
+          }
+        }
+      }
+    }
   }
 
   .rooms--header {

@@ -167,6 +167,7 @@
       background-color: @status-color-online;
       border: 3px solid @background-color;
       border-radius: 50%;
+      position: relative;
 
       transition: background-color 250ms ease,
         border-color 250ms ease;
@@ -207,6 +208,15 @@
       // DND
       &[data-status="5"] {
         background-color: @status-color-dnd;
+        &:before {
+          position: absolute;
+          content: "";
+          background-color: @white;
+          left: 2px;
+          right: 2px;
+          top: 4px;
+          height: 2px;
+        }
       }
     }
 

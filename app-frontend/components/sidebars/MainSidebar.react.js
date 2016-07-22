@@ -135,7 +135,7 @@ class MainSidebar extends React.Component {
             <li
               tabIndex={2}
               onClick={() => {
-                ActivityActionCreators.setAway();
+                ActivityActionCreators.forceAway();
                 closeUserInfoPopover();
               }}
             >
@@ -145,7 +145,7 @@ class MainSidebar extends React.Component {
             <li
               tabIndex={1}
               onClick={() => {
-                ActivityActionCreators.setDnd();
+                ActivityActionCreators.forceDnd();
                 closeUserInfoPopover();
               }}
             >

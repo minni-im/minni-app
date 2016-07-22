@@ -5,11 +5,14 @@ import { ActionTypes, USER_STATUS } from "../Constants";
 import Dispatcher from "../Dispatcher";
 import User from "../models/User";
 
+// We import it here so it is loaded. Store has public API and thus would never
+// be loaded by a component.
+import "./PresenceStore";
+
 import Logger from "../libs/Logger";
 const logger = Logger.create("UserStore");
 
 let connectedUserId;
-let forcedStatus = false;
 
 function handleUsersAdd(state, { users }) {
   state = state.withMutations(map => {
@@ -36,12 +39,11 @@ function handleProfileUpdate(state, { user }) {
   return handleUserAdd(state, { user });
 }
 
-function handleStatusUpdate(state, { userId, status, force }) {
+function handleStatusUpdate(state, { userId, status }) {
   if (!userId) {
     userId = connectedUserId;
-    forcedStatus = force;
   }
-  
+
   return state.update(userId, user => user.set("status", status));
 }
 
