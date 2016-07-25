@@ -55,7 +55,8 @@ class UserStore extends MapStore {
     this.addAction(ActionTypes.LOAD_USERS_SUCCESS, handleUsersAdd);
     this.addAction(ActionTypes.PROFILE_UPDATE_SUCCESS, handleProfileUpdate);
 
-    this.addAction(ActionTypes.USER_STATUS, handleStatusUpdate);
+    this.addAction(ActionTypes.SET_USER_STATUS, handleStatusUpdate);
+    this.addAction(ActionTypes.UPDATE_USER_STATUS, handleStatusUpdate);
   }
 
   getUsers(usersId, except = []) {

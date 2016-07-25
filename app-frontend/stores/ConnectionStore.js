@@ -15,61 +15,15 @@ import Logger from "../libs/Logger";
 const logger = Logger.create("ConnectionStore");
 
 const socket = window.io.connect("/", SOCKETIO_OPTIONS);
-socket.on("connect", () => {
-  dispatch({
-    type: ActionTypes.CONNECTION_START
-  });
-});
-
-socket.on("connected", ({ user, accounts, rooms, users }) => {
-  dispatch({
-    type: ActionTypes.CONNECTION_OPEN,
-    user,
-    accounts,
-    rooms,
-    users
-  });
-});
-
-socket.on("messages:create", (message) => {
-  const { id: userId } = UserStore.getConnectedUser();
-  if (userId !== message.userId) {
-    RoomActionCreators.receiveMessage(message.roomId, message);
-  }
-});
-
-socket.on("messages:update", (message) => {
-  RoomActionCreators.updateMessage(message.roomId, message);
-});
-
-socket.on("users:join", ({ user, roomId }) => {
-  logger.warn(`${user.fullname} has joined ${roomId}`);
-});
-
-socket.on("users:disconnect", ({ user, rooms }) => {
-  logger.warn(`${user.fullname} disconnected`, rooms);
-});
-
-socket.on("users:typing", ({ roomId, userId }) => {
-  dispatch({
-    type: ActionTypes.TYPING_START,
-    roomId,
-    userId
-  });
-});
-
-socket.on("users:status", ({ userId, status }) => {
-  ActivityActionCreators.setStatus(userId, status);
-});
 
 function handleConnectionstart() {
   socket.emit("connect-me", {
-    connectedRooms: ConnectedRoomStore.getState().toJS()
+    connectedRooms: ConnectedRoomStore.getAllIds()
   });
 }
 
 function handleConnectionOpen() {
-  ActivityActionCreators.setStatus(null, USER_STATUS.CONNECTING);
+  ActivityActionCreators.setStatus(USER_STATUS.CONNECTING);
   const appHolder = document.querySelector("#splashscreen");
   setTimeout(() => {
     document.body.classList.add("loaded");
@@ -91,15 +45,76 @@ function handleRoomLeave({ accountSlug, roomSlug }) {
   socket.emit("rooms:leave", { accountId, roomId });
 }
 
-function handleUserStatus({ userId, status }) {
-  if (userId) {
-    return; // We only want the connected user to send his status
-  }
+function handleUserStatus({ status }) {
   const user = UserStore.getConnectedUser();
   const accountIds = AccountStore.getAccounts()
     .toArray().map(account => account.id);
-  socket.emit("users:status", { userId: user.id, status, accountIds });
+  socket.emit("users:presence", { userId: user.id, status, accountIds });
 }
+
+socket.on("connect", () => {
+  dispatch({
+    type: ActionTypes.CONNECTION_START
+  });
+});
+
+socket.on("connected", ({ user, accounts, rooms, users, presence }) => {
+  dispatch({
+    type: ActionTypes.CONNECTION_OPEN,
+    user,
+    accounts,
+    rooms,
+    users
+  });
+
+  presence.forEach(({ userId, status }) => ActivityActionCreators.updateStatus(userId, status));
+
+  // TODO: Maybe this call could be performed on the server.
+  ActivityActionCreators.updateStatus(user.id, USER_STATUS.ONLINE);
+});
+
+socket.on("disconnect", () => {
+  ActivityActionCreators.setStatus(USER_STATUS.OFFLINE);
+});
+
+socket.on("reconnecting", () => {
+  ActivityActionCreators.setStatus(USER_STATUS.CONNECTING);
+});
+
+socket.on("reconnect", () => {
+  ActivityActionCreators.setStatus(USER_STATUS.ONLINE);
+});
+
+socket.on("messages:create", (message) => {
+  const { id: userId } = UserStore.getConnectedUser();
+  if (userId !== message.userId) {
+    RoomActionCreators.receiveMessage(message.roomId, message);
+  }
+});
+
+socket.on("messages:update", (message) => {
+  RoomActionCreators.updateMessage(message.roomId, message);
+});
+
+socket.on("users:join", ({ user, roomId }) => {
+  // TODO: Should append a system message to the given room
+});
+
+socket.on("users:disconnect", ({ user }) => {
+  ActivityActionCreators.updateStatus(user.id, USER_STATUS.OFFLINE);
+});
+
+socket.on("users:typing", ({ roomId, userId }) => {
+  dispatch({
+    type: ActionTypes.TYPING_START,
+    roomId,
+    userId
+  });
+});
+
+socket.on("users:presence", ({ userId, status }) => {
+  ActivityActionCreators.updateStatus(userId, status);
+});
 
 class ConnectionStore extends ReduceStore {
   initialize() {
@@ -110,7 +125,7 @@ class ConnectionStore extends ReduceStore {
     this.addAction(ActionTypes.ROOM_JOIN, withNoMutations(handleRoomJoin));
     this.addAction(ActionTypes.ROOM_LEAVE, withNoMutations(handleRoomLeave));
 
-    this.addAction(ActionTypes.USER_STATUS, withNoMutations(handleUserStatus));
+    this.addAction(ActionTypes.SET_USER_STATUS, withNoMutations(handleUserStatus));
   }
 }
 

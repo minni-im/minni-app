@@ -169,7 +169,7 @@ export default (app) => {
       const Message = recorder.model("Message");
       const { roomId } = req.params;
       const { limit } = req.query;
-      console.log(`Fetching ${limit} messages for room:${roomId}`);
+      // console.log(`Fetching ${limit} messages for room:${roomId}`);
       Message.getHistory(roomId, null, null, limit)
         .then(messages => {
           res.json({
@@ -190,7 +190,7 @@ export default (app) => {
       const { accountId, roomId } = params;
       const socketKey = `${accountId}:${roomId}`;
 
-      console.log(`'${req.user.id}' is joining '${socketKey}'`);
+      // console.log(`'${req.user.id}' is joining '${socketKey}'`);
       req.socket.join(socketKey);
       req.socket.broadcast.to(socketKey).emit("users:join", {
         user: req.user.toAPI(),
@@ -204,7 +204,7 @@ export default (app) => {
       const { accountId, roomId } = params;
       const socketKey = `${accountId}:${roomId}`;
 
-      console.log(`'${req.user.id}' is leaving '${socketKey}'`);
+      // console.log(`'${req.user.id}' is leaving '${socketKey}'`);
       req.socket.leave(socketKey);
       req.socket.broadcast.to(socketKey).emit("users:leave", {
         user: req.user.toAPI(),

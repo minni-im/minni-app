@@ -76,7 +76,10 @@ export const ActionTypes = keyMirror({
   PLUGIN_REGISTER: null,
   PLUGIN_UNREGISTER: null,
 
-  USER_STATUS: null
+  SET_USER_STATUS: null,
+  UPDATE_USER_STATUS: null,
+
+  WINDOW_FOCUS: null
 });
 
 export const PLUGIN_TYPES = {

@@ -47,11 +47,19 @@ function handleUserStatus({ userId, status, force }) {
   }
 }
 
+function handleWindowFocus({ focused }) {
+  if (focused) {
+    cancelTimers();
+  }
+}
+
 class PresenceStore extends MapStore {
   initialize() {
     this.waitFor(ConnectionStore);
     this.addAction(ActionTypes.CONNECTION_OPEN, withNoMutations(handleConnectionOpen));
-    this.addAction(ActionTypes.USER_STATUS, withNoMutations(handleUserStatus));
+    this.addAction(ActionTypes.SET_USER_STATUS, withNoMutations(handleUserStatus));
+
+    this.addAction(ActionTypes.WINDOW_FOCUS, withNoMutations(handleWindowFocus));
   }
 }
 

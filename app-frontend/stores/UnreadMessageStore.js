@@ -74,22 +74,22 @@ class UnreadMessageStore extends MapStore {
   }
 
   getTotalUnreadCount(accountId) {
-    return this.getState()
-      .get(accountId, Immutable.Map())
-      .reduce((sum, roomState) => {
-        sum += roomState.get("unreadCount", 0);
-        return sum;
-      }, 0);
+    if (accountId) {
+      return this.getState()
+        .get(accountId, Immutable.Map())
+        .reduce((sum, roomState) => {
+          sum += roomState.get("unreadCount", 0);
+          return sum;
+        }, 0);
+    }
+    return this.getState().reduce((sum, account) =>
+      account.reduce(
+        (subSum, room) => sum + room.get("unreadCount", 0), sum
+      ),
+      0
+    );
   }
 
-  getTotalUnreadCount() {
-    return this.getState()
-      .reduce((sum, account) => {
-        return account.reduce((subSum, room) => {
-          return sum + room.get("unreadCount", 0);
-        }, sum);
-      }, 0);
-  }
 }
 
 const instance = new UnreadMessageStore(Dispatcher);

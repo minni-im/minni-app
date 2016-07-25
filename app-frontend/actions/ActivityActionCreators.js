@@ -2,29 +2,28 @@ import { dispatchAsync } from "../Dispatcher";
 import { ActionTypes, USER_STATUS } from "../Constants";
 
 
-export function setStatus(userId, status) {
+export function setStatus(status) {
   dispatchAsync({
-    type: ActionTypes.USER_STATUS,
-    status,
-    userId
+    type: ActionTypes.SET_USER_STATUS,
+    status
   });
 }
 
-export function setOnline(userId) {
-  setStatus(userId, USER_STATUS.ONLINE);
+export function updateStatus(userId, status) {
+  dispatchAsync({
+    type: ActionTypes.UPDATE_USER_STATUS,
+    userId,
+    status
+  });
 }
 
-export function setIdle(userId) {
-  setStatus(userId, USER_STATUS.IDLE);
-}
-
-export function setAway(userId) {
-  setStatus(userId, USER_STATUS.AWAY);
-}
+export const setOnline = () => setStatus(USER_STATUS.ONLINE);
+export const setIdle = () => setStatus(USER_STATUS.IDLE);
+export const setAway = () => setStatus(USER_STATUS.AWAY);
 
 export function forceAway() {
   dispatchAsync({
-    type: ActionTypes.USER_STATUS,
+    type: ActionTypes.SET_USER_STATUS,
     status: USER_STATUS.AWAY,
     force: true
   });
@@ -32,7 +31,7 @@ export function forceAway() {
 
 export function forceDnd() {
   dispatchAsync({
-    type: ActionTypes.USER_STATUS,
+    type: ActionTypes.SET_USER_STATUS,
     status: USER_STATUS.DND,
     force: true
   });

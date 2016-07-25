@@ -102,6 +102,14 @@ class UserSettingsStore extends MapStore {
       type: { apple: "png", emojione: "svg", twitter: "svg" }[name]
     };
   }
+
+  hasSoundNotifications() {
+    return this.getValue("global.notification.sound");
+  }
+
+  getSoundVolume() {
+    return this.getValue("global.notification.sound_volume") / 100;
+  }
 }
 
 const instance = new UserSettingsStore(Dispatcher);
