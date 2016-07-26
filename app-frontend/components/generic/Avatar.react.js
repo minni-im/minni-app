@@ -2,7 +2,7 @@ import React from "react";
 import classnames from "classnames";
 
 import User from "../../models/User";
-import { AVATAR_SIZES } from "../../Constants";
+import { AVATAR_SIZES, USER_STATUS } from "../../Constants";
 
 import UserStatusIcon from "../UserStatusIcon.react";
 
@@ -11,7 +11,8 @@ export default function Avatar(props) {
   const styles = {};
   const classNames = {
     [`avatar-${size}`.toLowerCase()]: true,
-    "avatar--with-initials": !user.picture
+    "avatar--with-initials": !user.picture,
+    "avatar--offline": user.status === USER_STATUS.OFFLINE
   };
   if (user.picture) {
     styles.backgroundImage = `url(${user.picture})`;

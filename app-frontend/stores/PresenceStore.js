@@ -14,11 +14,11 @@ let awayTimeoutID;
 let autoStatus = true;
 
 function cancelTimers() {
+  clearTimeout(idleTimeoutID);
+  clearTimeout(awayTimeoutID);
   if (!autoStatus) {
     return;
   }
-  clearTimeout(idleTimeoutID);
-  clearTimeout(awayTimeoutID);
   ActivityActionCreators.setOnline();
 }
 

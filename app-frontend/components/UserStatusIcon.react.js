@@ -1,14 +1,19 @@
 import React from "react";
+import classNames from "classnames";
 
 import { USER_STATUS } from "../Constants";
 
 export default function UserStatusIcon(props) {
-  const code = props.typing ? USER_STATUS.TYPING : props.status;
-  const statusCode = Math.max(0, Math.log(code) / Math.log(2));
+  const statusCode = Math.max(0, Math.log(props.status) / Math.log(2));
 
   return (
     <div
-      className="user-status-icon"
+      className={classNames(
+        "user-status-icon",
+        {
+          "user--is-typing": props.typing
+        }
+      )}
       data-status={statusCode}
     ></div>
   );
