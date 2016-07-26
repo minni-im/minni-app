@@ -34,6 +34,16 @@ export default (app) => {
           console.error(error);
           res.status(400).json(error);
         });
+    },
+
+    presence(req) {
+      if (!req.isSocket) return;
+      const { userId, status } = req.data;
+      req.socket.status = status;
+      app.io.emit("users:presence", {
+        userId,
+        status
+      });
     }
   });
 };

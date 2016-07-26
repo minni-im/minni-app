@@ -9,6 +9,7 @@ import "./libs/Immutable";
 
 import AccountActionCreators from "./actions/AccountActionCreators";
 import RoomActionCreators from "./actions/RoomActionCreators";
+import * as WindowActionCreators from "./actions/WindowActionCreators";
 
 import Minni from "./components/Minni.react";
 
@@ -49,6 +50,17 @@ function deselectAccount() {
 }
 
 Flux.initialize();
+
+function filterWindowEvent(event, callback) {
+  if (event.currentTarget === event.target) {
+    callback();
+  }
+}
+
+window.addEventListener("focus", event =>
+  filterWindowEvent(event, () => WindowActionCreators.focus(true)), false);
+window.addEventListener("blur", event =>
+  filterWindowEvent(event, () => WindowActionCreators.focus(false)), false);
 
 ReactDOM.render((
   <Router history={browserHistory}>

@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle */
+import Immutable from "immutable";
 import invariant from "invariant";
 import { ReduceStore as FluxReduceStore, MapStore as FluxMapStore } from "flux/utils";
 import { Mixin as mixin } from "./Mixin";
@@ -6,7 +7,7 @@ import { Mixin as mixin } from "./Mixin";
 const storesStore = [];
 
 export function withNoMutations(handler) {
-  return function (state, ...rest) {
+  return (state, ...rest) => {
     handler(...rest);
     return state;
   };
@@ -64,6 +65,10 @@ export class ReduceStore extends mixin(FluxReduceStore, StoreOverlay) {
     this.__actionHandlers = {};
     storesStore.push(this);
   }
+
+  getInitialState() {
+    return Immutable.Set();
+  }
 }
 
 export class MapStore extends mixin(FluxMapStore, StoreOverlay) {
@@ -72,6 +77,10 @@ export class MapStore extends mixin(FluxMapStore, StoreOverlay) {
     this.__dependencies = [];
     this.__actionHandlers = {};
     storesStore.push(this);
+  }
+
+  getInitialState() {
+    return Immutable.Map();
   }
 }
 

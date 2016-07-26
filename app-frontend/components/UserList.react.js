@@ -1,20 +1,29 @@
 import React from "react";
 import { Map } from "immutable";
 
-import { AVATAR_SIZES } from "../Constants";
 import Avatar from "./generic/Avatar.react";
+import UserStatus from "./UserStatus.react";
 
-export default class UserList extends React.Component {
-  render() {
-    return <div className="user-list">
-      {this.props.users.toIndexedSeq().map(user => {
-        return <div key={user.id}>
-          <Avatar user={user} size={AVATAR_SIZES.MEDIUM} />
-          {user.fullname}
-        </div>;
-      })}
-    </div>;
-  }
+export default function UserList(props) {
+  return (
+    <div className="user-list">
+      {props.users.toIndexedSeq().map(user => (
+        <div
+          className="user-info flex-horizontal"
+          key={user.id}
+        >
+          <Avatar
+            className="user-avatar"
+            user={user} withStatus
+          />
+          <div className="flex-spacer">
+            <div className="user-name" title={user.fullname}>{user.fullname}</div>
+            <UserStatus status={user.status} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 UserList.defaultProps = {

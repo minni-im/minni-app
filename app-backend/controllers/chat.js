@@ -3,8 +3,8 @@ import recorder from "tape-recorder";
 export default (app) => {
   app.io.on("connection", (socket) => {
     const { user } = socket.request;
-    console.log(`'${user.id}' is connecting`);
-    app.io.emit("users:connect", { user: user.toJSON() });
+    // console.log(`'${user.id}' is connecting`);
+    app.io.emit("users:connect", { user: user.toAPI() });
   });
 
   app.io.route("connect-me", (req) => {
@@ -20,7 +20,7 @@ export default (app) => {
 
       accounts = accounts.map(account => {
         socket.join(account.id);
-        console.log(`'${user.id}' has joined '${account.id}'`);
+        // console.log(`'${user.id}' has joined '${account.id}'`);
         return account.toAPI(user.id === account.adminId);
       });
 
@@ -35,7 +35,7 @@ export default (app) => {
               accountId,
               roomId
             });
-            console.log(`'${user.id}' has joined '${socketKey}'`);
+            // console.log(`'${user.id}' has joined '${socketKey}'`);
           });
         }
         return Room.where("accountId", { key: account.id });
@@ -49,6 +49,8 @@ export default (app) => {
       }, new Set());
       const users = Array.from(usersId).map(userId => User.findById(userId));
 
+      const presence = new Set();
+
       Promise.all([...rooms, ...users]).then(results => {
         const finalRooms = results
           .slice(0, size)
@@ -58,11 +60,22 @@ export default (app) => {
           .slice(size)
           .map(finalUser => finalUser.toAPI());
 
+        for (const clientSocket of Object.keys(app.io.sockets.adapter.nsp.connected)) {
+          const client = app.io.sockets.adapter.nsp.connected[clientSocket];
+          if (client.request.user.id !== user.id) {
+            presence.add({
+              userId: client.request.user.id,
+              status: client.status
+            });
+          }
+        }
+
         socket.emit("connected", {
           user: user.toAPI(true),
           accounts,
           rooms: finalRooms,
-          users: finalUsers
+          users: finalUsers,
+          presence: Array.from(presence)
         });
       }).catch(ex => {
         console.log(`Socket connection failed [sid: ${socket.id}, id:${user.id}]`);
@@ -73,7 +86,7 @@ export default (app) => {
 
   app.io.route("disconnect", (req) => {
     const { user } = req;
-    console.log(`'${user.id}' is disconnected`, req.isSocket);
-    app.io.emit("users:disconnect", { user: user.toAPI(), rooms: req.socket.rooms });
+    // console.log(`'${user.id}' is disconnected`, req.isSocket);
+    app.io.emit("users:disconnect", { user: user.toAPI() });
   });
 };

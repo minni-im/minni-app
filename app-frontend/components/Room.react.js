@@ -3,10 +3,16 @@ import classnames from "classnames";
 
 import RoomActionCreators from "../actions/RoomActionCreators";
 
+import RoomUsersList from "./sidebars/RoomUsersList.react";
 import MessagesContainer from "./MessagesContainer.react";
 import Composer from "./Composer.react";
 import TypingInfo from "./TypingInfo.react";
-import { FavoriteIcon, CloseIcon } from "../utils/IconsUtils";
+
+import {
+  FavoriteIcon,
+  CloseIcon,
+  RoomIcons,
+  SettingsIcon } from "../utils/IconsUtils";
 import { parseTitle } from "../utils/MarkupUtils";
 
 import ComposerStore from "../stores/ComposerStore";
@@ -24,6 +30,10 @@ export default class Room extends React.Component {
 
   componentDidMount() {
     this.focusComposer();
+  }
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.room !== this.props.room;
   }
 
   focusComposer() {
@@ -91,12 +101,25 @@ export default class Room extends React.Component {
           </div>
           <div className="actions">
             <span
+              className="icon icon-active"
+              title="Toggle connected users panel"
+            >
+              <RoomIcons.RoomPublicIcon />
+            </span>
+            <span
+              className="icon"
+              title="Open settings dialog"
+            >
+              <SettingsIcon />
+            </span>
+            <span
               className="icon"
               onClick={this.handleRoomLeave}
               title="Leave this room (Shift+Click will just deselect it)"
             ><CloseIcon /></span>
           </div>
         </header>
+        {room.usersList ? <RoomUsersList room={room} /> : null}
         <MessagesContainer room={room} />
         <footer
           className="flex-vertical"

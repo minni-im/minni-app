@@ -81,6 +81,10 @@ class ConnectedRoomStore extends MapStore {
     const roomsId = this.getState().get(accountId, Immutable.Set()).toArray();
     return RoomStore.getRoomsById(...roomsId);
   }
+
+  getAllIds() {
+    return this.getState().toJS();
+  }
 }
 
 const instance = new ConnectedRoomStore(Dispatcher);

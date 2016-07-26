@@ -95,12 +95,24 @@ class UserSettingsStore extends MapStore {
     return this.getValue("starred.messages").includes(id);
   }
 
+  isRoomConnectedUsersListActive({ id }) {
+    return this.getValue(`rooms.${id}.userslist`, true);
+  }
+
   getEmojiProviderInfo() {
     const name = this.getValue("global.emojis_type");
     return {
       name,
       type: { apple: "png", emojione: "svg", twitter: "svg" }[name]
     };
+  }
+
+  hasSoundNotifications() {
+    return this.getValue("global.notification.sound");
+  }
+
+  getSoundVolume() {
+    return this.getValue("global.notification.sound_volume") / 100;
   }
 }
 

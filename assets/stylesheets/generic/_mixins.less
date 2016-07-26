@@ -163,13 +163,17 @@
 #user {
   .status-icon(@background-color: @background-light, @with-status: true) {
     .user-status-icon when (@with-status = true) {
-      .square(10px);
+      height: 10px;
+      min-width: 10px;
       background-color: @status-color-online;
       border: 3px solid @background-color;
-      border-radius: 50%;
+      border-radius: 10px;
+      position: relative;
 
-      transition: background-color 250ms ease,
-        border-color 250ms ease;
+      transition:
+        background-color 250ms ease,
+        border-color 250ms ease,
+        min-width 250ms ease;
 
       &[data-status="-1"], &[data-status="0"] {
         background-color: @status-color-offline;
@@ -207,6 +211,31 @@
       // DND
       &[data-status="5"] {
         background-color: @status-color-dnd;
+        &:before {
+          position: absolute;
+          content: "";
+          background-color: @white;
+          left: 2px;
+          right: 2px;
+          top: 4px;
+          height: 2px;
+        }
+      }
+
+      // TYPING
+      &.user--is-typing {
+        &:before {
+          content: none;
+        }
+        &:after {
+          content: "\25cf\25cf\25cf";
+          position: relative;
+          top: -17px;
+          color: @gray-lighter;
+          font-size: 14px;
+          padding: 2px;
+          animation: typing 1s ease infinite;
+        }
       }
     }
 

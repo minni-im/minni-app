@@ -74,7 +74,12 @@ export const ActionTypes = keyMirror({
   SLASHCOMMAND_QUERY_FAILURE: null,
 
   PLUGIN_REGISTER: null,
-  PLUGIN_UNREGISTER: null
+  PLUGIN_UNREGISTER: null,
+
+  SET_USER_STATUS: null,
+  UPDATE_USER_STATUS: null,
+
+  WINDOW_FOCUS: null
 });
 
 export const PLUGIN_TYPES = {
@@ -98,11 +103,25 @@ export const MessageStreamTypes = keyMirror({
 
 export const USER_STATUS = {
   OFFLINE: 1 << 0,
-  ONLINE: 1 << 1,
-  IDLE: 1 << 2,
-  AWAY: 1 << 3,
-  DND: 1 << 4
+  CONNECTING: 1 << 1,
+  ONLINE: 1 << 2,
+  IDLE: 1 << 3,
+  AWAY: 1 << 4,
+  DND: 1 << 5,
+  TYPING: 1 << 6
 };
+
+export const USER_STATUS_TEXT = {
+  [USER_STATUS.OFFLINE]: "offline",
+  [USER_STATUS.CONNECTING]: "connecting...",
+  [USER_STATUS.ONLINE]: "online",
+  [USER_STATUS.IDLE]: "idle",
+  [USER_STATUS.AWAY]: "away",
+  [USER_STATUS.DND]: "do not disturb",
+};
+
+export const IDLE_TIMEOUT = 2 * 60 * 1000; // 2 minutes
+export const AWAY_TIMEOUT = 5 * 60 * 1000; // 5 minutes after IDLE is fired
 
 export const TYPING_TIMEOUT = 5000;
 

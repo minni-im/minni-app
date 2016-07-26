@@ -19,6 +19,7 @@ const RoomRecord = Immutable.Record({
   lastMsgUserId: undefined,
 
   /* UI related properties */
+  usersList: true,
   starred: false,
   active: false, // when the associated account is active
   connected: false // when a user joins the room

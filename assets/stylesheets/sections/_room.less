@@ -15,6 +15,23 @@
     }
   }
 
+  .room--users-list {
+    height: @room-users-list-height;
+    background-color: @gray-lighter;
+    border-top: 1px dotted @gray-light;
+    padding: 0 10px;
+    align-items: center;
+
+    .avatar {
+      margin-right: 8px;
+      #user.status-icon(@gray-lighter);
+      .user-status-icon {
+        position: absolute;
+        bottom: -3px; right: -3px;
+      }
+    }
+  }
+
   footer {
     min-height: @main-footer-height;
 
