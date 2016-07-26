@@ -31,7 +31,7 @@ function handleConnectionOpen(state, { user, users }) {
   connectedUserId = user.id;
   user.status = USER_STATUS.ONLINE;
   state = state.set(user.id, new User(user));
-  logger.info("Registering logged in user", user.fullname);
+  logger.info("Registering logged in user", user.fullname, user.id);
   return handleUsersAdd(state, { users });
 }
 
@@ -41,9 +41,13 @@ function handleProfileUpdate(state, { user }) {
 
 function handleStatusUpdate(state, { userId, status }) {
   if (!userId) {
+    if (connectedUserId === undefined) {
+      // Weird use case where FF is coming there before the actual connectedUserId
+      // is there
+      return state;
+    }
     userId = connectedUserId;
   }
-
   return state.update(userId, user => user.set("status", status));
 }
 

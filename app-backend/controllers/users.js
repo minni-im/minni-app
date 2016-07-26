@@ -38,14 +38,11 @@ export default (app) => {
 
     presence(req) {
       if (!req.isSocket) return;
-      const { userId, status, accountIds } = req.data;
+      const { userId, status } = req.data;
       req.socket.status = status;
-      accountIds.forEach(accountId => {
-        req.socket.broadcast.to(accountId).emit("users:presence", {
-          userId,
-          accountId,
-          status
-        });
+      app.io.emit("users:presence", {
+        userId,
+        status
       });
     }
   });

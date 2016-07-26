@@ -25,7 +25,8 @@ class RoomsContainer extends React.Component {
   render() {
     const { size } = this.state.rooms;
     const classNames = classnames("room", "flex-spacer", "flex-horizontal", {
-      "split-rooms": size > 1
+      "split-rooms": size > 1,
+      [`split-rooms-${size}`]: size > 1
     });
     return (
       <main className={classNames}>

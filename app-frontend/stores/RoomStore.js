@@ -16,7 +16,8 @@ function handleLoadRoomsSuccess(state, { rooms }) {
   return state.withMutations(map => {
     rooms.forEach(room => {
       Object.assign(room, {
-        starred: UserSettingsStore.isRoomStarred(room)
+        starred: UserSettingsStore.isRoomStarred(room),
+        usersList: UserSettingsStore.isRoomConnectedUsersListActive(room)
       });
       map.set(room.id, new Room(room));
     });

@@ -7,7 +7,7 @@ import { AVATAR_SIZES } from "../../Constants";
 import UserStatusIcon from "../UserStatusIcon.react";
 
 export default function Avatar(props) {
-  const { user, size } = props;
+  const { user, size, isTyping, withStatus } = props;
   const styles = {};
   const classNames = {
     [`avatar-${size}`.toLowerCase()]: true,
@@ -23,7 +23,7 @@ export default function Avatar(props) {
       style={styles}
       data-initials={user.initials}
     >
-      {props.withStatus ? <UserStatusIcon status={user.status} /> : null}
+      {withStatus ? <UserStatusIcon status={user.status} typing={isTyping} /> : null}
     </div>
   );
 }

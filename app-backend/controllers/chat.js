@@ -4,7 +4,7 @@ export default (app) => {
   app.io.on("connection", (socket) => {
     const { user } = socket.request;
     // console.log(`'${user.id}' is connecting`);
-    app.io.emit("users:connect", { user: user.toJSON() });
+    app.io.emit("users:connect", { user: user.toAPI() });
   });
 
   app.io.route("connect-me", (req) => {

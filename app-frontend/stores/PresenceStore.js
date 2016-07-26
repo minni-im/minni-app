@@ -6,6 +6,9 @@ import * as ActivityActionCreators from "../actions/ActivityActionCreators";
 
 import ConnectionStore from "./ConnectionStore";
 
+import Logger from "../libs/Logger";
+const logger = Logger.create("PresenceStore");
+
 let idleTimeoutID;
 let awayTimeoutID;
 let autoStatus = true;

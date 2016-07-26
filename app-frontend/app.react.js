@@ -51,8 +51,16 @@ function deselectAccount() {
 
 Flux.initialize();
 
-window.addEventListener("focus", () => WindowActionCreators.focus(true), true);
-window.addEventListener("blur", () => WindowActionCreators.focus(false), true);
+function filterWindowEvent(event, callback) {
+  if (event.currentTarget === event.target) {
+    callback();
+  }
+}
+
+window.addEventListener("focus", event =>
+  filterWindowEvent(event, () => WindowActionCreators.focus(true)), false);
+window.addEventListener("blur", event =>
+  filterWindowEvent(event, () => WindowActionCreators.focus(false)), false);
 
 ReactDOM.render((
   <Router history={browserHistory}>

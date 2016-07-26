@@ -95,6 +95,10 @@ class UserSettingsStore extends MapStore {
     return this.getValue("starred.messages").includes(id);
   }
 
+  isRoomConnectedUsersListActive({ id }) {
+    return this.getValue(`rooms.${id}.userslist`, true);
+  }
+
   getEmojiProviderInfo() {
     const name = this.getValue("global.emojis_type");
     return {

@@ -1,11 +1,13 @@
 import { dispatchAsync } from "../Dispatcher";
 import { ActionTypes, USER_STATUS } from "../Constants";
 
+import UserStore from "../stores/UserStore";
 
 export function setStatus(status) {
   dispatchAsync({
     type: ActionTypes.SET_USER_STATUS,
-    status
+    status,
+    oldStatus: (UserStore.getConnectedUser() && UserStore.getConnectedUser().status)
   });
 }
 

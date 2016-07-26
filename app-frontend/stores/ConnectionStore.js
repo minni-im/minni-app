@@ -45,11 +45,17 @@ function handleRoomLeave({ accountSlug, roomSlug }) {
   socket.emit("rooms:leave", { accountId, roomId });
 }
 
-function handleUserStatus({ status }) {
-  const user = UserStore.getConnectedUser();
-  const accountIds = AccountStore.getAccounts()
-    .toArray().map(account => account.id);
-  socket.emit("users:presence", { userId: user.id, status, accountIds });
+function handleUserStatus({ status, oldStatus }) {
+  if (status !== oldStatus) {
+    const user = UserStore.getConnectedUser();
+    if (!user) {
+      // TODO: Investigate why we could be here this early ?? (meaning w/o user)
+      return;
+    }
+    const accountIds = AccountStore.getAccounts()
+      .toArray().map(account => account.id);
+    socket.emit("users:presence", { userId: user.id, status, accountIds });
+  }
 }
 
 socket.on("connect", () => {
@@ -74,11 +80,13 @@ socket.on("connected", ({ user, accounts, rooms, users, presence }) => {
 });
 
 socket.on("disconnect", () => {
-  ActivityActionCreators.setStatus(USER_STATUS.OFFLINE);
+  const userId = UserStore.getConnectedUser().id;
+  ActivityActionCreators.updateStatus(userId, USER_STATUS.OFFLINE);
 });
 
 socket.on("reconnecting", () => {
-  ActivityActionCreators.setStatus(USER_STATUS.CONNECTING);
+  const userId = UserStore.getConnectedUser().id;
+  ActivityActionCreators.updateStatus(userId, USER_STATUS.CONNECTING);
 });
 
 socket.on("reconnect", () => {

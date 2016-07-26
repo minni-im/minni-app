@@ -107,7 +107,8 @@ export const USER_STATUS = {
   ONLINE: 1 << 2,
   IDLE: 1 << 3,
   AWAY: 1 << 4,
-  DND: 1 << 5
+  DND: 1 << 5,
+  TYPING: 1 << 6
 };
 
 export const USER_STATUS_TEXT = {
