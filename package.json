@@ -57,7 +57,7 @@
     "less-plugin-autoprefix": "^1.4.2",
     "less-plugin-clean-css": "^1.5.1",
     "minimist": "^1.1.2",
-    "react-svg-loader": "^0.0.6",
+    "react-svg-loader": "1.0.1",
     "run-sequence": "^1.1.2",
     "webpack": "2.1.0-beta.20"
   },

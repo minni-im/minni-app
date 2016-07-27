@@ -1,33 +1,50 @@
-/* eslint global-require: 0 */
-export const LobbyIcon = require("../../public/images/svgs/lobby.svg.react").default;
+import RoomPrivateIcon from "../../public/images/svgs/room_private.svg.react";
+import RoomPublicIcon from "../../public/images/svgs/room_public.svg.react";
+import RoomDisconnectedIcon from "../../public/images/svgs/room_disconnected.svg.react";
+
+import DesktopIcon from "../../public/images/svgs/desktop.svg.react";
+import LaptopIcon from "../../public/images/svgs/laptop.svg.react";
+import TabletIcon from "../../public/images/svgs/tablet.svg.react";
+import SmartphoneIcon from "../../public/images/svgs/smartphone.svg.react";
+
+import FirefoxIcon from "../../public/images/svgs/firefox.svg.react";
+import ChromeIcon from "../../public/images/svgs/chrome.svg.react";
+import InternetExplorerIcon from "../../public/images/svgs/ie.svg.react";
+import SafariIcon from "../../public/images/svgs/safari.svg.react";
+
+export { default as LobbyIcon } from "../../public/images/svgs/lobby.svg.react";
+export { default as NoPreviewIcon } from "../../public/images/svgs/settings.svg.react";
+export { default as SettingsIcon } from "../../public/images/svgs/settings.svg.react";
+export { default as DashboardIcon } from "../../public/images/svgs/dashboard.svg.react";
+export { default as PadlockIcon } from "../../public/images/svgs/padlock.svg.react";
+export { default as FavoriteIcon } from "../../public/images/svgs/favorite.svg.react";
+export { default as CalendarIcon } from "../../public/images/svgs/calendar.svg.react";
+export { default as MessagesIcon } from "../../public/images/svgs/messages.svg.react";
+export { default as CloseIcon } from "../../public/images/svgs/close.svg.react";
+export { default as LogoutIcon } from "../../public/images/svgs/logout.svg.react";
+export { default as EditIcon } from "../../public/images/svgs/edit.svg.react";
+export { default as SmileyIcon } from "../../public/images/svgs/smiley.svg.react";
+export { default as SpinnerIcon } from "../../public/images/svgs/spinner.svg.react";
+export { default as UploadIcon } from "../../public/images/svgs/upload.svg.react";
+export { default as KeyBoardIcon } from "../../public/images/svgs/keyboard.svg.react";
+export { default as ConnectionIcon } from "../../public/images/svgs/connection.svg.react";
+
 export const RoomIcons = {
-  RoomPrivateIcon: require("../../public/images/svgs/room_private.svg.react").default,
-  RoomPublicIcon: require("../../public/images/svgs/room_public.svg.react").default,
-  RoomDisconnectedIcon: require("../../public/images/svgs/room_disconnected.svg.react").default
+  RoomPrivateIcon,
+  RoomPublicIcon,
+  RoomDisconnectedIcon
 };
-export const NoPreviewIcon = require("../../public/images/svgs/settings.svg.react").default;
-export const SettingsIcon = require("../../public/images/svgs/settings.svg.react").default;
-export const DashboardIcon = require("../../public/images/svgs/dashboard.svg.react").default;
-export const PadlockIcon = require("../../public/images/svgs/padlock.svg.react").default;
-export const FavoriteIcon = require("../../public/images/svgs/favorite.svg.react").default;
-export const CalendarIcon = require("../../public/images/svgs/calendar.svg.react").default;
-export const MessagesIcon = require("../../public/images/svgs/messages.svg.react").default;
-export const CloseIcon = require("../../public/images/svgs/close.svg.react").default;
-export const LogoutIcon = require("../../public/images/svgs/logout.svg.react").default;
-export const EditIcon = require("../../public/images/svgs/edit.svg.react").default;
+
 export const DevicesIcons = {
-  DesktopIcon: require("../../public/images/svgs/desktop.svg.react").default,
-  LaptopIcon: require("../../public/images/svgs/laptop.svg.react").default,
-  TabletIcon: require("../../public/images/svgs/tablet.svg.react").default,
-  SmartphoneIcon: require("../../public/images/svgs/smartphone.svg.react").default,
+  DesktopIcon,
+  LaptopIcon,
+  TabletIcon,
+  SmartphoneIcon
 };
-export const SmileyIcon = require("../../public/images/svgs/smiley.svg.react").default;
+
 export const BrowserIcons = {
-  FirefoxIcon: require("../../public/images/svgs/firefox.svg.react").default,
-  ChromeIcon: require("../../public/images/svgs/chrome.svg.react").default,
-  InternetExplorerIcon: require("../../public/images/svgs/ie.svg.react").default,
-  SafariIcon: require("../../public/images/svgs/safari.svg.react").default,
+  FirefoxIcon,
+  ChromeIcon,
+  InternetExplorerIcon,
+  SafariIcon
 };
-export const SpinnerIcon = require("../../public/images/svgs/spinner.svg.react").default;
-export const UploadIcon = require("../../public/images/svgs/upload.svg.react").default;
-export const KeyBoardIcon = require("../../public/images/svgs/keyboard.svg.react").default;
