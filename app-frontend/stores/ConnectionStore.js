@@ -3,6 +3,7 @@ import Dispatcher, { dispatch } from "../Dispatcher";
 
 import { ActionTypes, SOCKETIO_OPTIONS, USER_STATUS } from "../Constants";
 
+import * as AccountActionCreators from "../actions/AccountActionCreators";
 import * as ActivityActionCreators from "../actions/ActivityActionCreators";
 import RoomActionCreators from "../actions/RoomActionCreators";
 
@@ -122,6 +123,10 @@ socket.on("users:typing", ({ roomId, userId }) => {
 
 socket.on("users:presence", ({ userId, status }) => {
   ActivityActionCreators.updateStatus(userId, status);
+});
+
+socket.on("room:create", ({ room }) => {
+  AccountActionCreators.receiveRoom(room);
 });
 
 class ConnectionStore extends ReduceStore {

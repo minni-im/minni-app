@@ -7,7 +7,7 @@ import Flux from "./libs/Flux";
 // Patch for Immutable to have replace on OrderedMap
 import "./libs/Immutable";
 
-import AccountActionCreators from "./actions/AccountActionCreators";
+import * as AccountActionCreators from "./actions/AccountActionCreators";
 import RoomActionCreators from "./actions/RoomActionCreators";
 import * as WindowActionCreators from "./actions/WindowActionCreators";
 

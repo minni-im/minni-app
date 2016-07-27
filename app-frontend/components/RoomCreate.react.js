@@ -6,7 +6,7 @@ import Avatar from "./generic/Avatar.react";
 import SelectedAccountStore from "../stores/SelectedAccountStore";
 import UserStore from "../stores/UserStore";
 
-import AccountActionCreators from "../actions/AccountActionCreators";
+import * as AccountActionCreators from "../actions/AccountActionCreators";
 
 
 class RoomCreate extends React.Component {
