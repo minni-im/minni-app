@@ -2,11 +2,13 @@ const webpack = require("webpack");
 const path = require("path");
 const glob = require("glob");
 
+const ManifestPlugin = require("webpack-manifest-plugin");
+
 const nodeEnv = process.env.NODE_ENV || "development";
 const RELEASE = nodeEnv === "production";
 
 module.exports = {
-  devtool: RELEASE ? "hidden-source-map" : "eval-source-map",
+  devtool: RELEASE ? "hidden-source-map" : "cheap-module-eval-source-map",
   context: path.join(__dirname, "./app-frontend"),
   entry: {
     minni: "./app.react.js",
@@ -40,7 +42,7 @@ module.exports = {
   },
   output: {
     path: "./dist/public/js",
-    filename: RELEASE ? "[name]-bundle.[hash].min.js" : "[name]-bundle.js",
+    filename: RELEASE ? "[name]-bundle.[chunkhash].min.js" : "[name]-bundle.js",
     publicPath: "/",
     pathinfo: !RELEASE
   },
@@ -77,40 +79,40 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: "vendor",
       chunks: ["minni", "plugins"],
-      filename: RELEASE ? "[name]-bundle.[hash].min.js" : "[name]-bundle.js",
+      filename: RELEASE ? "[name]-bundle.[chunkhash].min.js" : "[name]-bundle.js",
       minChunks: Infinity
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: "minni",
       chunks: ["plugins"],
-      filename: RELEASE ? "[name]-bundle.[hash].min.js" : "[name]-bundle.js",
+      filename: RELEASE ? "[name]-bundle.[chunkhash].min.js" : "[name]-bundle.js",
       minChunks: Infinity
-    }),
-    new webpack.LoaderOptionsPlugin({
-      comments: RELEASE,
-      minimize: RELEASE,
-      debug: !RELEASE
     })
   ].concat(RELEASE ? [
+    new ManifestPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({
-      compress: {
+      compressor: {
+        screw_ie8: true,
         warnings: false
       },
-      output: {
-        comments: false
+      mangle: {
+        screw_ie8: true
       },
-      sourceMap: false
+      output: {
+        comments: false,
+        screw_ie8: true
+      }
     }),
-
     new webpack.DefinePlugin({
       __DEV__: false,
-      "process.env": {
-        NODE_ENV: JSON.stringify(nodeEnv)
-      }
+      "process.env.NODE_ENV": JSON.stringify(nodeEnv)
     })
   ] : [
     new webpack.DefinePlugin({
-      __DEV__: true
+      __DEV__: true,
+      "process.env.NODE_ENV": JSON.stringify(nodeEnv)
     })
   ])
 };
