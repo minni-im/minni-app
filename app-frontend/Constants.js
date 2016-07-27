@@ -145,6 +145,8 @@ export const EMBED_OPTIONS = {
   MAX_HEIGHT: 250
 };
 
+export const MAX_MULTI_ROOMS = 3;
+
 export const EndPoints = {
   ACCOUNT_ROOMS: accountId => `/api/accounts/${accountId}/rooms`,
   ACCOUNT_USERS: accountId => `/api/accounts/${accountId}/users`,

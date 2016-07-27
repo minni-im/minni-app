@@ -35,6 +35,15 @@ RoomSchema.virtual({
   }
 });
 
+RoomSchema.method("isAccessGranted", function isAccessGranted(userId) {
+  return this.public || (
+    this.private && (
+      this.adminId === userId ||
+      this.usersId.includes(userId)
+    )
+  );
+});
+
 RoomSchema.method("toAPI", function toAPI(admin = false) {
   return {
     id: this.id,

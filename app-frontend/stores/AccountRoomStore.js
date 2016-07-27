@@ -5,12 +5,9 @@ import { MapStore } from "../libs/Flux";
 import AccountStore from "./AccountStore";
 import RoomStore from "./RoomStore";
 
-function syncFromRoomChange(state) {
-  return state.withMutations(map => {
-    RoomStore.getState().forEach(room => {
-      map.update(room.accountId, Immutable.Set(), (list) => list.add(room));
-    });
-  });
+function syncFromRoomChange() {
+  return RoomStore.getState()
+    .groupBy(room => room.accountId);
 }
 
 class AccountRoomStore extends MapStore {
@@ -19,7 +16,7 @@ class AccountRoomStore extends MapStore {
   }
 
   getRooms(accountId) {
-    return this.getState().get(accountId, Immutable.Set());
+    return this.getState().get(accountId, Immutable.Set()).toSet();
   }
 
   getRoomsSlug(accountId) {

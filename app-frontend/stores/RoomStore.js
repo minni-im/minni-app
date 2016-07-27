@@ -1,3 +1,4 @@
+import moment from "moment";
 import { MapStore } from "../libs/Flux";
 
 import { ActionTypes } from "../Constants";
@@ -16,6 +17,8 @@ function handleLoadRoomsSuccess(state, { rooms }) {
   return state.withMutations(map => {
     rooms.forEach(room => {
       Object.assign(room, {
+        lastUpdated: moment(room.lastUpdated),
+        dateCreated: moment(room.dateCreated),
         starred: UserSettingsStore.isRoomStarred(room),
         usersList: UserSettingsStore.isRoomConnectedUsersListActive(room)
       });

@@ -108,7 +108,7 @@ export default (app) => {
           rooms = rooms
             .filter(room => (
               room.public ||
-              room.private && room.usersId.indexOf(user.id) !== -1
+              (room.private && room.usersId.includes(user.id))
             ))
             .map(room => room.toAPI(user.id === room.adminId));
 

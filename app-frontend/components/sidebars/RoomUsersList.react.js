@@ -22,8 +22,8 @@ class RoomUsersList extends Component {
   static calculateState(prevProps, nextProps) {
     const nextRoom = nextProps.room;
     let users;
-    if (nextRoom.isPrivate) {
-      users = UserStore.getUsers(nextRoom.usersId);
+    if (nextRoom.private) {
+      users = UserStore.getUsers([UserStore.getConnectedUser().id, ...nextRoom.usersId]);
     } else {
       const account = SelectedAccountStore.getAccount() || {};
       users = UserStore.getUsers(account.usersId);

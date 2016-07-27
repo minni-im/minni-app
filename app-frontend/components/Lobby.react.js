@@ -4,16 +4,28 @@ import classnames from "classnames";
 
 import RoomActionCreators from "../actions/RoomActionCreators";
 
-import { SettingsIcon, FavoriteIcon } from "../utils/IconsUtils";
+import { SettingsIcon, FavoriteIcon, RoomIcons } from "../utils/IconsUtils";
 import { parseTitleWithoutLinks } from "../utils/MarkupUtils";
 
 import Logger from "../libs/Logger";
 const logger = Logger.create("Lobby");
 
 class Room extends React.Component {
+  static propTypes = {
+    room: React.PropTypes.object.isRequired,
+    viewer: React.PropTypes.object.isRequired,
+    accountName: React.PropTypes.string,
+    className: React.PropTypes.string
+  }
+
   constructor(props) {
     super(props);
     this.onRoomStarClick = this.onRoomStarClick.bind(this);
+    this.onSettingsClick = this.onSettingsClick.bind(this);
+  }
+
+  onSettingsClick(event) {
+    event.preventDefault();
   }
 
   onRoomStarClick(event) {
@@ -28,7 +40,14 @@ class Room extends React.Component {
 
     let settingsIcon;
     if (room.isUserAdmin(this.props.viewer.id)) {
-      settingsIcon = <span className="room--icon"><SettingsIcon /></span>;
+      settingsIcon = (
+        <span
+          className="room--icon"
+          onClick={this.onSettingsClick}
+        >
+          <SettingsIcon />
+        </span>
+      );
     }
 
     return (
@@ -45,7 +64,10 @@ class Room extends React.Component {
         )}
         title={title}
       >
-        <div className="room--name">{parseTitleWithoutLinks(room.name)}</div>
+        <div className="room--name">
+          {parseTitleWithoutLinks(room.name)}
+        </div>
+        {room.private ? <RoomIcons.RoomPrivateIcon className="icon" /> : null}
         <div className="room--topic flex-spacer">{parseTitleWithoutLinks(room.topic)}</div>
         {settingsIcon}
         <span
@@ -60,6 +82,12 @@ class Room extends React.Component {
 }
 
 export default class Lobby extends React.Component {
+  static propTypes = {
+    account: React.PropTypes.object,
+    rooms: React.PropTypes.object,
+    viewer: React.PropTypes.object
+  }
+
   render() {
     const { account, rooms } = this.props;
     if (!account) {
@@ -102,10 +130,13 @@ export default class Lobby extends React.Component {
             </div>
           </header>
           <div className="rooms--list">
-            {rooms.toArray()
-              .map(room => (
+            {rooms
+              .sortBy(room => room.lastUpdated)
+              .toArray()
+              .reverse()
+              .map((room, index) => (
                 <Room
-                  key={room.id}
+                  key={index}
                   room={room}
                   accountName={account.name}
                   viewer={this.props.viewer}

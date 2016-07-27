@@ -21,6 +21,8 @@ import { parseTitle } from "../../utils/MarkupUtils";
 import UserInfoPanel from "../UserInfoPanel.react";
 import Popover from "../generic/Popover.react";
 
+import { MAX_MULTI_ROOMS } from "../../Constants";
+
 class MainSidebar extends React.Component {
   static getStores() {
     return [
@@ -52,8 +54,12 @@ class MainSidebar extends React.Component {
       event.ctrlKey && event.shiftKey;
     if (multiRoom) {
       event.preventDefault();
-      const slugs = SelectedRoomStore.getRooms().add(event.currentTarget.dataset.slug).toArray();
-      this.context.router.push(`/chat/${this.state.account.slug}/messages/${slugs}`);
+      const slugs = SelectedRoomStore.getRooms()
+        .add(event.currentTarget.dataset.slug)
+        .toArray();
+      if (slugs.length <= MAX_MULTI_ROOMS) {
+        this.context.router.push(`/chat/${this.state.account.slug}/messages/${slugs}`);
+      }
     }
   }
 
@@ -113,7 +119,10 @@ class MainSidebar extends React.Component {
                   to={{ pathname: `/chat/${account.slug}/messages/${room.slug}` }}
                 >
                   <span className="icon">
-                    <RoomIcons.RoomPublicIcon />
+                    {room.private ?
+                      <RoomIcons.RoomPrivateIcon /> :
+                      <RoomIcons.RoomPublicIcon />
+                    }
                   </span>
                   <span className="name">{parseTitle(room.name)}</span>
                   {unreadCount > 0 ? <span className="unread">{unreadCount}</span> : false}

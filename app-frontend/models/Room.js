@@ -17,6 +17,8 @@ const RoomRecord = Immutable.Record({
   adminId: undefined,
   usersId: [],
   lastMsgUserId: undefined,
+  lastUpdated: undefined,
+  dateCreated: undefined,
 
   /* UI related properties */
   usersList: true,

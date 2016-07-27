@@ -1,5 +1,7 @@
 import React from "react";
-import { browserHistory } from "react-router";
+import classNames from "classnames";
+
+import Avatar from "./generic/Avatar.react";
 
 import SelectedAccountStore from "../stores/SelectedAccountStore";
 import UserStore from "../stores/UserStore";
@@ -10,9 +12,9 @@ import AccountActionCreators from "../actions/AccountActionCreators";
 class RoomCreate extends React.Component {
   constructor(props) {
     super(props);
-
     this.onCreateClick = this.onCreateClick.bind(this);
     this.onRoomTypeChanged = this.onRoomTypeChanged.bind(this);
+    this.onUserSelected = this.onUserSelected.bind(this);
   }
 
   state = {
@@ -20,7 +22,8 @@ class RoomCreate extends React.Component {
     usersId: []
   }
 
-  onCreateClick() {
+  onCreateClick(event) {
+    event.preventDefault();
     const account = SelectedAccountStore.getAccount();
     const { name, topic } = this.refs;
     if (name.value.length === 0) {
@@ -39,12 +42,12 @@ class RoomCreate extends React.Component {
     ).then(
       ({ ok, errors }) => {
         if (ok) {
-          browserHistory.push({ pathname: `/chat/${account.slug}/lobby` });
+          this.context.router.push({ pathname: `/chat/${account.slug}/lobby` });
           return;
         }
-        this.setState({
-          message: errors
-        });
+        if (errors) {
+          this.setState({ message: errors });
+        }
         this.refs.name.focus();
       });
   }
@@ -54,6 +57,20 @@ class RoomCreate extends React.Component {
     if (type !== this.state.type) {
       this.setState({ type });
     }
+  }
+
+  onUserSelected(event) {
+    const userId = event.currentTarget.dataset.userId;
+    const index = this.state.usersId.indexOf(userId);
+
+    if (index !== -1) {
+      this.state.usersId.splice(index, 1);
+    } else {
+      this.state.usersId.push(userId);
+    }
+    this.setState({
+      usersId: this.state.usersId
+    });
   }
 
   render() {
@@ -125,17 +142,33 @@ class RoomCreate extends React.Component {
                 />
                 <span>Private room</span>
               </label>
-              <span className="info">Only selected team members will see the room
+              <span className="info">Click to select team members that will see the room
               in their lobby.</span>
             </div>
 
             {
               this.state.type === 2 ?
               (
-                <div className="coworkers-picker">
+                <div className="coworkers-picker flex-horizontal">
                   {account.usersId
                     .filter(userId => userId !== UserStore.getConnectedUser().id)
-                    .map(userId => <div key={userId} className="coworker">{userId}</div>)}
+                    .map(userId => UserStore.getUser(userId))
+                    .map((user, index) => (
+                      <div
+                        key={index}
+                        data-user-id={user.id}
+                        className={classNames("coworker flex-horizontal", {
+                          active: this.state.usersId.includes(user.id)
+                        })}
+                        onClick={this.onUserSelected}
+                      >
+                        <Avatar user={user} />
+                        <div className="flex-spacer user-details">
+                          <div className="user--fullname">{user.fullname}</div>
+                          <div className="user--nickname">@{user.nickname}</div>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               ) :
               false
@@ -150,5 +183,9 @@ class RoomCreate extends React.Component {
     );
   }
 }
+
+RoomCreate.contextTypes = {
+  router: React.PropTypes.object.isRequired
+};
 
 export default RoomCreate;

@@ -31,8 +31,15 @@ class RoomsContainer extends React.Component {
     return (
       <main className={classNames}>
         {this.state.rooms
-          .map(room => <Room key={room.id} room={room} />)
-          .toArray()}
+          .toArray()
+          .map(room => (
+            <Room
+              key={room.id}
+              room={room}
+              multiRooms={size > 1}
+            />
+          ))
+        }
       </main>
     );
   }

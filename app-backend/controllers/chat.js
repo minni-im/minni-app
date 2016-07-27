@@ -55,6 +55,7 @@ export default (app) => {
         const finalRooms = results
           .slice(0, size)
           .reduce((flat, flatRooms) => flat.concat(flatRooms), [])
+          .filter(room => room.isAccessGranted(user.id))
           .map(room => room.toAPI(user.id === room.adminId));
         const finalUsers = results
           .slice(size)

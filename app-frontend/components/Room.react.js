@@ -11,11 +11,11 @@ import TypingInfo from "./TypingInfo.react";
 import {
   FavoriteIcon,
   CloseIcon,
-  RoomIcons,
   SettingsIcon } from "../utils/IconsUtils";
 import { parseTitle } from "../utils/MarkupUtils";
 
 import ComposerStore from "../stores/ComposerStore";
+import UserStore from "../stores/UserStore";
 
 import { MAX_MESSAGE_LENGTH } from "../Constants";
 
@@ -62,12 +62,11 @@ export default class Room extends React.Component {
   }
 
   handleRoomLeave(event) {
-    const { room } = this.props;
+    const { room, multiRooms } = this.props;
     /* eslint-disable */
     let [app, accountSlug, messages, roomSlugs] = document.location.pathname.slice(1).split("/");
     /* eslint-enable  */
-    const multipleRooms = roomSlugs.includes(",");
-    if (!multipleRooms) {
+    if (!multiRooms) {
       this.context.router.push(`/chat/${accountSlug}/lobby`);
     } else {
       roomSlugs = roomSlugs.split(",");
@@ -75,15 +74,28 @@ export default class Room extends React.Component {
       this.context.router.push(`/chat/${accountSlug}/messages/${roomSlugs.join(",")}`);
     }
 
-    if (!(multipleRooms && event.shiftKey)) {
+    if (!(event.shiftKey)) {
       RoomActionCreators.leaveRoom(accountSlug, room.slug);
     }
   }
 
   render() {
-    const { room } = this.props;
+    const { room, multiRooms } = this.props;
     const { name, topic } = room;
     const defaultValue = ComposerStore.getSavedText(room.id);
+
+    let settingsIcon;
+    if (room.isUserAdmin(UserStore.getConnectedUser().id)) {
+      settingsIcon = (
+        <span
+          className="icon"
+          title="Open settings dialog"
+        >
+          <SettingsIcon />
+        </span>
+      );
+    }
+
     return (
       <section
         className={classnames("flex-vertical", "flex-spacer", { "room--favorite": room.starred })}
@@ -100,23 +112,24 @@ export default class Room extends React.Component {
             <h3>{parseTitle(topic)}</h3>
           </div>
           <div className="actions">
-            <span
+            {/* <span
               className="icon icon-active"
               title="Toggle connected users panel"
             >
               <RoomIcons.RoomPublicIcon />
-            </span>
-            <span
-              className="icon"
-              title="Open settings dialog"
-            >
-              <SettingsIcon />
-            </span>
+            </span> */}
+            {settingsIcon}
             <span
               className="icon"
               onClick={this.handleRoomLeave}
-              title="Leave this room (Shift+Click will just deselect it)"
-            ><CloseIcon /></span>
+              title={
+                multiRooms ?
+                "Leave this room (Shift+Click will just deselect it)" :
+                "Leave this room"
+              }
+            >
+              <CloseIcon />
+            </span>
           </div>
         </header>
         {room.usersList ? <RoomUsersList room={room} /> : null}
