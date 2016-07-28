@@ -9,7 +9,7 @@ const RELEASE = nodeEnv === "production";
 
 module.exports = {
   devtool: RELEASE ? "hidden-source-map" : "cheap-module-eval-source-map",
-  context: path.join(__dirname, "./app-frontend"),
+  context: path.join(__dirname, "app-frontend"),
   entry: {
     minni: "./app.react.js",
     plugins: glob.sync(
@@ -103,7 +103,8 @@ module.exports = {
       output: {
         comments: false,
         screw_ie8: true
-      }
+      },
+      sourcemaps: true
     }),
     new webpack.DefinePlugin({
       __DEV__: false,

@@ -7,15 +7,16 @@ const Autoprefixer = require("less-plugin-autoprefix");
 const CleanCss = require("less-plugin-clean-css");
 
 
-const argv = require("minimist")(process.argv.splice(2));
-const RELEASE = !!argv.release;
+const nodeEnv = process.env.NODE_ENV || "development";
+const RELEASE = nodeEnv === "production";
 
 const lessPlugins = [new Autoprefixer({
   browsers: ["last 2 versions"]
 })];
 if (RELEASE) {
   lessPlugins.push(new CleanCss({
-    advanced: true
+    advanced: true,
+    aggressiveMerging: true
   }));
 }
 
