@@ -120,7 +120,17 @@ export const ActionTypes = keyMirror({
 
   INVITATION_DELETE: null,
   INVITATION_DELETE_SUCCESS: null,
-  INVITATION_DELETE_FAILURE: null
+  INVITATION_DELETE_FAILURE: null,
+
+  NOTIFICATION: null,
+  NOTIFICATION_ACK: null,
+});
+
+export const NOTIFICATION_TYPES = keyMirror({
+  INFO: null,
+  WARNING: null,
+  ERROR: null,
+  FATAL: null
 });
 
 export const PLUGIN_TYPES = {
