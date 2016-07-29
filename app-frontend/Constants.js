@@ -127,12 +127,12 @@ export const ActionTypes = keyMirror({
   NOTIFICATION_ACK_ALL: null,
 });
 
-export const NOTIFICATION_TYPES = keyMirror({
-  INFO: null,
-  WARNING: null,
-  ERROR: null,
-  FATAL: null
-});
+export const NOTIFICATION_ROLES = {
+  INFO: "info",
+  WARNING: "warn",
+  ERROR: "error",
+  FATAL: "fatal"
+};
 
 export const PLUGIN_TYPES = {
   COMPOSER_TYPEAHEAD: 1 << 0,
@@ -185,7 +185,8 @@ export const FETCH_HISTORY_TRESHOLD = 30;
 export const SOCKETIO_OPTIONS = {
   reconnectionDelay: 1000,
   reconnectionAttempts: 7,
-  reconnectionDelayMax: 45000
+  reconnectionDelayMax: 45000,
+  randomizationFactor: 0
 };
 
 export const MAX_IMAGE_WIDTH = 400;

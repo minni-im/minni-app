@@ -2,6 +2,8 @@ import { dispatchAsync, dispatch } from "../Dispatcher";
 import { ActionTypes, EndPoints } from "../Constants";
 import { request } from "../utils/RequestUtils";
 
+import * as NotificationsActionCreators from "./NotificationsActionCreators";
+
 import Logger from "../libs/Logger";
 
 const logger = Logger.create("AccountActionCreators");
@@ -113,6 +115,9 @@ export function fetchRooms(accountId) {
           accountId,
           errors
         });
+        NotificationsActionCreators.notifyError(
+          "Something weird just occured. We did not manage to properly fetch some rooms."
+        );
       }
     });
 }
@@ -149,6 +154,11 @@ export function createRoom(account, name, topic, type, usersId = []) {
         accountId,
         room
       });
+      NotificationsActionCreators.notify(
+        `Your new room '${room.name}' has been successfuly created!`,
+        5000
+      );
+      return { ok, room };
     }
     dispatch({
       type: ActionTypes.ROOM_CREATE_FAILURE,

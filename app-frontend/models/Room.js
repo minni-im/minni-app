@@ -28,6 +28,15 @@ const RoomRecord = Immutable.Record({
 });
 
 export default class Room extends RoomRecord {
+  static isAccessGranted(room, userId) {
+    return room.type === TYPE.PUBLIC || (
+      room.type === TYPE.PRIVATE && (
+        room.adminId === userId ||
+        room.usersId.includes(userId)
+      )
+    );
+  }
+
   get private() {
     return this.type === TYPE.PRIVATE;
   }

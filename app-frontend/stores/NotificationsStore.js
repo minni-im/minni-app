@@ -1,16 +1,39 @@
 import Dispatcher from "../Dispatcher";
 import Immutable from "immutable";
 
+import * as NotificationsActionCreators from "../actions/NotificationsActionCreators";
 import { MapStore } from "../libs/Flux";
 
 import { ActionTypes } from "../Constants";
+let internalId = 0;
 
-function handleNotification(state, { notification }) {
-  return state.update(notification.type, Immutable.Set(), list => list.add(notification));
+function scheduleDismiss(notifId, delay) {
+  setTimeout(() => {
+    NotificationsActionCreators.dismiss(notifId);
+  }, delay);
 }
 
-function handleNotificationAck(state, { notification }) {
-  return state.update(notification.type, Immutable.Set(), list => list.delete(notification));
+function handleNotification(state, { role, content, dismiss }) {
+  const notificationId = internalId++;
+  if (dismiss) {
+    scheduleDismiss(notificationId, dismiss);
+  }
+  return state.update(role, Immutable.Set(), list => list.add({
+    id: notificationId,
+    role,
+    content,
+    autoDismissable: !!dismiss
+  }));
+}
+
+function handleNotificationAck(state, { id }) {
+  // TODO: Sounds complex... Could be done with an easier reducing
+  const all = state.reduce((flat, list) => flat.add(list), Immutable.Set()).flatten(true);
+  const notif = all.find(notification => notification.id === parseInt(id, 10));
+  if (!notif) {
+    return state;
+  }
+  return state.update(notif.role || "default", Immutable.Set(), list => list.delete(notif));
 }
 
 function handleNotificationAckAll(state) {
@@ -23,7 +46,6 @@ class NotificationsStore extends MapStore {
     this.addAction(ActionTypes.NOTIFICATION_ACK, handleNotificationAck);
     this.addAction(ActionTypes.NOTIFICATION_ACK_ALL, handleNotificationAckAll);
   }
-
 
   getAllNotifications() {
     return this.getState();
