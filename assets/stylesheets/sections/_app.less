@@ -8,25 +8,45 @@
 }
 
 .minni-notifier {
-  transition: opacity .2s ease-in;
-  background-color: @green;
-
-  .notifier--messages {
+  background-color: @background-light;
+  .notifier-message {
     text-align: center;
+    text-shadow: 0 1px 1px fade(@black, 25%);
+    transition: all 500ms;
+    align-items: center;
+    background-color: @notifier-default;
+
+    > div {
+      font-weight: bold;
+    }
+
+    &.notifier-info { background-color: @notifier-info; }
+    &.notifier-warn {
+      background-color: @notifier-warn;
+      color: @color-dark;
+      text-shadow: 0 1px 1px fade(@white, 25%);
+    }
+    &.notifier-error { background-color: @notifier-error; }
+    &.notifier-fatal { background-color: @notifier-fatal; }
+
+    &.notifier-enter,
+    &.notifier-leave.notifier-leave-active {
+      opacity: 0;
+      height: 0;
+    }
+
+    &,
+    &.notifier-enter.notifier-enter-active,
+    &.notifier-leave {
+      opacity: 1;
+      height: 2em;
+    }
   }
 
-  .notifier--close {
+  .notifier-close {
     font-size: 2em;
-    padding: 15px 10px;
+    padding: 5px 15px;
     cursor: pointer;
-  }
-
-  .notifier-enter {
-    
-  }
-
-  .notifier-leave {
-
   }
 }
 

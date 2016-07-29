@@ -1,6 +1,9 @@
 import React, { Component, PropTypes } from "react";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import { Container } from "flux/utils";
+import classNames from "classnames";
+
+import * as NotificationsActionCreators from "../actions/NotificationsActionCreators";
 
 import { dispatch } from "../Dispatcher";
 import { ActionTypes } from "../Constants";
@@ -18,7 +21,7 @@ class Notifications extends Component {
   }
 
   onCloseNotification() {
-
+    NotificationsActionCreators.dismissAll();
   }
 
   render() {
@@ -27,29 +30,36 @@ class Notifications extends Component {
     const messages = notifications
       .toArray()
       .map((notificationType) => (
-        notificationType.toArray().map((notification, index) => (
-          <div
-            key={index}
-            className={notification.type}
-          >
-            {notification.text}
-          </div>
-        ))
+        notificationType.toArray()
+          .map((notification, index) => (
+            <div
+              key={`message-${index}`}
+              className={classNames(
+                "notifier-message flex-horizontal",
+                { [`notifier-${notification.type}`]: true }
+              )}
+            >
+              <div className="flex-spacer">
+                {notification.text}
+              </div>
+              <span
+                key="notifier-close"
+                className="notifier-close"
+                onClick={this.onCloseNotification}
+              >&times;</span>
+            </div>
+          ))
       ));
 
-    console.log(messages);
     return (
       <ReactCSSTransitionGroup
         transitionName="notifier"
         component="div"
-        className="minni-notifier flex-horizontal"
-        transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}
+        className="minni-notifier"
+        transitionEnterTimeout={500}
+        transitionLeaveTimeout={500}
       >
-        <div className="notifier--messages flex-spacer">
-          {messages}
-        </div>
-        <div className="notifier--close" onClick={this.onCloseNotification}>&times;</div>
+        {messages}
       </ReactCSSTransitionGroup>
     );
   }
@@ -75,19 +85,21 @@ const container = Container.create(NotificationsContainer);
 export default container;
 
 
-const yolol = (x, text) => {
+const yolol = (x, type = "default", text) => {
   setTimeout(() => {
     console.log("dispatching yolol notification");
     dispatch({
       type: ActionTypes.NOTIFICATION,
       notification: {
-        type: "info",
+        type,
         text
       }
     });
   }, x);
 };
 
-yolol(2500, "Yolol la notification !");
-yolol(3500, "YOLOL la notification !");
-yolol(4500, "nan mais #YOLOL quoi!");
+yolol(500, null, "Yolol la notification !");
+yolol(2500, "info", "Yolol la notification !");
+yolol(5000, "warn", "YOLOL la notification !");
+yolol(7500, "error", "nan mais #YOLOL quoi!");
+yolol(10000, "fatal", "FATAL #YOLOL!");

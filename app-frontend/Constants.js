@@ -124,6 +124,7 @@ export const ActionTypes = keyMirror({
 
   NOTIFICATION: null,
   NOTIFICATION_ACK: null,
+  NOTIFICATION_ACK_ALL: null,
 });
 
 export const NOTIFICATION_TYPES = keyMirror({
