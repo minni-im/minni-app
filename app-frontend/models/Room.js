@@ -1,5 +1,4 @@
 import Immutable from "immutable";
-import RoomActionCreators from "../actions/RoomActionCreators";
 import { slugify } from "../utils/TextUtils";
 
 const TYPE = {
@@ -28,14 +27,6 @@ const RoomRecord = Immutable.Record({
 });
 
 export default class Room extends RoomRecord {
-
-  // TODO: This constructor is not clean.
-  // We should not execute this action in here.
-  // Should be moved to a component.
-  constructor(props) {
-    super(props);
-    RoomActionCreators.fetchMessages(this.id);
-  }
   get private() {
     return this.type === TYPE.PRIVATE;
   }

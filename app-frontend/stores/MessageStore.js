@@ -13,7 +13,7 @@ import { parseContent } from "../utils/MarkupUtils";
 
 import Message from "../models/Message";
 
-import Logger from  "../libs/Logger";
+import Logger from "../libs/Logger";
 const logger = Logger.create("MessageStore");
 
 function transformMessage(message) {
@@ -37,9 +37,8 @@ function mergeMessage(messages, message) {
     oldMessage.content !== newMessage.content ||
     !oldMessage.embeds.equals(newMessage.embeds)) {
     return newMessage;
-  } else {
-    return oldMessage;
   }
+  return oldMessage;
 }
 
 function handleMessageCreate(state, { roomId, message }) {
@@ -61,7 +60,7 @@ function handleMessageCreate(state, { roomId, message }) {
 
 function handleMessageUpdate(state, { message: newMessage }) {
   const { roomId } = newMessage;
-  let messages = state.get(roomId);
+  const messages = state.get(roomId);
   if (!messages || !messages.has(newMessage.id)) {
     return state;
   }
@@ -75,12 +74,14 @@ function handleMessageUpdate(state, { message: newMessage }) {
 }
 
 function handleLoadMessagesSuccess(state, { roomId, messages: newMessages }) {
-  let oldMessages = this.getMessages(roomId);
+  const oldMessages = this.getMessages(roomId);
 
-  let messages = Immutable.OrderedMap().withMutations(map => {
-    newMessages.reverse().forEach(message => {
-      return map.set(message.id, mergeMessage(oldMessages, message));
-    });
+  const messages = Immutable.OrderedMap().withMutations(map => {
+    newMessages.reverse().forEach(message =>
+      map.set(message.id, mergeMessage(oldMessages, message))
+    );
+    oldMessages.forEach(message =>
+      map.set(message.id, message));
   });
 
   return state.set(roomId, messages);

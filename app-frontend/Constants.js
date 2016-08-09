@@ -98,7 +98,8 @@ export const AVATAR_SIZES = keyMirror({
 
 export const MessageStreamTypes = keyMirror({
   DIVIDER_TIME_STAMP: null,
-  MESSAGE_GROUP: null
+  MESSAGE_GROUP: null,
+  WELCOME_MESSAGE: null
 });
 
 export const USER_STATUS = {

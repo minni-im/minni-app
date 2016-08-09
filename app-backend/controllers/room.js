@@ -168,9 +168,9 @@ export default (app) => {
     messages(req, res) {
       const Message = recorder.model("Message");
       const { roomId } = req.params;
-      const { limit } = req.query;
+      const { limit, latest, oldest } = req.query;
       // console.log(`Fetching ${limit} messages for room:${roomId}`);
-      Message.getHistory(roomId, null, null, limit)
+      Message.getHistory(roomId, latest, oldest, limit)
         .then(messages => {
           res.json({
             ok: true,
