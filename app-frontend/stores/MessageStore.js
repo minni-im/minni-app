@@ -80,8 +80,7 @@ function handleLoadMessagesSuccess(state, { roomId, messages: newMessages }) {
     newMessages.reverse().forEach(message =>
       map.set(message.id, mergeMessage(oldMessages, message))
     );
-    oldMessages.forEach(message =>
-      map.set(message.id, message));
+    map.merge(oldMessages);
   });
 
   return state.set(roomId, messages);

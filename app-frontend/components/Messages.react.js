@@ -3,17 +3,19 @@ import classnames from "classnames";
 
 // TODO: This import is ugly. Should be changed to named export and imported with * as
 import { default as RoomActionCreators } from "../actions/RoomActionCreators";
-import { clearDimensions, updateDimensions } from "../actions/DimensionActionCreators";
+import * as DimensionActionCreators from "../actions/DimensionActionCreators";
 
-import Logger from "../libs/Logger";
-const logger = Logger.create("Messages.react");
-
-import { MessageStreamTypes } from "../Constants";
+import {
+  MessageStreamTypes,
+  FETCH_HISTORY_TRESHOLD
+} from "../Constants";
 
 import Avatar from "./generic/Avatar.react";
 import Embed from "./Embed.react";
 import WelcomeMessage from "./WelcomeMessage.react";
 
+import Logger from "../libs/Logger";
+const logger = Logger.create("Messages.react");
 
 class Message extends React.Component {
   static propTypes = {
@@ -125,7 +127,9 @@ export default class Messages extends React.Component {
     room: React.PropTypes.object.isRequired,
     messages: React.PropTypes.object.isRequired,
     dimensions: React.PropTypes.object,
-    messagesState: React.PropTypes.object
+    messagesState: React.PropTypes.object,
+    renderEmbeds: React.PropTypes.bool,
+    inlineImages: React.PropTypes.bool
   }
 
   constructor(props) {
@@ -142,8 +146,8 @@ export default class Messages extends React.Component {
     if (prevProps.renderEmbeds !== this.props.renderEmbeds ||
       prevProps.inlineImages !== this.props.inlineImages) {
       this.scrollToBottom();
-    } // Last message has changed.
-    else if (this.props.messages.last() !== prevProps.messages.last()) {
+    } else if (this.props.messages.last() !== prevProps.messages.last()) {
+      // Last message has changed.
       if (prevProps.messagesState.loadingMore) {
         this.restoreScroll();
       }
@@ -153,6 +157,10 @@ export default class Messages extends React.Component {
       if (latestMessage && latestMessage.user.id === currentUser.id || this.isAtBottom()) {
         this.scrollToBottom();
       }
+    } else if (prevProps.messages.first() !== this.props.messages.first() &&
+      prevProps.messagesState.loadingMore) {
+      // The first message changed and was previously loading more.
+      this.handleLoadMore();
     }
   }
 
@@ -164,20 +172,21 @@ export default class Messages extends React.Component {
 
     const { scroller } = this.refs;
     // At the top of the scroller node and its larger than the viewport.
-    if (scroller.scrollTop === 0 && scroller.scrollHeight > scroller.offsetHeight) {
+    if (scroller.scrollTop < FETCH_HISTORY_TRESHOLD &&
+      scroller.scrollHeight > scroller.offsetHeight) {
       if (this.props.messagesState.hasMore && !this.props.messages.loadingMore) {
         this.loadMore();
       }
     }
 
     // If at the bottom we can clear dimensions.
-    if (scroller.scrollHeight === scroller.scrollTop + scroller.offsetHeight) {
-      clearDimensions(this.props.room);
-    }
-    // Otherwise keep track of the current dimensions to use to offset calculation.
-    else {
-      updateDimensions(this.props.room, {
-        scrollTop: scroller.scrollTop
+    if (this.isAtBottom()) {
+      DimensionActionCreators.clearDimensions(this.props.room);
+    } else {
+      // Otherwise keep track of the current dimensions to use to offset calculation.
+      DimensionActionCreators.updateDimensions(this.props.room, {
+        scrollTop: scroller.scrollTop,
+        scrollHeight: scroller.scrollHeight
       });
     }
   }
@@ -189,11 +198,17 @@ export default class Messages extends React.Component {
     );
   }
 
+  handleLoadMore() {
+    if (!this.isAtBottom()) {
+      const { scroller } = this.refs;
+      this.scrollTo(scroller.scrollHeight - this.props.dimensions.scrollHeight);
+    }
+  }
+
   restoreScroll() {
     // If the user previously scrolled then restore their position.
-    const { scrollTop } = this.props.dimensions;
-    if (scrollTop !== null) {
-      this.scrollTo(scrollTop);
+    if (this.props.dimensions !== null) {
+      this.scrollTo(this.props.dimensions.scrollTop);
     } else {
       this.scrollToBottom();
     }
@@ -202,6 +217,7 @@ export default class Messages extends React.Component {
   isAtBottom() {
     const { scroller } = this.refs;
     return scroller.scrollTop + scroller.clientHeight === scroller.scrollHeight;
+    // return this.props.dimensions === null;
   }
 
   scrollTo(offset) {

@@ -31,7 +31,7 @@ class MessagesContainer extends React.Component {
       viewer: UserStore.getConnectedUser(),
       messages: MessageStore.getMessages(nextProps.room.id),
       messagesState: MessageStateStore.getMeta(nextProps.room.id),
-      dimensions: DimensionStore.getDimensions(nextProps.room.id),
+      dimensions: DimensionStore.getDimensions(nextProps.room),
       renderEmbeds: UserSettingsStore.getValue("global.rooms.links_preview"),
       inlineImages: UserSettingsStore.getValue("global.rooms.image_preview")
     };

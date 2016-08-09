@@ -6,22 +6,22 @@ import { ActionTypes } from "../Constants";
 
 import Dispatcher from "../Dispatcher";
 
-function handleScroll( state, { roomId, scrollTop } ) {
-  if ( scrollTop == null ) {
-    return state.delete( roomId );
+function handleScroll(state, { roomId, scrollTop, scrollHeight }) {
+  if (scrollTop === undefined) {
+    return state.delete(roomId);
   }
-  return state.set( roomId, { scrollTop } );
+  return state.set(roomId, { scrollTop, scrollHeight });
 }
 
 class DimensionStore extends MapStore {
   initialize() {
-    this.addAction( ActionTypes.UPDATE_DIMENSIONS, handleScroll );
+    this.addAction(ActionTypes.UPDATE_DIMENSIONS, handleScroll);
   }
 
-  getDimensions({ id }) {
-    return this.getState().get(id, { scrollTop: null });
+  getDimensions(room) {
+    return this.getState().get(room.id, null);
   }
 }
 
-const instance = new DimensionStore( Dispatcher );
+const instance = new DimensionStore(Dispatcher);
 export default instance;
