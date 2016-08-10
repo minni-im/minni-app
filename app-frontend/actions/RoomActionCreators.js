@@ -1,6 +1,6 @@
 import Logger from "../libs/Logger";
 const logger = Logger.create("RoomActionCreators");
-import Dispatcher, { dispatch, dispatchAsync } from "../Dispatcher";
+import { dispatch, dispatchMaybe } from "../Dispatcher";
 import { ActionTypes, EndPoints, MAX_MESSAGES_PER_ROOMS } from "../Constants";
 import { request } from "../utils/RequestUtils";
 
@@ -77,7 +77,7 @@ export default {
   },
 
   fetchMessages(roomId, latest, oldest = null, limit = MAX_MESSAGES_PER_ROOMS) {
-    dispatchAsync({
+    dispatchMaybe({
       type: ActionTypes.LOAD_MESSAGES,
       roomId
     });
