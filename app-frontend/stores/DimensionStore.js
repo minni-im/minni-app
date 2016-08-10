@@ -9,7 +9,9 @@ function handleScroll(state, { roomId, scrollTop, scrollHeight }) {
   if (scrollTop === undefined) {
     return state.delete(roomId);
   }
-  return state.set(roomId, { scrollTop, scrollHeight });
+  return state
+    .setIn([roomId, "scrollTop"], scrollTop)
+    .setIn([roomId, "scrollHeight"], scrollHeight);
 }
 
 function handleRoomLeave(state, { roomSlug }) {

@@ -23,7 +23,7 @@ function handleConnectionstart() {
   });
 }
 
-function handleConnectionOpen() {
+function handleConnectionOpen(state) {
   ActivityActionCreators.setStatus(USER_STATUS.CONNECTING);
   const appHolder = document.querySelector("#splashscreen");
   setTimeout(() => {
@@ -32,6 +32,7 @@ function handleConnectionOpen() {
       appHolder.classList.add("splashscreen--hidden");
     }, 500);
   }, 1500);
+  return state.add(true);
 }
 
 function handleRoomJoin({ accountSlug, roomSlug }) {
@@ -57,6 +58,10 @@ function handleUserStatus({ status, oldStatus }) {
       .toArray().map(account => account.id);
     socket.emit("users:presence", { userId: user.id, status, accountIds });
   }
+}
+
+function handleConnectionLost(state) {
+  return state.clear().add(false);
 }
 
 socket.on("connect", () => {
@@ -133,12 +138,17 @@ class ConnectionStore extends ReduceStore {
   initialize() {
     this.waitFor(AccountStore, UserStore);
     this.addAction(ActionTypes.CONNECTION_START, withNoMutations(handleConnectionstart));
-    this.addAction(ActionTypes.CONNECTION_OPEN, withNoMutations(handleConnectionOpen));
+    this.addAction(ActionTypes.CONNECTION_OPEN, handleConnectionOpen);
+    this.addAction(ActionTypes.CONNECTION_LOST, handleConnectionLost);
 
     this.addAction(ActionTypes.ROOM_JOIN, withNoMutations(handleRoomJoin));
     this.addAction(ActionTypes.ROOM_LEAVE, withNoMutations(handleRoomLeave));
 
     this.addAction(ActionTypes.SET_USER_STATUS, withNoMutations(handleUserStatus));
+  }
+
+  isConnected() {
+    return this.getState().last();
   }
 }
 
