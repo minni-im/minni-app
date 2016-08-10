@@ -19,6 +19,13 @@ function handleLoadMessagesFailure(state, { roomId }) {
   return state.setIn([roomId, "loadingMore"], false);
 }
 
+function handleResetHasMore(state, { roomId, scrollTop }) {
+  if (scrollTop === undefined) {
+    return state.setIn([roomId, "hasMore"], true);
+  }
+  return state;
+}
+
 
 class MessageStateStore extends MapStore {
   initialize() {
@@ -26,6 +33,8 @@ class MessageStateStore extends MapStore {
     this.addAction(ActionTypes.LOAD_MESSAGES, handleLoadMessages);
     this.addAction(ActionTypes.LOAD_MESSAGES_SUCCESS, handleLoadMessagesSuccess);
     this.addAction(ActionTypes.LOAD_MESSAGES_FAILURE, handleLoadMessagesFailure);
+
+    this.addAction(ActionTypes.UPDATE_DIMENSIONS, handleResetHasMore);
   }
 
   isLoading(roomId) {
