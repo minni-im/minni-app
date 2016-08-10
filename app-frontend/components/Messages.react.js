@@ -287,21 +287,15 @@ export default class Messages extends React.Component {
       messageGroupFinal.unshift(
         <div
           key="loading-more"
-          className="message-loading-more flex-horizontal"
-        >
-          <img
-            className="spinner"
-            src="/images/spinner.gif"
-            alt="Loading more messages..."
-          />
-        </div>
+          className="message-loading-more"
+        >Retrieving messages history...</div>
       );
     } else if (this.props.messagesState.hasMore) {
       messageGroupFinal.unshift(
         <div
           key="has-more"
           className="message-has-more"
-        ></div>
+        ><span role="link">Contains more messages...</span></div>
       );
     } else {
       messageGroupFinal.unshift(
