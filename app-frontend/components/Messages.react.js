@@ -174,7 +174,7 @@ export default class Messages extends React.Component {
     // At the top of the scroller node and its larger than the viewport.
     if (scroller.scrollTop < FETCH_HISTORY_TRESHOLD &&
       scroller.scrollHeight > scroller.offsetHeight) {
-      if (this.props.messagesState.hasMore && !this.props.messages.loadingMore) {
+      if (this.props.messagesState.hasMore && !this.props.messagesState.loadingMore) {
         this.loadMore();
       }
     }
