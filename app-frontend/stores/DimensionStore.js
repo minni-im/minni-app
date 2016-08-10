@@ -1,3 +1,4 @@
+import Immutable from "immutable";
 import { MapStore } from "../libs/Flux";
 
 import { ActionTypes } from "../Constants";
@@ -5,13 +6,20 @@ import Dispatcher from "../Dispatcher";
 
 import RoomStore from "../stores/RoomStore";
 
+// We are using a Record here instead of a simple Map to benefit from the
+// automagic getters (record.scrollTop instead of recordFromMap.get('scrollTop'))
+const DimensionRecord = Immutable.Record({
+  scrollTop: null,
+  scrollHeight: null
+});
+
 function handleScroll(state, { roomId, scrollTop, scrollHeight }) {
   if (scrollTop === undefined) {
     return state.delete(roomId);
   }
-  return state
-    .setIn([roomId, "scrollTop"], scrollTop)
-    .setIn([roomId, "scrollHeight"], scrollHeight);
+  return state.set(roomId, new DimensionRecord({
+    scrollTop, scrollHeight
+  }));
 }
 
 function handleRoomLeave(state, { roomSlug }) {

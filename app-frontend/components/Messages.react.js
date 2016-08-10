@@ -135,6 +135,7 @@ export default class Messages extends React.Component {
   constructor(props) {
     super(props);
     this.onHandleScroll = this.onHandleScroll.bind(this);
+    this.onHandleLoadMore = this.onHandleLoadMore.bind(this);
   }
 
   componentDidMount() {
@@ -171,7 +172,7 @@ export default class Messages extends React.Component {
     }
 
     const { scroller } = this.refs;
-    // At the top of the scroller node and its larger than the viewport.
+    // Reaching the top when scrolling with a scrollable viewport
     if (scroller.scrollTop < FETCH_HISTORY_TRESHOLD &&
       scroller.scrollHeight > scroller.offsetHeight) {
       if (this.props.messagesState.hasMore && !this.props.messagesState.loadingMore) {
@@ -180,7 +181,9 @@ export default class Messages extends React.Component {
     }
 
     // If at the bottom we can clear dimensions.
-    if (this.isAtBottom()) {
+    // we can't use `isAtBottom()` here as it would always be true, and we would
+    // never get new dimensions.
+    if (scroller.scrollTop + scroller.clientHeight === scroller.scrollHeight) {
       DimensionActionCreators.clearDimensions(this.props.room);
     } else {
       // Otherwise keep track of the current dimensions to use to offset calculation.
@@ -191,8 +194,19 @@ export default class Messages extends React.Component {
     }
   }
 
+  onHandleLoadMore() {
+    this.loadMore().then(() => {
+      const { hasMore } = this.refs;
+      if (hasMore) {
+        hasMore.scrollIntoView(true);
+      } else {
+        this.scrollTo(0);
+      }
+    });
+  }
+
   loadMore() {
-    RoomActionCreators.fetchMessages(
+    return RoomActionCreators.fetchMessages(
       this.props.room.id,
       this.props.messages.first().dateCreated.toISOString()
     );
@@ -206,7 +220,7 @@ export default class Messages extends React.Component {
   }
 
   restoreScroll() {
-    // If the user previously scrolled then restore their position.
+    // If we have scroll position info, let's use it.
     if (this.props.dimensions !== null) {
       this.scrollTo(this.props.dimensions.scrollTop);
     } else {
@@ -215,9 +229,7 @@ export default class Messages extends React.Component {
   }
 
   isAtBottom() {
-    const { scroller } = this.refs;
-    return scroller.scrollTop + scroller.clientHeight === scroller.scrollHeight;
-    // return this.props.dimensions === null;
+    return this.props.dimensions === null;
   }
 
   scrollTo(offset) {
@@ -294,8 +306,15 @@ export default class Messages extends React.Component {
       messageGroupFinal.unshift(
         <div
           key="has-more"
+          ref="hasMore"
           className="message-has-more"
-        ><span role="link">Contains more messages...</span></div>
+        >
+          <span
+            role="link"
+            title="Click to retrieve more messages"
+            onClick={this.onHandleLoadMore}
+          >And more...</span>
+        </div>
       );
     } else {
       messageGroupFinal.unshift(

@@ -128,7 +128,7 @@ export const TYPING_TIMEOUT = 5000;
 
 export const MAX_MESSAGES_PER_ROOMS = 50;
 export const MAX_MESSAGE_LENGTH = 2000;
-export const FETCH_HISTORY_TRESHOLD = 200;
+export const FETCH_HISTORY_TRESHOLD = 30;
 
 export const SOCKETIO_OPTIONS = {
   reconnectionDelay: 1000,
