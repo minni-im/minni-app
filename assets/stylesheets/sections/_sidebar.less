@@ -37,11 +37,6 @@
         }
 
         #user.status-icon(@dark-blue);
-        .user-status-icon {
-          transition: background-color 250ms ease;
-          position: absolute;
-          bottom: -3px; right: -3px;
-        }
       }
       .user-name {
         .text-overflow;
@@ -89,9 +84,9 @@
 
       #user.status-icon(transparent);
       .user-status-icon {
+        position: relative;
         display: inline-block;
-        vertical-align: middle;
-        margin: 0 5px 0 2px;
+        margin: 0 10px 0 2px;
       }
     }
 

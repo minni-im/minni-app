@@ -162,13 +162,17 @@
 
 #user {
   .status-icon(@background-color: @background-light, @with-status: true) {
+    @status-icon-border-width: 2px;
     .user-status-icon when (@with-status = true) {
       height: 10px;
       min-width: 10px;
       background-color: @status-color-online;
-      border: 3px solid @background-color;
+      border: @status-icon-border-width solid @background-color;
       border-radius: 10px;
-      position: relative;
+
+      position: absolute;
+      bottom: -(@status-icon-border-width);
+      right: -(@status-icon-border-width);
 
       transition:
         background-color 250ms ease,
