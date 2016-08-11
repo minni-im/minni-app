@@ -13,7 +13,7 @@ import { parseContent } from "../utils/MarkupUtils";
 
 import Message from "../models/Message";
 
-import Logger from  "../libs/Logger";
+import Logger from "../libs/Logger";
 const logger = Logger.create("MessageStore");
 
 function transformMessage(message) {
@@ -37,9 +37,8 @@ function mergeMessage(messages, message) {
     oldMessage.content !== newMessage.content ||
     !oldMessage.embeds.equals(newMessage.embeds)) {
     return newMessage;
-  } else {
-    return oldMessage;
   }
+  return oldMessage;
 }
 
 function handleMessageCreate(state, { roomId, message }) {
@@ -49,19 +48,20 @@ function handleMessageCreate(state, { roomId, message }) {
     delete message.nonce;
     messages = messages.replace(nonce, message.id, transformMessage(message));
   } else {
-    messages = messages.withMutations(map => {
-      map.set(message.id, mergeMessage(map, message));
-      while (map.size > MAX_MESSAGES_PER_ROOMS) {
-        map.remove(map.first().id);
-      }
-    });
+    // messages = messages.withMutations(map => {
+    //   map.set(message.id, mergeMessage(map, message));
+    //   while (map.size > MAX_MESSAGES_PER_ROOMS) {
+    //     map.remove(map.first().id);
+    //   }
+    // });
+    messages = messages.set(message.id, mergeMessage(messages, message));
   }
   return state.set(roomId, messages);
 }
 
 function handleMessageUpdate(state, { message: newMessage }) {
   const { roomId } = newMessage;
-  let messages = state.get(roomId);
+  const messages = state.get(roomId);
   if (!messages || !messages.has(newMessage.id)) {
     return state;
   }
@@ -75,15 +75,29 @@ function handleMessageUpdate(state, { message: newMessage }) {
 }
 
 function handleLoadMessagesSuccess(state, { roomId, messages: newMessages }) {
-  let oldMessages = this.getMessages(roomId);
+  const oldMessages = this.getMessages(roomId);
 
-  let messages = Immutable.OrderedMap().withMutations(map => {
-    newMessages.reverse().forEach(message => {
-      return map.set(message.id, mergeMessage(oldMessages, message));
-    });
+  const messages = Immutable.OrderedMap().withMutations(map => {
+    newMessages.reverse().forEach(message =>
+      map.set(message.id, mergeMessage(oldMessages, message))
+    );
+    map.merge(oldMessages);
   });
 
   return state.set(roomId, messages);
+}
+
+function handleTruncateMessagesList(state, { roomId, scrollTop }) {
+  if (scrollTop === undefined) {
+    let messages = state.get(roomId, Immutable.OrderedMap());
+    messages = messages.withMutations(map => {
+      while (map.size > MAX_MESSAGES_PER_ROOMS) {
+        map.remove(map.first().id);
+      }
+    });
+    return state.set(roomId, messages);
+  }
+  return state;
 }
 
 class MessageStore extends MapStore {
@@ -92,6 +106,8 @@ class MessageStore extends MapStore {
     this.addAction(ActionTypes.MESSAGE_CREATE, handleMessageCreate);
     this.addAction(ActionTypes.MESSAGE_UPDATE, handleMessageUpdate);
     this.addAction(ActionTypes.LOAD_MESSAGES_SUCCESS, handleLoadMessagesSuccess);
+
+    this.addAction(ActionTypes.UPDATE_DIMENSIONS, handleTruncateMessagesList);
   }
 
   getMessages(roomId) {

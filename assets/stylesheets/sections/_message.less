@@ -9,11 +9,31 @@ code {
 .messages {
   padding: 10px;
 
-  .message-timestamp {
+  .message-welcome, .message-timestamp {
     padding: 1px;
     margin: 0 -10px 10px -10px;
-    text-align: center;
     background-color: fade(@black, 2%);
+  }
+
+  .message-loading-more, .message-has-more {
+    text-align: center;
+    font-size: 11px;
+    font-style: italic;
+    color: @gray-light;
+    padding-top: 15px;
+    margin-top: 64px;
+  }
+
+  .message-has-more span {
+    color: @light-blue;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .message-timestamp {
+    text-align: center;
     h4 {
       margin: 15px 0;
       font-weight: 400;
@@ -21,9 +41,25 @@ code {
     }
   }
 
+  .message-welcome {
+    margin-top: -10px;
+    padding: 0 15px 10px;
+    border-bottom: 1px dotted @gray-lighter;
+
+    h3 {
+      margin: 0;
+      padding-top: 35px;
+      color: @gray-dark !important;
+    }
+    p {
+      font-size: 12px;
+      line-height: 16px;
+      color: @gray-light;
+    }
+  }
+
   .message-group {
     margin-bottom: 10px;
-
     .avatar {
       margin-top: 10px;
       margin-right: 10px;

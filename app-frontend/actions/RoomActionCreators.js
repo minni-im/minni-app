@@ -1,6 +1,6 @@
 import Logger from "../libs/Logger";
 const logger = Logger.create("RoomActionCreators");
-import Dispatcher, { dispatch } from "../Dispatcher";
+import { dispatch, dispatchMaybe } from "../Dispatcher";
 import { ActionTypes, EndPoints, MAX_MESSAGES_PER_ROOMS } from "../Constants";
 import { request } from "../utils/RequestUtils";
 
@@ -76,23 +76,28 @@ export default {
       });
   },
 
-  fetchMessages(roomId, latest, oldest, limit = MAX_MESSAGES_PER_ROOMS) {
-    if (!Dispatcher.isDispatching()) {
-      dispatch({
-        type: ActionTypes.LOAD_MESSAGES,
-        roomId
-      });
+  fetchMessages(roomId, latest, oldest = null, limit = MAX_MESSAGES_PER_ROOMS) {
+    dispatchMaybe({
+      type: ActionTypes.LOAD_MESSAGES,
+      roomId
+    });
+
+    const params = {
+      limit
+    };
+    if (latest) {
+      params.latest = latest;
     }
+
     return request(EndPoints.ROOM_MESSAGES(roomId), {
-      params: {
-        limit
-      }
+      params
     }).then(({ ok, messages, errors }) => {
       if (ok) {
         dispatch({
           type: ActionTypes.LOAD_MESSAGES_SUCCESS,
           roomId,
-          messages
+          messages,
+          limit
         });
       } else {
         dispatch({
