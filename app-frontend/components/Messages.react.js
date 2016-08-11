@@ -22,7 +22,8 @@ class Message extends React.Component {
     first: React.PropTypes.bool,
     message: React.PropTypes.object.isRequired,
     renderEmbeds: React.PropTypes.bool,
-    inlineImages: React.PropTypes.bool
+    inlineImages: React.PropTypes.bool,
+    clock24: React.PropTypes.bool
   }
 
   static defaultProps = {
@@ -30,7 +31,7 @@ class Message extends React.Component {
   }
 
   render() {
-    const { message, renderEmbeds, inlineImages } = this.props;
+    const { message, renderEmbeds, inlineImages, clock24 } = this.props;
     let header;
     let timestamp;
     if (this.props.first) {
@@ -41,7 +42,14 @@ class Message extends React.Component {
         </div>
       );
     } else {
-      timestamp = <div className="message--timestamp">{message.dateCreated.format("hh:mm A")}</div>;
+      timestamp = (
+        <div className="message--timestamp">
+          {message.dateCreated.format(clock24 ?
+            "HH:MM" :
+            "hh:mm A"
+          )}
+        </div>
+      );
     }
 
     let content = (
@@ -85,7 +93,9 @@ class MessageGroup extends React.Component {
   static propTypes = {
     messages: React.PropTypes.array.isRequired,
     renderEmbeds: React.PropTypes.bool,
-    inlineImages: React.PropTypes.bool
+    inlineImages: React.PropTypes.bool,
+    clock24: React.PropTypes.bool,
+    emphasisMe: React.PropTypes.bool
   }
 
   render() {
@@ -95,13 +105,15 @@ class MessageGroup extends React.Component {
         key={message.id}
         first={i === 0}
         message={message}
+        clock24={this.props.clock24}
         renderEmbeds={this.props.renderEmbeds}
         inlineImages={this.props.inlineImages}
       />
     ));
     const avatar = <Avatar user={user} />;
+    const { emphasisMe } = this.props;
     const classNames = {
-      "message-group-me": this.props.viewer.id === user.id
+      "message-group-me": this.props.viewer.id === user.id && emphasisMe
     };
     return (
       <div className={classnames("message-group", "flex-horizontal", classNames)}>
@@ -129,7 +141,9 @@ export default class Messages extends React.Component {
     dimensions: React.PropTypes.object,
     messagesState: React.PropTypes.object,
     renderEmbeds: React.PropTypes.bool,
-    inlineImages: React.PropTypes.bool
+    inlineImages: React.PropTypes.bool,
+    emphasisMe: React.PropTypes.bool,
+    clock24: React.PropTypes.bool
   }
 
   constructor(props) {
@@ -288,9 +302,11 @@ export default class Messages extends React.Component {
         <MessageGroup
           key={content[0].id}
           viewer={this.props.viewer}
+          messages={content}
           renderEmbeds={this.props.renderEmbeds}
           inlineImages={this.props.inlineImages}
-          messages={content}
+          emphasisMe={this.props.emphasisMe}
+          clock24={this.props.clock24}
         />
       );
     });

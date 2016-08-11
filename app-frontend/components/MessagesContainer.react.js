@@ -32,6 +32,8 @@ class MessagesContainer extends React.Component {
       messages: MessageStore.getMessages(nextProps.room.id),
       messagesState: MessageStateStore.getMeta(nextProps.room.id),
       dimensions: DimensionStore.getDimensions(nextProps.room),
+      emphasisMe: UserSettingsStore.getValue("global.rooms.emphasis"),
+      clock24: UserSettingsStore.getValue("global.clock24"),
       renderEmbeds: UserSettingsStore.getValue("global.rooms.links_preview"),
       inlineImages: UserSettingsStore.getValue("global.rooms.image_preview")
     };
