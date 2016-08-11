@@ -310,8 +310,7 @@ export default class Messages extends React.Component {
         />
       );
     });
-
-    if (this.props.messagesState.loadingMore) {
+    if (this.props.messagesState.loadingMore || !this.props.messagesState.ready) {
       messageGroupFinal.unshift(
         <div
           key="loading-more"

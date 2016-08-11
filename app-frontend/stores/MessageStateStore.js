@@ -14,7 +14,7 @@ const StateRecord = Immutable.Record({
   ready: false
 });
 
-function updateState(loadingMore = false, hasMore: true, ready: false) {
+function updateState(loadingMore = false, hasMore = true, ready = false) {
   return new StateRecord({
     loadingMore, hasMore, ready
   });
@@ -44,7 +44,7 @@ function handleConnectionOpen(state, { rooms }) {
 
 function handleRoomJoin(state, { roomSlug }) {
   const { id } = RoomStore.getRoom(roomSlug);
-  return state.set(id, new StateRecord());
+  return state.set(id, updateState(true));
 }
 
 function handleResetHasMore(state, { roomId, scrollTop }) {
