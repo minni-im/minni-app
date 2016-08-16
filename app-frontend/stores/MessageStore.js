@@ -1,10 +1,11 @@
 import Immutable from "immutable";
 import moment from "moment";
+import { some, flattenDeep } from "lodash";
 
 import Dispatcher from "../Dispatcher";
 import { MapStore } from "../libs/Flux";
 
-import { ActionTypes, MAX_MESSAGES_PER_ROOMS } from "../Constants";
+import { ActionTypes, MAX_MESSAGES_PER_ROOMS, MAX_JUMBOABLE_EMOJIS } from "../Constants";
 
 import UserStore from "../stores/UserStore";
 import RoomStore from "../stores/RoomStore";
@@ -16,6 +17,42 @@ import Message from "../models/Message";
 import Logger from "../libs/Logger";
 const logger = Logger.create("MessageStore");
 
+function checkForJumboableEmoji(tree) {
+  const flat = (t) => t.map(element => {
+    if (Array.isArray(element.content)) {
+      return flat(element.content);
+    }
+    return element;
+  });
+
+  const chunks = flattenDeep(flat(tree));
+  const notJumboable = some(chunks,
+    element => !(
+      element.type === "emoji" || (
+        element.type === "text" &&
+        element.content.trim() === ""
+      )
+    )
+  );
+  if (notJumboable) {
+    return tree;
+  }
+  let emojiCount = 0;
+  chunks.forEach(element => {
+    if (element.type !== "emoji" || emojiCount > MAX_JUMBOABLE_EMOJIS) {
+      return;
+    }
+    emojiCount++;
+  });
+  if (emojiCount > MAX_JUMBOABLE_EMOJIS) {
+    return tree;
+  }
+  chunks.forEach(element => {
+    element.jumboable = true;
+  });
+  return tree;
+}
+
 function transformMessage(message) {
   message.dateCreated = moment(message.dateCreated);
   message.lastUpdated = moment(message.lastUpdated);
@@ -23,7 +60,12 @@ function transformMessage(message) {
     message.dateEdited = moment(message.dateEdited);
   }
 
-  message.contentParsed = parseContent(message.content, false);
+  message.contentParsed = parseContent(
+    message.content,
+    false,
+    {},
+    checkForJumboableEmoji
+  );
 
   message.user = UserStore.getUser(message.userId);
   message.embeds = Immutable.fromJS(message.embeds || []);

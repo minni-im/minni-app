@@ -12,6 +12,7 @@ import Emoji from "./generic/Emoji.react";
 
 class EmojiContainer extends React.Component {
   static propTypes = {
+    className: PropTypes.string,
     shortname: PropTypes.string.isRequired,
     skinTone: PropTypes.oneOf(["1-2", "3", "4", "5", "6"])
   }
@@ -28,7 +29,7 @@ class EmojiContainer extends React.Component {
   }
 
   render() {
-    const { shortname, skinTone } = this.props;
+    const { className, shortname, skinTone } = this.props;
     const emoji = EMOJIS[shortname];
     const { provider, active } = this.state;
     let name = shortname;
@@ -49,6 +50,7 @@ class EmojiContainer extends React.Component {
     }
     return (
       <Emoji
+        className={className}
         name={name}
         unicode={unicode}
         skinTone={skinTone}

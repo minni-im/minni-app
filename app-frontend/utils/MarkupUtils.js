@@ -1,4 +1,5 @@
 import React from "react"; // needed for the jsx below.
+import classnames from "classnames";
 import SimpleMarkdown from "simple-markdown";
 import highlight from "highlight.js";
 import { Link } from "react-router";
@@ -114,7 +115,16 @@ const DEFAULT_RULES = {
       return { name, skinTone: capture[2] && capture[3] };
     },
     react(node, output, state) {
-      return <Emoji key={state.key} shortname={node.name} skinTone={node.skinTone} />;
+      return (
+        <Emoji
+          className={classnames({
+            "emoji--jumboable": node.jumboable
+          })}
+          key={state.key}
+          shortname={node.name}
+          skinTone={node.skinTone}
+        />
+      );
     }
   },
 
@@ -196,7 +206,7 @@ export function getDefaultRules() {
   return { ...DEFAULT_RULES };
 }
 
-function createContentParser(rules, content = "", inline = true, state = {}) {
+function createContentParser(rules, content = "", inline = true, state = {}, preOutputHook) {
   const parser = SimpleMarkdown.parserFor(rules);
   const output = SimpleMarkdown.reactFor(SimpleMarkdown.ruleOutput(rules, "react"));
 
@@ -204,11 +214,15 @@ function createContentParser(rules, content = "", inline = true, state = {}) {
     content = `${content}\n\n`;
   }
 
-  return output(parser(content, { inline, ...state }));
+  const tree = parser(content, { inline, ...state });
+  if (preOutputHook) {
+    return output(preOutputHook(tree));
+  }
+  return output(tree);
 }
 
-export function parseContent(content, inline, state) {
-  return createContentParser(getDefaultRules(), content, inline, state);
+export function parseContent(content, inline, state, preOutputHook) {
+  return createContentParser(getDefaultRules(), content, inline, state, preOutputHook);
 }
 
 export function parseTitle(content, withLink = true) {
