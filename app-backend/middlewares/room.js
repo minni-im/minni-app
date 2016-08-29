@@ -11,3 +11,12 @@ export function requireValidRoom(req, res, next) {
     next(error);
   });
 }
+
+export function requireRoomAdmin(req, res, next) {
+  const { user, room } = req;
+  if (room.isAdmin(user)) {
+    next();
+    return;
+  }
+  next(new Error("You don't have the permission to execute this action"));
+}

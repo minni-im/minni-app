@@ -15,6 +15,11 @@ input:active, textarea:active {
     border-color: @electric-blue;
 }
 
+input:read-only, input:disabled {
+  color: @gray-light;
+  border-color: currentColor;
+}
+
 input.error, textarea.error {
   border-color: @light-orange;
 }
@@ -29,6 +34,10 @@ button, input[type=submit], .button {
   padding: 6px 15px;
   cursor: pointer;
 
+  .icon {
+    .square(12px);
+  }
+
   &:hover {
     box-shadow: 0 -1px 0 fadeout(@black, 75%) inset, 0 -2px 0 fadeout(@black, 75%) inset;
   }
@@ -38,29 +47,67 @@ button, input[type=submit], .button {
   background-color: @electric-blue;
   color: @color-light;
   border-color: @dark-blue;
+  .icon {
+    fill: @color-light;
+  }
 }
 
 .button-secondary {
   border-color: darken(@dark-orange, 15%);
   background-color: @dark-orange;
   color: @gray-darker;
+  .icon {
+    fill: @color-dark;
+  }
 }
 
 .button-highlight {
   border-color: darken(@light-orange, 15%);
   background-color: @light-orange;
   color: @color-dark;
+  .icon {
+    fill: @color-dark;
+  }
+}
+
+.button-danger {
+  border-color: darken(@magenta, 15%);
+  background-color: @magenta;
+  color: @color-light;
+  .icon {
+    fill: @color-light;
+  }
 }
 
 button, input[type=submit] {
   padding: 6px 15px;
 }
 
+.button-icon {
+  padding: 6px 10px;
+}
+
+.button-confirm {
+  button:last-of-type:not(:first-of-type),
+   .button:last-of-type:not(:first-of-type) {
+     border-left: none;
+     transition: background-color 250ms ease;
+
+     &.button-danger {
+       background-color: lighten(@magenta, 10%);
+
+       &:hover {
+         background-color: @magenta;
+       }
+     }
+   }
+}
+
 form {
   h3 {
     margin-top: 15px;
   }
-  
+
   input[type=radio] {
     margin: 3px;
   }

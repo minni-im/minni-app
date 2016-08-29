@@ -341,7 +341,7 @@ export default class UserSettingsDialog extends React.Component {
         title="Settings"
         subtitle="Your settings"
         buttons={buttons}
-        additionalClassNames="user-settings-dialog panel"
+        additionalClassNames="panel settings-dialog user-settings-dialog"
         onClose={this.onCloseDialog}
       >
         <TabBar selected={this.state.selectedTab}>

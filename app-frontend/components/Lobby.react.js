@@ -2,9 +2,14 @@ import React from "react";
 import { Link } from "react-router";
 import classnames from "classnames";
 
-import RoomActionCreators from "../actions/RoomActionCreators";
+import * as RoomActionCreators from "../actions/RoomActionCreators";
 
-import { SettingsIcon, FavoriteIcon, RoomIcons } from "../utils/IconsUtils";
+import RoomSettingsIcon from "./RoomSettingsIcon.react";
+
+import {
+  FavoriteIcon,
+  RoomIcons,
+  SettingsIcon } from "../utils/IconsUtils";
 import { parseTitleWithoutLinks } from "../utils/MarkupUtils";
 
 import Logger from "../libs/Logger";
@@ -21,11 +26,6 @@ class Room extends React.Component {
   constructor(props) {
     super(props);
     this.onRoomStarClick = this.onRoomStarClick.bind(this);
-    this.onSettingsClick = this.onSettingsClick.bind(this);
-  }
-
-  onSettingsClick(event) {
-    event.preventDefault();
   }
 
   onRoomStarClick(event) {
@@ -37,18 +37,6 @@ class Room extends React.Component {
   render() {
     const { accountName, room } = this.props;
     let title = __DEV__ ? `${room.name} - ${room.id}` : `${room.name}`;
-
-    let settingsIcon;
-    if (room.isUserAdmin(this.props.viewer.id)) {
-      settingsIcon = (
-        <span
-          className="room--icon"
-          onClick={this.onSettingsClick}
-        >
-          <SettingsIcon />
-        </span>
-      );
-    }
 
     return (
       <Link
@@ -69,7 +57,7 @@ class Room extends React.Component {
         </div>
         {room.private ? <RoomIcons.RoomPrivateIcon className="icon" /> : null}
         <div className="room--topic flex-spacer">{parseTitleWithoutLinks(room.topic)}</div>
-        {settingsIcon}
+        <RoomSettingsIcon className="room--icon" room={room} />
         <span
           className="room--icon icon--favorite"
           onClick={this.onRoomStarClick}

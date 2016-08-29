@@ -10,51 +10,63 @@ import { noop } from "../../utils/FunctionUtils";
 
 class DialogBase extends React.Component {
   componentDidMount() {
-    this._focusTiemout = setTimeout(() => {
-      this._focusTiemout = false;
-      if ( this.props.autoFocus ) {
-        ReactDom.findDOMNode( this.refs.content ).focus();
+    this.focusTimeout = setTimeout(() => {
+      this.focusTimeout = false;
+      if (this.props.autoFocus) {
+        ReactDom.findDOMNode(this.refs.content).focus();
       }
 
-      this._unbindClickHandler = clickOutside( ReactDom.findDOMNode( this.refs.dialog ), this._onBackgroundClick.bind(this) );
+      this.unbindClickHandler = clickOutside(ReactDom.findDOMNode(this.refs.dialog), this._onBackgroundClick.bind(this));
     }, 10);
   }
 
   componentWillUnmount() {
-    if ( this._focusTimeout ) {
-      clearTimeout( this._focusTimeout );
-      this._focusTimeout = false;
+    if (this.focusTimeout) {
+      clearTimeout(this.focusTimeout);
+      this.focusTimeout = false;
     }
 
-    if ( this._unbindClickHandler ) {
-      this._unbindClickHandler();
-      this._unbindClickHandler = null;
+    if (this.unbindClickHandler) {
+      this.unbindClickHandler();
+      this.unbindClickHandler = null;
     }
   }
 
   render() {
     const baseClassName = this.props.baseClassName;
-    let dialogClassName  = baseClassName;
+    let dialogClassName = baseClassName;
     const backdropClassName = `${dialogClassName}__backdrop`;
     const headerClassName = `${dialogClassName}__header`;
-    const contentClassName  = `${dialogClassName}__content`;
+    const contentClassName = `${dialogClassName}__content`;
 
-    if ( this.props.additionalClassNames ) {
-      dialogClassName = classnames( this.props.additionalClassNames, dialogClassName );
+    if (this.props.additionalClassNames) {
+      dialogClassName = classnames(this.props.additionalClassNames, dialogClassName);
     }
 
     return (
-      <div className={ backdropClassName } ref="backdrop">
-        <div className={ dialogClassName } ref="dialog" role="dialog">
+      <div
+        className={backdropClassName}
+        ref="backdrop"
+      >
+        <div
+          className={dialogClassName}
+          ref="dialog"
+          role="dialog"
+        >
           <header className={headerClassName}>
             <div className="header-info">
               <h2>{this.props.title}</h2>
               <h3>{this.props.subtitle}</h3>
             </div>
-            { this._renderButtonsBar() }
+            {this._renderButtonsBar()}
           </header>
-          <div className={ classnames( this.props.className, contentClassName ) }
-            ref="content" tabIndex="-1">
+          <div
+            className={
+              classnames(this.props.className, contentClassName)
+            }
+            ref="content"
+            tabIndex="-1"
+          >
             {this.props.children}
           </div>
         </div>
@@ -66,81 +78,94 @@ class DialogBase extends React.Component {
     const baseClassName = this.props.baseClassName;
     const buttonsClassName = `${baseClassName}__action-buttons`;
 
-    if ( !this.props.buttons ) {
+    if (!this.props.buttons) {
       return null;
     }
 
     return (
-      <div className={ buttonsClassName } ref="actionButtons">
-        { this.props.buttons.map( this._renderButton, this ) }
+      <div
+        className={buttonsClassName}
+        ref="actionButtons"
+      >
+        {this.props.buttons.map(this._renderButton, this)}
       </div>
     );
   }
 
-  _renderButton( button, index ) {
-    if ( React.isValidElement( button ) ) {
-      return React.cloneElement( button, { key: 'dialog-button-' + index } );
+  _renderButton(button, index) {
+    if (React.isValidElement(button)) {
+      return React.cloneElement(
+        button,
+        {
+          key: `dialog-button-${index}`,
+          onClick: () => {
+            console.log("I CAN HAZ CLICK");
+          }
+        }
+      );
     }
 
-    let labelClass = this.props.baseClassName + "__button-label";
-    let buttonClasses = this._getButtonClasses( button );
-    let clickHandler = this._onButtonClick.bind( this, button );
+    const labelClass = `${this.props.baseClassName}__button-label`;
+    const buttonClasses = this._getButtonClasses(button);
+    const clickHandler = this._onButtonClick.bind(this, button);
 
     return (
-      <button key={ button.action }
-        className={ buttonClasses }
-        onClick={ clickHandler }
-        disabled={ !! button.disabled }>
-        <span className={ labelClass }>{ button.label }</span>
+      <button
+        key={button.action}
+        className={buttonClasses}
+        onClick={clickHandler}
+        disabled={!! button.disabled}
+      >
+        <span className={labelClass}>{button.label}</span>
       </button>
     );
   }
 
-  _getButtonClasses( button ) {
-    let classes = {
+  _getButtonClasses(button) {
+    const classes = {
       [button.className || "button"]: true
     };
 
-    if ( button.isPrimary || this.props.buttons.length === 1 ) {
+    if (button.isPrimary || this.props.buttons.length === 1) {
       classes["button-primary"] = true;
     }
 
-    if ( button.additionalClassNames ) {
-      classes[button.additionalClassNames] = true
+    if (button.additionalClassNames) {
+      classes[button.additionalClassNames] = true;
     }
 
     return classnames(classes);
   }
 
-  _onBackgroundClick( event ) {
+  _onBackgroundClick(event) {
     const isBackdropClicked = (
       ! this.refs ||
-      ReactDom.findDOMNode( this.refs.backdrop ).contains( event.target )
+      ReactDom.findDOMNode(this.refs.backdrop).contains(event.target)
     );
 
-    if ( !isBackdropClicked ) {
+    if (!isBackdropClicked) {
       return;
     }
 
-    this.props.onClickOutside( event );
+    this.props.onClickOutside(event);
 
-    if ( !event.defaultPrevented ) {
+    if (!event.defaultPrevented) {
       this._close();
     }
   }
 
-  _onButtonClick( button ) {
-    if ( button.onClick ) {
-      button.onClick( this._close.bind( this, button.action ) );
+  _onButtonClick(button) {
+    if (button.onClick) {
+      button.onClick(this._close.bind(this, button.action));
       return;
     }
 
-    this._close( button.action );
+    this._close(button.action);
   }
 
-  _close( action ) {
-    if ( this.props.onDialogClose ) {
-      this.props.onDialogClose( action );
+  _close(action) {
+    if (this.props.onDialogClose) {
+      this.props.onDialogClose(action);
     }
   }
 }
@@ -164,22 +189,22 @@ export default class Dialog extends React.Component {
     return (
       <RootChild>
         <ReactCSSTransitionGroup
-          transitionName={ baseClassName }
+          transitionName={baseClassName}
           component="div"
-          transitionEnterTimeout={ enterTimeout }
-          transitionLeaveTimeout={ leaveTimeout }
-          >
-          { visible && (
-            <DialogBase {...this.props} key="dialog" onDialogClose={ this.onDialogClose } />
-          ) }
+          transitionEnterTimeout={enterTimeout}
+          transitionLeaveTimeout={leaveTimeout}
+        >
+          {visible && (
+            <DialogBase {...this.props} key="dialog" onDialogClose={this.onDialogClose} />
+          )}
         </ReactCSSTransitionGroup>
       </RootChild>
     );
   }
 
-  onDialogClose( action ) {
-    if ( this.props.onClose ) {
-      this.props.onClose( action );
+  onDialogClose(action) {
+    if (this.props.onClose) {
+      this.props.onClose(action);
     }
   }
 }
@@ -192,7 +217,7 @@ Dialog.PropTypes = {
   onClose: React.PropTypes.func,
   onClosed: React.PropTypes.func,
   onClickOutside: React.PropTypes.func
-}
+};
 
 Dialog.defaultProps = {
   visible: false,
@@ -202,4 +227,4 @@ Dialog.defaultProps = {
   onClose: noop,
   onClosed: noop,
   onClickOutside: noop
-}
+};

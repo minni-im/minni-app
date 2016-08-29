@@ -1,7 +1,7 @@
 import React from "react";
 import { Container } from "flux/utils";
 
-import RoomActionCreators from "../actions/RoomActionCreators";
+import * as RoomActionCreators from "../actions/RoomActionCreators";
 
 import MessageStore from "../stores/MessageStore";
 import MessageStateStore from "../stores/MessageStateStore";

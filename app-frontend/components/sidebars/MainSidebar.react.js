@@ -4,7 +4,7 @@ import classnames from "classnames";
 import { Container } from "flux/utils";
 
 import * as ActivityActionCreators from "../../actions/ActivityActionCreators";
-import RoomActionCreators from "../../actions/RoomActionCreators";
+import * as RoomActionCreators from "../../actions/RoomActionCreators";
 
 import { isOSX } from "../../utils/PlatformUtils";
 

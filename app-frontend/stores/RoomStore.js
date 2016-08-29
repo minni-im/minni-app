@@ -38,6 +38,15 @@ function handleRoomFavoriteFailure(state, { message }) {
   return handleRoomFavorite(state, { message });
 }
 
+function handleRoomDelete(state, { room }) {
+  return state.delete(room.id);
+}
+
+function handleRoomDeleteFailure(state, { message }) {
+  logger.error(message);
+  return state;
+}
+
 class RoomStore extends MapStore {
   initialize() {
     this.waitFor(SelectedAccountStore);
@@ -56,6 +65,9 @@ class RoomStore extends MapStore {
     this.addAction(
       ActionTypes.ROOM_CREATE_SUCCESS,
       (state, { room }) => handleLoadRoomsSuccess(state, { rooms: [room] }));
+
+    this.addAction(ActionTypes.ROOM_DELETE_SUCCESS, handleRoomDelete);
+    this.addAction(ActionTypes.ROOM_DELETE_FAILURE, handleRoomDeleteFailure);
   }
 
   get(roomId) {

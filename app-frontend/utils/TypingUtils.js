@@ -1,7 +1,5 @@
-import RoomActionCreators from "../actions/RoomActionCreators";
+import * as RoomActionCreators from "../actions/RoomActionCreators";
 import { TYPING_TIMEOUT } from "../Constants";
-
-import SelectedAccountStore from "../stores/SelectedAccountStore";
 
 let currentRoomId;
 let nextSendTimestamp;
