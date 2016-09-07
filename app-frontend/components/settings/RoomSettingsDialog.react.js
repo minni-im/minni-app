@@ -40,11 +40,7 @@ export default class RoomSettingsDialog extends React.Component {
     visible: true
   }
 
-  componentWillMount() {
-    this.newSettings = Immutable.Map();
-  }
-
-  componentWillReceiveProps() {
+  componentDidMount() {
     this.newSettings = Immutable.Map();
   }
 
@@ -84,6 +80,9 @@ export default class RoomSettingsDialog extends React.Component {
 
   onTypeChange(type) {
     this.newSettings = this.newSettings.set("type", type);
+    if (type === 1) {
+      this.newSettings = this.newSettings.set("usersId", []);
+    }
   }
 
   onUsersChange(usersId) {
@@ -150,7 +149,7 @@ export default class RoomSettingsDialog extends React.Component {
           type={this.props.room.type}
           onTypeChange={this.onTypeChange}
           onUsersChange={this.onUsersChange}
-          usersId={this.props.room.usersId}
+          usersId={[...this.props.room.usersId]}
         />
       </section>
     );
