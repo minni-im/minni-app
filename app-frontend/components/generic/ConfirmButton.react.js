@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import classnames from "classnames";
 
-export default class extends Component {
+export default class ConfirmButton extends Component {
   static propTypes = {
+    action: React.PropTypes.string.isRequired,
+    onClick: React.PropTypes.func
   }
 
   constructor(props) {
     super(props);
     this.onClick = this.onClick.bind(this);
+    this.onClickToggle = this.onClickToggle.bind(this);
   }
 
   state = {
@@ -15,17 +18,25 @@ export default class extends Component {
   }
 
   onClick(event) {
-    console.log("Confirm Button CLICKED");
-    if (!this.state.confirmed) {
-      this.setState({
-        confirmed: true
-      });
-      event.preventDefault();
-    }
+    this.props.onClick(event);
+  }
+
+  onClickToggle() {
+    this.setState({
+      confirmed: !this.state.confirmed
+    });
   }
 
   render() {
     const children = React.Children.toArray(this.props.children);
+    const icon = React.cloneElement(children[0], {
+      key: `${this.props.action}-icon`,
+      onClick: this.onClickToggle
+    });
+    const action = React.cloneElement(children[1], {
+      key: `${this.props.action}-action`,
+      onClick: this.onClick
+    });
     return (
       <span
         className={
@@ -34,10 +45,9 @@ export default class extends Component {
             { "button-confirm--active": this.state.confirmed }
           )
         }
-        onClick={this.onClick}
       >
-        {children[0]}
-        {this.state.confirmed ? children[1] : false}
+      {icon}
+      {action}
       </span>
     );
   }

@@ -29,6 +29,15 @@ export default (app) => {
       req.io.route("rooms:delete");
     });
 
+  app.post("/api/rooms/:roomId",
+    requireLogin,
+    requireValidRoom,
+    requireRoomAdmin,
+    (req) => {
+      req.io.route("rooms:update");
+    }
+  );
+
   app.post("/api/rooms/:roomId/star",
     requireLogin,
     requireValidRoom,
@@ -173,6 +182,35 @@ export default (app) => {
           errors: error
         });
       });
+    },
+
+    update(req, res) {
+      const { topic, type, usersId } = req.body;
+      const { room } = req;
+      if (topic) {
+        room.topic = topic;
+      }
+      if (type && type !== room.type) {
+        room.type = type;
+        room.usersId = usersId || room.usersId;
+      }
+      room.save().then(
+        (updatedRoom) => {
+          res.json({
+            ok: true,
+            room: updatedRoom.toAPI(true)
+          });
+          app.io.in(room.accountId).emit("room:update", {
+            room: updatedRoom.toAPI()
+          });
+        },
+        ({ message }) => {
+          res.json({
+            ok: false,
+            message: "Room update failed.",
+            errors: message });
+        }
+      );
     },
 
     delete(req, res) {

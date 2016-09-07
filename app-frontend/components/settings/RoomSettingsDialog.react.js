@@ -1,10 +1,14 @@
 import React from "react";
+import Immutable from "immutable";
 
 import * as RoomActionCreators from "../../actions/RoomActionCreators";
+
+import RoomAccessControl from "../RoomAccessControl.react";
 
 import ConfirmButton from "../generic/ConfirmButton.react";
 import Dialog from "../generic/Dialog.react";
 import TabBar, { TabPanel } from "../generic/TabBar.react";
+
 
 import PluginsStore from "../../stores/PluginsStore";
 import { PLUGIN_TYPES } from "../../Constants";
@@ -27,11 +31,21 @@ export default class RoomSettingsDialog extends React.Component {
     this.onCloseDialog = this.onCloseDialog.bind(this);
     this.onSettingChange = this.onSettingChange.bind(this);
     this.onDescChange = this.onDescChange.bind(this);
+    this.onTypeChange = this.onTypeChange.bind(this);
+    this.onUsersChange = this.onUsersChange.bind(this);
   }
 
   state = {
     selectedTab: 0,
     visible: true
+  }
+
+  componentWillMount() {
+    this.newSettings = Immutable.Map();
+  }
+
+  componentWillReceiveProps() {
+    this.newSettings = Immutable.Map();
   }
 
   onCloseDialog(action) {
@@ -44,20 +58,45 @@ export default class RoomSettingsDialog extends React.Component {
         .then(() => {
           if (active) {
             this.context.router.push(`/chat/${accountSlug}/lobby`);
+          } else {
+            this.props.onClose(action);
           }
-          this.props.onClose(action);
         });
       return;
     }
+
+    if (action === "save") {
+      if (!this.newSettings.isEmpty()) {
+        const payload = this.newSettings.toJS();
+        RoomActionCreators
+          .updateRoom(this.props.room.id, payload)
+          .then(({ ok, message }) => {
+            if (ok) {
+              this.props.onClose(action);
+              return;
+            }
+          });
+        return;
+      }
+    }
     this.props.onClose(action);
+  }
+
+  onTypeChange(type) {
+    this.newSettings = this.newSettings.set("type", type);
+  }
+
+  onUsersChange(usersId) {
+    this.newSettings = this.newSettings.set("usersId", usersId);
   }
 
   onSettingChange() {
 
   }
 
-  onDescChange() {
-
+  onDescChange(event) {
+    const { id: key, value } = event.target;
+    this.newSettings = this.newSettings.set(key, value);
   }
 
   generateOverview() {
@@ -104,15 +143,15 @@ export default class RoomSettingsDialog extends React.Component {
   }
 
   generateMembersAccess() {
-    const isPublic = this.props.room.public;
     return (
       <section>
         <h3>Members access</h3>
-        {
-          isPublic ?
-          this.renderRoomPublic() :
-          this.renderRoomPrivate()
-        }
+        <RoomAccessControl
+          type={this.props.room.type}
+          onTypeChange={this.onTypeChange}
+          onUsersChange={this.onUsersChange}
+          usersId={this.props.room.usersId}
+        />
       </section>
     );
   }
@@ -132,11 +171,14 @@ export default class RoomSettingsDialog extends React.Component {
 
   render() {
     const buttons = [
-      <ConfirmButton>
+      <ConfirmButton action="delete">
         <button className="button-danger button-icon">
           <TrashIcon className="icon" />
         </button>
-        <button className="button-danger">
+        <button
+          className="button-danger"
+          title="Clicking this button will delete this room. This can not be recovered."
+        >
           Delete
         </button>
       </ConfirmButton>,

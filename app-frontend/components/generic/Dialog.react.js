@@ -93,21 +93,20 @@ class DialogBase extends React.Component {
   }
 
   _renderButton(button, index) {
+    const clickHandler = this._onButtonClick.bind(this, button);
+
     if (React.isValidElement(button)) {
       return React.cloneElement(
         button,
         {
           key: `dialog-button-${index}`,
-          onClick: () => {
-            console.log("I CAN HAZ CLICK");
-          }
+          onClick: clickHandler
         }
       );
     }
 
     const labelClass = `${this.props.baseClassName}__button-label`;
     const buttonClasses = this._getButtonClasses(button);
-    const clickHandler = this._onButtonClick.bind(this, button);
 
     return (
       <button
@@ -160,7 +159,11 @@ class DialogBase extends React.Component {
       return;
     }
 
-    this._close(button.action);
+    this._close(
+      React.isValidElement(button) ?
+      button.props.action :
+      button.action
+    );
   }
 
   _close(action) {

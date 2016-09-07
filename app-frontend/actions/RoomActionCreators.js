@@ -109,11 +109,20 @@ export function fetchMessages(roomId, latest, oldest = null, limit = MAX_MESSAGE
   });
 }
 
+export function receiveMessage(roomId, message, optimistic = false) {
+  dispatch({
+    type: ActionTypes.MESSAGE_CREATE,
+    roomId,
+    message,
+    optimistic
+  });
+}
+
 export function sendMessage(roomId, text) {
   logger.info(`sending message '${text}' to roomId:${roomId}`);
   createMessage(roomId, text).then(rawMessage => {
     // Optimistic UI pattern. First display it, then send it to the server
-    this.receiveMessage(roomId, { ...rawMessage }, true);
+    receiveMessage(roomId, { ...rawMessage }, true);
 
     request(EndPoints.MESSAGES, {
       method: "PUT",
@@ -122,7 +131,7 @@ export function sendMessage(roomId, text) {
       })
     }).then(({ ok, message }) => {
       if (ok) {
-        this.receiveMessage(roomId, message);
+        receiveMessage(roomId, message);
       } else {
         logger.error(message);
         dispatch({
@@ -132,15 +141,6 @@ export function sendMessage(roomId, text) {
         });
       }
     });
-  });
-}
-
-export function receiveMessage(roomId, message, optimistic = false) {
-  dispatch({
-    type: ActionTypes.MESSAGE_CREATE,
-    roomId,
-    message,
-    optimistic
   });
 }
 
@@ -181,6 +181,30 @@ export function deleteRoom(roomId) {
     }
     dispatch({
       type: ActionTypes.ROOM_DELETE_FAILURE,
+      room
+    });
+    return { ok, room, errors };
+  });
+}
+
+export function updateRoom(roomId, payload) {
+  dispatch({
+    type: ActionTypes.ROOM_UPDATE,
+    roomId
+  });
+  return request(EndPoints.ROOM_UPDATE(roomId), {
+    method: "POST",
+    body: payload
+  }).then(({ ok, room, errors }) => {
+    if (ok) {
+      dispatch({
+        type: ActionTypes.ROOM_UPDATE_SUCCESS,
+        room
+      });
+      return { ok, room };
+    }
+    dispatch({
+      type: ActionTypes.ROOM_UPDATE_FAILURE,
       room
     });
     return { ok, room, errors };
