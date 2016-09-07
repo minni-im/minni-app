@@ -151,16 +151,30 @@ const DEFAULT_RULES = {
     parse(capture) {
       const accountSlug = SelectedAccountStore.getAccount().slug;
       const room = RoomStore.get(capture[1]);
+      if (!room) {
+        return {
+          content: "deleted-room"
+        };
+      }
       return {
         accountSlug,
         roomSlug: room.slug,
         content: [{
           type: "text",
-          content: room !== null ? `#${room.slug}` : capture[0]
+          content: `#${room.slug}`
         }]
       };
     },
     react(node, output, state) {
+      if (!node.roomSlug) {
+        return (
+          <span
+            key={state.key}
+            className="hashtag"
+            title="There used to be a room here. It's gone..."
+          >#deleted-room</span>
+        );
+      }
       return (
         <Link
           key={state.key}
