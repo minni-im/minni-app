@@ -28,6 +28,7 @@ export { default as SpinnerIcon } from "../../public/images/svgs/spinner.svg.rea
 export { default as UploadIcon } from "../../public/images/svgs/upload.svg.react";
 export { default as KeyBoardIcon } from "../../public/images/svgs/keyboard.svg.react";
 export { default as ConnectionIcon } from "../../public/images/svgs/connection.svg.react";
+export { default as TrashIcon } from "../../public/images/svgs/trash-can.svg.react";
 
 export const RoomIcons = {
   RoomPrivateIcon,

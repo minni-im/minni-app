@@ -42,6 +42,9 @@ export default class SettingItem extends React.Component {
   }
 
   onToggleClick(event) {
+    if (event.target.tagName.toLowerCase() !== "span") {
+      return;
+    }
     const { value, valueType } = event.target.dataset;
     let newValue = value;
     if (valueType === "number") {

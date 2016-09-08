@@ -35,6 +35,10 @@ RoomSchema.virtual({
   }
 });
 
+RoomSchema.method("isAdmin", function isAdmin(user) {
+  return this.adminId === user.id;
+});
+
 RoomSchema.method("isAccessGranted", function isAccessGranted(userId) {
   return this.public || (
     this.private && (

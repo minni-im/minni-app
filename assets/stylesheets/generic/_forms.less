@@ -15,6 +15,11 @@ input:active, textarea:active {
     border-color: @electric-blue;
 }
 
+input:read-only, input:disabled {
+  color: @gray-light;
+  border-color: currentColor;
+}
+
 input.error, textarea.error {
   border-color: @light-orange;
 }
@@ -28,6 +33,11 @@ button, input[type=submit], .button {
   border: 1px solid @gray-light;
   padding: 6px 15px;
   cursor: pointer;
+  overflow: hidden;
+
+  .icon {
+    .square(12px);
+  }
 
   &:hover {
     box-shadow: 0 -1px 0 fadeout(@black, 75%) inset, 0 -2px 0 fadeout(@black, 75%) inset;
@@ -38,29 +48,82 @@ button, input[type=submit], .button {
   background-color: @electric-blue;
   color: @color-light;
   border-color: @dark-blue;
+  .icon {
+    fill: @color-light;
+  }
 }
 
 .button-secondary {
   border-color: darken(@dark-orange, 15%);
   background-color: @dark-orange;
   color: @gray-darker;
+  .icon {
+    fill: @color-dark;
+  }
 }
 
 .button-highlight {
   border-color: darken(@light-orange, 15%);
   background-color: @light-orange;
   color: @color-dark;
+  .icon {
+    fill: @color-dark;
+  }
 }
 
+.button-danger {
+  border-color: darken(@magenta, 15%);
+  background-color: @magenta;
+  color: @color-light;
+  .icon {
+    fill: @color-light;
+  }
+}
+
+@button-padding-default: 6px 15px;
+
 button, input[type=submit] {
-  padding: 6px 15px;
+  padding: @button-padding-default;
+}
+
+.button-icon {
+  padding: 6px 10px;
+}
+
+.button-confirm {
+  button:last-of-type:not(:first-of-type),
+  .button:last-of-type:not(:first-of-type) {
+    box-sizing: border-box;
+    border-left: none;
+    max-width: 0;
+    padding-left: 0;
+    padding-right: 0;
+    border-right-width: 0;
+    transition: all 250ms ease-in-out;
+
+    &.button-danger {
+      background-color: lighten(@magenta, 10%);
+      &:hover {
+        background-color: @magenta;
+      }
+    }
+  }
+
+  &.button-confirm--active {
+    button:last-of-type:not(:first-of-type),
+    .button:last-of-type:not(:first-of-type) {
+      max-width: 200px;
+      padding: @button-padding-default;
+      border-right-width: 1px;
+    }
+  }
 }
 
 form {
   h3 {
     margin-top: 15px;
   }
-  
+
   input[type=radio] {
     margin: 3px;
   }

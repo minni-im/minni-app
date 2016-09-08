@@ -8,7 +8,7 @@ import Flux from "./libs/Flux";
 import "./libs/Immutable";
 
 import * as AccountActionCreators from "./actions/AccountActionCreators";
-import RoomActionCreators from "./actions/RoomActionCreators";
+import * as RoomActionCreators from "./actions/RoomActionCreators";
 import * as WindowActionCreators from "./actions/WindowActionCreators";
 
 import Minni from "./components/Minni.react";

@@ -1,6 +1,5 @@
-.user-settings-dialog {
+.settings-dialog {
   .size(800px, 80%);
-
   .dialog__content {
     padding: 0 !important;
     overflow: hidden;
@@ -31,26 +30,35 @@
       overflow-x: hidden;
       overflow-y: auto;
     }
-    .user-profile--info {
-      h4 {
-        margin-top: 10px;
-      }
+  }
 
-      input[type=text] {
-        width: 85%;
-      }
+  section, h4 {
+    margin-top: 10px;
+  }
+}
+
+.user-settings-dialog {
+  .user-profile--info {
+
+    input[type=text] {
+      width: 85%;
     }
+  }
 
-    .user-profile--avatar {
-      background-color: @gray-lighter;
-      margin-top: 10px;
-      padding: 10px;
-      text-align: center;
+  .user-profile--avatar {
+    background-color: @gray-lighter;
+    margin-top: 10px;
+    padding: 10px;
+    text-align: center;
 
-      .avatar {
-        margin: 25px auto;
-      }
+    .avatar {
+      margin: 25px auto;
     }
+  }
+}
 
+.room-settings-dialog {
+  input[type=text] {
+    width: 96%;
   }
 }

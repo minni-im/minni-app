@@ -5,6 +5,7 @@ import Dispatcher from "../Dispatcher";
 
 import AccountStore from "./AccountStore";
 import ConnectionStore from "./ConnectionStore";
+import UserStore from "./UserStore";
 
 import { ActionTypes } from "../Constants";
 
@@ -43,6 +44,10 @@ class SelectedAccountStore extends ReduceStore {
 
   getAccountSlug() {
     return this.getState().first();
+  }
+
+  getUsers(except) {
+    return UserStore.getUsers((this.getAccount() && this.getAccount().usersId) || [], except);
   }
 }
 

@@ -1,5 +1,5 @@
 import moment from "moment";
-import { MapStore } from "../libs/Flux";
+import { MapStore, withNoMutations } from "../libs/Flux";
 
 import { ActionTypes } from "../Constants";
 
@@ -38,6 +38,16 @@ function handleRoomFavoriteFailure(state, { message }) {
   return handleRoomFavorite(state, { message });
 }
 
+function handleRoomDelete(state, { room }) {
+  return state.delete(room.id);
+}
+
+function logFailure(type) {
+  return ({ message }) => {
+    logger.error(type, message);
+  };
+}
+
 class RoomStore extends MapStore {
   initialize() {
     this.waitFor(SelectedAccountStore);
@@ -55,7 +65,12 @@ class RoomStore extends MapStore {
       handleRoomFavoriteFailure);
     this.addAction(
       ActionTypes.ROOM_CREATE_SUCCESS,
+      ActionTypes.ROOM_UPDATE_SUCCESS,
       (state, { room }) => handleLoadRoomsSuccess(state, { rooms: [room] }));
+
+    this.addAction(ActionTypes.ROOM_DELETE_SUCCESS, handleRoomDelete);
+    this.addAction(ActionTypes.ROOM_DELETE_FAILURE, withNoMutations(logFailure("RoomDelete")));
+    this.addAction(ActionTypes.ROOM_UPDATE_FAILURE, withNoMutations(logFailure("RoomUpdate")));
   }
 
   get(roomId) {

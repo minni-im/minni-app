@@ -1,10 +1,8 @@
 import React from "react";
-import classNames from "classnames";
 
-import Avatar from "./generic/Avatar.react";
+import RoomAccessControl from "./RoomAccessControl.react";
 
 import SelectedAccountStore from "../stores/SelectedAccountStore";
-import UserStore from "../stores/UserStore";
 
 import * as AccountActionCreators from "../actions/AccountActionCreators";
 
@@ -14,7 +12,7 @@ class RoomCreate extends React.Component {
     super(props);
     this.onCreateClick = this.onCreateClick.bind(this);
     this.onRoomTypeChanged = this.onRoomTypeChanged.bind(this);
-    this.onUserSelected = this.onUserSelected.bind(this);
+    this.onUsersChanged = this.onUsersChanged.bind(this);
   }
 
   state = {
@@ -52,29 +50,15 @@ class RoomCreate extends React.Component {
       });
   }
 
-  onRoomTypeChanged(event) {
-    const type = parseInt(event.target.value, 10);
-    if (type !== this.state.type) {
-      this.setState({ type });
-    }
+  onRoomTypeChanged(type) {
+    this.setState({ type });
   }
 
-  onUserSelected(event) {
-    const userId = event.currentTarget.dataset.userId;
-    const index = this.state.usersId.indexOf(userId);
-
-    if (index !== -1) {
-      this.state.usersId.splice(index, 1);
-    } else {
-      this.state.usersId.push(userId);
-    }
-    this.setState({
-      usersId: this.state.usersId
-    });
+  onUsersChanged(usersId) {
+    this.setState({ usersId });
   }
 
   render() {
-    const account = SelectedAccountStore.getAccount();
     let errors;
     if (this.state.message) {
       errors = (
@@ -118,61 +102,11 @@ class RoomCreate extends React.Component {
 
             <h3>Access Control</h3>
 
-            <div className="inline-block">
-              <label>
-                <input
-                  type="radio"
-                  value={1}
-                  defaultChecked
-                  name="type"
-                  onChange={this.onRoomTypeChanged}
-                />
-                <span>Public room</span>
-              </label>
-              <span className="info">Anyone in the team can access this room.</span>
-            </div>
-
-            <div className="inline-block">
-              <label>
-                <input
-                  type="radio"
-                  value={2}
-                  name="type"
-                  onChange={this.onRoomTypeChanged}
-                />
-                <span>Private room</span>
-              </label>
-              <span className="info">Click to select team members that will see the room
-              in their lobby.</span>
-            </div>
-
-            {
-              this.state.type === 2 ?
-              (
-                <div className="coworkers-picker flex-horizontal">
-                  {account.usersId
-                    .filter(userId => userId !== UserStore.getConnectedUser().id)
-                    .map(userId => UserStore.getUser(userId))
-                    .map((user, index) => (
-                      <div
-                        key={index}
-                        data-user-id={user.id}
-                        className={classNames("coworker flex-horizontal", {
-                          active: this.state.usersId.includes(user.id)
-                        })}
-                        onClick={this.onUserSelected}
-                      >
-                        <Avatar user={user} />
-                        <div className="flex-spacer user-details">
-                          <div className="user--fullname">{user.fullname}</div>
-                          <div className="user--nickname">@{user.nickname}</div>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              ) :
-              false
-            }
+            <RoomAccessControl
+              type={this.state.type}
+              onTypeChange={this.onRoomTypeChanged}
+              onUsersChange={this.onUsersChanged}
+            />
 
             <p className="actions">
               <button className="button-primary" onClick={this.onCreateClick}>Create</button>

@@ -1,8 +1,9 @@
 import React from "react";
 import classnames from "classnames";
 
-import RoomActionCreators from "../actions/RoomActionCreators";
+import * as RoomActionCreators from "../actions/RoomActionCreators";
 
+import RoomSettingsIcon from "./RoomSettingsIcon.react";
 import RoomUsersList from "./sidebars/RoomUsersList.react";
 import MessagesContainer from "./MessagesContainer.react";
 import Composer from "./Composer.react";
@@ -10,12 +11,10 @@ import TypingInfo from "./TypingInfo.react";
 
 import {
   FavoriteIcon,
-  CloseIcon,
-  SettingsIcon } from "../utils/IconsUtils";
+  CloseIcon } from "../utils/IconsUtils";
 import { parseTitle } from "../utils/MarkupUtils";
 
 import ComposerStore from "../stores/ComposerStore";
-import UserStore from "../stores/UserStore";
 
 import { MAX_MESSAGE_LENGTH } from "../Constants";
 
@@ -84,18 +83,6 @@ export default class Room extends React.Component {
     const { name, topic } = room;
     const defaultValue = ComposerStore.getSavedText(room.id);
 
-    let settingsIcon;
-    if (room.isUserAdmin(UserStore.getConnectedUser().id)) {
-      settingsIcon = (
-        <span
-          className="icon"
-          title="Open settings dialog"
-        >
-          <SettingsIcon />
-        </span>
-      );
-    }
-
     return (
       <section
         className={classnames("flex-vertical", "flex-spacer", { "room--favorite": room.starred })}
@@ -118,7 +105,7 @@ export default class Room extends React.Component {
             >
               <RoomIcons.RoomPublicIcon />
             </span> */}
-            {settingsIcon}
+            <RoomSettingsIcon room={room} />
             <span
               className="icon"
               onClick={this.handleRoomLeave}

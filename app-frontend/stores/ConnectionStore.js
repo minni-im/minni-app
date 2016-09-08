@@ -5,7 +5,7 @@ import { ActionTypes, SOCKETIO_OPTIONS, USER_STATUS } from "../Constants";
 
 import * as AccountActionCreators from "../actions/AccountActionCreators";
 import * as ActivityActionCreators from "../actions/ActivityActionCreators";
-import RoomActionCreators from "../actions/RoomActionCreators";
+import * as RoomActionCreators from "../actions/RoomActionCreators";
 
 import AccountStore from "../stores/AccountStore";
 import RoomStore from "../stores/RoomStore";
@@ -132,6 +132,10 @@ socket.on("users:presence", ({ userId, status }) => {
 
 socket.on("room:create", ({ room }) => {
   AccountActionCreators.receiveRoom(room);
+});
+
+socket.on("room:delete", ({ room }) => {
+  RoomActionCreators.roomDeleted(room);
 });
 
 class ConnectionStore extends ReduceStore {

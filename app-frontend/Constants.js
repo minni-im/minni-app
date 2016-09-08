@@ -36,6 +36,14 @@ export const ActionTypes = keyMirror({
   ROOM_JOIN: null,
   ROOM_LEAVE: null,
 
+  ROOM_DELETE: null,
+  ROOM_DELETE_SUCCESS: null,
+  ROOM_DELETE_FAILURE: null,
+
+  ROOM_UPDATE: null,
+  ROOM_UPDATE_SUCCESS: null,
+  ROOM_UPDATE_FAILURE: null,
+
   ROOM_STAR: null,
   ROOM_STAR_SUCCESS: null,
   ROOM_STAR_FAILURE: null,
@@ -155,6 +163,8 @@ export const EndPoints = {
   ROOM_STAR: roomId => `/api/rooms/${roomId}/star`,
   ROOM_UNSTAR: roomId => `/api/rooms/${roomId}/unstar`,
   ROOM_MESSAGES: roomId => `/api/rooms/${roomId}/messages`,
+  ROOM_DELETE: roomId => `/api/rooms/${roomId}`,
+  ROOM_UPDATE: roomId => `/api/rooms/${roomId}`,
   USER_SETTINGS: "/api/me/settings",
   USER_PROFILE: "/api/me",
   MESSAGES: "/api/messages",

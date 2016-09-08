@@ -1,8 +1,7 @@
 import React from "react";
 import classnames from "classnames";
 
-// TODO: This import is ugly. Should be changed to named export and imported with * as
-import { default as RoomActionCreators } from "../actions/RoomActionCreators";
+import * as RoomActionCreators from "../actions/RoomActionCreators";
 import * as DimensionActionCreators from "../actions/DimensionActionCreators";
 
 import {

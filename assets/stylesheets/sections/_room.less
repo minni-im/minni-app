@@ -204,3 +204,39 @@
     }
   }
 }
+
+
+.room--access-control {
+  flex-wrap: wrap;
+
+  .coworker {
+    flex: 0 0 200px;
+    cursor: pointer;
+    padding: 5px 10px;
+    margin: 5px;
+
+    .avatar {
+      margin: 5px 10px 5px 0;
+    }
+
+    &.active {
+      background-color: fadeout(@dark-orange, 50%);
+      .avatar {
+        opacity: 1 !important;
+      }
+    }
+
+    &:hover {
+      background-color: @gray-lighter;
+      border-radius: 3px;
+    }
+  }
+
+  .user--nickname {
+    font-size: 11px;
+    line-height: 1em;
+    font-style: italic;
+    color: @gray-light;
+  }
+
+}

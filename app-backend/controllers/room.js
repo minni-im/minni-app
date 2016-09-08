@@ -2,7 +2,9 @@ import recorder from "tape-recorder";
 
 import { requireLogin } from "../middlewares/auth";
 import { requireValidAccount } from "../middlewares/account";
-import { requireValidRoom } from "../middlewares/room";
+import {
+  requireValidRoom,
+  requireRoomAdmin } from "../middlewares/room";
 
 export default (app) => {
   app.get("/api/accounts/:accountId/rooms",
@@ -18,6 +20,23 @@ export default (app) => {
     (req) => {
       req.io.route("rooms:create");
     });
+
+  app.delete("/api/rooms/:roomId",
+    requireLogin,
+    requireValidRoom,
+    requireRoomAdmin,
+    (req) => {
+      req.io.route("rooms:delete");
+    });
+
+  app.post("/api/rooms/:roomId",
+    requireLogin,
+    requireValidRoom,
+    requireRoomAdmin,
+    (req) => {
+      req.io.route("rooms:update");
+    }
+  );
 
   app.post("/api/rooms/:roomId/star",
     requireLogin,
@@ -163,6 +182,56 @@ export default (app) => {
           errors: error
         });
       });
+    },
+
+    update(req, res) {
+      const { topic, type, usersId } = req.body;
+      const { room } = req;
+      if (topic) {
+        room.topic = topic;
+      }
+      if (type && type !== room.type) {
+        room.type = type;
+        room.usersId = usersId || room.usersId;
+      }
+      room.save().then(
+        (updatedRoom) => {
+          res.json({
+            ok: true,
+            room: updatedRoom.toAPI(true)
+          });
+          app.io.in(room.accountId).emit("room:update", {
+            room: updatedRoom.toAPI()
+          });
+        },
+        ({ message }) => {
+          res.json({
+            ok: false,
+            message: "Room update failed.",
+            errors: message });
+        }
+      );
+    },
+
+    delete(req, res) {
+      const { room } = req;
+      room.remove().then(
+        () => {
+          res.json({ ok: true, room: room.toAPI(true) });
+          app.io.in(room.accountId).emit("room:delete", {
+            room: room.toAPI()
+          });
+        },
+        ({ message, error, reason }) => {
+          if (error === "" && reason) {
+            res.json({ ok: false, message: reason });
+            return;
+          }
+          res.json({
+            ok: false,
+            message: "Room deletion failed.",
+            errors: message });
+        });
     },
 
     messages(req, res) {
