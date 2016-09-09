@@ -13,7 +13,10 @@ const MessageRecord = Immutable.Record({
   nonce: null,
   dateEdited: null,
   dateCreated: Date.now(),
-  lastUpdated: Date.now()
+  lastUpdated: Date.now(),
+
+  // UI boolean
+  preview: true
 });
 
 export default class Message extends MessageRecord {
@@ -21,7 +24,7 @@ export default class Message extends MessageRecord {
     return this.dateEdited !== null;
   }
 
-  hasEmbeds() {
+  get hasEmbeds() {
     return this.embeds.size > 0;
   }
 

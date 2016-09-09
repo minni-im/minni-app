@@ -57,6 +57,8 @@ export const ActionTypes = keyMirror({
   MESSAGE_UPDATE: null,
   MESSAGE_SEND_FAILURE: null,
 
+  MESSAGE_TOGGLE_PREVIEW: null,
+
   LOAD_MESSAGES: null,
   LOAD_MESSAGES_SUCCESS: null,
   LOAD_MESSAGES_FAILURE: null,

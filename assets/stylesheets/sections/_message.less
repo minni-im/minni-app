@@ -112,9 +112,26 @@ code {
       text-align: center;
     }
 
+    .message--preview-hide {
+      .actionable;
+      margin-left: 5px;
+      margin-right: 5px;
+      display: none;
+      svg {
+        .square(24px);
+        path {
+          fill: @gray-light;
+        }
+      }
+    }
+
     .message:hover {
       .message--timestamp {
         display: block;
+      }
+
+      .message--preview-hide {
+        display: inline-block;
       }
     }
   }

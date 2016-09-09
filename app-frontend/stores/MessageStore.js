@@ -48,12 +48,6 @@ function handleMessageCreate(state, { roomId, message }) {
     delete message.nonce;
     messages = messages.replace(nonce, message.id, transformMessage(message));
   } else {
-    // messages = messages.withMutations(map => {
-    //   map.set(message.id, mergeMessage(map, message));
-    //   while (map.size > MAX_MESSAGES_PER_ROOMS) {
-    //     map.remove(map.first().id);
-    //   }
-    // });
     messages = messages.set(message.id, mergeMessage(messages, message));
   }
   return state.set(roomId, messages);
@@ -100,14 +94,25 @@ function handleTruncateMessagesList(state, { roomId, scrollTop }) {
   return state;
 }
 
+function handleMessageTogglePreview(state, { messageId, roomId }) {
+  const messages = state.get(roomId);
+
+  return state.set(
+    roomId,
+    messages.update(messageId, message =>
+      message.set("preview", !message.preview)
+    )
+  );
+}
+
 class MessageStore extends MapStore {
   initialize() {
     this.waitFor(UserStore, RoomStore);
     this.addAction(ActionTypes.MESSAGE_CREATE, handleMessageCreate);
     this.addAction(ActionTypes.MESSAGE_UPDATE, handleMessageUpdate);
     this.addAction(ActionTypes.LOAD_MESSAGES_SUCCESS, handleLoadMessagesSuccess);
-
     this.addAction(ActionTypes.UPDATE_DIMENSIONS, handleTruncateMessagesList);
+    this.addAction(ActionTypes.MESSAGE_TOGGLE_PREVIEW, handleMessageTogglePreview);
   }
 
   getMessages(roomId) {

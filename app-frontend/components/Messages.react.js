@@ -3,6 +3,7 @@ import classnames from "classnames";
 
 import * as RoomActionCreators from "../actions/RoomActionCreators";
 import * as DimensionActionCreators from "../actions/DimensionActionCreators";
+import * as MessageActionCreators from "../actions/MessageActionCreators";
 
 import {
   MessageStreamTypes,
@@ -31,6 +32,7 @@ class Message extends React.Component {
 
   render() {
     const { message, renderEmbeds, inlineImages, clock24 } = this.props;
+    const hasEmbeds = message.hasEmbeds;
     let header;
     let timestamp;
     if (this.props.first) {
@@ -43,37 +45,54 @@ class Message extends React.Component {
     } else {
       timestamp = (
         <div className="message--timestamp">
-          {message.dateCreated.format(clock24 ?
-            "HH:MM" :
-            "hh:mm A"
-          )}
+          {message.dateCreated.format(clock24 ? "HH:MM" : "hh:mm A")}
         </div>
       );
     }
 
     let content = (
-      <div className="message--content">
+      <div
+        className="message--content"
+        onClick={(event) => {
+          if (event.altKey) {
+            MessageActionCreators.togglePreview(message);
+            event.preventDefault();
+          }
+        }}
+      >
         {message.contentParsed}
       </div>
     );
 
     let embeds;
-    if (message.hasEmbeds()) {
+    if (hasEmbeds && message.preview) {
       if (inlineImages && message.singleEmbed) {
-        content = <Embed {...message.embeds.get(0).toJS()} />;
+        content = (
+          <Embed
+            {...message.embeds.get(0).toJS()}
+            onHidePreview={() => { MessageActionCreators.togglePreview(message); }}
+          />
+        );
       } else {
         if (renderEmbeds) {
-          embeds = message.embeds.map((embed, index) =>
-            <Embed key={index} {...embed.toJS()} />
-          ).toArray();
-          embeds = <div className="message--embeds">{embeds}</div>;
+          embeds = (
+            <div className="message--embeds">
+              {message.embeds.map((embed, index) => (
+                <Embed
+                  key={index}
+                  {...embed.toJS()}
+                  onHidePreview={() => { MessageActionCreators.togglePreview(message); }}
+                />
+              )).toArray()}
+            </div>
+          );
         }
       }
     }
 
     const classNames = {
       "message-first": this.props.first,
-      "message-embed": message.hasEmbeds()
+      "message-embed": hasEmbeds
     };
 
     return (
