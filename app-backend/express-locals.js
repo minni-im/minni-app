@@ -12,7 +12,7 @@ export default {
         viewname(filename) {
           return path.basename(filename, ".jade");
         },
-        title: "Your office in the cloud",
+        // title: "Your office in the cloud",
         user: req.user,
         production: process.env.NODE_ENV === "production",
         nth(rank) {
