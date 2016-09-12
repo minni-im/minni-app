@@ -3,14 +3,14 @@ html
   head
     title #{title ? title + " · " : ""}#{name}
     meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
-    
+
     meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
     meta(name="viewport", content="width=device-width,initial-scale=1.0,maximum-scale=1.0")
 
     meta(name="application-name", content=name)
     meta(name="description", content="Your world wide offices in the cloud")
-    meta(name="application-url", content="#{url.protocol}://#{url.hostname}/?origin=cda")
-    
+    meta(name="application-url", content="#{url.protocol}://#{url.hostname}")
+
     //- iOS
     link(rel="apple-touch-icon", sizes="57x57",   href="/images/logos/ios/apple-touch-icon-57x57.png")
     link(rel="apple-touch-icon", sizes="60x60",   href="/images/logos/ios/apple-touch-icon-60x60.png")
@@ -21,7 +21,7 @@ html
     link(rel="apple-touch-icon", sizes="144x144", href="/images/logos/ios/apple-touch-icon-144x144.png")
     link(rel="apple-touch-icon", sizes="152x152", href="/images/logos/ios/apple-touch-icon-152x152.png")
     link(rel="apple-touch-icon", sizes="180x180", href="/images/logos/ios/apple-touch-icon-180x180.png")
-      
+
     //- IE9+
     meta(name="msapplication-tooltip", content=name)
     meta(name="msapplication-starturl", content="#{url.protocol}://#{url.hostname}/?origin=ieps")
@@ -39,7 +39,7 @@ html
 
     block styles
       link(rel="stylesheet", href="/css/style.css")
-      
+
     script(type="text/javascript").
       window.Minni = {
         name: "#{name}",
@@ -48,7 +48,7 @@ html
     block header_scripts
 
   body(class=[viewname(filename), bodyClass])
-    
+
     block header_outer
       header
         block header
@@ -56,7 +56,7 @@ html
             h1: a.logo(href="/")
               img(src="/images/logo-color.png")
               | #{name}
-            
+
             nav
               if user === undefined
                 a(href="/login") Login
@@ -64,8 +64,8 @@ html
                 .user
                   a(href="/profile")= user.fullname
                 a(href="/logout") Logout
-                
-    
+
+
     block banner_outer
       section.banner
         .wrapper
@@ -77,7 +77,7 @@ html
           .wrapper
             while message = flash.shift()
               p.alert(class="alert-" + message.type)= message.message
-    
+
     block main
       main
         block content_outer

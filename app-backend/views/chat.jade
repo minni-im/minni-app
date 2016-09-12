@@ -3,19 +3,21 @@ extends layout
 block styles
   link(rel="stylesheet", href="/css/hljs-default.min.css")
   link(rel="stylesheet", href="/css/chat.css")
-    
+
 block header_scripts
   script(src="/socket.io/socket.io.js")
-  script(src="/js/vendor-bundle.js")
-    
+  if production
+    script(src="/js/#{hash['vendor.js']}")
+  else
+    script(src="/js/vendor-bundle.js")
 block header_outer
-  
+
 block banner_outer
-    
+
 block flash
-    
+
 block footer_outer
-  
+
 block main
   #minni
   #splashscreen
@@ -24,8 +26,12 @@ block main
       h3 Please be patient
       p We are setting up your cloud office...
 
-  
-  
+
+
 append scripts
-  script(src="/js/minni-bundle.js")
-  script(src="/js/plugins-bundle.js")
+  if production
+    script(src="/js/#{hash['minni.js']}")
+    script(src="/js/#{hash['plugins.js']}")
+  else
+    script(src="/js/minni-bundle.js")
+    script(src="/js/plugins-bundle.js")
