@@ -1,59 +1,32 @@
-jest.unmock("simple-markdown");
-jest.unmock("../../../config");
-jest.unmock("../base");
-jest.unmock("../index");
-
-const fs = require.requireActual("fs");
-const path = require.requireActual("path");
-
-function dontMockFolder(folder) {
-  const dir = path.join(__dirname, "..", folder);
-  fs.readdirSync(dir).forEach(file => {
-    if (file.indexOf("__") === 0) {
-      return;
-    }
-    const stats = fs.lstatSync(path.join(dir, file));
-    if (stats.isDirectory()) {
-      jest.unmock(`../${folder}/${file}`)
-    }
-  });
-}
-
-dontMockFolder("audio");
-dontMockFolder("code");
-dontMockFolder("image");
-dontMockFolder("video");
-dontMockFolder("web");
-
 const { parse, process } = require("../");
 
 describe("Embed processor", () => {
-  pit("should return empty array in case nothing is detected", function() {
+  it("should return empty array in case nothing is detected", () => {
     return process(parse("Hello there !"))
-      .then(results => {
+      .then((results) => {
         expect(results).toBeDefined();
         expect(Array.isArray(results)).toBe(true);
         expect(results.length).toEqual(0);
       });
   });
 
-  pit("should process twice the same url in message", function() {
+  it("should process twice the same url in message", () => {
     const tree = parse(`https://www.youtube.com/watch?v=4SbiiyRSIwo
       and https://www.youtube.com/watch?v=4SbiiyRSIwo`);
 
-      return process(tree).then(results => {
-        expect(results.length).toEqual(2);
-        expect(results[0]).toEqual(results[1]);
-      });
+    return process(tree).then((results) => {
+      expect(results.length).toEqual(2);
+      expect(results[0]).toEqual(results[1]);
+    });
   });
 
-  pit("should process audio urls", function() {
+  it("should process audio urls", () => {
     const urls = [
       "http://example.com/foo/baz.mp3",
       "https://example.org/music/free.ogg"
     ];
     const tree = parse(`Some raw music ${urls[0]} and ${urls[1]}`);
-    return process(tree).then(results => {
+    return process(tree).then((results) => {
       expect(results.length).toEqual(2);
       urls.forEach((url, index) => {
         expect(results[index]).toEqual({
@@ -64,13 +37,13 @@ describe("Embed processor", () => {
     });
   });
 
-  pit("should process video urls", function() {
+  it("should process video urls", () => {
     const urls = [
       "https://example.com/foo/bar/baz.ogv",
       "https://vine.co/v/im5wjA9qDvM"
     ];
     const tree = parse(`ovg: ${urls[0]} and vine: ${urls[1]}`);
-    return process(tree).then(results => {
+    return process(tree).then((results) => {
       expect(results.length).toEqual(2);
       expect(results[0]).toEqual({
         type: "video",
@@ -87,10 +60,10 @@ describe("Embed processor", () => {
     });
   });
 
-  pit("should process gist urls", function() {
+  it("should process gist urls", () => {
     const tree = parse("This is solange: https://gist.github.com/bbaliguet/4e4b3d8ec2868ae63596 et ca envoie de la buche");
 
-    return process(tree).then(results => {
+    return process(tree).then((results) => {
       expect(results.length).toEqual(1);
       let { type, author, description, meta } = results[0];
       expect(type).toEqual("code.gist");
@@ -101,15 +74,15 @@ describe("Embed processor", () => {
       });
 
 
-      let [ { filename, language }] = meta.files;
+      let [{ filename, language }] = meta.files;
       expect(filename).toBe("solange.js");
       expect(language).toBe("JavaScript");
     });
   });
 
-  pit("should process github user url", function() {
-    const tree = parse(`here is my github page https://github.com/bcharbonnier`);
-    return process(tree).then(results => {
+  it("should process github user url", () => {
+    const tree = parse("here is my github page https://github.com/bcharbonnier");
+    return process(tree).then((results) => {
       expect(results.length).toEqual(1);
       let { type, author, thumbnail } = results[0];
       expect(type).toEqual("code.github.user");
@@ -118,9 +91,9 @@ describe("Embed processor", () => {
     });
   });
 
-  pit("should process github repo url", function() {
-    const tree = parse(`here is my github project page https://github.com/minni-im/minni-app`);
-    return process(tree).then(results => {
+  it("should process github repo url", () => {
+    const tree = parse("here is my github project page https://github.com/minni-im/minni-app");
+    return process(tree).then((results) => {
       expect(results.length).toEqual(1);
       let { type, title, description, thumbnail } = results[0];
       expect(type).toEqual("code.github.repo");
@@ -131,10 +104,10 @@ describe("Embed processor", () => {
   });
 
 
-  pit("should process flickr url", function() {
-    const tree = parse(`here is a nice pic: https://www.flickr.com/photos/78986993@N00/3372549602/`);
+  it("should process flickr url", () => {
+    const tree = parse("here is a nice pic: https://www.flickr.com/photos/78986993@N00/3372549602/");
 
-    return process(tree).then(results => {
+    return process(tree).then((results) => {
       expect(results.length).toEqual(1);
       let { type, provider } = results[0];
       expect(type).toEqual("image.flickr");
@@ -142,14 +115,14 @@ describe("Embed processor", () => {
         name: "Flickr",
         url: "https://www.flickr.com/"
       });
-    })
+    });
   });
 
-  pit("should process medium opengraph url", function() {
+  it("should process medium opengraph url", () => {
     const url = "https://medium.com/@benostrower/rey-is-a-kenobi-362b5af09849";
     const tree = parse(`un peu de meidum sur #starwars ${url} attention ca spoile !`);
 
-    return process(tree).then(results => {
+    return process(tree).then((results) => {
       expect(results.length).toEqual(1);
       let { type, provider } = results[0];
       expect(type).toEqual("web.medium");
@@ -160,10 +133,10 @@ describe("Embed processor", () => {
     });
   });
 
-  pit("should process codepen url", function() {
+  it("should process codepen url", () => {
     const url = "http://codepen.io/captainbrosset/pen/lHpnK";
-    const tree = parse(`tu sais comment marche les CSS Transforms? Regarde ce pen http://codepen.io/captainbrosset/pen/lHpnK`);
-    return process(tree).then(results => {
+    const tree = parse("tu sais comment marche les CSS Transforms? Regarde ce pen http://codepen.io/captainbrosset/pen/lHpnK");
+    return process(tree).then((results) => {
       expect(results.length).toEqual(1);
       let { type, provider } = results[0];
       expect(type).toEqual("code.codepen");
@@ -171,12 +144,12 @@ describe("Embed processor", () => {
         name: "CodePen",
         url: "http://codepen.io"
       });
-    })
+    });
   });
 
-  pit("should process twitter url", function() {
-    const tree = parse(`yop yop https://twitter.com/patrickbrosset/status/681507091064946688`);
-    return process(tree).then(results => {
+  it("should process twitter url", () => {
+    const tree = parse("yop yop https://twitter.com/patrickbrosset/status/681507091064946688");
+    return process(tree).then((results) => {
       expect(results.length).toEqual(1);
       let { type,
         title,
@@ -197,15 +170,14 @@ describe("Embed processor", () => {
     });
   });
 
-  pit("should process all detected urls from message", function() {
+  it("should process all detected urls from message", () => {
     const privateVimeo = "https://vimeo.com/120876824";
     const tree = parse(`https://www.youtube.com/watch?v=4SbiiyRSIwo
       and https://open.spotify.com/track/7Hj2D61IPaPICdGBXFj0cU
       and ${privateVimeo}
       and https://example.com/foo/bar/baz.webm`);
 
-    return process(tree).then(results => {
-
+    return process(tree).then((results) => {
       expect(results.length).toEqual(3);
       {
         let { type, provider, author } = results[0];
@@ -215,15 +187,14 @@ describe("Embed processor", () => {
           url: "https://www.youtube.com/"
         });
         expect(author).toBeDefined();
-
       }
 
       {
         let { type, provider, author } = results[1];
         expect(type).toEqual("audio.spotify");
         expect(provider).toEqual({
-            name: "Spotify",
-            url: "https://www.spotify.com"
+          name: "Spotify",
+          url: "https://www.spotify.com"
         });
         expect(author).not.toBeDefined();
       }

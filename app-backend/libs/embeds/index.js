@@ -1,9 +1,6 @@
 import SimpleMarkdown from "simple-markdown";
 import config from "../../config";
 
-const { auth, embed } = config;
-const { active, providers } = embed;
-
 import Audio from "./audio/basic";
 import Spotify from "./audio/spotify";
 import Gist from "./code/gist";
@@ -17,6 +14,9 @@ import Vine from "./video/vine";
 import Youtube from "./video/youtube";
 import Medium from "./web/medium";
 import Twitter from "./web/twitter";
+
+const { auth, embed } = config;
+const { active, providers } = embed;
 
 const list = {
   Audio,
@@ -44,7 +44,7 @@ const RULES = {
   text: SimpleMarkdown.defaultRules.text
 };
 
-embeds.forEach(e => {
+embeds.forEach((e) => {
   const embedName = e.name
     .replace(/\s/g, "_")
     .toLowerCase();
@@ -64,7 +64,7 @@ export function parse(message) {
 }
 
 export function process(tree) {
-  return Promise.all(tree.map(element => {
+  return Promise.all(tree.map((element) => {
     const embedProcessor = namedEmbeds[element.type];
     return embedProcessor.process(element);
   }))

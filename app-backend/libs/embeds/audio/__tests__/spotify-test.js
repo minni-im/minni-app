@@ -1,15 +1,12 @@
-jest.dontMock("../../base");
-jest.dontMock("../spotify");
-
 const Spotify = require("../spotify");
 let embed;
 
-beforeEach(function() {
+beforeEach(() => {
   embed = new Spotify();
 });
 
-describe("Spotify embed", function() {
-  it("should extract artist and track name from track url", function() {
+describe("Spotify embed", () => {
+  it("should extract artist and track name from track url", () => {
     const element = {
       resource: "track"
     };
@@ -22,7 +19,7 @@ describe("Spotify embed", function() {
     expect(description).toEqual("Dead Inside");
   });
 
-  it("should extract artist and album name from album url", function() {
+  it("should extract artist and album name from album url", () => {
     const element = {
       resource: "album"
     };
@@ -35,7 +32,7 @@ describe("Spotify embed", function() {
     expect(description).toEqual("Live At Rome Olympic Stadium");
   });
 
-  it("should extract onwer and playlist name from user playlist url", function() {
+  it("should extract onwer and playlist name from user playlist url", () => {
     const element = {
       resource: "user/benoua/playlist"
     };
@@ -48,12 +45,11 @@ describe("Spotify embed", function() {
     expect(description).toEqual("#01/16 - Jan2016 MixTape");
   });
 
-  it("should transform thumbnail url", function() {
+  it("should transform thumbnail url", () => {
     const url = "https://d3rt1990lpmkn.cloudfront.net/cover/d83a086148afe6539dae524607cbe4b6ccdd0360";
 
     const { thumbnail } = embed.extractThumbnail({ thumbnail_url: url });
     expect(thumbnail.url).toEqual("https://d3rt1990lpmkn.cloudfront.net/640/d83a086148afe6539dae524607cbe4b6ccdd0360");
     expect(thumbnail.width).toEqual(320);
   });
-
 });
