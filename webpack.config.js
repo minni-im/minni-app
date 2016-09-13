@@ -48,12 +48,12 @@ module.exports = {
   },
   resolve: {
     alias: {
-      "minni-plugins-toolkit": path.join(__dirname, "app-frontend", "libs", "PluginsToolkit.js")
+      "minni-plugins-toolkit": path.resolve(__dirname, "app-frontend", "libs", "PluginsToolkit.js")
     },
-    fallback: path.join(__dirname, "node_modules")
+    fallback: path.resolve(__dirname, "node_modules")
   },
   resolveLoader: {
-    fallback: path.join(__dirname, "node_modules")
+    fallback: path.resolve(__dirname, "node_modules")
   },
   module: {
     loaders: [
