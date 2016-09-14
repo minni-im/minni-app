@@ -1,5 +1,5 @@
 import { requireLogin } from "../middlewares/auth";
-import auth from "../auth";
+import * as auth from "../auth";
 
 
 export default (app) => {
@@ -11,16 +11,16 @@ export default (app) => {
         providers: auth.providers
       });
     })
-    .post(req => {
+    .post((req) => {
       req.io.route("me:profile");
     });
 
   app.route("/api/me")
     .all(requireLogin)
-    .get(req => {
+    .get((req) => {
       req.io.route("me:whoami");
     })
-    .post(req => {
+    .post((req) => {
       req.io.route("me:profile");
     });
 

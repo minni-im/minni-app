@@ -15,7 +15,8 @@ import expressLocals from "./express-locals";
 const RedisStore = connectRedis(express.session);
 const app = express();
 
-const asciiLogo = (banner) => `╒════════════════════════════════════════════════════╕
+const asciiLogo = banner => `
+╒════════════════════════════════════════════════════╕
 ███╗   ███╗██╗███╗   ██╗███╗   ██╗██╗   ██╗███╗   ███╡
 ████╗ ████║██║████╗  ██║████╗  ██║██║   ██║████╗ ████│
 ██╔████╔██║██║██╔██╗ ██║██╔██╗ ██║██║   ██║██╔████╔██│
@@ -61,11 +62,11 @@ function bootstrap() {
   app.use(flash());
   expressLocals.setup(app);
 
-  fs.readdirSync(path.join(__dirname, "controllers")).forEach(ctrl => {
+  fs.readdirSync(path.join(__dirname, "controllers")).forEach((ctrl) => {
     require(`./controllers/${ctrl}`).default(app);
   });
 
-  fs.readdirSync(path.join(__dirname, "libs", "commands")).forEach(command => {
+  fs.readdirSync(path.join(__dirname, "libs", "commands")).forEach((command) => {
     require(`./libs/commands/${command}`).setup(app);
   });
 
@@ -81,7 +82,7 @@ const couchDBPort = process.env.COUCHDB_PORT_5984_TCP_PORT || config.couchdb.por
 console.log(asciiLogo("Starting application server"));
 
 recorder.connect(`http://${couchDBHost}:${couchDBPort}`, config.couchdb.name, () => {
-  fs.readdirSync(path.join(__dirname, "models")).forEach(model => {
+  fs.readdirSync(path.join(__dirname, "models")).forEach((model) => {
     require(`./models/${model}`);
     console.log(`Model '${model}' has been loaded`);
   });
