@@ -1,4 +1,4 @@
-import { parse } from "../";
+import { parse } from ".";
 
 describe("Embed parser", () => {
   describe("Spotify", () => {

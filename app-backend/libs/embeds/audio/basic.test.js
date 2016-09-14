@@ -1,4 +1,4 @@
-import Audio from "../basic";
+import Audio from "./basic";
 
 const extensions = ["mp3", "wav", "ogg"];
 let embed;

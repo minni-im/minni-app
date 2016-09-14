@@ -1,4 +1,4 @@
-import Spotify from "../spotify";
+import Spotify from "./spotify";
 
 let embed;
 
