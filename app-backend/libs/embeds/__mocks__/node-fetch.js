@@ -13,7 +13,7 @@ const mappings = {
   "https://api.twitter.com/oauth2/token": "twitter-auth-token",
   "https://opengraph.io/api/1.0/site/https://medium.com/@benostrower/rey-is-a-kenobi-362b5af09849": "medium",
   "http://codepen.io/api/oembed?format=json&url=http://codepen.io/captainbrosset/pen/lHpnK": "codepen"
-}
+};
 
 function fake(url, options = {}) {
   if (!(url in mappings)) {
@@ -22,8 +22,7 @@ function fake(url, options = {}) {
     });
   }
   const filename = `./${mappings[url]}`;
-  return Promise.resolve(require.requireActual(filename));
+  return Promise.resolve(require.requireActual(filename).default);
 }
 
-let fetch = jest.genMockFunction().mockImplementation(fake);
-export default fetch;
+export default jest.genMockFunction().mockImplementation(fake);

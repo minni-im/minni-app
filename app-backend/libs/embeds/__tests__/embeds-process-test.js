@@ -1,4 +1,4 @@
-const { parse, process } = require("../");
+import { parse, process } from "../";
 
 describe("Embed processor", () => {
   it("should return empty array in case nothing is detected", () => {

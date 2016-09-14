@@ -1,4 +1,5 @@
-const Spotify = require("../spotify");
+import Spotify from "../spotify";
+
 let embed;
 
 beforeEach(() => {

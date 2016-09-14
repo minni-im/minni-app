@@ -1,4 +1,5 @@
-const Video = require("../basic");
+import Video from "../basic";
+
 const extensions = ["ogv", "webm", "mp4", "mov"];
 let embed;
 

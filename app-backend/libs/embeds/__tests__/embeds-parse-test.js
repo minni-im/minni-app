@@ -1,4 +1,4 @@
-const { parse } = require("../");
+import { parse } from "../";
 
 describe("Embed parser", () => {
   describe("Spotify", () => {
