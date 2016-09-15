@@ -1,3 +1,4 @@
+# DEPRECATED: use docker compose instead
 ---
 - name: minni-couchdb
   image: klaemo/couchdb
