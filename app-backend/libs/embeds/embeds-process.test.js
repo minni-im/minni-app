@@ -1,14 +1,13 @@
 import { parse, process } from ".";
 
 describe("Embed processor", () => {
-  it("should return empty array in case nothing is detected", () => {
-    return process(parse("Hello there !"))
-      .then((results) => {
-        expect(results).toBeDefined();
-        expect(Array.isArray(results)).toBe(true);
-        expect(results.length).toEqual(0);
-      });
-  });
+  it("should return empty array in case nothing is detected",
+    () => process(parse("Hello there !")).then((results) => {
+      expect(results).toBeDefined();
+      expect(Array.isArray(results)).toBe(true);
+      expect(results.length).toEqual(0);
+    })
+  );
 
   it("should process twice the same url in message", () => {
     const tree = parse(`https://www.youtube.com/watch?v=4SbiiyRSIwo
@@ -50,7 +49,7 @@ describe("Embed processor", () => {
         url: urls[0]
       });
 
-      let { type, provider, author } = results[1];
+      const { type, provider, author } = results[1];
       expect(type).toEqual("video.vine");
       expect(provider).toEqual({
         name: "Vine",
@@ -65,7 +64,7 @@ describe("Embed processor", () => {
 
     return process(tree).then((results) => {
       expect(results.length).toEqual(1);
-      let { type, author, description, meta } = results[0];
+      const { type, author, description, meta } = results[0];
       expect(type).toEqual("code.gist");
       expect(description).toEqual("Roulotte is speaking !");
       expect(author).toEqual({
@@ -73,8 +72,7 @@ describe("Embed processor", () => {
         url: "https://github.com/bbaliguet"
       });
 
-
-      let [{ filename, language }] = meta.files;
+      const [{ filename, language }] = meta.files;
       expect(filename).toBe("solange.js");
       expect(language).toBe("JavaScript");
     });
@@ -84,7 +82,7 @@ describe("Embed processor", () => {
     const tree = parse("here is my github page https://github.com/bcharbonnier");
     return process(tree).then((results) => {
       expect(results.length).toEqual(1);
-      let { type, author, thumbnail } = results[0];
+      const { type, author, thumbnail } = results[0];
       expect(type).toEqual("code.github.user");
       expect(author.name).toEqual("bcharbonnier");
       expect(thumbnail.url).toEqual("https://avatars.githubusercontent.com/u/583204?v=3&s=300");
@@ -95,7 +93,7 @@ describe("Embed processor", () => {
     const tree = parse("here is my github project page https://github.com/minni-im/minni-app");
     return process(tree).then((results) => {
       expect(results.length).toEqual(1);
-      let { type, title, description, thumbnail } = results[0];
+      const { type, title, description, thumbnail } = results[0];
       expect(type).toEqual("code.github.repo");
       expect(title).toEqual("minni-im/minni-app");
       expect(description).toEqual("Anywhere should be the place to be working from");
@@ -109,7 +107,7 @@ describe("Embed processor", () => {
 
     return process(tree).then((results) => {
       expect(results.length).toEqual(1);
-      let { type, provider } = results[0];
+      const { type, provider } = results[0];
       expect(type).toEqual("image.flickr");
       expect(provider).toEqual({
         name: "Flickr",
@@ -124,7 +122,7 @@ describe("Embed processor", () => {
 
     return process(tree).then((results) => {
       expect(results.length).toEqual(1);
-      let { type, provider } = results[0];
+      const { type, provider } = results[0];
       expect(type).toEqual("web.medium");
       expect(provider).toEqual({
         name: "Medium",
@@ -135,10 +133,10 @@ describe("Embed processor", () => {
 
   it("should process codepen url", () => {
     const url = "http://codepen.io/captainbrosset/pen/lHpnK";
-    const tree = parse("tu sais comment marche les CSS Transforms? Regarde ce pen http://codepen.io/captainbrosset/pen/lHpnK");
+    const tree = parse(`tu sais comment marche les CSS Transforms? Regarde ce pen ${url}`);
     return process(tree).then((results) => {
       expect(results.length).toEqual(1);
-      let { type, provider } = results[0];
+      const { type, provider } = results[0];
       expect(type).toEqual("code.codepen");
       expect(provider).toEqual({
         name: "CodePen",
@@ -151,12 +149,12 @@ describe("Embed processor", () => {
     const tree = parse("yop yop https://twitter.com/patrickbrosset/status/681507091064946688");
     return process(tree).then((results) => {
       expect(results.length).toEqual(1);
-      let { type,
+      const {
         title,
         description,
         provider,
-        author,
-        html } = results[0];
+        author
+      } = results[0];
       expect(title).toEqual("Patrick Brosset");
       expect(description).toEqual("xmas is the only time of year I have time to take photos anymore. So there, trees &amp; sunrise: https://t.co/TvvgacvMUy https://t.co/UmaJjr6FmN");
       expect(author).toEqual({
@@ -180,7 +178,7 @@ describe("Embed processor", () => {
     return process(tree).then((results) => {
       expect(results.length).toEqual(3);
       {
-        let { type, provider, author } = results[0];
+        const { type, provider, author } = results[0];
         expect(type).toEqual("video.youtube");
         expect(provider).toEqual({
           name: "YouTube",
@@ -190,7 +188,7 @@ describe("Embed processor", () => {
       }
 
       {
-        let { type, provider, author } = results[1];
+        const { type, provider, author } = results[1];
         expect(type).toEqual("audio.spotify");
         expect(provider).toEqual({
           name: "Spotify",
@@ -200,7 +198,7 @@ describe("Embed processor", () => {
       }
 
       {
-        let { type, provider, author } = results[2];
+        const { type, provider, author } = results[2];
         expect(type).toEqual("video");
         expect(provider).not.toBeDefined();
         expect(author).not.toBeDefined();
