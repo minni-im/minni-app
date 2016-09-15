@@ -2,9 +2,9 @@ import fetch from "node-fetch";
 import Base from "../../base";
 
 const REGEXP_TWITTER =
-/^https?:\/\/(?:www|mobile\.)?twitter\.com\/(?:#!\/)?([^\/]+)\/status(?:es)?\/(\d+)\/?/;
+/^https?:\/\/(?:www\.|mobile\.)?twitter\.com\/(?:#!\/)?([^\/]+)\/status(?:es)?\/(\d+)\/?/;
 
-const REGEXP_TWITTER_PHOTO = /^https?:\/\/(?:www\.)?twitter\.com\/(?:#!\/)?[^\/]+\/status(?:es)?\/(\d+)\/photo\/\d+(?:\/large|\/)?/;
+// const REGEXP_TWITTER_PHOTO = /^https?:\/\/(?:www\.)?twitter\.com\/(?:#!\/)?[^\/]+\/status(?:es)?\/(\d+)\/photo\/\d+(?:\/large|\/)?/;
 
 const TWITTER_API_AUTH_URL = "https://api.twitter.com/oauth2/token";
 
@@ -63,8 +63,8 @@ export default class TwitterEmbed extends Base {
     this.name = "Twitter";
     this.type = "web.twitter";
     this.config = config;
-    if (!config || (config && !config.id || !config.secret)) {
-      throw new Error(`Missing Twitter configuration. You have to declare an id and a secret in your 'settings.yml' file.`);
+    if (!config || (config && (!config.id || !config.secret))) {
+      throw new Error("Missing Twitter configuration. You have to declare an id and a secret in your 'settings.yml' file.");
     }
 
     this.hasValidToken = false;
@@ -91,13 +91,13 @@ export default class TwitterEmbed extends Base {
 
   process(element) {
     return this.authorization()
-      .then(bearerToken => {
+      .then((bearerToken) => {
         return super.process(element, {
           headers: {
             "Authorization": "Bearer " + bearerToken
           }
-        })
-      });
+        });
+      }, error => console.error("ERROR", error));
   }
 
   extractTitle(data) {
@@ -119,7 +119,7 @@ export default class TwitterEmbed extends Base {
         name: `@${screen_name}`,
         url: `https://twitter.com/${screen_name}`
       }
-    }
+    };
   }
 
   extractProvider(data) {
@@ -139,7 +139,7 @@ export default class TwitterEmbed extends Base {
         height: 500,
         url: url.replace("_normal.", ".")
       }
-    }
+    };
   }
 
   extractMeta(data) {
@@ -147,7 +147,7 @@ export default class TwitterEmbed extends Base {
     return { meta: {
       retweet_count,
       favorite_count
-    }};
+    } };
   }
 
   // OAuth stuff
@@ -168,33 +168,34 @@ export default class TwitterEmbed extends Base {
   authorization() {
     return new Promise((resolve, reject) => {
       if (this.hasValidToken) {
-        return resolve(this.bearerToken)
+        return resolve(this.bearerToken);
       }
-      fetch(TWITTER_API_AUTH_URL, {
+      return fetch(TWITTER_API_AUTH_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": `Basic ${this.bearerTokenCredentials}`
+          Authorization: `Basic ${this.bearerTokenCredentials}`
         },
         body: "grant_type=client_credentials"
-      }).then(response => {
+      })
+      .then((response) => {
         if (response.status >= 200 && response.status < 300) {
           return response;
-        } else {
-          var error = new Error(response.statusText)
-          error.response = response;
-          throw error;
         }
-      }).then(response => {
-        return response.json();
-      }).then(({ access_token }) => {
+        const error = new Error(response.statusText);
+        error.response = response;
+        throw error;
+      })
+      .then(response => response.json())
+      .then(({ access_token }) => {
         this.hasValidToken = true;
         this.bearerToken = access_token;
         return resolve(access_token);
-      }).catch(error => {
+      })
+      .catch((error) => {
         console.error(`[Twitter Embed] ${error}`);
         return reject(error);
       });
     });
   }
-};
+}
