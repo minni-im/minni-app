@@ -3,8 +3,8 @@ extends layout
 block content
   .content
     .greetings
-      img.logo(src="/images/logo.png")      
-    
+      img.logo(src="/images/logo.png")
+
     .providers
       h1 Prepare yourself
       p In about 30 seconds you'll have new world-wide offices
@@ -12,11 +12,11 @@ block content
         p Sign up with <span class="providers-list">#{providers.map(function(p) {return p.name;}).join(", ")}</span> or Email
       else
         p Sign up with your email
-      
+
       .providers-links
         each provider in providers
-          a(class=["provider", "provider-#{provider.name}"], href="/signup/#{provider.name}")
-            img.logo(src="data:image/png;base64,#{provider.logo}")
+          a(class=["provider", `provider-${provider.name}`], href=`/signup/${provider.name}`)
+            img.logo(src=`data:image/png;base64,${provider.logo}`)
             | #{provider.name}
 
       .email
@@ -29,7 +29,6 @@ block content
             input(type="password", placeholder="Choose a password", name="password")
           p
             button Create your account
-    
+
   .links
     a(href="/login") Already have an account?
-  

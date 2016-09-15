@@ -9,7 +9,7 @@ html
 
     meta(name="application-name", content=name)
     meta(name="description", content="Your world wide offices in the cloud")
-    meta(name="application-url", content="#{url.protocol}://#{url.hostname}")
+    meta(name="application-url", content=`${url.protocol}://${url.hostname}`)
 
     //- iOS
     link(rel="apple-touch-icon", sizes="57x57",   href="/images/logos/ios/apple-touch-icon-57x57.png")
@@ -24,12 +24,12 @@ html
 
     //- IE9+
     meta(name="msapplication-tooltip", content=name)
-    meta(name="msapplication-starturl", content="#{url.protocol}://#{url.hostname}/?origin=ieps")
+    meta(name="msapplication-starturl", content=`${url.protocol}://${url.hostname}/?origin=ieps`)
     //- IE10+
     meta(name="msapplication-TileColor", content="#48a6ff")
-    meta(name="msapplication-TileImage", content="#{url.protocol}://#{url.hostname}/images/logos/msapp/mstile-144x144.png")
+    meta(name="msapplication-TileImage", content=`${url.protocol}://${url.hostname}/images/logos/msapp/mstile-144x144.png`)
     //- Fluid
-    link(rel="fluid-icon", href="#{url.protocol}://#{url.hostname}/images/logos/logo-x512.png", title=name)
+    link(rel="fluid-icon", href=`${url.protocol}://${url.hostname}/images/logos/logo-x512.png`, title=name)
     //- Favicons
     link(rel="icon", type="image/x-icon", href="/favicon.ico")
     link(rel="icon", sizes="512x512", href="/images/logos/logo-x512.png")
@@ -76,7 +76,7 @@ html
         .alerts
           .wrapper
             while message = flash.shift()
-              p.alert(class="alert-" + message.type)= message.message
+              p.alert(class=`alert-${message.type}`)= message.message
 
     block main
       main

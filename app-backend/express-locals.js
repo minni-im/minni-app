@@ -8,7 +8,7 @@ export default {
       Object.assign(res.locals, {
         name: config.name,
         viewname(filename) {
-          return path.basename(filename, ".jade");
+          return path.basename(filename, ".pug");
         },
         hash: (function () {
           try {
