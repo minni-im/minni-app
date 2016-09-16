@@ -46,7 +46,7 @@ const session = {
   }
 };
 
-app.set("view engine", "jade");
+app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
 function bootstrap() {

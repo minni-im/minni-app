@@ -3,7 +3,7 @@ extends layout
 block banner
   h2 #{user.fullname}
   h3 Member since #{moment(user.dateCreated).format("LL")}
-  
+
 block content
 
   h3 Edit Profile
@@ -35,24 +35,24 @@ block content
           else
             input(type="text", name="gravatarEmail", placeholder=user.email, value="")
         span.info This email is private, and will only be used for gravatar purposes.
-      
+
       p.inline
-        button Save
-        
+        button.button-secondary Save
+
     .avatar
       h4 Avatar
       -var email = (user.gravatarEmail && user.gravatarEmail != "" ) ? user.gravatarEmail : user.email
-      img(src="#{user.avatar(150)}", title="Email used by gravatar: #{email}")
+      img(src=user.avatar(150), title=`Email used by gravatar: ${email}`)
       p Avatars are provided by <a href="https://gravatar.com">gravatar</a> services. You can change yours on their website.
-  
+
   h3 API token
   p
     | API authentication is achieved via a bearer token which identifies yourself as a single user.
     | Your token is something precious. Don't share it publicly. Keep it somewhere safe.
-    | If you think it has been compromised, simply click the `Re-issue token` button. 
-  
-  
-  
+    | If you think it has been compromised, simply click the `Re-issue token` button.
+
+
+
   h3 Authentication providers
   each options, provider in providers
     if provider === "local"
@@ -68,24 +68,22 @@ block content
           label
             span New password
             input(type="password", name="new", placeholder="New password")
-        
+
         p.inline
-          button Save
-        
+          button.button-secondary Save
+
     else
       .provider(class=["provider-" + provider])
         .name
           h4 Service
           div= provider
         .logo
-          img(src="data:image/png;base64,#{options.logo}")
+          img(src=`data:image/png;base64,${options.logo}`)
         .status
           h4 Status
           if !(provider in user.providers)
             span Not connected
-            | 
             a.button.button-secondary(href="/connect/#{provider}?returnTo=/profile") Link this provider
           else
             span Connected
-            | 
             a.button.button-secondary(href="/connect/#{provider}/revoke?returnTo=/profile") Unlink this provider

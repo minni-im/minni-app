@@ -1,7 +1,5 @@
 import path from "path";
-
 import moment from "moment";
-
 import config from "./config";
 
 export default {
@@ -10,9 +8,15 @@ export default {
       Object.assign(res.locals, {
         name: config.name,
         viewname(filename) {
-          return path.basename(filename, ".jade");
+          return path.basename(filename, ".pug");
         },
-        // title: "Your office in the cloud",
+        hash: (function () {
+          try {
+            return require("../dist/public/js/manifest.json");
+          } catch (exception) {
+            return {};
+          }
+        }()),
         user: req.user,
         production: process.env.NODE_ENV === "production",
         nth(rank) {
