@@ -73,7 +73,7 @@ block content
           button.button-secondary Save
 
     else
-      .provider(class=["provider-" + provider])
+      .provider(class=`provider-${provider}`)
         .name
           h4 Service
           div= provider
@@ -83,7 +83,7 @@ block content
           h4 Status
           if !(provider in user.providers)
             span Not connected
-            a.button.button-secondary(href="/connect/#{provider}?returnTo=/profile") Link this provider
+            a.button.button-secondary(href=`/connect/${provider}?returnTo=/profile`) Link this provider
           else
             span Connected
-            a.button.button-secondary(href="/connect/#{provider}/revoke?returnTo=/profile") Unlink this provider
+            a.button.button-secondary(href=`/connect/${provider}/revoke?returnTo=/profile`) Unlink this provider
