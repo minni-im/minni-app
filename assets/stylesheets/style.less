@@ -1,7 +1,7 @@
 /***
  *** MINNI CHAT STYLES
  ***/
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,400italic,300,300italic,700,700italic);
+// @import url(https://fonts.googleapis.com/css?family=Roboto:400,400italic,300,300italic,700,700italic);
 @import "_variables.less";
 @import "generic/_mixins.less";
 
@@ -9,7 +9,6 @@
 
 html, body {
   height: 100%;
-  overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -19,7 +18,10 @@ body {
   padding: 0;
   color: @home-color;
   background-color: @home-background-color;
-  font: 14px/26px "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  // font: 14px/26px "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 14px;
+  line-height: 26px;
   font-weight: 400;
 }
 
