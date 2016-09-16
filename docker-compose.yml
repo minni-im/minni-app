@@ -1,0 +1,38 @@
+version: '2'
+services:
+  db:
+    image: klaemo/couchdb
+    ports:
+      # exposing the port to access fauxton
+      - 5984:5984
+    volumes:
+      - ./logs/couchdb:/opt/couchdb/var/log
+      - ./etc/couchdb:/opt/couchdb/data
+
+  cache:
+    image: redis:latest
+
+  minni:
+    image: node:latest
+    restart: always
+    links:
+      - db:couchdb
+      - cache:redis
+    volumes:
+      - .:/usr/local/var/www
+    command: node /usr/local/var/www/index.js
+    environment:
+      - DOCKER=true
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    ports:
+      - 80:80
+    links:
+      - minni
+    volumes:
+      - .:/usr/local/var/www
+      - ./logs/nginx:/var/log/nginx
+      - ./etc/docker.nginx.conf:/etc/nginx/nginx.conf
+      - ./etc/docker-nginx.conf.d:/etc/nginx/conf.d

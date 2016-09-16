@@ -15,6 +15,8 @@ import expressLocals from "./express-locals";
 const RedisStore = connectRedis(express.session);
 const app = express();
 
+const DOCKER = !!process.env.DOCKER;
+
 const asciiLogo = banner => `
 ╒════════════════════════════════════════════════════╕
 ███╗   ███╗██╗███╗   ██╗███╗   ██╗██╗   ██╗███╗   ███╡
@@ -28,10 +30,9 @@ const asciiLogo = banner => `
 ╘════════════════════════════════════════════════════╛`;
 
 app.http().io();
-
 const sessionStore = new RedisStore({
-  host: process.env.REDIS_PORT_6379_TCP_ADDR || config.redis.host,
-  port: process.env.REDIS_PORT_6379_TCP_PORT || config.redis.port
+  host: (DOCKER ? "redis" : config.redis.host),
+  port: (DOCKER ? 6379 : config.redis.port)
 });
 const session = {
   key: config.session.key,
@@ -76,8 +77,8 @@ function bootstrap() {
   console.log("Minni application started and listenning on http://%s:%s", host, port);
 }
 
-const couchDBHost = process.env.COUCHDB_PORT_5984_TCP_ADDR || config.couchdb.host;
-const couchDBPort = process.env.COUCHDB_PORT_5984_TCP_PORT || config.couchdb.port;
+const couchDBHost = DOCKER ? "couchdb" : config.couchdb.host;
+const couchDBPort = DOCKER ? 5984 : config.couchdb.port;
 
 console.log(asciiLogo("Starting application server"));
 
