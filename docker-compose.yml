@@ -28,7 +28,7 @@ services:
     image: nginx:latest
     restart: always
     ports:
-      - 8080:80
+      - 80:80
     links:
       - minni
     volumes:
