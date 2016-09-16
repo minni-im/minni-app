@@ -3,6 +3,7 @@ import { Container } from "flux/utils";
 
 import * as AccountActionCreators from "../actions/AccountActionCreators";
 import AccountStore from "../stores/AccountStore";
+import UserStore from "../stores/UserStore";
 import Dashboard from "./Dashboard.react";
 
 class DashboardContainer extends React.Component {
@@ -11,12 +12,13 @@ class DashboardContainer extends React.Component {
   }
 
   static getStores() {
-    return [AccountStore];
+    return [AccountStore, UserStore];
   }
 
   static calculateState() {
     return {
-      accounts: AccountStore.getAccounts()
+      accounts: AccountStore.getAccounts(),
+      user: UserStore.getConnectedUser()
     };
   }
 
@@ -35,7 +37,7 @@ class DashboardContainer extends React.Component {
   }
 
   render() {
-    return <Dashboard accounts={this.state.accounts} />;
+    return <Dashboard {...this.state} />;
   }
 }
 
