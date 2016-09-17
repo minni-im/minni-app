@@ -15,8 +15,8 @@ const logger = Logger.create("UserStore");
 let connectedUserId;
 
 function handleUsersAdd(state, { users }) {
-  state = state.withMutations(map => {
-    users.forEach(user => {
+  state = state.withMutations((map) => {
+    users.forEach((user) => {
       map.set(user.id, new User(user));
     });
   });
@@ -48,6 +48,9 @@ function handleStatusUpdate(state, { userId, status }) {
     }
     userId = connectedUserId;
   }
+  if (!state.has(userId)) {
+    return state;
+  }
   return state.update(userId, user => user.set("status", status));
 }
 
@@ -64,7 +67,7 @@ class UserStore extends MapStore {
   }
 
   getUsers(usersId, except = []) {
-    return this.getState().filter(user => {
+    return this.getState().filter((user) => {
       const { id } = user;
       return usersId.indexOf(id) !== -1 && except.indexOf(id) === -1;
     });
