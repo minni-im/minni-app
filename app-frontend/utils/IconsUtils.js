@@ -29,6 +29,8 @@ export { default as UploadIcon } from "../../public/images/svgs/upload.svg.react
 export { default as KeyBoardIcon } from "../../public/images/svgs/keyboard.svg.react";
 export { default as ConnectionIcon } from "../../public/images/svgs/connection.svg.react";
 export { default as TrashIcon } from "../../public/images/svgs/trash-can.svg.react";
+export { default as GroupIcon } from "../../public/images/svgs/group-of-people.svg.react";
+export { default as GroupAddIcon } from "../../public/images/svgs/group-of-people-add.svg.react";
 
 export const RoomIcons = {
   RoomPrivateIcon,

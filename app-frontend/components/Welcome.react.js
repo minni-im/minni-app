@@ -1,24 +1,19 @@
 import React from "react";
-
 import CreateOrJoin from "./CreateOrJoin.react";
 
-export default class Welcome extends React.Component {
-  static propTypes = {
-    user: React.PropTypes.object
-  }
+import User from "../models/User";
 
-  state = {
-    choice: 0
-  }
-
-  render() {
-    const { user } = this.props;
-    return (
-      <div className="welcome">
-        <h2>Welcome to {Minni.name}, {user.fullname}</h2>
-        <p>Almost done !<br /> Would you mind taking a minute to finish your setup ?</p>
-        <CreateOrJoin />
-      </div>
-    );
-  }
+export default function Welcome(props) {
+  const { user } = props;
+  return (
+    <div className="welcome">
+      <h2>Welcome to {Minni.name}, {user.firstname}</h2>
+      <p>Almost done !<br /> Would you mind taking a minute to finish your setup ?</p>
+      <CreateOrJoin />
+    </div>
+  );
 }
+
+Welcome.propTypes = {
+  user: React.PropTypes.instanceOf(User)
+};

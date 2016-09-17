@@ -1,14 +1,14 @@
 import React from "react";
 import TransitionGroup from "react-addons-css-transition-group";
 
-import AccountCreate from "./AccountCreate.react";
+import { GroupAddIcon, GroupIcon } from "../utils/IconsUtils";
 
 function CreateOrJoin(props) {
   return (
-    <div className="create-or-join flex-horizontal">
+    <div className="create-or-join-choice flex-horizontal">
       <div className="create">
         <h3>Create</h3>
-        <img src="/images/svgs/group-of-people.svg" />
+        <GroupIcon />
         <p>Create a new team &amp; invite your teammates to join.</p>
         <button
           className="button-primary"
@@ -18,54 +18,57 @@ function CreateOrJoin(props) {
       <div className="separator" />
       <div className="join">
         <h3>Join</h3>
-        <img src="/images/svgs/group-of-people-add.svg" />
+        <GroupAddIcon />
         <p>Enter an invite link &amp; join an existing to team setup.</p>
         <button
-          className="button-primary"
+          className="button-highlight"
           onClick={props.onJoinClick}
         >Join a Team</button>
       </div>
     </div>
   );
 }
+CreateOrJoin.propTypes = {
+  onCreateClick: React.PropTypes.func,
+  onJoinClick: React.PropTypes.func
+};
 
 function Create(props) {
   return (
-    <div className="create-or-join flex-vertical">
+    <div className="create-choice flex-vertical">
       <div className="create">
-        <h3>Create a new team</h3>
+        <h3>Create your team</h3>
+        <p>Give us some information about your environment</p>
         <form>
-        <p className="block">
-          <label>
-            <span>Name</span>
-            <input
-              autoFocus
-              placeholder="Give your team a name"
-              // onBlur={this.onNameBlur}
-            />
-            <span className="info">
-              Valid characters are only letters from a-z, numbers from 0-9 and -.
-              Any spaces will be kept visually but transformed to an - internally.
-            </span>
-          </label>
-        </p>
+          <p className="block">
+            <label htmlFor="name">
+              <input
+                autoFocus
+                id="name"
+                placeholder="Give your team a name"
+                // onBlur={this.onNameBlur}
+              />
+              <span className="info">
+                Valid characters are only letters from a-z, numbers from 0-9 and -.
+                Any spaces will be kept visually but transformed to an - internally.
+              </span>
+            </label>
+          </p>
 
-        <p className="block">
-          <label>
-            <span>Description</span>
-            <input
-              placeholder="Describe your team, what do you do ? Just a few words"
-            />
-          </label>
-        </p>
-
+          <p className="block">
+            <label htmlFor="desc">
+              <input
+                id="desc"
+                placeholder="Describe your team, what do you do ? Just a few words"
+              />
+            </label>
+          </p>
         </form>
-
-        <div className="actions">
-          <button onClick={props.onBackClick}>Back</button>
-          &nbsp;
-          <button className="button-primary">Create</button>
-        </div>
+      </div>
+      <div className="actions flex-horizontal">
+        <button onClick={props.onBackClick}>Back</button>
+        <span className="flex-spacer" />
+        <button className="button-primary">Create</button>
       </div>
     </div>
   );
@@ -77,18 +80,27 @@ Create.propTypes = {
 
 function Join(props) {
   return (
-    <div className="create-or-join flex-vertical">
+    <div className="join-choice flex-vertical">
       <div className="join">
         <h3>Get ready &amp; join a team</h3>
         <form>
           <p>Simply enter an invite link below to join an existing Team.</p>
-          <input type="text" placeholder="Enter an invite link" />
+          <p className="block">
+            <label htmlFor="inviteLink">
+              <input
+                autoFocus
+                id="inviteLink"
+                type="text"
+                placeholder="Enter an invite link"
+              />
+            </label>
+          </p>
         </form>
-        <div className="actions">
-          <button onClick={props.onBackClick}>Back</button>
-          &nbsp;
-          <button className="button-primary">Join</button>
-        </div>
+      </div>
+      <div className="actions flex-horizontal">
+        <button onClick={props.onBackClick}>Back</button>
+        <span className="flex-spacer" />
+        <button className="button-highlight">Join</button>
       </div>
     </div>
   );
@@ -120,14 +132,25 @@ export default class CreateOrJoinContainer extends React.Component {
 
     switch (this.state.step) {
       case 1:
-        element = <Create onBackClick={() => this.setState({ step: 0 })} />;
+        element = (
+          <Create
+            key="create"
+            onBackClick={() => this.setState({ step: 0 })}
+          />
+        );
         break;
       case 2:
-        element = <Join onBackClick={() => this.setState({ step: 0 })} />;
+        element = (
+          <Join
+            key="join"
+            onBackClick={() => this.setState({ step: 0 })}
+          />
+        );
         break;
       default:
         element = (
           <CreateOrJoin
+            key="createorjoin"
             onCreateClick={this.onCreateClick}
             onJoinClick={this.onJoinClick}
           />
@@ -135,10 +158,11 @@ export default class CreateOrJoinContainer extends React.Component {
     }
     return (
       <TransitionGroup
+        className="create-or-join"
         transitionName="slide"
         component="div"
-        transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}
+        transitionEnterTimeout={300}
+        transitionLeaveTimeout={300}
       >
         {element}
       </TransitionGroup>
