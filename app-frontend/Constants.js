@@ -24,6 +24,10 @@ export const ActionTypes = keyMirror({
   ACCOUNT_SELECT: null,
   ACCOUNT_DESELECT: null,
 
+  ACCOUNT_CREATE: null,
+  ACCOUNT_CREATE_SUCCESS: null,
+  ACCOUNT_CREATE_FAILURE: null,
+
   ROOM_NEW: null,
   ROOM_SELECT: null,
   ROOMS_SELECT: null,
@@ -160,6 +164,9 @@ export const EMBED_OPTIONS = {
 export const MAX_MULTI_ROOMS = 3;
 
 export const EndPoints = {
+  ACCOUNT_CREATE: "/api/accounts/",
+  ACCOUNT_CHECK_EXISTENCE:
+    name => `/api/accounts/check_existence?name=${name}`,
   ACCOUNT_ROOMS: accountId => `/api/accounts/${accountId}/rooms`,
   ACCOUNT_USERS: accountId => `/api/accounts/${accountId}/users`,
   ROOM_STAR: roomId => `/api/rooms/${roomId}/star`,

@@ -14,8 +14,8 @@ const logger = Logger.create("RoomStore");
 
 function handleLoadRoomsSuccess(state, { rooms }) {
   logger.info(rooms.length, "new room(s)");
-  return state.withMutations(map => {
-    rooms.forEach(room => {
+  return state.withMutations((map) => {
+    rooms.forEach((room) => {
       Object.assign(room, {
         lastUpdated: moment(room.lastUpdated),
         dateCreated: moment(room.dateCreated),
@@ -66,6 +66,7 @@ class RoomStore extends MapStore {
     this.addAction(
       ActionTypes.ROOM_CREATE_SUCCESS,
       ActionTypes.ROOM_UPDATE_SUCCESS,
+      ActionTypes.ACCOUNT_CREATE_SUCCESS,
       (state, { room }) => handleLoadRoomsSuccess(state, { rooms: [room] }));
 
     this.addAction(ActionTypes.ROOM_DELETE_SUCCESS, handleRoomDelete);

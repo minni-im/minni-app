@@ -108,7 +108,7 @@
     border-radius: 4px;
 
     margin-top: 15px;
-    height: 320px;
+    min-height: 320px;
 
     overflow: hidden;
 
@@ -124,22 +124,14 @@
       }
       p {
         color: @gray;
-        margin: 15px 0;
+        margin: 10px 0;
       }
     }
-
-    .create {
-      h3 {
-        color: @electric-blue;
-      }
-      form {
-        text-align: left;
-      }
+    .create h3 {
+      color: @electric-blue;
     }
-    .join {
-      h3 {
-        color: @dark-orange;
-      }
+    .join h3 {
+      color: @dark-orange;
     }
 
     .separator {
@@ -149,8 +141,9 @@
 
       &:after {
         @size: 24px;
+        content: attr(data-text);
+        font-weight: bold;
         position: absolute;
-        content: "or";
         .square(@size);
         line-height: @size;
         padding: 6px;
@@ -176,7 +169,6 @@
       right: 0; bottom: 0;
     }
 
-
     .slide-enter {
       &.create-or-join-choice {
         transform: translate(-100%);
@@ -186,7 +178,6 @@
         transform: translate(100%);
       }
     }
-
 
     .slide-enter.slide-enter-active {
       transition: transform 300ms ease-in-out;

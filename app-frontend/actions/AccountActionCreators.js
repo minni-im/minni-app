@@ -5,6 +5,57 @@ import { request } from "../utils/RequestUtils";
 import Logger from "../libs/Logger";
 const logger = Logger.create("AccountActionCreators");
 
+export function createAccount({ name, description }) {
+  dispatch({
+    type: ActionTypes.ACCOUNT_CREATE,
+    name,
+    description
+  });
+  return request(EndPoints.ACCOUNT_CREATE, {
+    method: "PUT",
+    body: {
+      name,
+      description
+    }
+  }).then(({ ok, account, room, message, errors }) => {
+    if (ok) {
+      dispatch({
+        type: ActionTypes.ACCOUNT_CREATE_SUCCESS,
+        account,
+        room
+      });
+    } else {
+      dispatch({
+        type: ActionTypes.ACCOUNT_CREATE_FAILURE,
+        name,
+        message,
+        error: errors
+      });
+    }
+    return { ok, account, message, error: errors };
+  });
+}
+
+export function checkExistence(name) {
+  return request(EndPoints.ACCOUNT_CHECK_EXISTENCE(name))
+    .then(({ ok, message }) => {
+      if (ok) {
+        dispatch({
+          type: ActionTypes.ACCOUNT_CHECK_VALID,
+          name,
+          message
+        });
+      } else {
+        dispatch({
+          type: ActionTypes.ACCOUNT_CHECK_INVALID,
+          name,
+          message
+        });
+      }
+      return { ok, message };
+    });
+}
+
 export function selectAccount(accountSlug) {
   dispatch({
     type: ActionTypes.ACCOUNT_SELECT,

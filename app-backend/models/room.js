@@ -1,9 +1,10 @@
 import recorder from "tape-recorder";
 
-const TYPE = {
-  DELETED: 0,
+export const TYPE = {
+  INITIAL: 0,
   PUBLIC: 1,
-  PRIVATE: 2
+  PRIVATE: 2,
+  DELETED: 9
 };
 
 const RoomSchema = new recorder.Schema({
@@ -11,7 +12,7 @@ const RoomSchema = new recorder.Schema({
   topic: String,
   type: {
     type: Number,
-    default: 1
+    default: TYPE.PUBLIC
   },
   accountId: String,
   adminId: String,
@@ -25,7 +26,10 @@ const RoomSchema = new recorder.Schema({
 RoomSchema.virtual({
   public: {
     get() {
-      return this.type === TYPE.PUBLIC;
+      return (
+        this.type === TYPE.PUBLIC ||
+        this.type === TYPE.INITIAL
+      );
     }
   },
   private: {
@@ -33,6 +37,10 @@ RoomSchema.virtual({
       return this.type === TYPE.PRIVATE;
     }
   }
+});
+
+RoomSchema.method("isDefaultRoom", function () {
+  return this.type === TYPE.INITIAL;
 });
 
 RoomSchema.method("isAdmin", function isAdmin(user) {

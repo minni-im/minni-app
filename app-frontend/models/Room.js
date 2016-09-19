@@ -1,10 +1,11 @@
 import Immutable from "immutable";
 import { slugify } from "../utils/TextUtils";
 
-const TYPE = {
-  DELETED: 0,
+export const TYPE = {
+  INITIAL: 0,
   PUBLIC: 1,
-  PRIVATE: 2
+  PRIVATE: 2,
+  DELETED: 9
 };
 
 const RoomRecord = Immutable.Record({
@@ -32,7 +33,7 @@ export default class Room extends RoomRecord {
   }
 
   get public() {
-    return this.type === TYPE.PUBLIC;
+    return this.type === TYPE.PUBLIC || TYPE.INITIAL;
   }
 
   get slug() {

@@ -4,6 +4,8 @@ import { requireLogin, requireLoginRedirect } from "../middlewares/auth";
 import { requireProfileInfoRedirect } from "../middlewares/profile";
 import { requireValidAccount } from "../middlewares/account";
 
+import { TYPE } from "../models/room";
+
 function sanitizeName(name) {
   return name.toLowerCase()
     .replace(/[^a-z0-9 -]/g, " ")
@@ -147,6 +149,7 @@ export default (app) => {
         const room = new Room({
           name: "The General Room",
           topic: "This is room is for team-wide communication. All team members can access this room.",
+          type: TYPE.INITIAL,
           adminId: user.id,
           accountId: savedAccount.id
         });
@@ -157,7 +160,9 @@ export default (app) => {
           account: savedAccount.toAPI(true),
           room: savedRoom.toAPI(true)
         }), genericFail);
-      }, genericFail);
+      }, genericFail).catch((err) => {
+        console.log(err);
+      });
     },
 
     update(req, res) {

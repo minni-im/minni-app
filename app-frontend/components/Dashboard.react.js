@@ -9,6 +9,7 @@ const Dashboard = (props) => {
   const { accounts, user } = props;
   const hello = accounts.isEmpty();
 
+  if (!user) { return null; }
   if (hello) {
     return (
       <Welcome user={user} />

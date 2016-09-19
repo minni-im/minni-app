@@ -24,6 +24,10 @@ import Popover from "../generic/Popover.react";
 import { MAX_MULTI_ROOMS } from "../../Constants";
 
 class MainSidebar extends React.Component {
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
+
   static getStores() {
     return [
       AccountStore, SelectedAccountStore,
@@ -97,7 +101,10 @@ class MainSidebar extends React.Component {
             activeClassName="selected"
           >
             <span className="icon"><LobbyIcon /></span>
-            <span className="name">Lobby</span>
+            <span className="name">
+              Lobby
+              {accountsSize === 1 ? <span> • {account.displayName}</span> : ""}
+            </span>
           </Link>
           <a className="separator">{rooms.size === 0 ? "No connected rooms" : "Rooms"}</a>
           {rooms.toSeq()
@@ -184,9 +191,6 @@ class MainSidebar extends React.Component {
   }
 }
 
-MainSidebar.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
 
 const container = Container.create(MainSidebar);
 export default container;

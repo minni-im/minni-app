@@ -13,8 +13,8 @@ import Logger from "../libs/Logger";
 const logger = Logger.create("AccountStore");
 
 function handleConnectionOpen(state, { accounts }) {
-  state = state.clear().withMutations(map => {
-    accounts.forEach(rawAccount => {
+  state = state.clear().withMutations((map) => {
+    accounts.forEach((rawAccount) => {
       const account = new Account(rawAccount);
       map.set(account.slug, account);
     });
@@ -24,7 +24,7 @@ function handleConnectionOpen(state, { accounts }) {
 }
 
 function handleAccountAdd(state, { account }) {
-  let newAccount = new Account(account);
+  const newAccount = new Account(account);
   logger.info("New account", newAccount.slug, account.id);
   return state.set(newAccount.slug, newAccount);
 }
@@ -32,7 +32,7 @@ function handleAccountAdd(state, { account }) {
 class AccountStore extends MapStore {
   initialize() {
     this.addAction(ActionTypes.CONNECTION_OPEN, handleConnectionOpen);
-    this.addAction("account/new", handleAccountAdd);
+    this.addAction(ActionTypes.ACCOUNT_CREATE_SUCCESS, handleAccountAdd);
   }
 
   hasNoAccount() {

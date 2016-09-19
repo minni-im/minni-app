@@ -4,9 +4,6 @@ import { Match, Redirect } from "react-router";
 import Dashboard from "./DashboardContainer.react";
 import DashboardSidebar from "./sidebars/Dashboard.react";
 
-import AccountCreate from "./AccountCreate.react";
-import WelcomeSidebar from "./sidebars/Welcome.react";
-
 import MultiRoom from "./MutliRoomContainer.react";
 
 import MainSidebar from "./sidebars/MainSidebar.react";
@@ -40,9 +37,6 @@ const App = () => (
     <Match exactly pattern="/" component={DashboardSidebar} />
     <Match exactly pattern="/" component={Dashboard} />
 
-    <Match pattern="/create" component={WelcomeSidebar} />
-    <Match pattern="/create" component={AccountCreate} />
-
     <Match pattern="/dashboard" component={DashboardSidebar} />
     <Match pattern="/dashboard" component={Dashboard} />
 
@@ -64,15 +58,3 @@ const App = () => (
 );
 
 export default App;
-
-// export default class MinniPanel extends React.Component {
-//   render() {
-//     const { content, sidebar } = this.props;
-//     return (<div className="minni-app flex-horizontal flex-spacer">
-//
-//       {sidebar ? sidebar : false}
-//       {content ? content : false}
-//
-//     </div>);
-//   }
-// }

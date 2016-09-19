@@ -1,6 +1,7 @@
 import React from "react";
 import TransitionGroup from "react-addons-css-transition-group";
 
+import AccountCreate from "./AccountCreate.react";
 import { GroupAddIcon, GroupIcon } from "../utils/IconsUtils";
 
 function CreateOrJoin(props) {
@@ -12,79 +13,34 @@ function CreateOrJoin(props) {
         <p>Create a new team &amp; invite your teammates to join.</p>
         <button
           className="button-primary"
-          onClick={props.onCreateClick}
+          onClick={props.onCreate}
         >Create a Team</button>
       </div>
-      <div className="separator" />
+      <div className="separator" data-text="or" />
       <div className="join">
         <h3>Join</h3>
         <GroupAddIcon />
         <p>Enter an invite link &amp; join an existing to team setup.</p>
         <button
           className="button-highlight"
-          onClick={props.onJoinClick}
+          onClick={props.onJoin}
         >Join a Team</button>
       </div>
     </div>
   );
 }
 CreateOrJoin.propTypes = {
-  onCreateClick: React.PropTypes.func,
-  onJoinClick: React.PropTypes.func
+  onCreate: React.PropTypes.func,
+  onJoin: React.PropTypes.func
 };
-
-function Create(props) {
-  return (
-    <div className="create-choice flex-vertical">
-      <div className="create">
-        <h3>Create your team</h3>
-        <p>Give us some information about your environment</p>
-        <form>
-          <p className="block">
-            <label htmlFor="name">
-              <input
-                autoFocus
-                id="name"
-                placeholder="Give your team a name"
-                // onBlur={this.onNameBlur}
-              />
-              <span className="info">
-                Valid characters are only letters from a-z, numbers from 0-9 and -.
-                Any spaces will be kept visually but transformed to an - internally.
-              </span>
-            </label>
-          </p>
-
-          <p className="block">
-            <label htmlFor="desc">
-              <input
-                id="desc"
-                placeholder="Describe your team, what do you do ? Just a few words"
-              />
-            </label>
-          </p>
-        </form>
-      </div>
-      <div className="actions flex-horizontal">
-        <button onClick={props.onBackClick}>Back</button>
-        <span className="flex-spacer" />
-        <button className="button-primary">Create</button>
-      </div>
-    </div>
-  );
-}
-Create.propTypes = {
-  onBackClick: React.PropTypes.func.isRequired
-};
-
 
 function Join(props) {
   return (
     <div className="join-choice flex-vertical">
       <div className="join">
-        <h3>Get ready &amp; join a team</h3>
+        <h3>Get ready to join a team</h3>
         <form>
-          <p>Simply enter an invite link below to join an existing Team.</p>
+          <p>Just paste in the input below an invite link to join an existing Team.</p>
           <p className="block">
             <label htmlFor="inviteLink">
               <input
@@ -95,10 +51,15 @@ function Join(props) {
               />
             </label>
           </p>
+          <p className="info">
+            Invite links are usually like these:<br />
+            http://minni.im/invite/d4Egs69ido<br />
+            d4Egs69ido
+          </p>
         </form>
       </div>
       <div className="actions flex-horizontal">
-        <button onClick={props.onBackClick}>Back</button>
+        <button onClick={props.onBack}>Back</button>
         <span className="flex-spacer" />
         <button className="button-highlight">Join</button>
       </div>
@@ -106,25 +67,30 @@ function Join(props) {
   );
 }
 Join.propTypes = {
-  onBackClick: React.PropTypes.func.isRequired
+  onBack: React.PropTypes.func.isRequired
 };
 
 export default class CreateOrJoinContainer extends React.Component {
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
+
   constructor(props) {
     super(props);
     this.onCreateClick = this.onCreateClick.bind(this);
     this.onJoinClick = this.onJoinClick.bind(this);
   }
+
   state = {
     step: 0
   }
 
-  onCreateClick() {
-    this.setState({ step: 1 });
+  onCreateClick(account) {
+    this.context.router.push(`/chat/${account.name}/lobby`);
   }
 
   onJoinClick() {
-    this.setState({ step: 2 });
+
   }
 
   render() {
@@ -133,9 +99,10 @@ export default class CreateOrJoinContainer extends React.Component {
     switch (this.state.step) {
       case 1:
         element = (
-          <Create
+          <AccountCreate
             key="create"
-            onBackClick={() => this.setState({ step: 0 })}
+            onBack={() => this.setState({ step: 0 })}
+            onCreate={this.onCreateClick}
           />
         );
         break;
@@ -143,7 +110,8 @@ export default class CreateOrJoinContainer extends React.Component {
         element = (
           <Join
             key="join"
-            onBackClick={() => this.setState({ step: 0 })}
+            onBack={() => this.setState({ step: 0 })}
+            onJoin={this.onJoinClick}
           />
         );
         break;
@@ -151,8 +119,8 @@ export default class CreateOrJoinContainer extends React.Component {
         element = (
           <CreateOrJoin
             key="createorjoin"
-            onCreateClick={this.onCreateClick}
-            onJoinClick={this.onJoinClick}
+            onCreate={() => this.setState({ step: 1 })}
+            onJoin={() => this.setState({ step: 2 })}
           />
         );
     }
