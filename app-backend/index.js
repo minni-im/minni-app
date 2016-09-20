@@ -49,6 +49,7 @@ const session = {
 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
+app.enable("trust proxy");
 
 function bootstrap() {
   app.use(cookieParser());
