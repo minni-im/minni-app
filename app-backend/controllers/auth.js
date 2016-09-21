@@ -15,7 +15,7 @@ import {
 
 const oauthProvidersInfo =
   Object.keys(providers)
-    .filter((p) => (p !== "local"))
+    .filter(p => (p !== "local"))
     .map((name) => {
       const { logo } = providers[name];
       return { name, logo };
@@ -124,7 +124,7 @@ export default (app) => {
     });
 
   // Registering auth providers routes and middlewares
-  for (let provider in providers) {
+  for (const provider in providers) {
     if (providers.hasOwnProperty(provider) && provider !== "local") {
       app.get(`/login/${provider}`, initialize(provider));
       app.get(`/signup/${provider}`, authenticate(provider));
@@ -133,6 +133,11 @@ export default (app) => {
       app.get(`/connect/${provider}/revoke`, requireLoginRedirect, disconnect(provider));
     }
   }
+
+  /* =API routes= */
+  app.post("/api/auth/register", (req, res) => {
+
+  });
 
   /* =Socket routes= */
   app.io.route("auth", {

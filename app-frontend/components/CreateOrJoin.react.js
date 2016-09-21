@@ -53,8 +53,8 @@ function Join(props) {
           </p>
           <p className="info">
             Invite links are usually like these:<br />
-            http://minni.im/invite/d4Egs69ido<br />
-            d4Egs69ido
+            http://minni.im/invites/YjU4Y2I0<br />
+            YjU4Y2I0
           </p>
         </form>
       </div>

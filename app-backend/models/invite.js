@@ -1,51 +1,70 @@
 import recorder from "tape-recorder";
 import crypto from "crypto";
-import bcrypt from "bcryptjs";
 
 const InviteSchema = new recorder.Schema({
-  userId: String,
-  accountId: String,
-  maxAge: String,
-  maxUsage: String,
   token: String,
-  hash: String
+  inviterId: String,
+  accountId: String,
+  maxAge: Number,
+  maxUsage: Number,
+  usage: {
+    type: Number,
+    default: 0
+  }
 });
 
-InviteSchema.method("generateToken", (userId, accountId, maxAge, maxUsage) => {
+InviteSchema.method("toAPI", function toAPI(isAdmin = false) {
+  const { id, token, accountId, inviterId, maxAge, maxUsage, usage, dateCreated } = this;
+  if (isAdmin) {
+    return {
+      id,
+      token,
+      accountId,
+      inviterId,
+      maxAge,
+      maxUsage,
+      usage,
+      dateCreated
+    };
+  }
+  return {
+    id,
+    token,
+    maxAge,
+    dateCreated,
+    accountId
+  };
+});
+
+InviteSchema.static("generateToken", (userId, accountId, maxAge, maxUsage) => {
   const Invite = recorder.model("Invite");
-  const password = crypto.randomBytes(3).toString("hex");
-  const hash = bcrypt.hashSync(password);
+  const token = new Buffer(
+    crypto.randomBytes(3).toString("hex")
+  ).toString("base64");
 
   const payload = {
     accountId,
-    userId,
+    inviterId: userId,
     maxAge,
-    hash
+    token
   };
+
   if (maxUsage) {
     payload.maxUsage = maxUsage;
   }
 
   const invite = new Invite(payload);
-  return invite.save()
-    .then((newInvite) => {
-      newInvite.token = new Buffer(`${newInvite.id}:${hash}`).toString("base64");
-      return newInvite.save();
-    });
+  return invite.save();
 });
 
-InviteSchema.static("findByToken", (token) => {
-  const [inviteId, hash] = new Buffer(token, "base64").toString("ascii").split(":");
-  return this.findById(inviteId)
-    .then(invite => new Promise((resolve, reject) => {
-      bcrypt.compare(hash, invite.hash, (errorHash, isMatch) => {
-        if (errorHash) {
-          reject(errorHash);
-          return;
-        }
-        resolve(isMatch ? invite : false);
-      });
-    }));
+InviteSchema.static("findByToken", function findByToken(token) {
+  return this.where("token", { key: token })
+    .then((invites) => {
+      if (invites.length) {
+        return invites[0];
+      }
+      return Promise.reject(false);
+    });
 });
 
 export default recorder.model("Invite", InviteSchema);

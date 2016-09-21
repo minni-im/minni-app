@@ -1,3 +1,4 @@
+/* eslint no-bitwise: ["error", { "allow": ["<<"] }] */
 import keyMirror from "keymirror";
 
 export const ActionTypes = keyMirror({
@@ -93,7 +94,11 @@ export const ActionTypes = keyMirror({
   SET_USER_STATUS: null,
   UPDATE_USER_STATUS: null,
 
-  WINDOW_FOCUS: null
+  WINDOW_FOCUS: null,
+
+  INVITE_CREATE: null,
+  INVITE_CREATE_SUCCESS: null,
+  INVITE_CREATE_FAILURE: null
 });
 
 export const PLUGIN_TYPES = {
@@ -163,6 +168,8 @@ export const EMBED_OPTIONS = {
 
 export const MAX_MULTI_ROOMS = 3;
 
+export const INVITE_MAX_AGE = 24 * 60 * 60 * 1000;
+
 export const EndPoints = {
   ACCOUNT_CREATE: "/api/accounts/",
   ACCOUNT_CHECK_EXISTENCE:
@@ -178,5 +185,6 @@ export const EndPoints = {
   USER_PROFILE: "/api/me",
   MESSAGES: "/api/messages",
   TYPING: roomId => `/api/rooms/${roomId}/typing`,
-  SLASH_COMMAND: "/api/command"
+  SLASH_COMMAND: "/api/command",
+  INVITE_CREATE: "/api/invites/"
 };
