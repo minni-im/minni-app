@@ -23,30 +23,29 @@ class RoomCreate extends React.Component {
   onCreateClick(event) {
     event.preventDefault();
     const account = SelectedAccountStore.getAccount();
-    const { name, topic } = this.refs;
-    if (name.value.length === 0) {
+    if (this.name.value.length === 0) {
       this.setState({
         message: "You must specify a name"
       });
-      this.refs.name.focus();
+      this.name.focus();
       return;
     }
     AccountActionCreators.createRoom(
       account,
-      name.value,
-      topic.value,
+      this.name.value,
+      this.topic.value,
       this.state.type,
       this.state.usersId
     ).then(
       ({ ok, errors }) => {
         if (ok) {
-          this.context.router.push({ pathname: `/chat/${account.slug}/lobby` });
+          this.context.router.transitionTo({ pathname: `/chat/${account.slug}/lobby` });
           return;
         }
         if (errors) {
           this.setState({ message: errors });
         }
-        this.refs.name.focus();
+        this.name.focus();
       });
   }
 
@@ -69,51 +68,53 @@ class RoomCreate extends React.Component {
     }
 
     return (
-      <section className="room-create flex-spacer">
-        <header>
-          <div className="header-info">
-            <h2>Create a new room</h2>
-            <h3>Let's invite people!</h3>
-          </div>
-        </header>
-        <section className="panel panel--contrast panel--wrapper">
-          <form>
-            {errors}
-            <p className="block">
-              <label>
-                <span>Name</span>
-                <input
-                  ref="name"
-                  autoFocus
-                  placeholder="Give a name to your room"
-                />
-              </label>
-            </p>
+      <main className="flex-spacer">
+        <section className="room-create flex-spacer">
+          <header>
+            <div className="header-info">
+              <h2>Create a new room</h2>
+              <h3>Let's invite people!</h3>
+            </div>
+          </header>
+          <section className="panel panel--contrast panel--wrapper">
+            <form>
+              {errors}
+              <p className="block">
+                <label>
+                  <span>Name</span>
+                  <input
+                    ref={(input) => { this.name = input; }}
+                    autoFocus
+                    placeholder="Give a name to your room"
+                  />
+                </label>
+              </p>
 
-            <p className="block">
-              <label>
-                <span>Topic</span>
-                <input
-                  ref="topic"
-                  placeholder="Describe your room, what should it be used for ?"
-                />
-              </label>
-            </p>
+              <p className="block">
+                <label>
+                  <span>Topic</span>
+                  <input
+                    ref={(input) => { this.topic = input; }}
+                    placeholder="Describe your room, what should it be used for ?"
+                  />
+                </label>
+              </p>
 
-            <h3>Access Control</h3>
+              <h3>Access Control</h3>
 
-            <RoomAccessControl
-              type={this.state.type}
-              onTypeChange={this.onRoomTypeChanged}
-              onUsersChange={this.onUsersChanged}
-            />
+              <RoomAccessControl
+                type={this.state.type}
+                onTypeChange={this.onRoomTypeChanged}
+                onUsersChange={this.onUsersChanged}
+              />
 
-            <p className="actions">
-              <button className="button-primary" onClick={this.onCreateClick}>Create</button>
-            </p>
-          </form>
+              <p className="actions">
+                <button className="button-primary" onClick={this.onCreateClick}>Create</button>
+              </p>
+            </form>
+          </section>
         </section>
-      </section>
+      </main>
     );
   }
 }

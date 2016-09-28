@@ -17,8 +17,8 @@ export default (app) => {
     "/",
     "/create",
     "/dashboard",
-    "/settings/:accountName/*",
-    "/chat/:accountName/*"
+    "/settings/:accountName/?*",
+    "/chat/:accountName/?*"
   ], requireLoginRedirect, requireProfileInfoRedirect, (req, res) => {
     const Account = recorder.model("Account");
     Account.getListForUser(req.user.id).then((accounts) => {
@@ -62,7 +62,7 @@ export default (app) => {
     check(req, res) {
       const name = sanitizeName(req.query.name);
       const Account = recorder.model("Account");
-      Account.where("name", { key: name }).then(accounts => {
+      Account.where("name", { key: name }).then((accounts) => {
         if (accounts.length) {
           return res.json({
             ok: false,
@@ -80,7 +80,7 @@ export default (app) => {
       const { accountId } = req.params;
       const Account = recorder.model("Account");
 
-      Account.findById(accountId).then(account => {
+      Account.findById(accountId).then((account) => {
         if (account === false) {
           return res.json({
             ok: false,
@@ -91,7 +91,7 @@ export default (app) => {
           ok: true,
           account: account.toAPI(req.user.id === account.adminId)
         });
-      }, error => {
+      }, (error) => {
         res.json({
           ok: false,
           message: "This resource does not exist",
@@ -102,10 +102,10 @@ export default (app) => {
 
     list(req, res) {
       const Account = recorder.model("Account");
-      Account.getListForUser(req.user.id).then(accounts => {
+      Account.getListForUser(req.user.id).then((accounts) => {
         res.json({
           ok: true,
-          accounts: accounts.map(account => {
+          accounts: accounts.map((account) => {
             // Joining the corresponding account socket.io room
             console.log(`'${req.user.id}' joining account:${account.id} (${account.name})`);
             req.socket.join(account.id);
@@ -113,7 +113,7 @@ export default (app) => {
           })
         });
       })
-      .catch(error => {
+      .catch((error) => {
         res.json({
           ok: false,
           errors: error
@@ -142,7 +142,7 @@ export default (app) => {
         usersId: [user.id]
       });
 
-      account.save().then(savedAccount => {
+      account.save().then((savedAccount) => {
         const Room = recorder.model("Room");
         const room = new Room({
           name: "The General Room",
@@ -173,12 +173,12 @@ export default (app) => {
       // TODO improve by fetching a list of known ID directly instead of looping
       Promise.all(
         req.account.usersId.map(userId => User.findById(userId))
-      ).then(users => {
+      ).then((users) => {
         res.json({
           ok: true,
           users
         });
-      }, error => {
+      }, (error) => {
         res.json({
           ok: false,
           message: "Could not fetch users list",

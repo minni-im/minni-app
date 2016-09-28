@@ -36,7 +36,7 @@ export default class Room extends React.Component {
   }
 
   focusComposer() {
-    this.refs.composer.focus();
+    this.composer.focus();
   }
 
   handleSendMessage(message) {
@@ -66,11 +66,11 @@ export default class Room extends React.Component {
     let [app, accountSlug, messages, roomSlugs] = document.location.pathname.slice(1).split("/");
     /* eslint-enable  */
     if (!multiRooms) {
-      this.context.router.push(`/chat/${accountSlug}/lobby`);
+      this.context.router.transitionTo({ pathname: `/chat/${accountSlug}/lobby` });
     } else {
       roomSlugs = roomSlugs.split(",");
       roomSlugs.splice(roomSlugs.indexOf(room.slug), 1);
-      this.context.router.push(`/chat/${accountSlug}/messages/${roomSlugs.join(",")}`);
+      this.context.router.transitionTo(`/chat/${accountSlug}/messages/${roomSlugs.join(",")}`);
     }
 
     if (!(event.shiftKey)) {
@@ -126,7 +126,7 @@ export default class Room extends React.Component {
           onClick={this.handleFooterOnClick}
         >
           <Composer
-            ref="composer"
+            ref={(composer) => { this.composer = composer; }}
             room={room}
             defaultValue={defaultValue}
             onSubmit={this.handleSendMessage}

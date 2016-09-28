@@ -36,7 +36,7 @@ class Room extends React.Component {
 
   render() {
     const { accountName, room } = this.props;
-    let title = __DEV__ ? `${room.name} - ${room.id}` : `${room.name}`;
+    const title = __DEV__ ? `${room.name} - ${room.id}` : `${room.name}`;
 
     return (
       <Link
@@ -103,9 +103,9 @@ export default class Lobby extends React.Component {
             <h2>Lobby</h2>
             <h3>{account.description}</h3>
           </div>
-          <div className="actions">
+          {/* <div className="actions">
             {settingsIcon}
-          </div>
+          </div> */}
         </header>
         <section className="panel panel--wrapper flex-spacer">
           <header className="rooms--header flex-horizontal">

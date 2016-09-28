@@ -8,6 +8,7 @@ import AccountStore from "../stores/AccountStore";
 import UserStore from "../stores/UserStore";
 
 import Lobby from "./Lobby.react";
+import ContactList from "./sidebars/ContactListContainer.react";
 
 class LobbyContainer extends React.Component {
   static getStores() {
@@ -29,7 +30,12 @@ class LobbyContainer extends React.Component {
   }
 
   render() {
-    return <Lobby {...this.state} />;
+    return (
+      <main className="flex-spacer flex-horizontal lobby">
+        <Lobby {...this.state} />
+        <ContactList />
+      </main>
+    );
   }
 }
 

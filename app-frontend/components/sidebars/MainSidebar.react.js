@@ -58,7 +58,7 @@ class MainSidebar extends React.Component {
         .add(event.currentTarget.dataset.slug)
         .toArray();
       if (slugs.length <= MAX_MULTI_ROOMS) {
-        this.context.router.push(`/chat/${this.state.account.slug}/messages/${slugs}`);
+        this.context.router.transitionTo({ pathname: `/chat/${this.state.account.slug}/messages/${slugs}` });
       }
     }
   }
@@ -84,7 +84,7 @@ class MainSidebar extends React.Component {
     }
 
     const closeUserInfoPopover = () => {
-      this.refs.userInfoPopover.close();
+      this.userInfoPopover.close();
     };
 
     return (
@@ -103,7 +103,7 @@ class MainSidebar extends React.Component {
           {rooms.toSeq()
             .sortBy(room => (room.starred ? "a" : `z-${room.name}`))
             .toArray()
-            .map(room => {
+            .map((room) => {
               const selected = selectedRooms.has(room.slug);
               const unreadCount = UnreadMessageStore.getUnreadCount(account.id, room.id);
               return (
@@ -116,7 +116,7 @@ class MainSidebar extends React.Component {
                   })}
                   onClick={this.onRoomClicked}
                   data-slug={room.slug}
-                  to={{ pathname: `/chat/${account.slug}/messages/${room.slug}` }}
+                  to={`/chat/${account.slug}/messages/${room.slug}`}
                 >
                   <span className="icon">
                     {room.private ?
@@ -136,42 +136,39 @@ class MainSidebar extends React.Component {
             })}
         </nav>
         <Popover
-          ref="userInfoPopover"
+          ref={(popover) => { this.userInfoPopover = popover; }}
           className="user-info--popover"
           buttonComponent={<UserInfoPanel />}
         >
           <ul className="menu">
             <li
-              tabIndex={2}
               onClick={() => {
                 ActivityActionCreators.forceAway();
                 closeUserInfoPopover();
               }}
             >
-              <span className="user-status-icon" data-status="4"></span>
+              <span className="user-status-icon" data-status="4" />
               Away
             </li>
             <li
-              tabIndex={1}
               onClick={() => {
                 ActivityActionCreators.forceDnd();
                 closeUserInfoPopover();
               }}
             >
-              <span className="user-status-icon" data-status="5"></span>
+              <span className="user-status-icon" data-status="5" />
               Do not disturb
             </li>
             <li
-              tabIndex={3}
               onClick={() => {
                 ActivityActionCreators.setOnline();
                 closeUserInfoPopover();
               }}
             >
-              <span className="user-status-icon" data-status="2"></span>
+              <span className="user-status-icon" data-status="2" />
               Online
             </li>
-            <li className="separator"></li>
+            <li className="separator" />
             <li>
               <a href="/logout">
                 <span className="icon">
