@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import keyMirror from "keymirror";
 import classnames from "classnames";
 
@@ -57,11 +56,7 @@ class Popover extends React.Component {
 
   onBlur(event) {
     const target = event.nativeEvent.relatedTarget;
-    if (target &&
-      ReactDOM
-        .findDOMNode(this.refs.popoverContainer)
-        .contains(target)
-      ) {
+    if (target && this.popoverContainer.contains(target)) {
       return;
     }
     this.setState({
@@ -89,9 +84,9 @@ class Popover extends React.Component {
   }
 
   focusFirstElement() {
-    let matches = this.refs.popover.querySelectorAll("[tabIndex], imput, a");
+    let matches = this.popover.querySelectorAll("[tabIndex], imput, a");
     matches = [].slice.call(matches)
-      .filter(node => {
+      .filter((node) => {
         if (node.tabIndex > 0) {
           return node.tabIndex;
         } else if (["INPUT", "A"].indexOf(node.nodeName) !== -1) {
@@ -119,7 +114,7 @@ class Popover extends React.Component {
           className={classnames("popover", {
             [`popover-${this.props.direction}`.toLowerCase()]: true
           })}
-          ref="popover"
+          ref={(popover) => { this.popover = popover; }}
         >
           {this.props.children}
         </div>
@@ -129,7 +124,7 @@ class Popover extends React.Component {
     return (
       <div
         className={classnames("popover-container", this.props.className)}
-        ref="popoverContainer"
+        ref={(popoverContainer) => { this.popoverContainer = popoverContainer; }}
         onKeyDown={this.onKeyDown}
         onBlur={this.onBlur}
       >

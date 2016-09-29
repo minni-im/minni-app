@@ -203,7 +203,7 @@ export default class Messages extends React.Component {
       return;
     }
 
-    const { scroller } = this.refs;
+    const { scroller } = this;
     // Reaching the top when scrolling with a scrollable viewport
     if (scroller.scrollTop < FETCH_HISTORY_TRESHOLD &&
       scroller.scrollHeight > scroller.offsetHeight) {
@@ -228,9 +228,8 @@ export default class Messages extends React.Component {
 
   onHandleLoadMore() {
     this.loadMore().then(() => {
-      const { hasMore } = this.refs;
-      if (hasMore) {
-        hasMore.scrollIntoView(true);
+      if (this.hasMore) {
+        this.hasMore.scrollIntoView(true);
       } else {
         this.scrollTo(0);
       }
@@ -246,8 +245,7 @@ export default class Messages extends React.Component {
 
   handleLoadMore() {
     if (!this.isAtBottom()) {
-      const { scroller } = this.refs;
-      this.scrollTo(scroller.scrollHeight - this.props.dimensions.scrollHeight);
+      this.scrollTo(this.scroller.scrollHeight - this.props.dimensions.scrollHeight);
     }
   }
 
@@ -265,18 +263,16 @@ export default class Messages extends React.Component {
   }
 
   scrollTo(offset) {
-    const { scroller } = this.refs;
-    scroller.scrollTop = offset;
+    this.scroller.scrollTop = offset;
   }
 
   scrollToBottom() {
-    const { scroller } = this.refs;
-    this.scrollTo(scroller.scrollHeight);
+    this.scrollTo(this.scroller.scrollHeight);
   }
 
   regroupMessages(messages) {
     const messageGroups = [];
-    messages.forEach(message => {
+    messages.forEach((message) => {
       const lastMessageGroup = messageGroups[messageGroups.length - 1];
       if (lastMessageGroup == null ||
           lastMessageGroup[0].user.id !== message.user.id ||
@@ -290,7 +286,7 @@ export default class Messages extends React.Component {
 
     let lastTimestamp;
     const messageStream = [];
-    messageGroups.forEach(group => {
+    messageGroups.forEach((group) => {
       const timestamp = group[0].dateCreated.format("dddd, LL");
       if (timestamp !== lastTimestamp) {
         if (lastTimestamp != null) {
@@ -339,7 +335,7 @@ export default class Messages extends React.Component {
       messageGroupFinal.unshift(
         <div
           key="has-more"
-          ref="hasMore"
+          ref={(hasMore) => { this.hasMore = hasMore; }}
           className="message-has-more"
         >
           <span
@@ -358,7 +354,7 @@ export default class Messages extends React.Component {
     return (
       <section
         className="panel panel--contrast flex-vertical flex-spacer"
-        ref="scroller"
+        ref={(scroller) => { this.scroller = scroller; }}
         onScroll={this.onHandleScroll}
       >
         <div className="panel-wrapper messages">{messageGroupFinal}</div>

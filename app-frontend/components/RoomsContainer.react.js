@@ -18,6 +18,10 @@ function activateSelectedRoom(props) {
 }
 
 class RoomsContainer extends React.Component {
+  static propTypes = {
+    params: React.PropTypes.objectOf(React.PropTypes.string)
+  }
+
   static getStores() {
     return [RoomStore];
   }
