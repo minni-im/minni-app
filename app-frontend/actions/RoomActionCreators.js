@@ -9,10 +9,11 @@ import SelectedRoomStore from "../stores/SelectedRoomStore";
 import { createMessage } from "../utils/MessageUtils";
 
 import Logger from "../libs/Logger";
+
 const logger = Logger.create("RoomActionCreators");
 
 export function joinRoom(accountSlug, roomSlug) {
-  roomSlug.forEach(slug => {
+  roomSlug.forEach((slug) => {
     if (!ConnectedRoomStore.isRoomConnected(accountSlug, slug)) {
       dispatch({
         type: ActionTypes.ROOM_JOIN,
@@ -120,7 +121,7 @@ export function receiveMessage(roomId, message, optimistic = false) {
 
 export function sendMessage(roomId, text) {
   logger.info(`sending message '${text}' to roomId:${roomId}`);
-  createMessage(roomId, text).then(rawMessage => {
+  createMessage(roomId, text).then((rawMessage) => {
     // Optimistic UI pattern. First display it, then send it to the server
     receiveMessage(roomId, { ...rawMessage }, true);
 

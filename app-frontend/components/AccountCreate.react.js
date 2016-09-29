@@ -4,9 +4,15 @@ import browserHistory from "react-router";
 import { dispatch } from "../Dispatcher";
 import { request } from "../utils/RequestUtils";
 
+import * as AccountActionCreators from "../actions/AccountActionCreators";
+
 export default class AccountCreate extends React.Component {
   static propTypes = {
-    location: React.PropTypes.object
+    location: React.PropTypes.any
+  }
+
+  static context = {
+    router: React.PropTypes.any
   }
 
   constructor(props) {
@@ -21,17 +27,21 @@ export default class AccountCreate extends React.Component {
     message: false
   }
 
+  componentWillUnmount() {
+    AccountActionCreators.deselectCurrentAccount();
+  }
+
   onNameBlur() {
-    this.refs.name.classList.remove("error");
+    this.name.classList.remove("error");
     request(
-      `/api/accounts/check_existence?name=${this.refs.name.value}`
-    ).then(status => {
+      `/api/accounts/check_existence?name=${this.name.value}`
+    ).then((status) => {
       if (!status.ok) {
         this.setState({
           valid: false,
           message: status.message
         }, () => {
-          this.refs.name.classList.add("error");
+          this.name.classList.add("error");
         });
         return;
       }
@@ -44,22 +54,22 @@ export default class AccountCreate extends React.Component {
 
   onHandleSubmit(event) {
     event.preventDefault();
-    if (this.refs.name.value.length === 0) {
+    if (this.name.value.length === 0) {
       return;
     }
     request("/api/accounts/", {
       method: "PUT",
       body: {
-        name: this.refs.name.value,
-        description: this.refs.description.value
+        name: this.name.value,
+        description: this.description.value
       }
-    }).then(status => {
+    }).then((status) => {
       if (status.ok) {
         dispatch({
           type: "account/new",
           account: status.account
         });
-        browserHistory.push({ pathname: "/dashboard", state: { welcome: true } });
+        this.context.router.transitionTo({ pathname: "/dashboard", state: { welcome: true } });
         return;
       }
       this.setState({
@@ -102,7 +112,7 @@ export default class AccountCreate extends React.Component {
                   <label>
                     <span>Name</span>
                     <input
-                      ref="name"
+                      ref={(input) => { this.name = input; }}
                       autoFocus
                       placeholder="Give your team a name"
                       onBlur={this.onNameBlur}
@@ -118,7 +128,7 @@ export default class AccountCreate extends React.Component {
                   <label>
                     <span>Description</span>
                     <input
-                      ref="description"
+                      ref={(input) => { this.description = input; }}
                       placeholder="Describe your team, what do you do ? Just a few words"
                     />
                   </label>

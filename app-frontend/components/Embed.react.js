@@ -111,7 +111,7 @@ class OEmbed extends React.Component {
 
   renderMeta() {
     const { meta } = this.props;
-    return <div></div>;
+    return <div />;
   }
 
   renderContent() {
@@ -128,7 +128,7 @@ class OEmbed extends React.Component {
 
   render() {
     const { classNames, thumbnail } = this.props;
-    let style = {};
+    const style = {};
     if (thumbnail && thumbnail.width) {
       style.maxWidth = thumbnail.width;
     }
@@ -236,7 +236,7 @@ class SpotifyEmbed extends OEmbed {
         style={{
           backgroundImage: `url(${thumbnail.url})`
         }}
-      ></a>
+      />
     );
   }
 
@@ -260,7 +260,7 @@ class GithubEmbed extends OEmbed {
 
 class AudioEmbed extends OEmbed {
   render() {
-    return <audio className="embed-audio" controls src={this.props.url}></audio>;
+    return <audio className="embed-audio" controls src={this.props.url} />;
   }
 }
 
@@ -268,24 +268,23 @@ class VideoEmbed extends ImageEmbed {
   renderThumbnail() {
     return (
       <video
-        ref="video"
-        onLoadedMetadata={this.guessSize.bind(this)}
+        ref={(video) => { this.video = video; }}
+        onLoadedMetadata={() => { this.guessSize(); }}
         src={this.props.url}
         controls
-      ></video>
+      />
     );
   }
 
-  guessSize(event) {
-    const { video } = this.refs;
-    console.log(video.videoWidth, video.videoHeight);
+  guessSize() {
+    console.log(this.video.videoWidth, this.video.videoHeight);
   }
 }
 
 
 export default function Embed(props) {
   const { type } = props;
-  let classNames = {
+  const classNames = {
     [`embed-${type.replace(/\./g, "-")}`]: true
   };
 
@@ -329,3 +328,7 @@ export default function Embed(props) {
       return null;
   }
 }
+
+Embed.propTypes = {
+  type: React.PropTypes.string
+};

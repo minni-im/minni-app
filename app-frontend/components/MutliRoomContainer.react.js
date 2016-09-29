@@ -1,10 +1,25 @@
 import React from "react";
+import { Match } from "react-router";
 
-// This component is needed just to be able to display multiple
-// rooms at the same time.
-// TODO: investigate to make it better/simpler
+import { deselectRooms } from "../actions/RoomActionCreators";
+
+import Rooms from "./RoomsContainer.react";
+
 export default class MutliRoomContainer extends React.Component {
+  static propTypes = {
+    pattern: React.PropTypes.string
+  }
+
+  componentWillUnmount() {
+    deselectRooms();
+  }
+
   render() {
-    return this.props.children;
+    return (
+      <Match
+        pattern={`${this.props.pattern}/:roomSlugs`}
+        component={Rooms}
+      />
+    );
   }
 }

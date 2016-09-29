@@ -68,6 +68,13 @@ socket.on("connect", () => {
   dispatch({
     type: ActionTypes.CONNECTION_START
   });
+  // const appHolder = document.querySelector("#splashscreen");
+  // setTimeout(() => {
+  //   document.body.classList.add("loaded");
+  //   setTimeout(() => {
+  //     appHolder.classList.add("splashscreen--hidden");
+  //   }, 500);
+  // }, 1500);
 });
 
 socket.on("connected", ({ user, accounts, rooms, users, presence }) => {

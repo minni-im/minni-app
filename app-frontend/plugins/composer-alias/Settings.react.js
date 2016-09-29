@@ -31,7 +31,7 @@ export default class Settings extends Component {
   }
 
   addAlias() {
-    const { alias, repl } = this.refs;
+    const { alias, repl } = this;
     if (alias.value.length > 0 && repl.value.length > 0) {
       this.state.aliases[alias.value] = repl.value;
       this.setState({
@@ -56,7 +56,7 @@ export default class Settings extends Component {
     this.setState({
       aliases: this.state.aliases
     });
-    this.refs.alias.focus();
+    this.alias.focus();
   }
 
   render() {
@@ -86,14 +86,15 @@ export default class Settings extends Component {
           <tr>
             <td>
               <input
-                ref="alias"
+                autoFocus
+                ref={(alias) => { this.alias = alias; }}
                 type="text"
                 placeholder="alias"
               />
             </td>
             <td>
               <input
-                ref="repl"
+                ref={(repl) => { this.repl = repl; }}
                 type="text"
                 placeholder="replacement"
                 onKeyUp={this.catchAddAlias}

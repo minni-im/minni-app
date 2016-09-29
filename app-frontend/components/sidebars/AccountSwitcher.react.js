@@ -29,13 +29,19 @@ class Account extends React.Component {
       link = `/chat/${account.name}/messages/${rooms.join(",")}`;
     }
 
-    return <Link to={link} key={account.name}
-      title={account.displayName}
-      className={classnames("account", {
-        "account-selected": selected
-      })} {...keyboard}>
+    return (
+      <Link
+        to={link}
+        key={account.name}
+        title={account.displayName}
+        className={classnames("account", {
+          "account-selected": selected
+        })}
+        {...keyboard}
+      >
         <div>{account.name[0]}</div>
-    </Link>;
+      </Link>
+    );
   }
 }
 
@@ -53,7 +59,7 @@ Account.propTypes = {
 
 class AccountSwitcher extends React.Component {
   static getStores() {
-    return [ AccountStore, SelectedAccountStore ];
+    return [AccountStore, SelectedAccountStore];
   }
 
   static calculateState() {
@@ -66,26 +72,29 @@ class AccountSwitcher extends React.Component {
   render() {
     const { selectedAccountSlug, accounts } = this.state;
     if (!accounts || accounts.size <= 1) {
-      return <div className="account-switcher" style={{flexBasis: 0}}></div>;
+      return <div className="account-switcher" style={{ flexBasis: 0 }} />;
     }
 
-    let links = accounts.toArray().map((account, index) => {
-      return <Account key={account.slug} account={account}
+    const links = accounts.toArray().map((account, index) => {
+      return (<Account key={account.slug} account={account}
         selected={selectedAccountSlug === account.slug}
         index={index + 1}
-      />;
+      />);
     });
 
-    return <div className="account-switcher" style={{flexBasis: "auto"}}>
-      {links}
-      <Link to="/create" className="account create" activeClassName="account-selected">
-        <div>+</div>
-      </Link>
-      <a href="https://minni.im" className="powered-by-minni"
-        target="_blank" title="Powered by Minni.im">
-        <img src="/images/logo-color.png" />
-      </a>
-    </div>;
+    return (
+      <div className="account-switcher" style={{ flexBasis: "auto" }}>
+        {links}
+        <Link to="/create" className="account create" activeClassName="account-selected">
+          <div>+</div>
+        </Link>
+        <a href="https://minni.im" className="powered-by-minni"
+          target="_blank" title="Powered by Minni.im"
+        >
+          <img src="/images/logo-color.png" />
+        </a>
+      </div>
+    );
   }
 }
 

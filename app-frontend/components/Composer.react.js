@@ -66,10 +66,9 @@ export default class Composer extends React.Component {
   }
 
   componentDidMount() {
-    const { textarea } = this.refs;
     this.lineHeight = parseInt(
       window
-        .getComputedStyle(textarea, null)
+        .getComputedStyle(this.textarea, null)
         .getPropertyValue("line-height"),
       10);
     this.computeTextAreaHeight(1);
@@ -77,28 +76,26 @@ export default class Composer extends React.Component {
   }
 
   componentWillUnmount() {
-    ComposerActionCreators.saveCurrentText(this.props.room.id, this.refs.textarea.value.trim());
+    ComposerActionCreators.saveCurrentText(this.props.room.id, this.textarea.value.trim());
   }
 
   clearValue() {
-    this.refs.textarea.value = "";
+    this.textarea.value = "";
     this.computeTextAreaHeight(1);
     ComposerActionCreators.saveCurrentText(this.props.room.id, "");
   }
 
   focus() {
-    this.refs.textarea.focus();
+    this.textarea.focus();
   }
 
   moveCursorAtEnd() {
-    const { textarea } = this.refs;
-    textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
+    this.textarea.selectionStart = this.textarea.selectionEnd = this.textarea.value.length;
   }
 
   computeTextAreaHeight(numberOfLine) {
-    const { textarea } = this.refs;
-    textarea.style.height = `${numberOfLine * this.lineHeight}px`;
-    textarea.scrollTop = textarea.offsetHeight;
+    this.textarea.style.height = `${numberOfLine * this.lineHeight}px`;
+    this.textarea.scrollTop = this.textarea.offsetHeight;
   }
 
   handleTextareaFocus() {
@@ -122,7 +119,7 @@ export default class Composer extends React.Component {
     const shouldSend = !event.shiftKey;
     switch (event.which) {
       case KEYCODES.ENTER:
-        value = this.refs.textarea.value;
+        value = this.textarea.value;
         if (shouldSend) {
           event.preventDefault();
           if (this.props.onSubmit(value)) {
@@ -139,7 +136,7 @@ export default class Composer extends React.Component {
   }
 
   handleOnKeyDown(event) {
-    const suggestions = this.refs.suggestions;
+    const suggestions = this.suggestions;
     if (suggestions) {
       suggestions.handleKeyDown(event);
     }
@@ -175,7 +172,7 @@ export default class Composer extends React.Component {
   }
 
   shouldWeAutocomplete() {
-    const { value, selectionStart, selectionEnd } = this.refs.textarea;
+    const { value, selectionStart, selectionEnd } = this.textarea;
     let start = selectionStart;
     const end = selectionEnd;
     let results;
@@ -244,19 +241,18 @@ export default class Composer extends React.Component {
   }
 
   performAutocomplete(text, trailingSpace = true) {
-    const { textarea } = this.refs;
-    const before = textarea.value.slice(0, this.state.start);
-    const after = textarea.value.slice(this.state.end);
+    const before = this.textarea.value.slice(0, this.state.start);
+    const after = this.textarea.value.slice(this.state.end);
     if (trailingSpace) {
       text += " ";
     }
-    textarea.value = before + text + after;
-    textarea.selectionEnd = before.length + text.length + 1;
+    this.textarea.value = before + text + after;
+    this.textarea.selectionEnd = before.length + text.length + 1;
     this.shouldWeAutocomplete();
   }
 
   render() {
-    let actions = [SmileyIcon].map((action, index) => (
+    const actions = [SmileyIcon].map((action, index) => (
       <div className="icon action" key={`action-${index}`}>
         {React.createElement(action)}
       </div>)
@@ -275,7 +271,7 @@ export default class Composer extends React.Component {
 
     if (autocompleteComponent) {
       autocomplete = React.createElement(autocompleteComponent, {
-        ref: "suggestions",
+        ref: (suggestions) => { this.suggestions = suggestions; },
         key: this.state.query || this.state.prefix,
         prefix: this.state.prefix,
         command: this.state.command,
@@ -292,7 +288,7 @@ export default class Composer extends React.Component {
       >
         <textarea
           className="flex-spacer"
-          ref="textarea"
+          ref={(textarea) => { this.textarea = textarea; }}
           autoCorrect="off"
           autoComplete="off"
           spellCheck="true"

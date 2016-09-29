@@ -24,7 +24,7 @@ const DESC = {
 export default class RoomAccessControl extends React.Component {
   static propTypes = {
     className: React.PropTypes.string,
-    type: React.PropTypes.oneOf([PUBLIC, PRIVATE]),
+    type: React.PropTypes.oneOf([0, PUBLIC, PRIVATE]),
     usersId: React.PropTypes.arrayOf(React.PropTypes.string),
     onTypeChange: React.PropTypes.func,
     onUsersChange: React.PropTypes.func

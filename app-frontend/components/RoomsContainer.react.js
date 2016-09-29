@@ -5,21 +5,42 @@ import classnames from "classnames";
 import Room from "./Room.react";
 
 import RoomStore from "../stores/RoomStore";
-import SelectedRoomStore from "../stores/SelectedRoomStore";
 
-// import Logger from "../libs/Logger";
-// const logger = Logger.create("RoomsContainer.react");
+import { selectRoom } from "../actions/RoomActionCreators";
+import Logger from "../libs/Logger";
+
+const logger = Logger.create("RoomsContainer.react");
+
+function activateSelectedRoom(props) {
+  const { params } = props;
+  const { accountSlug, roomSlugs } = params;
+  selectRoom(accountSlug, roomSlugs.split(","));
+}
 
 class RoomsContainer extends React.Component {
-  static getStores() {
-    return [RoomStore, SelectedRoomStore];
+  static propTypes = {
+    params: React.PropTypes.objectOf(React.PropTypes.string)
   }
 
-  static calculateState() {
-    const roomSlugs = SelectedRoomStore.getRooms();
+  static getStores() {
+    return [RoomStore];
+  }
+
+  static calculateState(prevState, prevProps) {
+    const roomSlugs = prevProps.params.roomSlugs.split(",");
     return {
       rooms: RoomStore.getRoomsBySelectedAccount(...roomSlugs)
     };
+  }
+
+  componentWillMount() {
+    activateSelectedRoom(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.params.roomSlugs !== this.props.params.roomSlugs) {
+      activateSelectedRoom(nextProps);
+    }
   }
 
   render() {
@@ -45,5 +66,5 @@ class RoomsContainer extends React.Component {
   }
 }
 
-const container = Container.create(RoomsContainer);
+const container = Container.create(RoomsContainer, { withProps: true });
 export default container;
