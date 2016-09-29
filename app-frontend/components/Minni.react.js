@@ -1,6 +1,9 @@
 import React from "react";
 import { Match, Redirect } from "react-router";
 
+import Login from "./Login.react";
+import Signup from "./Signup.react";
+
 import Dashboard from "./DashboardContainer.react";
 import DashboardSidebar from "./sidebars/Dashboard.react";
 

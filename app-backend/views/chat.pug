@@ -20,11 +20,12 @@ block footer_outer
 
 block main
   #minni
-  #splashscreen
-    .splashscreen-inner
-      include ../../public/logo.svg
-      h3 Please be patient
-      p We are setting up your cloud office...
+  if splashscreen
+    #splashscreen
+      .splashscreen-inner
+        include ../../public/logo.svg
+        h3 Please be patient
+        p We are setting up your cloud office...
 
 
 

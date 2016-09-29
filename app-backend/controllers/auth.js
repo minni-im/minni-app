@@ -48,20 +48,20 @@ export default (app) => {
   );
 
   app.route("/login")
-    .get((req, res) => {
-      res.render("login", {
-        title: "Signin",
-        providers: oauthProvidersInfo
-      });
-    })
+    // .get((req, res) => {
+    //   res.render("login", {
+    //     title: "Signin",
+    //     providers: oauthProvidersInfo
+    //   });
+    // })
     .post(authenticate("local"));
 
   app.route("/login/reset-password")
-    .get((req, res) => {
-      res.render("reset-password", {
-        title: "Reset your password"
-      });
-    })
+    // .get((req, res) => {
+    //   res.render("reset-password", {
+    //     title: "Reset your password"
+    //   });
+    // })
     .post((req) => {
       req.io.route("auth:resetpassword");
     });
@@ -79,9 +79,9 @@ export default (app) => {
   };
 
   app.route("/signup")
-    .get((req, res) => {
-      res.render("signup", signupViewOptions);
-    })
+    // .get((req, res) => {
+    //   res.render("signup", signupViewOptions);
+    // })
     .post((req, res) => {
       const { username, email, password } = req.body;
       const errors = [];
