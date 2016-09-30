@@ -15,7 +15,85 @@ import UserStore from "../stores/UserStore";
 import Logger from "../libs/Logger";
 const logger = Logger.create("ConnectionStore");
 
-const socket = window.io.connect("/", SOCKETIO_OPTIONS);
+let socket;
+
+function handleLoginSuccess() {
+  socket = window.io.connect("/", SOCKETIO_OPTIONS);
+
+  socket.on("connect", () => {
+    dispatch({
+      type: ActionTypes.CONNECTION_START
+    });
+  });
+
+  socket.on("connected", ({ user, accounts, rooms, users, presence }) => {
+    dispatch({
+      type: ActionTypes.CONNECTION_OPEN,
+      user,
+      accounts,
+      rooms,
+      users
+    });
+
+    presence.forEach(({ userId, status }) => ActivityActionCreators.updateStatus(userId, status));
+
+    // TODO: Maybe this call could be performed on the server.
+    ActivityActionCreators.updateStatus(user.id, USER_STATUS.ONLINE);
+  });
+
+  socket.on("disconnect", () => {
+    const userId = UserStore.getConnectedUser().id;
+    ActivityActionCreators.updateStatus(userId, USER_STATUS.OFFLINE);
+  });
+
+  socket.on("reconnecting", () => {
+    const userId = UserStore.getConnectedUser().id;
+    ActivityActionCreators.updateStatus(userId, USER_STATUS.CONNECTING);
+  });
+
+  socket.on("reconnect", () => {
+    ActivityActionCreators.setStatus(USER_STATUS.ONLINE);
+  });
+
+  socket.on("messages:create", (message) => {
+    const { id: userId } = UserStore.getConnectedUser();
+    if (userId !== message.userId) {
+      RoomActionCreators.receiveMessage(message.roomId, message);
+    }
+  });
+
+  socket.on("messages:update", (message) => {
+    RoomActionCreators.updateMessage(message.roomId, message);
+  });
+
+  socket.on("users:join", ({ user, roomId }) => {
+    // TODO: Should append a system message to the given room
+  });
+
+  socket.on("users:disconnect", ({ user }) => {
+    ActivityActionCreators.updateStatus(user.id, USER_STATUS.OFFLINE);
+  });
+
+  socket.on("users:typing", ({ roomId, userId }) => {
+    dispatch({
+      type: ActionTypes.TYPING_START,
+      roomId,
+      userId
+    });
+  });
+
+  socket.on("users:presence", ({ userId, status }) => {
+    ActivityActionCreators.updateStatus(userId, status);
+  });
+
+  socket.on("room:create", ({ room }) => {
+    AccountActionCreators.receiveRoom(room);
+  });
+
+  socket.on("room:delete", ({ room }) => {
+    RoomActionCreators.roomDeleted(room);
+  });
+}
 
 function handleConnectionstart() {
   socket.emit("connect-me", {
@@ -64,90 +142,10 @@ function handleConnectionLost(state) {
   return state.clear().add(false);
 }
 
-socket.on("connect", () => {
-  dispatch({
-    type: ActionTypes.CONNECTION_START
-  });
-  // const appHolder = document.querySelector("#splashscreen");
-  // setTimeout(() => {
-  //   document.body.classList.add("loaded");
-  //   setTimeout(() => {
-  //     appHolder.classList.add("splashscreen--hidden");
-  //   }, 500);
-  // }, 1500);
-});
-
-socket.on("connected", ({ user, accounts, rooms, users, presence }) => {
-  dispatch({
-    type: ActionTypes.CONNECTION_OPEN,
-    user,
-    accounts,
-    rooms,
-    users
-  });
-
-  presence.forEach(({ userId, status }) => ActivityActionCreators.updateStatus(userId, status));
-
-  // TODO: Maybe this call could be performed on the server.
-  ActivityActionCreators.updateStatus(user.id, USER_STATUS.ONLINE);
-});
-
-socket.on("disconnect", () => {
-  const userId = UserStore.getConnectedUser().id;
-  ActivityActionCreators.updateStatus(userId, USER_STATUS.OFFLINE);
-});
-
-socket.on("reconnecting", () => {
-  const userId = UserStore.getConnectedUser().id;
-  ActivityActionCreators.updateStatus(userId, USER_STATUS.CONNECTING);
-});
-
-socket.on("reconnect", () => {
-  ActivityActionCreators.setStatus(USER_STATUS.ONLINE);
-});
-
-socket.on("messages:create", (message) => {
-  const { id: userId } = UserStore.getConnectedUser();
-  if (userId !== message.userId) {
-    RoomActionCreators.receiveMessage(message.roomId, message);
-  }
-});
-
-socket.on("messages:update", (message) => {
-  RoomActionCreators.updateMessage(message.roomId, message);
-});
-
-socket.on("users:join", ({ user, roomId }) => {
-  // TODO: Should append a system message to the given room
-});
-
-socket.on("users:disconnect", ({ user }) => {
-  ActivityActionCreators.updateStatus(user.id, USER_STATUS.OFFLINE);
-});
-
-socket.on("users:typing", ({ roomId, userId }) => {
-  dispatch({
-    type: ActionTypes.TYPING_START,
-    roomId,
-    userId
-  });
-});
-
-socket.on("users:presence", ({ userId, status }) => {
-  ActivityActionCreators.updateStatus(userId, status);
-});
-
-socket.on("room:create", ({ room }) => {
-  AccountActionCreators.receiveRoom(room);
-});
-
-socket.on("room:delete", ({ room }) => {
-  RoomActionCreators.roomDeleted(room);
-});
-
 class ConnectionStore extends ReduceStore {
   initialize() {
     this.waitFor(AccountStore, UserStore);
+    this.addAction(ActionTypes.LOGIN_SUCCESS, withNoMutations(handleLoginSuccess));
     this.addAction(ActionTypes.CONNECTION_START, withNoMutations(handleConnectionstart));
     this.addAction(ActionTypes.CONNECTION_OPEN, handleConnectionOpen);
     this.addAction(ActionTypes.CONNECTION_LOST, handleConnectionLost);

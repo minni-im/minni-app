@@ -39,11 +39,11 @@ export default class Register extends Component {
             <input
               type="password"
               placeholder="Password"
-              name={(password) => { this.password = password; }}
+              ref={(password) => { this.password = password; }}
             />
           </p>
           <p>
-            <button className="button-highlight">Signup</button>
+            <button className="button-highlight button-big">Signup</button>
           </p>
         </div>
         <div className="links">

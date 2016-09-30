@@ -35,9 +35,7 @@ export default class LocalAuth {
 
   authenticate() {
     return passport.authenticate("local", {
-      successRedirect: this.options.successRedirect,
-      failureRedirect: this.options.failureRedirect,
-      failureFlash: true
+      failWithError: true
     });
   }
 }

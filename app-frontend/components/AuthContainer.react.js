@@ -5,9 +5,17 @@ const BACKGROUND = `url(/images/photo-overlay.png),
   url(http://buukkit.appspot.com/img/random.gif)`;
 
 export default class AuthContainer extends Component {
+  static propTypes = {
+    className: React.PropTypes.string,
+    onSubmit: React.PropTypes.func.isRequired
+  }
   componentDidMount() {
     this.computeSize();
     this.cloneBackground();
+  }
+
+  componentDidUpdate() {
+    this.computeSize();
   }
 
   computeSize() {
@@ -17,7 +25,7 @@ export default class AuthContainer extends Component {
 
   cloneBackground() {
     this.blurBackground.style.backgroundImage =
-      this.background.style.backgroundImage;
+      this.background.style.backgroundImage.split(",")[1];
   }
 
   render() {
@@ -45,13 +53,13 @@ export default class AuthContainer extends Component {
             ref={(form) => { this.form = form; }}
             className="content"
           >
-            <div className="greetings">
-              <img className="logo" src="/images/logo.png" alt={Minni.name} />
-            </div>
             <div className="providers">
               <form onSubmit={this.props.onSubmit}>
                 {this.props.children}
               </form>
+            </div>
+            <div className="greetings">
+              <img className="logo" src="/images/logo.png" alt={Minni.name} />
             </div>
           </div>
         </main>

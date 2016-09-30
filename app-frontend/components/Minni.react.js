@@ -46,6 +46,9 @@ const App = () => (
     <Match pattern="/create" component={WelcomeSidebar} />
     <Match pattern="/create" component={AccountCreate} />
 
+    <Match pattern="/login" component={Login} />
+    <Match pattern="/signup" component={Signup} />
+
     <Match pattern="/dashboard" component={DashboardSidebar} />
     <Match pattern="/dashboard" component={Dashboard} />
 

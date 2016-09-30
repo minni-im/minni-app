@@ -1,6 +1,10 @@
 import keyMirror from "keymirror";
 
 export const ActionTypes = keyMirror({
+  LOGIN: null,
+  LOGIN_SUCCESS: null,
+  LOGIN_FAILURE: null,
+
   CONNECTION_START: null,
   CONNECTION_OPEN: null,
 
@@ -160,6 +164,11 @@ export const EMBED_OPTIONS = {
 export const MAX_MULTI_ROOMS = 3;
 
 export const EndPoints = {
+  LOGIN: "/api/auth/login",
+  SIGNUP: "/api/auth/signup",
+  ACCOUNT_CREATE: "/api/accounts/",
+  ACCOUNT_CHECK_EXISTENCE:
+    name => `/api/accounts/check_existence?name=${name}`,
   ACCOUNT_ROOMS: accountId => `/api/accounts/${accountId}/rooms`,
   ACCOUNT_USERS: accountId => `/api/accounts/${accountId}/users`,
   ROOM_STAR: roomId => `/api/rooms/${roomId}/star`,

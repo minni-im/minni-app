@@ -7,7 +7,9 @@ import {
     authenticate,
     connect,
     disconnect } from "../auth";
-import { requireLoginRedirect } from "../middlewares/auth";
+import {
+  requireUsernamePassword,
+  requireLoginRedirect } from "../middlewares/auth";
 import {
   requireEmailRedirect,
   requireProfileInfoRedirect } from "../middlewares/profile";
@@ -15,7 +17,7 @@ import {
 
 const oauthProvidersInfo =
   Object.keys(providers)
-    .filter((p) => (p !== "local"))
+    .filter(p => (p !== "local"))
     .map((name) => {
       const { logo } = providers[name];
       return { name, logo };
@@ -39,29 +41,17 @@ export default (app) => {
   app.use(requireEmailRedirect);
 
   /* =Routes= */
-  app.get("/",
-    requireLoginRedirect,
-    requireProfileInfoRedirect,
-    (req, res) => {
-      res.render("chat");
-    }
-  );
-
-  app.route("/login")
-    // .get((req, res) => {
-    //   res.render("login", {
-    //     title: "Signin",
-    //     providers: oauthProvidersInfo
-    //   });
-    // })
-    .post(authenticate("local"));
+  app.get([
+    "/login",
+    "/signup",
+  ], (req, res) => {
+    res.render("chat", {
+      providers: oauthProvidersInfo,
+      splashscreen: false
+    });
+  });
 
   app.route("/login/reset-password")
-    // .get((req, res) => {
-    //   res.render("reset-password", {
-    //     title: "Reset your password"
-    //   });
-    // })
     .post((req) => {
       req.io.route("auth:resetpassword");
     });
@@ -79,9 +69,6 @@ export default (app) => {
   };
 
   app.route("/signup")
-    // .get((req, res) => {
-    //   res.render("signup", signupViewOptions);
-    // })
     .post((req, res) => {
       const { username, email, password } = req.body;
       const errors = [];
@@ -124,7 +111,7 @@ export default (app) => {
     });
 
   // Registering auth providers routes and middlewares
-  for (let provider in providers) {
+  for (const provider in providers) {
     if (providers.hasOwnProperty(provider) && provider !== "local") {
       app.get(`/login/${provider}`, initialize(provider));
       app.get(`/signup/${provider}`, authenticate(provider));
@@ -133,6 +120,31 @@ export default (app) => {
       app.get(`/connect/${provider}/revoke`, requireLoginRedirect, disconnect(provider));
     }
   }
+
+  /* =API routes= */
+  app.post("/api/auth/login",
+    requireUsernamePassword,
+    authenticate("local"),
+    (req, res, next) => {
+      console.log("authent ok");
+      res.json({
+        ok: true,
+        token: req.user.token
+      });
+    },
+    (err, req, res, next) => {
+      console.error(err.message);
+      res.status(401).json({
+        ok: false,
+        error: err.name,
+        message: `Username/password for '${req.body.username}' is incorrect`
+      });
+    }
+  );
+
+  app.post("/api/auth/register", (req, res) => {
+
+  });
 
   /* =Socket routes= */
   app.io.route("auth", {

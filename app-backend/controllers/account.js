@@ -14,15 +14,6 @@ function sanitizeName(name) {
 export default (app) => {
   /* =Routes= */
   app.get([
-    "/login",
-    "/signup",
-  ], (req, res) => {
-    res.render("chat", {
-      splashscreen: false
-    });
-  });
-
-  app.get([
     "/",
     "/create",
     "/dashboard",
