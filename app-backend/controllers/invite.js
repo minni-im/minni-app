@@ -9,13 +9,11 @@ import { requireValidAccount } from "../middlewares/account";
 export default (app) => {
   /* =WEB routes= */
   app.route("/invite/:inviteToken")
-    .get((req, res) => {
-      res.render("invite");
+    .get((req) => {
+      req.io.route("invites:get");
     })
-    .post((req, res) => {
-      if (req.isXHR) {
-        return req.io.route("invites:validate");
-      }
+    .post((req) => {
+      req.io.route("invites:accept");
     });
 
   /* =API routes= */
@@ -31,6 +29,10 @@ export default (app) => {
 
   app.put("/api/invites/", requireLogin, (req) => {
     req.io.route("invites:create");
+  });
+
+  app.post("/api/invites/:inviteToken", requireLogin, (req) => {
+    req.io.route("invites:accept");
   });
 
   app.delete("/api/invites/:inviteToken", requireLogin, (req) => {
@@ -77,14 +79,36 @@ export default (app) => {
       const Invite = recorder.model("Invite");
       const { inviteToken } = req.params;
       Invite.findByToken(inviteToken)
-        .then(invite => res.json({
-          ok: true,
-          invite: invite.toAPI()
-        }), error => res.status(404).json({
-          ok: false,
-          errors: error,
-          message: `No invite is matching token: ${inviteToken}.`
-        }));
+        .then((invite) => {
+          if (req.xhr) {
+            const payload = {
+              ok: !invite.expired,
+              invite: invite.toAPI()
+            };
+            if (invite.expired) {
+              payload.message = "This invitation linked has expired.";
+            }
+            res.json(payload);
+            return;
+          }
+          res.render("invite", {
+            invite: invite.toAPI()
+          });
+        }, (error) => {
+          if (req.xhr) {
+            res.status(404).json({
+              ok: false,
+              errors: error,
+              message: `No invite is matching token: ${inviteToken}.`
+            });
+            return;
+          }
+          req.redirect("/");
+        });
+    },
+
+    accept(req, res) {
+
     },
 
     create(req, res) {

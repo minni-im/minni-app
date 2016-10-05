@@ -34,7 +34,6 @@ class AccountSelector extends React.Component {
 const App = () => (
   <div className="minni-app flex-horizontal flex-spacer">
     <AccountSwitcher />
-    <Match exactly pattern="/" component={DashboardSidebar} />
     <Match exactly pattern="/" component={Dashboard} />
 
     <Match pattern="/dashboard" component={DashboardSidebar} />

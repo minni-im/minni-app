@@ -11,7 +11,6 @@ export function createInvite(accountId, maxAge = INVITE_MAX_AGE, maxUsage) {
     type: ActionTypes.INVITE_CREATE,
     accountId
   });
-  console.log("INVITE CREATION");
   return request(EndPoints.INVITE_CREATE, {
     method: "PUT",
     body: {
@@ -23,14 +22,12 @@ export function createInvite(accountId, maxAge = INVITE_MAX_AGE, maxUsage) {
   }).then((args) => {
     const { ok, invite, errors, message } = args;
     if (ok) {
-      console.log("CREATED!", invite);
       dispatch({
         type: ActionTypes.INVITE_CREATE_SUCCESS,
         accountId,
         invite
       });
     } else {
-      console.log("FAILED !", errors);
       dispatch({
         type: ActionTypes.INVITE_CREATE_FAILURE,
         accountId,
@@ -40,10 +37,40 @@ export function createInvite(accountId, maxAge = INVITE_MAX_AGE, maxUsage) {
     }
     return args;
   }, (error) => {
-    console.log("FAILED ! in error handler", error);
+    console.log(error);
   });
 }
 
 export function deleteInvite(inviteId) {
+
+}
+
+export function validateInvite(inviteId) {
+  dispatch({
+    type: ActionTypes.INVITE_VALIDATE,
+    inviteId
+  });
+  return request(EndPoints.INVITE_VALIDATE)
+    .then((payload) => {
+      const { ok, invite, errors, message } = payload;
+      if (ok) {
+        dispatch({
+          type: ActionTypes.INVITE_VALIDATE_SUCCESS,
+          inviteId,
+          invite
+        });
+      } else {
+        dispatch({
+          type: ActionTypes.INVITE_VALIDATE_FAILURE,
+          inviteId,
+          errors,
+          message
+        });
+      }
+      return payload;
+    });
+}
+
+export function acceptInvite(inviteId) {
 
 }

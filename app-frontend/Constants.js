@@ -98,7 +98,11 @@ export const ActionTypes = keyMirror({
 
   INVITE_CREATE: null,
   INVITE_CREATE_SUCCESS: null,
-  INVITE_CREATE_FAILURE: null
+  INVITE_CREATE_FAILURE: null,
+
+  INVITE_VALIDATE: null,
+  INVITE_VALIDATE_SUCCESS: null,
+  INVITE_VALIDATE_FAILURE: null
 });
 
 export const PLUGIN_TYPES = {
@@ -186,5 +190,7 @@ export const EndPoints = {
   MESSAGES: "/api/messages",
   TYPING: roomId => `/api/rooms/${roomId}/typing`,
   SLASH_COMMAND: "/api/command",
-  INVITE_CREATE: "/api/invites/"
+  INVITE_CREATE: "/api/invites/",
+  INVITE_VALIDATE: inviteId => `/api/invites/${inviteId}`,
+  INVITE_ACCEPT: inviteId => `/api/invites/${inviteId}`,
 };

@@ -1,5 +1,6 @@
 import recorder from "tape-recorder";
 import crypto from "crypto";
+import moment from "moment";
 
 const InviteSchema = new recorder.Schema({
   token: String,
@@ -10,6 +11,22 @@ const InviteSchema = new recorder.Schema({
   usage: {
     type: Number,
     default: 0
+  }
+});
+
+InviteSchema.virtual("expired", {
+  get() {
+    if (this.maxUsage && this.usage === this.maxUsage) {
+      return true;
+    }
+    const maxAge = this.maxAge;
+    if (maxAge > 0) {
+      const dateCreated = moment(this.dateCreated);
+      if (dateCreated.add(maxAge, "seconds").isBefore(Date.now())) {
+        return true;
+      }
+    }
+    return false;
   }
 });
 

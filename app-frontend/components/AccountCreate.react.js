@@ -32,8 +32,8 @@ export default class AccountCreate extends React.Component {
   }
 
   onCreateClick() {
-    const name = this.name.value;
-    const description = this.desc.value;
+    const name = this.name.value.trim();
+    const description = this.desc.value.trim();
     if (name.length > 0) {
       AccountActionCreators.createAccount({ name, description })
         .then(({ ok, account, message }) => {

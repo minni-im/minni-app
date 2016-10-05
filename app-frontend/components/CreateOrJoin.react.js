@@ -2,6 +2,7 @@ import React from "react";
 import TransitionGroup from "react-addons-css-transition-group";
 
 import AccountCreate from "./AccountCreate.react";
+import AccountJoin from "./AccountJoin.react";
 import { GroupAddIcon, GroupIcon } from "../utils/IconsUtils";
 
 function CreateOrJoin(props) {
@@ -32,42 +33,6 @@ function CreateOrJoin(props) {
 CreateOrJoin.propTypes = {
   onCreate: React.PropTypes.func,
   onJoin: React.PropTypes.func
-};
-
-function Join(props) {
-  return (
-    <div className="join-choice flex-vertical">
-      <div className="join">
-        <h3>Get ready to join a team</h3>
-        <form>
-          <p>Just paste in the input below an invite link to join an existing Team.</p>
-          <p className="block">
-            <label htmlFor="inviteLink">
-              <input
-                autoFocus
-                id="inviteLink"
-                type="text"
-                placeholder="Enter an invite link"
-              />
-            </label>
-          </p>
-          <p className="info">
-            Invite links are usually like these:<br />
-            http://minni.im/invites/YjU4Y2I0<br />
-            YjU4Y2I0
-          </p>
-        </form>
-      </div>
-      <div className="actions flex-horizontal">
-        <button onClick={props.onBack}>Back</button>
-        <span className="flex-spacer" />
-        <button className="button-highlight">Join</button>
-      </div>
-    </div>
-  );
-}
-Join.propTypes = {
-  onBack: React.PropTypes.func.isRequired
 };
 
 export default class CreateOrJoinContainer extends React.Component {
@@ -108,7 +73,7 @@ export default class CreateOrJoinContainer extends React.Component {
         break;
       case 2:
         element = (
-          <Join
+          <AccountJoin
             key="join"
             onBack={() => this.setState({ step: 0 })}
             onJoin={this.onJoinClick}
