@@ -3,8 +3,8 @@ import { Link } from "react-router";
 import classnames from "classnames";
 
 import * as RoomActionCreators from "../actions/RoomActionCreators";
-import { createInvite } from "../actions/InviteActionCreators";
 
+import InviteButton from "./InviteButton.react";
 import RoomSettingsIcon from "./RoomSettingsIcon.react";
 
 import {
@@ -112,18 +112,8 @@ export default class Lobby extends React.Component {
           <header className="rooms--header flex-horizontal">
             <h2 className="flex-spacer">Rooms</h2>
             <div className="actions">
-              <button
-                className="button"
-                onClick={() => {
-                  createInvite(account.id)
-                    .then(({ invite, errors }) => {
-                      if (errors) {
-                        console.eror(errors);
-                      }
-                      console.log("Invite created", invite);
-                    });
-                }}
-              >Invite teammates</button>
+
+              <InviteButton>Invite teammates</InviteButton>
               <Link
                 to={`/chat/${account.name}/create`}
                 className="button button-primary"
