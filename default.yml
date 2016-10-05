@@ -23,3 +23,8 @@ auth:
   github:
     scope: user
     callback: /auth/github/callback
+
+login-backgrounds:
+  - /images/login/her.jpg
+  - /images/login/bokeh.jpg
+  - /images/login/tags.jpg

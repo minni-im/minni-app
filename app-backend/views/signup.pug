@@ -1,34 +1,20 @@
-extends layout
+extends auth
 
-block content
-  .content
-    .greetings
-      img.logo(src="/images/logo.png")
+block form-title
+  h1 Create an account
 
-    .providers
-      h1 Prepare yourself
-      p In about 30 seconds you'll have new world-wide offices
-      if providers.length >=1
-        p Sign up with <span class="providers-list">#{providers.map(function(p) {return p.name;}).join(", ")}</span> or Email
-      else
-        p Sign up with your email
-
-      .providers-links
-        each provider in providers
-          a(class=["provider", `provider-${provider.name}`], href=`/signup/${provider.name}`)
-            img.logo(src=`data:image/png;base64,${provider.logo}`)
-            | #{provider.name}
-
-      .email
-        form(method="POST", action="/signup")
-          p
-            input(type="text", placeholder="Choose a username", name="username", value=fields.username)
-          p
-            input(type="text", placeholder="Email (we need one as unique id)", name="email", value=fields.email)
-          p
-            input(type="password", placeholder="Choose a password", name="password")
-          p
-            button Create your account
+block form
+  .email
+    form(method="POST", action="/signup")
+      p
+        input(type="text", placeholder="Choose a username", name="username", value=fields.username)
+      p
+        input(type="text", placeholder="Email (we need one as unique id)", name="email", value=fields.email)
+      p
+        input(type="password", placeholder="Choose a password", name="password")
+      p
+        button.button-highlight.button-big Create your account
 
   .links
-    a(href="/login") Already have an account?
+    div Already have an account ?
+      a(href="/login") Login

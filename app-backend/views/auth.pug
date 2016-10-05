@@ -1,0 +1,54 @@
+extends layout
+
+block flash
+
+block main
+  main
+    .wrapper
+      .content.content-blur
+        .content-blur-background
+
+  main
+    .wrapper
+
+      if flash.length
+        .alerts
+          .wrapper
+            while message = flash.shift()
+              p.alert(class=`alert-${message.type}`)= message.message
+
+      .content
+        .providers
+          block form-title
+
+          block providers
+            if providers.length >=1
+              p Sign #{viewname(filename) === "login" ? "in" : "up"} with <span class="providers-list">#{providers.map(function(p) {return p.name;}).join(", ")}</span> or Email
+            else
+              p Sign #{viewname(filename) === "login" ? "in" : "up"} with your email
+
+            .providers-links
+              each provider in providers
+                a(class=["button", "button-primary", "provider", `provider-${provider.name}`], href=`/login/${provider.name}`)
+                  img.logo(src=`data:image/png;base64,${provider.logo}`)
+                  | #{provider.name}
+
+          block form
+
+        .greetings
+          img.logo(src="/images/logo.png")
+
+block scripts
+  script.
+    var body = document.body;
+    var els = document.querySelectorAll(".content");
+    var blur = els[0];
+    var content = els[1];
+    var blurBackground = blur.querySelector(".content-blur-background");
+    var backgroundImage = "#{background()}";
+
+    body.style.backgroundImage = "url(/images/photo-overlay.png), url(" + backgroundImage + ")";
+    blurBackground.style.backgroundImage = "url(" + backgroundImage + ")";
+
+    blur.style.width = content.offsetWidth + "px";
+    blur.style.height = content.offsetHeight + "px";

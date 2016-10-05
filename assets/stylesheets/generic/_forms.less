@@ -80,10 +80,21 @@ button, input[type=submit], .button {
   }
 }
 
+@button-padding-small: 3px 6px;
 @button-padding-default: 6px 15px;
+@button-padding-big: 15px 25px;
 
 button, input[type=submit] {
   padding: @button-padding-default;
+}
+
+.button-big {
+  padding: @button-padding-big;
+}
+
+.button-small {
+  font-size: 11px;
+  padding: @button-padding-small;
 }
 
 .button-icon {
