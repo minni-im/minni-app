@@ -2,16 +2,39 @@ import UserStore from "../stores/UserStore";
 import { request } from "../utils/RequestUtils";
 
 import { dispatch, dispatchMaybe } from "../Dispatcher";
-import { ActionTypes, EndPoints, INVITE_MAX_AGE } from "../Constants";
+import { ActionTypes, EndPoints, INVITATION_MAX_AGE } from "../Constants";
 
-
-export function createInvite(accountId, maxAge = INVITE_MAX_AGE, maxUsage) {
-  const { id: userId } = UserStore.getConnectedUser();
-  dispatchMaybe({
-    type: ActionTypes.INVITE_CREATE,
+export function getInvitationList(accountId) {
+  dispatch({
+    type: ActionTypes.LOAD_INVITATIONS,
     accountId
   });
-  return request(EndPoints.INVITE_CREATE, {
+  return request(EndPoints.INVITATION_LIST(accountId))
+    .then(({ ok, invites, error, message }) => {
+      if (ok) {
+        dispatch({
+          type: ActionTypes.LOAD_INVITATIONS_SUCCESS,
+          invites,
+          accountId
+        });
+      } else {
+        dispatch({
+          type: ActionTypes.LOAD_INVITATIONS_FAILURE,
+          error,
+          message
+        });
+      }
+      return { ok, invites, error, message };
+    });
+}
+
+export function createInvite(accountId, maxAge = INVITATION_MAX_AGE, maxUsage) {
+  const { id: userId } = UserStore.getConnectedUser();
+  dispatchMaybe({
+    type: ActionTypes.INVITATION_CREATE,
+    accountId
+  });
+  return request(EndPoints.INVITATION_CREATE, {
     method: "PUT",
     body: {
       userId,
@@ -23,13 +46,13 @@ export function createInvite(accountId, maxAge = INVITE_MAX_AGE, maxUsage) {
     const { ok, invite, errors, message } = args;
     if (ok) {
       dispatch({
-        type: ActionTypes.INVITE_CREATE_SUCCESS,
+        type: ActionTypes.INVITATION_CREATE_SUCCESS,
         accountId,
         invite
       });
     } else {
       dispatch({
-        type: ActionTypes.INVITE_CREATE_FAILURE,
+        type: ActionTypes.INVITATION_CREATE_FAILURE,
         accountId,
         errors,
         message
@@ -47,21 +70,21 @@ export function deleteInvite(inviteId) {
 
 export function validateInvite(inviteId) {
   dispatch({
-    type: ActionTypes.INVITE_VALIDATE,
+    type: ActionTypes.INVITATION_VALIDATE,
     inviteId
   });
-  return request(EndPoints.INVITE_VALIDATE)
+  return request(EndPoints.INVITATION_VALIDATE)
     .then((payload) => {
       const { ok, invite, errors, message } = payload;
       if (ok) {
         dispatch({
-          type: ActionTypes.INVITE_VALIDATE_SUCCESS,
+          type: ActionTypes.INVITATION_VALIDATE_SUCCESS,
           inviteId,
           invite
         });
       } else {
         dispatch({
-          type: ActionTypes.INVITE_VALIDATE_FAILURE,
+          type: ActionTypes.INVITATION_VALIDATE_FAILURE,
           inviteId,
           errors,
           message

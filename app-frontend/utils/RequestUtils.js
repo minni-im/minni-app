@@ -33,5 +33,8 @@ export function request(url, options = {}) {
         return response;
       }
       return response.json();
+    })
+    .catch((error) => {
+      console.log(error);
     });
 }

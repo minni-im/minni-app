@@ -14,19 +14,21 @@ const InviteSchema = new recorder.Schema({
   }
 });
 
-InviteSchema.virtual("expired", {
-  get() {
-    if (this.maxUsage && this.usage === this.maxUsage) {
-      return true;
-    }
-    const maxAge = this.maxAge;
-    if (maxAge > 0) {
-      const dateCreated = moment(this.dateCreated);
-      if (dateCreated.add(maxAge, "seconds").isBefore(Date.now())) {
+InviteSchema.virtual({
+  expired: {
+    get() {
+      if (this.maxUsage && this.usage === this.maxUsage) {
         return true;
       }
+      const maxAge = this.maxAge;
+      if (maxAge > 0) {
+        const dateCreated = moment(this.dateCreated);
+        if (dateCreated.add(maxAge, "seconds").isBefore(Date.now())) {
+          return true;
+        }
+      }
+      return false;
     }
-    return false;
   }
 });
 

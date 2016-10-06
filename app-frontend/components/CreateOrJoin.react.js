@@ -51,7 +51,7 @@ export default class CreateOrJoinContainer extends React.Component {
   }
 
   onCreateClick(account) {
-    this.context.router.push(`/chat/${account.name}/lobby`);
+    this.context.router.transitionTo(`/chat/${account.name}/lobby`);
   }
 
   onJoinClick() {

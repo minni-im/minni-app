@@ -21,6 +21,10 @@ export const ActionTypes = keyMirror({
   LOAD_ROOMS_SUCCESS: null,
   LOAD_ROOMS_FAILURE: null,
 
+  LOAD_INVITATIONS: null,
+  LOAD_INVITATIONS_SUCCESS: null,
+  LOAD_INVITATIONS_FAILURE: null,
+
   ACCOUNT_NEW: null,
   ACCOUNT_SELECT: null,
   ACCOUNT_DESELECT: null,
@@ -96,13 +100,13 @@ export const ActionTypes = keyMirror({
 
   WINDOW_FOCUS: null,
 
-  INVITE_CREATE: null,
-  INVITE_CREATE_SUCCESS: null,
-  INVITE_CREATE_FAILURE: null,
+  INVITATION_CREATE: null,
+  INVITATION_CREATE_SUCCESS: null,
+  INVITATION_CREATE_FAILURE: null,
 
-  INVITE_VALIDATE: null,
-  INVITE_VALIDATE_SUCCESS: null,
-  INVITE_VALIDATE_FAILURE: null
+  INVITATION_VALIDATE: null,
+  INVITATION_VALIDATE_SUCCESS: null,
+  INVITATION_VALIDATE_FAILURE: null
 });
 
 export const PLUGIN_TYPES = {
@@ -172,7 +176,7 @@ export const EMBED_OPTIONS = {
 
 export const MAX_MULTI_ROOMS = 3;
 
-export const INVITE_MAX_AGE = 24 * 60 * 60 * 1000;
+export const INVITATION_MAX_AGE = 24 * 60 * 60 * 1000;
 
 export const EndPoints = {
   ACCOUNT_CREATE: "/api/accounts/",
@@ -190,7 +194,8 @@ export const EndPoints = {
   MESSAGES: "/api/messages",
   TYPING: roomId => `/api/rooms/${roomId}/typing`,
   SLASH_COMMAND: "/api/command",
-  INVITE_CREATE: "/api/invites/",
-  INVITE_VALIDATE: inviteId => `/api/invites/${inviteId}`,
-  INVITE_ACCEPT: inviteId => `/api/invites/${inviteId}`,
+  INVITATION_LIST: accountId => `/api/accounts/${accountId}/invites`,
+  INVITATION_CREATE: "/api/invites/",
+  INVITATION_VALIDATE: inviteId => `/api/invites/${inviteId}`,
+  INVITATION_ACCEPT: inviteId => `/api/invites/${inviteId}`,
 };

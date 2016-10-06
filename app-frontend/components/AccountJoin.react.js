@@ -1,6 +1,6 @@
 import React from "react";
 
-import * as InviteActionCreators from "../actions/InviteActionCreators";
+import * as InvitationActionCreators from "../actions/InvitationActionCreators";
 
 export default class AccountJoin extends React.Component {
   static propTypes = {
@@ -22,7 +22,7 @@ export default class AccountJoin extends React.Component {
     const link = this.inviteLink.value.trim();
     const inviteId = link.split("/").pop();
     if (link.length > 0) {
-      InviteActionCreators.validateInvite(inviteId)
+      InvitationActionCreators.validateInvite(inviteId)
         .then(({ ok, message }) => {
           if (!ok) {
             throw message;

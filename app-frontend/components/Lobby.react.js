@@ -4,16 +4,13 @@ import classnames from "classnames";
 
 import * as RoomActionCreators from "../actions/RoomActionCreators";
 
-import InviteButton from "./InviteButton.react";
 import RoomSettingsIcon from "./RoomSettingsIcon.react";
 
-import {
-  FavoriteIcon,
-  RoomIcons,
-  SettingsIcon } from "../utils/IconsUtils";
+import { FavoriteIcon, RoomIcons, SettingsIcon } from "../utils/IconsUtils";
 import { parseTitleWithoutLinks } from "../utils/MarkupUtils";
 
 import Logger from "../libs/Logger";
+
 const logger = Logger.create("Lobby");
 
 class Room extends React.Component {
@@ -112,8 +109,6 @@ export default class Lobby extends React.Component {
           <header className="rooms--header flex-horizontal">
             <h2 className="flex-spacer">Rooms</h2>
             <div className="actions">
-
-              <InviteButton>Invite teammates</InviteButton>
               <Link
                 to={`/chat/${account.name}/create`}
                 className="button button-primary"

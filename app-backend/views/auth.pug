@@ -29,7 +29,7 @@ block main
 
             .providers-links
               each provider in providers
-                a(class=["button", "button-primary", "provider", `provider-${provider.name}`], href=`/login/${provider.name}`)
+                a(class=["button", "button-primary", "provider", `provider-${provider.name}`], href=`/${viewname(filename)}/${provider.name}`)
                   img.logo(src=`data:image/png;base64,${provider.logo}`)
                   | #{provider.name}
 

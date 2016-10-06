@@ -55,7 +55,7 @@ export default class RoomSettingsDialog extends React.Component {
       RoomActionCreators.deleteRoom(this.props.room.id)
         .then(() => {
           if (active) {
-            this.context.router.push(`/chat/${accountSlug}/lobby`);
+            this.context.router.transitionTo(`/chat/${accountSlug}/lobby`);
           } else {
             this.props.onClose(action);
           }
