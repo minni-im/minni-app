@@ -113,7 +113,7 @@ export default (app) => {
 
     create(req, res) {
       const Invite = recorder.model("Invite");
-      const { id: userId } = req;
+      const { id: userId } = req.user;
       const { accountId, maxUsage, maxAge } = req.body;
 
       Invite.generateToken(
@@ -124,7 +124,7 @@ export default (app) => {
       ).then(invite => res.status(201).json({
         ok: true,
         accountId,
-        invite: invite.toAPI(true),
+        invite: invite.toAPI(),
         message: `Invite has been created for team '${accountId}'.`
       }), (error) => {
         console.error("[Invite] Creation failed", error);

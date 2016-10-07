@@ -1,0 +1,65 @@
+.invitation-dialog {
+  width: 640px;
+  min-height: 240px;
+
+  .invitation-list--create {
+    margin: 10px -10px -10px -10px;
+    padding: 10px 15px 10px 10px;
+    text-align: right;
+    background-color: @gray-lighter;
+  }
+
+  .invite {
+    padding: 5px 0;
+    align-items: center;
+    &:not(:last-child) {
+      border-bottom: 1px solid @gray-lighter;
+    }
+  }
+
+  .invite--token, .invite--usage, .invite--expires, .invite--revoke {
+    padding: 0 5px;
+  }
+
+  .invite--usage, .invite--expires, .invite--revoke {
+    text-align: center;
+  }
+
+  .invite--usage, .invite--expires {
+    width: 100px;
+  }
+
+  .invite--revoke {
+    width: 45px;
+    margin-right: 5px;
+
+    &:not(h3) {
+      visibility: hidden;
+    }
+  }
+
+  .invite--expires:not(h3) {
+    font-family: "Monaco", "Source Code Pro", "Consolas";
+    font-size: 16px;
+  }
+
+  .invite--inviter {
+    font-size: 11px;
+    line-height: 12px;
+    color: @gray-light;
+    align-items: center;
+    .avatar {
+      margin-right: 5px;
+    }
+  }
+
+  .invite:hover {
+    .invite--revoke {
+      visibility: visible;
+    }
+  }
+
+  .invite-expired {
+    color: @gray-light;
+  }
+}

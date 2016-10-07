@@ -23,7 +23,7 @@ InviteSchema.virtual({
       const maxAge = this.maxAge;
       if (maxAge > 0) {
         const dateCreated = moment(this.dateCreated);
-        if (dateCreated.add(maxAge, "seconds").isBefore(Date.now())) {
+        if (dateCreated.add(maxAge, "milliseconds").isBefore(Date.now())) {
           return true;
         }
       }
@@ -32,26 +32,17 @@ InviteSchema.virtual({
   }
 });
 
-InviteSchema.method("toAPI", function toAPI(isAdmin = false) {
+InviteSchema.method("toAPI", function toAPI() {
   const { id, token, accountId, inviterId, maxAge, maxUsage, usage, dateCreated } = this;
-  if (isAdmin) {
-    return {
-      id,
-      token,
-      accountId,
-      inviterId,
-      maxAge,
-      maxUsage,
-      usage,
-      dateCreated
-    };
-  }
   return {
     id,
     token,
+    accountId,
+    inviterId,
     maxAge,
-    dateCreated,
-    accountId
+    maxUsage,
+    usage,
+    dateCreated
   };
 });
 

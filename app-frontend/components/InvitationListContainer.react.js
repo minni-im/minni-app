@@ -16,7 +16,7 @@ class InvitationListContainer extends React.Component {
   static calculateState() {
     const { id: accountId } = SelectedAccountStore.getAccount();
     return {
-      invites: InvitationStore.getList(accountId)
+      invitations: InvitationStore.getList(accountId)
     };
   }
 
@@ -27,7 +27,7 @@ class InvitationListContainer extends React.Component {
 
   render() {
     return (
-      <InvitationList invites={this.state.invites} />
+      <InvitationList {...this.state} />
     );
   }
 }

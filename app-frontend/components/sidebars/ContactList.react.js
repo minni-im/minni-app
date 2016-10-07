@@ -18,7 +18,7 @@ export default class ContactList extends React.Component {
     return (
       <div className="coworker-all-alone">
         You don't have any coworker ? That is sad !
-        <InvitationDialog className="icon">
+        <InvitationDialog className="icon pointer">
           <GroupAddIcon />
         </InvitationDialog>
       </div>
