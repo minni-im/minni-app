@@ -18,27 +18,7 @@ module.exports = {
       glob.sync(
         path.join(__dirname, "node_modules", "minni-*", "frontend", "Plugin.js")
       )
-    ),
-    vendor: [
-      "react",
-      "react-dom",
-      "react-router",
-      "react-addons-css-transition-group",
-      "immutable",
-      "flux",
-      "flux/utils",
-      "long",
-      "classnames",
-      "deep-extend",
-      "highlight.js",
-      "click-outside",
-      "keymirror",
-      "moment",
-      "emojify",
-      "lodash",
-      "simple-markdown",
-      "twitter-text"
-    ]
+    )
   },
   output: {
     path: "./dist/public/js",
@@ -79,13 +59,11 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: "vendor",
       chunks: ["minni", "plugins"],
-      filename: RELEASE ? "[name]-bundle.[chunkhash].min.js" : "[name]-bundle.js",
-      minChunks: Infinity
+      minChunks: ({ resource }) => /node_modules/.test(resource)
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: "minni",
       chunks: ["plugins"],
-      filename: RELEASE ? "[name]-bundle.[chunkhash].min.js" : "[name]-bundle.js",
       minChunks: Infinity
     })
   ].concat(RELEASE ? [
