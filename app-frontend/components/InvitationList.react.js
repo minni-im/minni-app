@@ -1,12 +1,9 @@
 import React from "react";
-import classNames from "classnames";
-
-import SelectedAccountStore from "../stores/SelectedAccountStore";
 
 import { createInvite } from "../actions/InvitationActionCreators";
+import SelectedAccountStore from "../stores/SelectedAccountStore";
 
-import Avatar from "./generic/Avatar.react";
-import Countdown from "./generic/Countdown.react";
+import Invitation, { InvitationHeader } from "./Invitation.react";
 
 export default class InvitationList extends React.Component {
   onGenerateClick() {
@@ -15,43 +12,22 @@ export default class InvitationList extends React.Component {
   }
 
   renderList() {
-    const inviteList = this.props.invitations.map(invite => (
-      <div
-        key={invite.token}
-        className={classNames("flex-horizontal invite", {
-          "invite-expired": invite.isExpired
-        })}
-      >
-        <div className="flex-spacer invite--token">
-          <div className="user-select" title={`Created on ${invite.dateCreated.format()}`}>
-            {invite.isExpired ? <strike>{invite.token}</strike> : invite.token}
-          </div>
-          <div className="invite--inviter flex-horizontal">
-            <Avatar className="user-avatar" size={Avatar.SIZE.SMALL} user={invite.inviter} />
-            <div className="flex-spacer">{`${invite.inviter.fullname} (${invite.inviter.nickname})`}</div>
-          </div>
-        </div>
-        <div className="invite--usage">
-          {invite.usage}
-          {invite.maxUsage ? `/${invite.maxUsage}` : ""}
-        </div>
-        <div className="invite--expires"><Countdown expiration={invite.getExpiresAt()} /></div>
-        <div className="invite--revoke">
-          {invite.isExpired ?
-            <button className="button-small">Delete</button> :
-            <button className="button-danger button-small">Revoke</button>}
-        </div>
-      </div>
-    )).toArray();
+    const inviteList = this.props.invitations.map((invitation) => {
+      const props = {
+        token: invitation.token,
+        dateCreated: invitation.dateCreated,
+        inviter: invitation.inviter,
+        expired: invitation.isExpired,
+        expirationDate: invitation.getExpiresAt(),
+        usage: invitation.usage,
+        maxUsage: invitation.maxUsage
+      };
+      return <Invitation key={invitation.token} {...props} />;
+    }).toArray();
 
     return (
       <div className="flex-vertical">
-        <div className="header flex-horizontal">
-          <h3 className="flex-spacer invite--token">Code</h3>
-          <h3 className="invite--usage">Uses</h3>
-          <h3 className="invite--expires">Expires</h3>
-          <h3 className="invite--revoke">&nbsp;</h3>
-        </div>
+        <InvitationHeader />
         <div className="flex-spacer">
           {inviteList}
         </div>

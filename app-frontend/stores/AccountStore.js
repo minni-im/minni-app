@@ -33,6 +33,7 @@ class AccountStore extends MapStore {
   initialize() {
     this.addAction(ActionTypes.CONNECTION_OPEN, handleConnectionOpen);
     this.addAction(ActionTypes.ACCOUNT_CREATE_SUCCESS, handleAccountAdd);
+    this.addAction(ActionTypes.INVITATION_ACCEPT_SUCCESS, handleAccountAdd);
   }
 
   hasNoAccount() {

@@ -104,9 +104,17 @@ export const ActionTypes = keyMirror({
   INVITATION_CREATE_SUCCESS: null,
   INVITATION_CREATE_FAILURE: null,
 
+  INVITATION_ACCEPT: null,
+  INVITATION_ACCEPT_SUCCESS: null,
+  INVITATION_ACCEPT_FAILURE: null,
+
   INVITATION_VALIDATE: null,
   INVITATION_VALIDATE_SUCCESS: null,
-  INVITATION_VALIDATE_FAILURE: null
+  INVITATION_VALIDATE_FAILURE: null,
+
+  INVITATION_DELETE: null,
+  INVITATION_DELETE_SUCCESS: null,
+  INVITATION_DELETE_FAILURE: null
 });
 
 export const PLUGIN_TYPES = {
@@ -197,5 +205,6 @@ export const EndPoints = {
   INVITATION_LIST: accountId => `/api/accounts/${accountId}/invites`,
   INVITATION_CREATE: "/api/invites/",
   INVITATION_VALIDATE: inviteId => `/api/invites/${inviteId}`,
+  INVITATION_DELETE: inviteId => `/api/invites/${inviteId}`,
   INVITATION_ACCEPT: inviteId => `/api/invites/${inviteId}`,
 };

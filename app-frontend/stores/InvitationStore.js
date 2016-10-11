@@ -37,7 +37,21 @@ class InviteStore extends MapStore {
   }
 
   getList(accountId) {
-    return this.getState().filter(invite => invite.accountId === accountId);
+    const { id: userId } = UserStore.getConnectedUser();
+    return this.getState()
+      .filter((invite) => {
+        if (invite.accountId !== accountId) {
+          return false;
+        }
+        if (!invite.isExpired) {
+          return true;
+        }
+        if (invite.inviterId === userId) {
+          return true;
+        }
+        return false;
+      })
+      .sortBy(invite => (invite.isExpired ? "z" : "a"));
   }
 }
 

@@ -36,9 +36,9 @@ export default class ContactList extends React.Component {
           </div>
           {teamSize ?
             <div className="actions">
-              <InviteButton className="icon">
+              <InvitationDialog className="icon pointer">
                 <GroupAddIcon />
-              </InviteButton>
+              </InvitationDialog>
             </div> : false}
         </header>
         <section className="panel panel--wrapper flex-vertical flex-spacer">

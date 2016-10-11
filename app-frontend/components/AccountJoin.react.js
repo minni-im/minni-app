@@ -11,6 +11,8 @@ export default class AccountJoin extends React.Component {
   constructor(props) {
     super(props);
     this.onJoinClick = this.onJoinClick.bind(this);
+    this.onTokenBlur = this.onTokenBlur.bind(this);
+    this.showErrorMessage = this.showErrorMessage.bind(this);
   }
 
   state = {
@@ -18,32 +20,38 @@ export default class AccountJoin extends React.Component {
     errorMessage: ""
   }
 
+  onTokenBlur() {
+    this.setState({
+      valid: true
+    });
+  }
+
   onJoinClick() {
     const link = this.inviteLink.value.trim();
-    const inviteId = link.split("/").pop();
+    const inviteToken = link.split("/").pop();
     if (link.length > 0) {
-      InvitationActionCreators.validateInvite(inviteId)
+      InvitationActionCreators.validateInvite(inviteToken)
         .then(({ ok, message }) => {
           if (!ok) {
-            throw message;
+            throw new Error(message);
           }
-          return inviteId;
+          return inviteToken;
         })
-        .then(InviteActionCreators.acceptInvite)
-        .then(({ ok, invite, message }) => {
+        .then(InvitationActionCreators.acceptInvite)
+        .then(({ ok, invite, account, message }) => {
           if (!ok) {
-            throw message;
+            throw new Error(message);
           }
-          this.onJoin(invite);
+          this.props.onJoin(account, invite);
         })
-        .catch(message => this.showErrorMessage(message));
+        .catch(this.showErrorMessage);
     }
   }
 
-  showErrorMessage(message) {
+  showErrorMessage(error) {
     this.setState({
       valid: false,
-      errorMessage: message
+      errorMessage: error.message
     }, () => {
       this.inviteLink.focus();
     });
@@ -54,8 +62,13 @@ export default class AccountJoin extends React.Component {
       <div className="join-choice flex-vertical">
         <div className="join">
           <h3>Get ready to join a team</h3>
+          <div className="alerts">
+            {this.state.valid ?
+              <p>Just paste in the input below an invite link to join an existing Team.</p> :
+              <p className="alert alert-error">{this.state.errorMessage}</p>
+            }
+          </div>
           <form>
-            <p>Just paste in the input below an invite link to join an existing Team.</p>
             <p className="block">
               <label htmlFor="inviteLink">
                 <input
@@ -63,6 +76,7 @@ export default class AccountJoin extends React.Component {
                   ref={(link) => { this.inviteLink = link; }}
                   type="text"
                   placeholder="Enter an invite link"
+                  onBlur={this.onTokenBlur}
                 />
               </label>
             </p>

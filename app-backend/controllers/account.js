@@ -24,6 +24,15 @@ export default (app) => {
   ], requireLoginRedirect, requireProfileInfoRedirect, (req, res) => {
     const Account = recorder.model("Account");
     Account.getListForUser(req.user.id).then((accounts) => {
+      const { accountName } = req.params;
+      if (
+        accountName &&
+        !accounts.map(account => account.name).includes(sanitizeName(accountName))
+      ) {
+        res.redirect("/");
+        return;
+      }
+
       res.render("chat", {
         accounts: accounts.map(account => account.toAPI(req.user.id === account.adminId))
       });

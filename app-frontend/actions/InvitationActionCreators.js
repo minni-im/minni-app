@@ -59,33 +59,53 @@ export function createInvite(accountId, maxAge = INVITATION_MAX_AGE, maxUsage) {
       });
     }
     return args;
-  }, (error) => {
-    console.log(error);
   });
 }
 
-export function deleteInvite(inviteId) {
-
+export function deleteInvite(inviteToken) {
+  dispatch({
+    type: ActionTypes.INVITATION_DELETE,
+    inviteToken
+  });
+  return request(EndPoints.INVITATION_DELETE(inviteToken), {
+    method: "DELETE"
+  }).then((payload) => {
+    const { ok, invite, errors, message } = payload;
+    if (ok) {
+      dispatch({
+        type: ActionTypes.INVITATION_DELETE_SUCCESS,
+        invite
+      });
+    } else {
+      dispatch({
+        type: ActionTypes.INVITATION_DELETE_FAILURE,
+        inviteToken,
+        errors,
+        message
+      });
+    }
+    return payload;
+  });
 }
 
-export function validateInvite(inviteId) {
+export function validateInvite(inviteToken) {
   dispatch({
     type: ActionTypes.INVITATION_VALIDATE,
-    inviteId
+    inviteToken
   });
-  return request(EndPoints.INVITATION_VALIDATE)
+  return request(EndPoints.INVITATION_VALIDATE(inviteToken))
     .then((payload) => {
       const { ok, invite, errors, message } = payload;
       if (ok) {
         dispatch({
           type: ActionTypes.INVITATION_VALIDATE_SUCCESS,
-          inviteId,
+          inviteToken,
           invite
         });
       } else {
         dispatch({
           type: ActionTypes.INVITATION_VALIDATE_FAILURE,
-          inviteId,
+          inviteToken,
           errors,
           message
         });
@@ -94,6 +114,29 @@ export function validateInvite(inviteId) {
     });
 }
 
-export function acceptInvite(inviteId) {
-
+export function acceptInvite(inviteToken) {
+  dispatch({
+    type: ActionTypes.INVITATION_ACCEPT,
+    inviteToken
+  });
+  return request(EndPoints.INVITATION_ACCEPT(inviteToken), {
+    method: "POST"
+  }).then((payload) => {
+    const { ok, account, errors, message } = payload;
+    if (ok) {
+      dispatch({
+        type: ActionTypes.INVITATION_ACCEPT_SUCCESS,
+        inviteToken,
+        account
+      });
+    } else {
+      dispatch({
+        type: ActionTypes.INVITATION_ACCEPT_FAILURE,
+        inviteToken,
+        errors,
+        message
+      });
+    }
+    return payload;
+  });
 }

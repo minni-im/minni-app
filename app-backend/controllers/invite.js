@@ -1,10 +1,9 @@
 import recorder from "tape-recorder";
 
-import { requireLogin, requireLoginRedirect } from "../middlewares/auth";
-import { requireProfileInfoRedirect } from "../middlewares/profile";
+import { requireLogin } from "../middlewares/auth";
 import { requireValidAccount } from "../middlewares/account";
 
-// TODO: We need a background cron jobs to expire invalid invites
+// TODO: We need a background cron jobs to delete expired invites
 
 export default (app) => {
   /* =WEB routes= */
@@ -23,35 +22,48 @@ export default (app) => {
       req.io.route("invites:list");
     });
 
-  app.get("/api/invites/:inviteToken", requireLogin, (req) => {
-    req.io.route("invites:get");
-  });
-
   app.put("/api/invites/", requireLogin, (req) => {
     req.io.route("invites:create");
   });
 
-  app.post("/api/invites/:inviteToken", requireLogin, (req) => {
-    req.io.route("invites:accept");
-  });
-
-  app.delete("/api/invites/:inviteToken", requireLogin, (req) => {
-    req.io.route("invites:delete");
-  });
+  app.route("/api/invites/:inviteToken")
+    .all(requireLogin)
+    .get((req) => {
+      req.io.route("invites:get");
+    })
+    .post((req) => {
+      req.io.route("invites:accept");
+    })
+    .delete((req) => {
+      req.io.route("invites:delete");
+    });
 
   /* =Socket routes= */
   app.io.route("invites", {
-    validate(req, res) {
+    accept(req, res) {
       const Invite = recorder.model("Invite");
       const Account = recorder.model("Account");
       const { inviteToken } = req.params;
       Invite.findByToken(inviteToken)
         .then((invite) => {
-          if (invite.isValid()) {
-            const { accountId, inviterId } = invite;
+          if (!invite.expired) {
+            const { accountId } = invite;
             Account.findById(accountId)
               .then((account) => {
-                account.usersId.push();
+                account.usersId.push(req.user.id);
+                return account.save();
+              })
+              .then((savedAccount) => {
+                invite.usage += 1;
+                return invite.save()
+                  .then(savedInvite => [savedAccount, savedInvite]);
+              })
+              .then(([savedAccount, savedInvite]) => {
+                res.json({
+                  ok: true,
+                  invite: savedInvite.toAPI(false),
+                  account: savedAccount.toAPI(false)
+                });
               });
           }
         }, (error) => {
@@ -107,10 +119,6 @@ export default (app) => {
         });
     },
 
-    accept(req, res) {
-
-    },
-
     create(req, res) {
       const Invite = recorder.model("Invite");
       const { id: userId } = req.user;
@@ -137,8 +145,26 @@ export default (app) => {
       });
     },
 
-    delete(req) {
-
+    delete(req, res) {
+      const Invite = recorder.model("Invite");
+      const { inviteToken } = req.params;
+      Invite.findByToken(inviteToken)
+        .then((invite) => {
+          invite.delete()
+            .then((updatedInvite) => {
+              res.json({
+                ok: true,
+                invite: updatedInvite.toAPI()
+              });
+            }, (error) => {
+              res.status(500).json({
+                ok: false,
+                inviteToken,
+                errors: error,
+                message: "Failed to delete invitation"
+              });
+            });
+        });
     }
   });
 };

@@ -3,14 +3,15 @@ import recorder from "tape-recorder";
 const AccountSchema = new recorder.Schema({
   name: String,
   description: String,
-  inviteToken: String,
-  token: String,
-  usersId: Array,
+  usersId: {
+    type: Array,
+    default: []
+  },
   adminId: String
 });
 
-AccountSchema.method("toAPI", function toAPI(isAdmin = false) {
-  const json = {
+AccountSchema.method("toAPI", function toAPI() {
+  return {
     id: this.id,
     name: this.name,
     description: this.description,
@@ -20,10 +21,6 @@ AccountSchema.method("toAPI", function toAPI(isAdmin = false) {
     usersCount: this.usersId.length,
     adminId: this.adminId
   };
-  if (isAdmin) {
-    json.inviteToken = this.inviteToken;
-  }
-  return json;
 });
 
 AccountSchema.method("userBelongTo", function userBelongTo(userId) {

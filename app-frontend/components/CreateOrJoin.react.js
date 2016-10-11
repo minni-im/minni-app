@@ -11,7 +11,7 @@ function CreateOrJoin(props) {
       <div className="create">
         <h3>Create</h3>
         <GroupIcon />
-        <p>Create a new team &amp; invite your teammates to join.</p>
+        <p>Create a new team &amp; invite teammates to join.</p>
         <button
           className="button-primary"
           onClick={props.onCreate}
@@ -21,7 +21,7 @@ function CreateOrJoin(props) {
       <div className="join">
         <h3>Join</h3>
         <GroupAddIcon />
-        <p>Enter an invite link &amp; join an existing to team setup.</p>
+        <p>Enter an invitation link &amp; join an existing team.</p>
         <button
           className="button-highlight"
           onClick={props.onJoin}
@@ -55,7 +55,8 @@ export default class CreateOrJoinContainer extends React.Component {
   }
 
   onJoinClick() {
-
+    // Full reload here, as we want to fetch proper fresh info
+    document.location = "/";
   }
 
   render() {
