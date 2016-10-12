@@ -30,10 +30,10 @@ module.exports = {
     alias: {
       "minni-plugins-toolkit": path.resolve(__dirname, "app-frontend", "libs", "PluginsToolkit.js")
     },
-    fallback: path.resolve(__dirname, "node_modules")
+    modules: [path.resolve(__dirname, "node_modules")]
   },
   resolveLoader: {
-    fallback: path.resolve(__dirname, "node_modules")
+    modules: [path.resolve(__dirname, "node_modules")]
   },
   module: {
     loaders: [
