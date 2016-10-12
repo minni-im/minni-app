@@ -7,28 +7,36 @@ import UserStore from "../stores/UserStore";
 import Logger from "../libs/Logger";
 const logger = Logger.create("UserActionCreators");
 
-export function updateProfile( profile ) {
-  dispatch( {
+export function receiveUser(accountId, user) {
+  dispatch({
+    type: ActionTypes.LOAD_USERS_SUCCESS,
+    accountId,
+    users: [user]
+  });
+}
+
+export function updateProfile(profile) {
+  dispatch({
     type: ActionTypes.PROFILE_UPDATE,
     profile
-  } );
+  });
 
   return request(EndPoints.USER_PROFILE, {
-      method: "POST",
-      body: profile
-    })
-    .then( ({ ok, message, user }) => {
-      if ( ok ) {
-        dispatch( {
+    method: "POST",
+    body: profile
+  })
+    .then(({ ok, message, user }) => {
+      if (ok) {
+        dispatch({
           type: ActionTypes.PROFILE_UPDATE_SUCCESS,
           user
-        } );
+        });
       } else {
         logger.error(message);
-        dispatch( {
+        dispatch({
           type: ActionTypes.PROFILE_UPDATE_FAILURE,
           profile
-        } );
+        });
       }
       return { ok, message };
     });

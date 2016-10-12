@@ -26,7 +26,6 @@ function transformMessage(message) {
   message.contentParsed = parseContent(message.content, false);
 
   message.user = UserStore.getUser(message.userId);
-  logger.info("User", message.userId, message.user.toJSON());
   message.embeds = Immutable.fromJS(message.embeds || []);
   return new Message(message);
 }

@@ -59,10 +59,16 @@ export default (app) => {
                   .then(savedInvite => [savedAccount, savedInvite]);
               })
               .then(([savedAccount, savedInvite]) => {
+                savedAccount = savedAccount.toAPI(false);
+                app.io.in(savedAccount.id)
+                  .emit("account:join", {
+                    user: req.user.toAPI(),
+                    account: savedAccount
+                  });
                 res.json({
                   ok: true,
                   invite: savedInvite.toAPI(false),
-                  account: savedAccount.toAPI(false)
+                  account: savedAccount
                 });
               });
           }

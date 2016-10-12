@@ -2,8 +2,11 @@
 import keyMirror from "keymirror";
 
 export const ActionTypes = keyMirror({
+  SESSION_START: null,
+
   CONNECTION_START: null,
   CONNECTION_OPEN: null,
+  CONNECTION_CLOSE: null,
 
   LOAD_USER: null,
   LOAD_USER_SUCCESS: null,

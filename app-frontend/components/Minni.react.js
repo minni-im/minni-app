@@ -14,6 +14,7 @@ import RoomCreate from "./RoomCreate.react";
 import AccountSwitcher from "./sidebars/AccountSwitcher.react";
 import SoundPlayer from "./generic/SoundPlayer.react";
 
+import { sessionStart } from "../actions/AuthenticationActionCreators";
 import * as AccountActionCreators from "../actions/AccountActionCreators";
 
 class AccountSelector extends React.Component {
@@ -25,15 +26,28 @@ class AccountSelector extends React.Component {
     AccountActionCreators.selectAccount(nextProps.params.accountSlug);
   }
 
-  render() {
-    return null;
+  render() { return null; }
+}
+
+class SessionStart extends React.Component {
+  componentWillMount() {
+    sessionStart();
+    const appHolder = document.querySelector("#splashscreen");
+    setTimeout(() => {
+      document.body.classList.add("loaded");
+      setTimeout(() => {
+        appHolder.classList.add("splashscreen--hidden");
+      }, 500);
+    }, 1000);
   }
+  render() { return null; }
 }
 
 
 const App = () => (
   <div className="minni-app flex-horizontal flex-spacer">
     <AccountSwitcher />
+    <Match pattern="/" component={SessionStart} />
     <Match exactly pattern="/" component={Dashboard} />
 
     <Match pattern="/dashboard" component={DashboardSidebar} />
