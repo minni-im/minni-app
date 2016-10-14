@@ -5,12 +5,12 @@ import TabBar, { TabPanel } from "./generic/TabBar.react";
 class Settings extends React.Component {
   render() {
     const { account } = this.props;
-    return <main className="flex-spacer flex-vertical settings">
+    return (<main className="flex-spacer flex-vertical settings">
       <section className="flex-spacer flex-vertical">
         <header>
           <div className="header-info">
             <h2>Settings</h2>
-            <h3>{account.displayName}</h3>
+            <h3>{account.toString()}</h3>
           </div>
         </header>
         <section className="panel flex-spacer flex-vertical">
@@ -27,7 +27,7 @@ class Settings extends React.Component {
           </TabBar>
         </section>
       </section>
-    </main>;
+    </main>);
   }
 }
 

@@ -1,6 +1,7 @@
 import React from "react";
 import keyMirror from "keymirror";
 import classnames from "classnames";
+import clickOutside from "click-outside";
 
 class Popover extends React.Component {
   static TYPE = keyMirror({
@@ -24,12 +25,16 @@ class Popover extends React.Component {
     super(props);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onButtonClicked = this.onButtonClicked.bind(this);
-    this.onBlur = this.onBlur.bind(this);
+    this.onClickOutside = this.onClickOutside.bind(this);
     this.focusOnOpen = false;
   }
 
   state = {
     visible: false
+  }
+
+  componentDidMount() {
+    this.clickOutsideHandler = clickOutside(this.popoverContainer, this.onClickOutside.bind(this));
   }
 
   componentDidUpdate() {
@@ -39,29 +44,28 @@ class Popover extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    if (this.clickOutsideHandler) {
+      this.clickOutsideHandler();
+    }
+  }
+
+  onClickOutside() {
+    this.close();
+  }
+
   onKeyDown(event) {
     if (event.key === "Escape") {
       this.close();
     }
   }
 
-  onButtonClicked(event) {
-    event.stopPropagation();
+  onButtonClicked() {
     if (this.state.visible) {
       this.close();
     } else {
       this.open();
     }
-  }
-
-  onBlur(event) {
-    const target = event.nativeEvent.relatedTarget;
-    if (target && this.popoverContainer.contains(target)) {
-      return;
-    }
-    this.setState({
-      visible: false
-    });
   }
 
   open() {
@@ -122,7 +126,7 @@ class Popover extends React.Component {
           })}
           ref={(popover) => { this.popover = popover; }}
         >
-          {this.props.children}
+          {React.cloneElement(this.props.children)}
         </div>
       );
     }
@@ -132,7 +136,6 @@ class Popover extends React.Component {
         className={classnames("popover-container", this.props.className)}
         ref={(popoverContainer) => { this.popoverContainer = popoverContainer; }}
         onKeyDown={this.onKeyDown}
-        onBlur={this.onBlur}
       >
         {wrapperComponent}
         {popoverComponent}

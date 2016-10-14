@@ -13,7 +13,7 @@ const AccountRecord = Immutable.Record({
 });
 
 export default class Account extends AccountRecord {
-  get displayName() {
+  toString() {
     return capitalize(this.name);
   }
 

@@ -37,10 +37,10 @@ class SelectedAccountStore extends ReduceStore {
   }
 
   getAccount() {
-    return AccountStore.getAccount(this.getAccountSlug());
+    return AccountStore.getAccount(this.getSlug());
   }
 
-  getAccountSlug() {
+  getSlug() {
     return this.getState();
   }
 

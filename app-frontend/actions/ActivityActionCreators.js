@@ -1,4 +1,4 @@
-import { dispatchAsync } from "../Dispatcher";
+import { dispatch, dispatchAsync } from "../Dispatcher";
 import { ActionTypes, USER_STATUS } from "../Constants";
 
 import UserStore from "../stores/UserStore";
@@ -12,7 +12,7 @@ export function setStatus(status) {
 }
 
 export function updateStatus(userId, status) {
-  dispatchAsync({
+  dispatch({
     type: ActionTypes.UPDATE_USER_STATUS,
     userId,
     status

@@ -1,24 +1,22 @@
 import Immutable from "immutable";
-import { MapStore, withNoMutations } from "../libs/Flux";
+import { MapStore } from "../libs/Flux";
 
 import Dispatcher from "../Dispatcher";
-import { dispatch } from "../Dispatcher";
 
 import { ActionTypes } from "../Constants";
 
+import ConnectionStore from "./ConnectionStore";
 import AccountStore from "./AccountStore";
 import RoomStore from "./RoomStore";
 
 import SelectedAccountStore from "./SelectedAccountStore";
 
 import Storage from "../libs/Storage";
-
 import Logger from "../libs/Logger";
+
 const logger = Logger.create("ConnectedRoomStore");
 
 const CONNECTED_ROOMS = "connectedRooms";
-
-let __connected = false;
 
 // TODO: to be updated with ID instead of slug
 function handleNewAccount(state, { account }) {
@@ -41,17 +39,10 @@ function handleRoomLeave(state, { accountSlug, roomSlug }) {
   return state;
 }
 
-function handleConnectionOpen() {
-  __connected = true;
-}
-
 class ConnectedRoomStore extends MapStore {
   initialize() {
-    this.waitFor(AccountStore, SelectedAccountStore, RoomStore);
+    this.waitFor(ConnectionStore, AccountStore, SelectedAccountStore, RoomStore);
     this.addAction(ActionTypes.ACCOUNT_NEW, handleNewAccount);
-
-    this.addAction(ActionTypes.CONNECTION_OPEN, withNoMutations(handleConnectionOpen));
-
     this.addAction(ActionTypes.ROOM_JOIN, handleRoomJoin);
     this.addAction(ActionTypes.ROOM_LEAVE, handleRoomLeave);
   }
@@ -63,7 +54,7 @@ class ConnectedRoomStore extends MapStore {
   }
 
   isRoomConnected(accountSlug, roomSlug) {
-    if (!__connected) {
+    if (!ConnectionStore.isConnected()) {
       return true;
     }
     const { id: accountId } = AccountStore.getAccount(accountSlug);
@@ -75,7 +66,7 @@ class ConnectedRoomStore extends MapStore {
   }
 
   getRooms(accountId) {
-    if (!__connected || !accountId) {
+    if (!ConnectionStore.isConnected() || !accountId) {
       return Immutable.Map();
     }
     const roomsId = this.getState().get(accountId, Immutable.Set()).toArray();

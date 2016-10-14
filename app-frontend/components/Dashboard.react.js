@@ -21,7 +21,7 @@ const Dashboard = (props) => {
     return (
       <div key={account.slug} className="team flex-horizontal">
         <div className="flex-spacer">
-          <div className="name">{account.displayName}</div>
+          <div className="name">{account.toString()}</div>
           <div className="description">{account.description}</div>
           <div className="members">{
             account.usersId.length > 0 ?

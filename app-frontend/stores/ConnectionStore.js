@@ -29,7 +29,7 @@ const handlers = {
   },
 
   connected({ user, accounts, rooms, users, presence }) {
-    dispatchAsync({
+    dispatch({
       type: ActionTypes.CONNECTION_OPEN,
       user,
       accounts,
@@ -102,7 +102,9 @@ const handlers = {
     },
 
     presence({ userId, status }) {
-      ActivityActionCreators.updateStatus(userId, status);
+      if (userId !== UserStore.getConnectedUser().id) {
+        ActivityActionCreators.updateStatus(userId, status);
+      }
     }
   },
 
@@ -135,9 +137,9 @@ function handleSessionStart() {
   }
 }
 
-function handleConnectionOpen(state) {
-  ActivityActionCreators.setStatus(USER_STATUS.CONNECTING);
-  return state.add(true);
+function handleConnectionOpen() {
+  // ActivityActionCreators.setStatus(USER_STATUS.CONNECTING);
+  return true;
 }
 
 function handleRoomJoin({ accountSlug, roomSlug }) {
@@ -165,8 +167,8 @@ function handleUserStatus({ status, oldStatus }) {
   }
 }
 
-function handleConnectionLost(state) {
-  return state.clear().add(false);
+function handleConnectionLost() {
+  return false;
 }
 
 class ConnectionStore extends ReduceStore {
@@ -182,8 +184,12 @@ class ConnectionStore extends ReduceStore {
     this.addAction(ActionTypes.SET_USER_STATUS, withNoMutations(handleUserStatus));
   }
 
+  getInitialState() {
+    return false;
+  }
+
   isConnected() {
-    return this.getState().last();
+    return this.getState();
   }
 }
 

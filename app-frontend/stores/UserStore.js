@@ -1,15 +1,15 @@
-import { MapStore } from "../libs/Flux";
+// We import it here so it is loaded. Store has public API and thus would never
+// be loaded by a component.
+import "./PresenceStore";
 
+import { MapStore } from "../libs/Flux";
 import { ActionTypes, USER_STATUS } from "../Constants";
 
 import Dispatcher from "../Dispatcher";
 import User from "../models/User";
 
-// We import it here so it is loaded. Store has public API and thus would never
-// be loaded by a component.
-import "./PresenceStore";
-
 import Logger from "../libs/Logger";
+
 const logger = Logger.create("UserStore");
 
 let connectedUserId;
@@ -29,11 +29,6 @@ function handleUserAdd(state, { user }) {
 
 function handleStatusUpdate(state, { userId, status }) {
   if (!userId) {
-    if (connectedUserId === undefined) {
-      // Weird use case where FF is coming there before the actual connectedUserId
-      // is there
-      return state;
-    }
     userId = connectedUserId;
   }
   if (!state.has(userId)) {

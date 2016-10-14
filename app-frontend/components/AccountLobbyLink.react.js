@@ -34,11 +34,13 @@ class AccountLobbyLink extends React.Component {
         <span className="icon"><LobbyIcon /></span>
         <span className="name">
           Lobby
-          <span> • {account && account.displayName}</span>
+          <span> • {account && account.toString()}</span>
         </span>
       </Link>
     );
   }
 }
 
-export default Container.create(AccountLobbyLink);
+// TODO: weird side-effect that we have to enforce pure: false to have the
+// Link to refresh its activeClassName
+export default Container.create(AccountLobbyLink, { pure: false });
