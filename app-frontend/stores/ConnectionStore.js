@@ -1,5 +1,5 @@
 import { ReduceStore, withNoMutations } from "../libs/Flux";
-import Dispatcher, { dispatch } from "../Dispatcher";
+import Dispatcher, { dispatch, dispatchAsync } from "../Dispatcher";
 
 import { ActionTypes, SOCKETIO_OPTIONS, USER_STATUS } from "../Constants";
 
@@ -23,31 +23,43 @@ const handlers = {
     dispatch({
       type: ActionTypes.CONNECTION_START
     });
+    socket.emit("connect-me", {
+      connectedRooms: ConnectedRoomStore.getAllIds()
+    });
   },
+
   connected({ user, accounts, rooms, users, presence }) {
-    dispatch({
+    dispatchAsync({
       type: ActionTypes.CONNECTION_OPEN,
       user,
       accounts,
       rooms,
-      users
+      users,
+      presence
     });
-
-    presence.forEach(({ userId, status }) => ActivityActionCreators.updateStatus(userId, status));
-
-    // TODO: Maybe this call could be performed on the server.
-    ActivityActionCreators.updateStatus(user.id, USER_STATUS.ONLINE);
   },
+
   disconnect() {
     const userId = UserStore.getConnectedUser().id;
     ActivityActionCreators.updateStatus(userId, USER_STATUS.OFFLINE);
+    dispatch({
+      type: ActionTypes.CONNECTION_LOST
+    });
   },
+
   reconnecting() {
     const userId = UserStore.getConnectedUser().id;
     ActivityActionCreators.updateStatus(userId, USER_STATUS.CONNECTING);
   },
+
   reconnect() {
     ActivityActionCreators.setStatus(USER_STATUS.ONLINE);
+  },
+
+  reconnect_failed(/* attempts */) {
+    // TODO: should notify the user that it is over.
+    logger.error("Failed to reconnect. Refresh the page.");
+    ActivityActionCreators.setStatus(USER_STATUS.OFFLINE);
   },
 
   account: {
@@ -123,12 +135,6 @@ function handleSessionStart() {
   }
 }
 
-function handleConnectionstart() {
-  socket.emit("connect-me", {
-    connectedRooms: ConnectedRoomStore.getAllIds()
-  });
-}
-
 function handleConnectionOpen(state) {
   ActivityActionCreators.setStatus(USER_STATUS.CONNECTING);
   return state.add(true);
@@ -167,7 +173,6 @@ class ConnectionStore extends ReduceStore {
   initialize() {
     this.waitFor(AccountStore, UserStore);
     this.addAction(ActionTypes.SESSION_START, withNoMutations(handleSessionStart));
-    this.addAction(ActionTypes.CONNECTION_START, withNoMutations(handleConnectionstart));
     this.addAction(ActionTypes.CONNECTION_OPEN, handleConnectionOpen);
     this.addAction(ActionTypes.CONNECTION_LOST, handleConnectionLost);
 

@@ -1,8 +1,9 @@
-import { dispatch } from "../Dispatcher";
+import { dispatchAsync, dispatch } from "../Dispatcher";
 import { ActionTypes, EndPoints } from "../Constants";
 import { request } from "../utils/RequestUtils";
 
 import Logger from "../libs/Logger";
+
 const logger = Logger.create("AccountActionCreators");
 
 export function createAccount({ name, description }) {
@@ -64,7 +65,7 @@ export function selectAccount(accountSlug) {
 }
 
 export function deselectCurrentAccount() {
-  dispatch({
+  dispatchAsync({
     type: ActionTypes.ACCOUNT_DESELECT
   });
 }

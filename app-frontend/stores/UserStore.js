@@ -27,18 +27,6 @@ function handleUserAdd(state, { user }) {
   return state.set(user.id, new User(user));
 }
 
-function handleConnectionOpen(state, { user, users }) {
-  connectedUserId = user.id;
-  user.status = USER_STATUS.ONLINE;
-  state = state.set(user.id, new User(user));
-  logger.info("Registering logged in user", user.fullname, user.id);
-  return handleUsersAdd(state, { users });
-}
-
-function handleProfileUpdate(state, { user }) {
-  return handleUserAdd(state, { user });
-}
-
 function handleStatusUpdate(state, { userId, status }) {
   if (!userId) {
     if (connectedUserId === undefined) {
@@ -52,6 +40,23 @@ function handleStatusUpdate(state, { userId, status }) {
     return state;
   }
   return state.update(userId, user => user.set("status", status));
+}
+
+function handleConnectionOpen(state, { user, users, presence }) {
+  connectedUserId = user.id;
+  user.status = USER_STATUS.ONLINE;
+  state = state.set(user.id, new User(user));
+  logger.info("Registering logged in user", user.fullname, user.id);
+  state = handleUsersAdd(state, { users });
+
+  presence.forEach(({ userId, status }) => {
+    state = handleStatusUpdate(state, { userId, status });
+  });
+  return state;
+}
+
+function handleProfileUpdate(state, { user }) {
+  return handleUserAdd(state, { user });
 }
 
 class UserStore extends MapStore {

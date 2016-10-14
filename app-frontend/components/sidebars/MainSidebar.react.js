@@ -15,9 +15,11 @@ import RoomStore from "../../stores/RoomStore";
 import SelectedRoomStore from "../../stores/SelectedRoomStore";
 import UnreadMessageStore from "../../stores/UnreadMessageStore";
 
-import { LobbyIcon, RoomIcons, LogoutIcon } from "../../utils/IconsUtils";
+import { RoomIcons, LogoutIcon } from "../../utils/IconsUtils";
 import { parseTitle } from "../../utils/MarkupUtils";
 
+import AccountName from "../AccountName.react";
+import AccountLobbyLink from "../AccountLobbyLink.react";
 import UserInfoPanel from "../UserInfoPanel.react";
 import Popover from "../generic/Popover.react";
 
@@ -77,14 +79,11 @@ class MainSidebar extends React.Component {
 
   render() {
     const { accountsSize, account, rooms, selectedRooms } = this.state;
-    if (!account) {
-      return false;
-    }
     let logo;
     if (accountsSize === 1) {
       logo = <h1>{Minni.name}</h1>;
     } else {
-      logo = <h2 className="account">{account.displayName}</h2>;
+      logo = <AccountName className="account" />;
     }
 
     const closeUserInfoPopover = () => {
@@ -95,17 +94,9 @@ class MainSidebar extends React.Component {
       <header className="flex-vertical">
         {logo}
         <nav className="flex-vertical flex-spacer">
-          <Link
-            to={`/chat/${account.name}/lobby`}
+          <AccountLobbyLink
             className="lobby flex-horizontal"
-            activeClassName="selected"
-          >
-            <span className="icon"><LobbyIcon /></span>
-            <span className="name">
-              Lobby
-              {accountsSize === 1 ? <span> • {account.displayName}</span> : ""}
-            </span>
-          </Link>
+          />
           <a className="separator">{rooms.size === 0 ? "No connected rooms" : "Rooms"}</a>
           {rooms.toSeq()
             .sortBy(room => (room.starred ? "a" : `z-${room.name}`))
@@ -128,7 +119,7 @@ class MainSidebar extends React.Component {
                   <span className="icon">
                     {room.private ?
                       <RoomIcons.RoomPrivateIcon /> :
-                      <RoomIcons.RoomPublicIcon />
+                        <RoomIcons.RoomPublicIcon />
                     }
                   </span>
                   <span className="name">{parseTitle(room.name)}</span>

@@ -8,7 +8,7 @@ const nodeEnv = process.env.NODE_ENV || "development";
 const RELEASE = nodeEnv === "production";
 
 module.exports = {
-  devtool: RELEASE ? "hidden-source-map" : "cheap-module-eval-source-map",
+  devtool: RELEASE ? "hidden-source-map" : "cheap-module-source-map",
   context: path.join(__dirname, "app-frontend"),
   entry: {
     minni: "./app.react.js",

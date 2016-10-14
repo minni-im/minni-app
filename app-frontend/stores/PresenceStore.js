@@ -11,7 +11,7 @@ const logger = Logger.create("PresenceStore");
 
 let idleTimeoutID;
 let awayTimeoutID;
-let autoStatus = true;
+let autoStatus = false;
 
 function cancelTimers() {
   clearTimeout(idleTimeoutID);
@@ -33,9 +33,16 @@ function activateIdleTimer() {
   idleTimeoutID = setTimeout(activateAwayTimer, IDLE_TIMEOUT);
 }
 
-function handleConnectionOpen() {
+function handleConnectionOpen({}) {
+  autoStatus = true;
   cancelTimers();
   window.addEventListener("click", cancelTimers, true);
+}
+
+function handleConnectionLost() {
+  autoStatus = false;
+  cancelTimers();
+  window.removeEventListener("click", cancelTimers);
 }
 
 function handleUserStatus({ userId, status, force }) {
@@ -60,6 +67,7 @@ class PresenceStore extends MapStore {
   initialize() {
     this.waitFor(ConnectionStore);
     this.addAction(ActionTypes.CONNECTION_OPEN, withNoMutations(handleConnectionOpen));
+    this.addAction(ActionTypes.CONNECTION_LOST, withNoMutations(handleConnectionLost));
     this.addAction(ActionTypes.SET_USER_STATUS, withNoMutations(handleUserStatus));
 
     this.addAction(ActionTypes.WINDOW_FOCUS, withNoMutations(handleWindowFocus));

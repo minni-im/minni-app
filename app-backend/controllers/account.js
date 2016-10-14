@@ -19,8 +19,10 @@ export default (app) => {
     "/",
     "/create",
     "/dashboard",
-    "/settings/:accountName/?*",
-    "/chat/:accountName/?*"
+    "/settings/:accountName",
+    "/settings/:accountName/*",
+    "/chat/:accountName",
+    "/chat/:accountName/*"
   ], requireLoginRedirect, requireProfileInfoRedirect, (req, res) => {
     const Account = recorder.model("Account");
     Account.getListForUser(req.user.id).then((accounts) => {
