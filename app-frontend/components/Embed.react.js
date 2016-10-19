@@ -6,7 +6,6 @@ function EmbedWrapper(props) {
   return (
     <div
       className={props.className}
-      {...props}
       onClick={(event) => {
         if (event.altKey) {
           props.onHidePreview();
