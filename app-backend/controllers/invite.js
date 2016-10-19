@@ -154,22 +154,23 @@ export default (app) => {
     delete(req, res) {
       const Invite = recorder.model("Invite");
       const { inviteToken } = req.params;
+      console.log("About to remove inivite:", inviteToken);
       Invite.findByToken(inviteToken)
+        .then(invite => invite.remove())
         .then((invite) => {
-          invite.delete()
-            .then((updatedInvite) => {
-              res.json({
-                ok: true,
-                invite: updatedInvite.toAPI()
-              });
-            }, (error) => {
-              res.status(500).json({
-                ok: false,
-                inviteToken,
-                errors: error,
-                message: "Failed to delete invitation"
-              });
-            });
+          res.json({
+            ok: true,
+            invite: invite.toAPI()
+          });
+          return;
+        }, (error) => {
+          res.status(500).json({
+            ok: false,
+            inviteToken,
+            errors: error,
+            message: "Failed to delete invitation"
+          });
+          return;
         });
     }
   });

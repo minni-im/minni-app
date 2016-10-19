@@ -29,11 +29,16 @@ function handleInviteReceived(state, { invite }) {
   return state.set(invite.token, createInvitationRecord(invite));
 }
 
+function handleInvitationDelete(state, { inviteToken }) {
+  return state.delete(inviteToken);
+}
+
 class InviteStore extends MapStore {
   initialize() {
     this.waitFor(ConnectionStore, SelectedAccountStore);
     this.addAction(ActionTypes.LOAD_INVITATIONS_SUCCESS, handleLoadInvites);
     this.addAction(ActionTypes.INVITATION_CREATE_SUCCESS, handleInviteReceived);
+    this.addAction(ActionTypes.INVITATION_DELETE, handleInvitationDelete);
   }
 
   getList(accountId) {
