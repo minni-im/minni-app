@@ -36,6 +36,9 @@ export const ActionTypes = keyMirror({
   ACCOUNT_CREATE_SUCCESS: null,
   ACCOUNT_CREATE_FAILURE: null,
 
+  ACCOUNT_CHECK_VALID: null,
+  ACCOUNT_CHECK_INVALID: null,
+
   ROOM_NEW: null,
   ROOM_SELECT: null,
   ROOMS_SELECT: null,
