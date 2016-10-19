@@ -4,11 +4,14 @@ import { ActionTypes, USER_STATUS } from "../Constants";
 import UserStore from "../stores/UserStore";
 
 export function setStatus(status) {
-  dispatchAsync({
-    type: ActionTypes.SET_USER_STATUS,
-    status,
-    oldStatus: (UserStore.getConnectedUser() && UserStore.getConnectedUser().status)
-  });
+  const oldStatus = UserStore.getConnectedUser() && UserStore.getConnectedUser().status;
+  if (oldStatus !== status) {
+    dispatchAsync({
+      type: ActionTypes.SET_USER_STATUS,
+      status,
+      oldStatus
+    });
+  }
 }
 
 export function updateStatus(userId, status) {
