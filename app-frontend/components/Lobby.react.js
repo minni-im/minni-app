@@ -6,13 +6,11 @@ import * as RoomActionCreators from "../actions/RoomActionCreators";
 
 import RoomSettingsIcon from "./RoomSettingsIcon.react";
 
-import {
-  FavoriteIcon,
-  RoomIcons,
-  SettingsIcon } from "../utils/IconsUtils";
+import { FavoriteIcon, RoomIcons, SettingsIcon } from "../utils/IconsUtils";
 import { parseTitleWithoutLinks } from "../utils/MarkupUtils";
 
 import Logger from "../libs/Logger";
+
 const logger = Logger.create("Lobby");
 
 class Room extends React.Component {

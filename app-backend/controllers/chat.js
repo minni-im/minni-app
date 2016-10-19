@@ -1,12 +1,6 @@
 import recorder from "tape-recorder";
 
 export default (app) => {
-  app.io.on("connection", (socket) => {
-    const { user } = socket.request;
-    // console.log(`'${user.id}' is connecting`);
-    app.io.emit("users:connect", { user: user.toAPI() });
-  });
-
   app.io.route("connect-me", (req) => {
     const Account = recorder.model("Account");
     const User = recorder.model("User");
@@ -15,19 +9,20 @@ export default (app) => {
     const { socket, user } = req;
     const { connectedRooms } = req.data;
 
-    Account.getListForUser(user.id).then(accounts => {
+    Account.getListForUser(user.id).then((accounts) => {
       const size = accounts.length;
 
-      accounts = accounts.map(account => {
+      accounts = accounts.map((account) => {
         socket.join(account.id);
         // console.log(`'${user.id}' has joined '${account.id}'`);
+        app.io.emit("users:connect", { user: user.toAPI() });
         return account.toAPI(user.id === account.adminId);
       });
 
-      const rooms = accounts.map(account => {
+      const rooms = accounts.map((account) => {
         const { id: accountId } = account;
         if (connectedRooms[accountId]) {
-          connectedRooms[accountId].forEach(roomId => {
+          connectedRooms[accountId].forEach((roomId) => {
             const socketKey = `${accountId}:${roomId}`;
             socket.join(socketKey);
             socket.broadcast.to(socketKey).emit("users:join", {
@@ -42,7 +37,7 @@ export default (app) => {
       });
 
       const usersId = accounts.reduce((ids, account) => {
-        account.usersId.forEach(id => {
+        account.usersId.forEach((id) => {
           ids.add(id);
         });
         return ids;
@@ -51,7 +46,7 @@ export default (app) => {
 
       const presence = new Set();
 
-      Promise.all([...rooms, ...users]).then(results => {
+      Promise.all([...rooms, ...users]).then((results) => {
         const finalRooms = results
           .slice(0, size)
           .reduce((flat, flatRooms) => flat.concat(flatRooms), [])
@@ -78,7 +73,7 @@ export default (app) => {
           users: finalUsers,
           presence: Array.from(presence)
         });
-      }).catch(ex => {
+      }).catch((ex) => {
         console.log(`Socket connection failed [sid: ${socket.id}, id:${user.id}]`);
         console.error(ex);
       });

@@ -60,7 +60,7 @@ function handleMessageUpdate(state, { message: newMessage }) {
     return state;
   }
 
-  return state.set(roomId, messages.update(newMessage.id, message => {
+  return state.set(roomId, messages.update(newMessage.id, (message) => {
     if (newMessage.embeds) {
       message = message.set("embeds", Immutable.fromJS(newMessage.embeds));
     }
@@ -71,7 +71,7 @@ function handleMessageUpdate(state, { message: newMessage }) {
 function handleLoadMessagesSuccess(state, { roomId, messages: newMessages }) {
   const oldMessages = this.getMessages(roomId);
 
-  const messages = Immutable.OrderedMap().withMutations(map => {
+  const messages = Immutable.OrderedMap().withMutations((map) => {
     newMessages.reverse().forEach(message =>
       map.set(message.id, mergeMessage(oldMessages, message))
     );
@@ -84,7 +84,7 @@ function handleLoadMessagesSuccess(state, { roomId, messages: newMessages }) {
 function handleTruncateMessagesList(state, { roomId, scrollTop }) {
   if (scrollTop === undefined) {
     let messages = state.get(roomId, Immutable.OrderedMap());
-    messages = messages.withMutations(map => {
+    messages = messages.withMutations((map) => {
       while (map.size > MAX_MESSAGES_PER_ROOMS) {
         map.remove(map.first().id);
       }

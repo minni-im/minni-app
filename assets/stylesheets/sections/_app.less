@@ -85,3 +85,128 @@
     border-bottom: 1px dotted @gray-light;
   }
 }
+
+.welcome {
+  flex: 640px 0 0;
+  align-self: center;
+  margin: 0 auto;
+  text-align: center;
+
+  h2 {
+    font-size: 36px;
+  }
+
+  > p {
+    font-size: 20px;
+    margin: 20px auto;
+  }
+
+  .create-or-join {
+    position: relative;
+    background-color: @background-light;
+    color: @color-dark;
+    border-radius: 4px;
+
+    margin-top: 15px;
+    min-height: 320px;
+
+    overflow: hidden;
+
+    .create, .join {
+      margin: 25px 15px 0;
+      flex: 1;
+      h3 {
+        font-size: 24px;
+      }
+      svg {
+        .square(128px);
+        fill: @gray;
+      }
+      p {
+        color: @gray;
+        margin: 10px 0;
+      }
+    }
+    .create h3 {
+      color: @electric-blue;
+    }
+    .join h3 {
+      color: @dark-orange;
+    }
+
+    .separator {
+      width: 0;
+      border-left: 3px solid @background-dark;
+      border-right: 3px solid @background-dark;
+
+      &:after {
+        @size: 24px;
+        content: attr(data-text);
+        font-weight: bold;
+        position: absolute;
+        .square(@size);
+        line-height: @size;
+        padding: 6px;
+        border-radius: 50%;
+        background-color: @background-dark;
+        border: 6px solid @background-dark;
+        color: @color-light;
+        margin-left: -@size;
+        margin-top: -@size;
+        top: 50%;
+      }
+    }
+
+    .actions {
+      padding: 10px 15px;
+      background-color: @gray-lighter;
+      border-top: 1px dotted @gray-light;
+    }
+
+    .create-or-join-choice, .create-choice, .join-choice {
+      position: absolute;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+    }
+
+    .slide-enter {
+      &.create-or-join-choice {
+        transform: translate(-100%);
+      }
+
+      &.create-choice, &.join-choice {
+        transform: translate(100%);
+      }
+    }
+
+    .slide-enter.slide-enter-active {
+      transition: transform 300ms ease-in-out;
+      &.create-or-join-choice {
+        transform: translate(0%);
+      }
+
+      &.create-choice, &.join-choice {
+        transform: translate(0%);
+      }
+    }
+
+    .slide-leave {
+      &.create-or-join-choice {
+        transform: translate(0%);
+      }
+      &.create-choice, &.join-choice {
+        transform: translate(0%);
+      }
+    }
+
+    .slide-leave.slide-leave-active {
+      transition: transform 300ms ease-in-out;
+      &.create-or-join-choice {
+        transform: translate(-100%);
+      }
+      &.create-choice, &.join-choice {
+        transform: translate(100%);
+      }
+    }
+  }
+}

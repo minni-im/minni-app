@@ -6,6 +6,7 @@ export function request(url, options = {}) {
   options = Object.assign({
     credentials: "same-origin",
     headers: {
+      "X-Requested-With": "XMLHttpRequest", // stupid hack to be able to use req.xhr on the server
       Accept: "application/json",
       "Content-Type": "application/json"
     }
@@ -16,9 +17,10 @@ export function request(url, options = {}) {
     .join("&");
 
   function getUrl() {
-    if (params.length &&
-      !options.method ||
-      (options.method && options.method.toLowerCase() === "get")) {
+    if (params.length && (
+        !options.method ||
+        (options.method && options.method.toLowerCase() === "get")
+      )) {
       delete options.params;
       return `${url}?${params}`;
     }
@@ -26,10 +28,13 @@ export function request(url, options = {}) {
   }
 
   return fetch(getUrl(), options)
-    .then(response => {
+    .then((response) => {
       if (response.status === 204) {
         return response;
       }
       return response.json();
+    })
+    .catch((error) => {
+      console.log(error);
     });
 }

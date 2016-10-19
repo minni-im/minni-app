@@ -10,6 +10,7 @@ import SelectedAccountStore from "../stores/SelectedAccountStore";
 const PUBLIC = 1;
 const PRIVATE = 2;
 
+
 const TITLE = {
   [PUBLIC]: "This room is public",
   [PRIVATE]: "This room is private"

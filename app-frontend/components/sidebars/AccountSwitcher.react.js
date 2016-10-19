@@ -33,7 +33,7 @@ class Account extends React.Component {
       <Link
         to={link}
         key={account.name}
-        title={account.displayName}
+        title={account.toString()}
         className={classnames("account", {
           "account-selected": selected
         })}
@@ -64,7 +64,7 @@ class AccountSwitcher extends React.Component {
 
   static calculateState() {
     return {
-      selectedAccountSlug: SelectedAccountStore.getAccountSlug(),
+      selectedAccountSlug: SelectedAccountStore.getSlug(),
       accounts: AccountStore.getAccounts()
     };
   }

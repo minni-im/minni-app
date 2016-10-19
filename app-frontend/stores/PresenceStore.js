@@ -5,13 +5,14 @@ import { ActionTypes, USER_STATUS, IDLE_TIMEOUT, AWAY_TIMEOUT } from "../Constan
 import * as ActivityActionCreators from "../actions/ActivityActionCreators";
 
 import ConnectionStore from "./ConnectionStore";
+import UserStore from "./UserStore";
 
 import Logger from "../libs/Logger";
 const logger = Logger.create("PresenceStore");
 
 let idleTimeoutID;
 let awayTimeoutID;
-let autoStatus = true;
+let autoStatus = false;
 
 function cancelTimers() {
   clearTimeout(idleTimeoutID);
@@ -34,13 +35,19 @@ function activateIdleTimer() {
 }
 
 function handleConnectionOpen() {
+  autoStatus = true;
   cancelTimers();
   window.addEventListener("click", cancelTimers, true);
 }
 
-function handleUserStatus({ userId, status, force }) {
-  const me = !userId;
-  if (me && force) {
+function handleConnectionLost() {
+  autoStatus = false;
+  cancelTimers();
+  window.removeEventListener("click", cancelTimers);
+}
+
+function handleUserStatus({ status, force }) {
+  if (force) {
     autoStatus = false;
     cancelTimers();
     return;
@@ -60,8 +67,8 @@ class PresenceStore extends MapStore {
   initialize() {
     this.waitFor(ConnectionStore);
     this.addAction(ActionTypes.CONNECTION_OPEN, withNoMutations(handleConnectionOpen));
+    this.addAction(ActionTypes.CONNECTION_LOST, withNoMutations(handleConnectionLost));
     this.addAction(ActionTypes.SET_USER_STATUS, withNoMutations(handleUserStatus));
-
     this.addAction(ActionTypes.WINDOW_FOCUS, withNoMutations(handleWindowFocus));
   }
 }

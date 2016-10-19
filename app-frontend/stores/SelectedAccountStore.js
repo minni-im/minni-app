@@ -8,23 +8,21 @@ import ConnectionStore from "./ConnectionStore";
 import UserStore from "./UserStore";
 
 import { ActionTypes } from "../Constants";
-
 import Logger from "../libs/Logger";
+
 const logger = Logger.create("SelectedAccountStore");
 
 
 function handleAccountSelect(state, { accountSlug }) {
-  if (state.has(accountSlug)) {
+  if (state === accountSlug) {
     return state;
   }
-  logger.info(`Selecting account from '${state.first()}' => '${accountSlug}'`);
-  state = Immutable.Set([accountSlug]);
-  return state;
+  logger.info(`Selecting account from '${state}' => '${accountSlug}'`);
+  return accountSlug;
 }
 
-function handleAccountDeselect(state) {
-  state = Immutable.Set();
-  return state;
+function handleAccountDeselect() {
+  return null;
 }
 
 class SelectedAccountStore extends ReduceStore {
@@ -35,15 +33,15 @@ class SelectedAccountStore extends ReduceStore {
   }
 
   getInitialState() {
-    return Immutable.Set([null]);
+    return null;
   }
 
   getAccount() {
-    return AccountStore.getAccount(this.getAccountSlug());
+    return AccountStore.getAccount(this.getSlug());
   }
 
-  getAccountSlug() {
-    return this.getState().first();
+  getSlug() {
+    return this.getState();
   }
 
   getUsers(except) {

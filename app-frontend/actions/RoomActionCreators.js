@@ -46,7 +46,7 @@ export function selectRoom(accountSlug, roomSlug) {
 export function deselectRooms() {
   dispatch({
     type: ActionTypes.ROOMS_DESELECT,
-    accountSlug: SelectedAccountStore.getAccountSlug(),
+    accountSlug: SelectedAccountStore.getSlug(),
     roomSlugs: SelectedRoomStore.getRooms()
   });
 }

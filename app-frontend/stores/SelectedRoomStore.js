@@ -44,7 +44,7 @@ class SelectedRoomStore extends MapStore {
     this.addAction(ActionTypes.ROOMS_DESELECT, handleRoomsDeselect);
   }
 
-  getRooms(accountSlug = SelectedAccountStore.getAccountSlug()) {
+  getRooms(accountSlug = SelectedAccountStore.getSlug()) {
     return this.getState().get(accountSlug, Immutable.Set());
   }
 }

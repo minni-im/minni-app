@@ -157,9 +157,8 @@ body > footer {
 /***
  *** LOGIN
  ***/
-body.login, body.signup {
-  background-image: url(/images/photo-overlay.png), url(/images/login/bokeh.jpg);
-  background-position: 0 0;
+body.login, body.signup, body.reset-password {
+  background-position: center;
   background-size: auto auto, cover;
   display: flex;
   flex-flow: column nowrap;
@@ -179,30 +178,61 @@ body.login, body.signup {
   }
 
   main {
-    background-color: fade(@black, 40%);
-    color: @color-light;
-    border-radius: 3px;
-    min-width: 680px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+
     text-align: center;
-    padding: 25px;
-    position: relative;
+    padding: 0;
+    background: none;
 
     .content {
+      background-color: fade(@black, 50%);
+      color: @color-light;
+      border-radius: 5px;
+      text-align: center;
+
       display: flex;
       flex-flow: rows nowrap;
-      justify-content: space-around;
+      min-width: 340px;
+    }
+
+    .content-blur {
+      overflow: hidden;
+      filter: blur(20px);
+
+      .content-blur-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background-position: center;
+        background-size: cover;
+      }
     }
 
     input {
-      border-color: @gray-dark;
+      border-color: fadeout(@electric-blue, 15%);
     }
 
-    .providers, .greetings {
+    .providers {
+      padding: 25px;
       margin: 0 20px;
     }
+
     .greetings {
+      background-color: fadeout(@white, 75%);
       display: flex;
-      align-items: center;
+      flex-flow: column nowrap;
+      justify-content: center;
 
       .logo {
         width: 256px;
@@ -220,7 +250,6 @@ body.login, body.signup {
       justify-content: space-around;
 
       .provider {
-        .button;
         text-decoration: none;
         margin: 0 5px;
 
@@ -233,6 +262,7 @@ body.login, body.signup {
         }
       }
     }
+
     .email {
       margin-top: 30px;
       input {
@@ -244,13 +274,30 @@ body.login, body.signup {
     }
 
     .links {
+      font-size: 11px;
+      color: @gray-light;
       a {
-        color: inherit;
+        font-weight: 500;
+        color: @color-light;
         margin: 0 10px;
         text-decoration: none;
         &:hover {
           text-decoration: underline;
         }
+      }
+    }
+  }
+  main + main {
+    .wrapper {
+      position: relative;
+
+      .alerts {
+        position: absolute;
+        bottom: 100%;
+        width: 100%;
+        display: flex;
+        flex-flow: row;
+        justify-content: center;
       }
     }
   }

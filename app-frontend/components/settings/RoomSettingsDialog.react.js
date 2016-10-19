@@ -13,12 +13,14 @@ import TabBar, { TabPanel } from "../generic/TabBar.react";
 import PluginsStore from "../../stores/PluginsStore";
 import { PLUGIN_TYPES } from "../../Constants";
 
+import Room from "../../models/Room";
+
 import { TrashIcon } from "../../utils/IconsUtils";
 import { camelize } from "../../utils/TextUtils";
 
 export default class RoomSettingsDialog extends React.Component {
   static propTypes = {
-    room: React.PropTypes.object.isRequired,
+    room: React.PropTypes.instanceOf(Room).isRequired,
     onClose: React.PropTypes.func.isRequired
   }
 
@@ -53,7 +55,7 @@ export default class RoomSettingsDialog extends React.Component {
       RoomActionCreators.deleteRoom(this.props.room.id)
         .then(() => {
           if (active) {
-            this.context.router.push(`/chat/${accountSlug}/lobby`);
+            this.context.router.transitionTo(`/chat/${accountSlug}/lobby`);
           } else {
             this.props.onClose(action);
           }
@@ -103,7 +105,7 @@ export default class RoomSettingsDialog extends React.Component {
       name,
       topic
     } = this.props.room;
-    return [
+    const sections = [
       <section>
         <h3>Room details</h3>
         <h4>
@@ -128,9 +130,12 @@ export default class RoomSettingsDialog extends React.Component {
             onBlur={this.onDescChange}
           />
         </div>
-      </section>,
-      this.generateMembersAccess()
+      </section>
     ];
+    if (this.props.room.type !== 0) {
+      sections.push(this.generateMembersAccess());
+    }
+    return sections;
   }
 
   generateInvites() {
@@ -170,35 +175,40 @@ export default class RoomSettingsDialog extends React.Component {
 
   render() {
     const buttons = [
-      <ConfirmButton action="delete">
-        <button className="button-danger button-icon">
-          <TrashIcon className="icon" />
-        </button>
-        <button
-          className="button-danger"
-          title="Clicking this button will delete this room. This can not be recovered."
-        >
-          Delete
-        </button>
-      </ConfirmButton>,
       { action: "save", label: "Save", isPrimary: true }
     ];
 
+    if (this.props.room.type !== 0) {
+      buttons.unshift(
+        <ConfirmButton action="delete">
+          <button className="button-danger button-icon">
+            <TrashIcon className="icon" />
+          </button>
+          <button
+            className="button-danger"
+            title="Clicking this button will delete this room. This can not be recovered."
+          >
+            Delete
+          </button>
+        </ConfirmButton>
+      );
+    }
+
     const categories = {
       overview: [].concat(this.generateOverview()),
-      "instant invitations": [].concat(this.generateInvites())
+      // "instant invitations": [].concat(this.generateInvites())
     };
 
     PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_COMMAND)
       .filter(plugin => !!plugin.SettingsPanel)
       .map(plugin => plugin.SettingsPanel)
-      .forEach(panel => {
+      .forEach((panel) => {
         const { category } = panel;
         categories[category] = (categories[category] || []).concat(panel);
       });
 
 
-    const tabs = Object.keys(categories).map(category => {
+    const tabs = Object.keys(categories).map((category) => {
       const contentSections = categories[category]
         .map((Section, index) => (
           React.isValidElement(Section) ?

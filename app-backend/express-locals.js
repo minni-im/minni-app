@@ -2,6 +2,8 @@ import path from "path";
 import moment from "moment";
 import config from "./config";
 
+const backgrounds = config["login-backgrounds"];
+
 export default {
   setup(app) {
     app.use((req, res, next) => {
@@ -12,7 +14,7 @@ export default {
         },
         hash: (function () {
           try {
-            return require("../dist/public/js/manifest.json");
+            return require("../dist/public/js/manifest.json"); // eslint-disable
           } catch (exception) {
             return {};
           }
@@ -32,7 +34,8 @@ export default {
           hostname: req.hostname,
           protocol: req.protocol
         },
-        moment
+        moment,
+        background: () => backgrounds[Math.floor(Math.random() * backgrounds.length)]
       });
 
       next();

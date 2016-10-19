@@ -1,32 +1,21 @@
-extends layout
+extends auth
 
-block content
-  .content
-    .greetings
-      img.logo(src="/images/logo.png")
+block form-title
+  h1 Welcome to #{name}
 
-    .providers
-      h1 Sign in to minni
-      if providers.length >=1
-        p Sign in with <span class="providers-list">#{providers.map(function(p) {return p.name;}).join(", ")}</span> or Email
-      else
-        p Sign in with your email
-
-      .providers-links
-        each provider in providers
-          a(class=["provider", `provider-${provider.name}`], href=`/login/${provider.name}`)
-            img.logo(src=`data:image/png;base64,${provider.logo}`)
-            | #{provider.name}
-
-      .email
-        form(method="POST", action="/login")
-          p
-            input(type="text", placeholder="Identifier (email)", name="username")
-          p
-            input(type="password", placeholder="Password", name="password")
-          p
-            button Sign in
+block form
+  .email
+    form(method="POST", action="/login")
+      p
+        input(type="text", placeholder="Identifier (email)", name="username")
+      p
+        input(type="password", placeholder="Password", name="password")
+      .links
+        div Forgot your password ?
+          a(href="/login/reset-password") Reset
+      p
+        button.button-highlight.button-big Sign in
 
   .links
-    a(href="/login/reset-password") Forgot password?
-    a(href="/signup") Don't have yet an account?
+    div Don't have yet an account ?
+      a(href="/signup") Signup

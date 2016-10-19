@@ -74,7 +74,7 @@
     "express-session": "1.14.1",
     "express.oi": "0.0.21",
     "flash": "^1.1.0",
-    "flux": "3.0.0",
+    "flux": "2.1.1",
     "highlight.js": "9.7.0",
     "immutable": "^3.7.6",
     "js-yaml": "^3.3.1",

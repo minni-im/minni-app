@@ -1,13 +1,17 @@
 import React from "react";
 import { Container } from "flux/utils";
 
-import Avatar from "./generic/Avatar.react";
+import * as ActivityActionCreators from "../actions/ActivityActionCreators";
+
 import UserStatus from "./UserStatus.react";
-import UserStatusIcon from "./UserStatusIcon.react";
+
+import Avatar from "./generic/Avatar.react";
+import Popover from "./generic/Popover.react";
 import UserSettingsDialogContainer from "./settings/UserSettingsDialogContainer.react";
-import { SettingsIcon } from "../utils/IconsUtils";
 
 import UserStore from "../stores/UserStore";
+
+import { LogoutIcon, SettingsIcon } from "../utils/IconsUtils";
 
 class UserInfoPanel extends React.Component {
   static getStores() {
@@ -38,7 +42,7 @@ class UserInfoPanel extends React.Component {
 
   render() {
     const { user, showSettingsDialog } = this.state;
-
+    if (!user) return false;
     return (
       <div className="user-info flex-horizontal">
         <div className="user flex-horizontal flex-spacer">
@@ -67,5 +71,59 @@ class UserInfoPanel extends React.Component {
   }
 }
 
-const UserInfoPanelContainer = Container.create(UserInfoPanel);
-export default UserInfoPanelContainer;
+
+const InfoContainer = Container.create(UserInfoPanel);
+export default InfoContainer;
+
+export class InfoPanelPopover extends React.Component {
+  render() {
+    return (
+      <Popover
+        ref={(popover) => { this.popover = popover; }}
+        className="user-info--popover"
+        buttonComponent={<InfoContainer />}
+      >
+        <ul className="menu">
+          <li
+            rel="link"
+            onClick={() => {
+              ActivityActionCreators.forceAway();
+              this.popover.close();
+            }}
+          >
+            <span className="user-status-icon" data-status="4" />
+            Away
+          </li>
+          <li
+            rel="link"
+            onClick={() => {
+              ActivityActionCreators.forceDnd();
+              this.popover.close();
+            }}
+          >
+            <span className="user-status-icon" data-status="5" />
+            Do not disturb
+          </li>
+          <li
+            onClick={() => {
+              ActivityActionCreators.setOnline();
+              this.popover.close();
+            }}
+          >
+            <span className="user-status-icon" data-status="2" />
+            Online
+          </li>
+          <li className="separator" />
+          <li>
+            <a href="/logout">
+              <span className="icon">
+                <LogoutIcon />
+              </span>
+              Logout
+            </a>
+          </li>
+        </ul>
+      </Popover>
+    );
+  }
+}

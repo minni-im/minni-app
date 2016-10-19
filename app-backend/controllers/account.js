@@ -4,6 +4,8 @@ import { requireLogin, requireLoginRedirect } from "../middlewares/auth";
 import { requireProfileInfoRedirect } from "../middlewares/profile";
 import { requireValidAccount } from "../middlewares/account";
 
+import { TYPE } from "../models/room";
+
 function sanitizeName(name) {
   return name.toLowerCase()
     .replace(/[^a-z0-9 -]/g, " ")
@@ -17,11 +19,22 @@ export default (app) => {
     "/",
     "/create",
     "/dashboard",
-    "/settings/:accountName/?*",
-    "/chat/:accountName/?*"
+    "/settings/:accountName",
+    "/settings/:accountName/*",
+    "/chat/:accountName",
+    "/chat/:accountName/*"
   ], requireLoginRedirect, requireProfileInfoRedirect, (req, res) => {
     const Account = recorder.model("Account");
     Account.getListForUser(req.user.id).then((accounts) => {
+      const { accountName } = req.params;
+      if (
+        accountName &&
+        !accounts.map(account => account.name).includes(sanitizeName(accountName))
+      ) {
+        res.redirect("/");
+        return;
+      }
+
       res.render("chat", {
         accounts: accounts.map(account => account.toAPI(req.user.id === account.adminId))
       });
@@ -147,6 +160,7 @@ export default (app) => {
         const room = new Room({
           name: "The General Room",
           topic: "This is room is for team-wide communication. All team members can access this room.",
+          type: TYPE.INITIAL,
           adminId: user.id,
           accountId: savedAccount.id
         });
@@ -157,7 +171,9 @@ export default (app) => {
           account: savedAccount.toAPI(true),
           room: savedRoom.toAPI(true)
         }), genericFail);
-      }, genericFail);
+      }, genericFail).catch((err) => {
+        console.log(err);
+      });
     },
 
     update(req, res) {
