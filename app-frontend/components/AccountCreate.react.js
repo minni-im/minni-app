@@ -20,15 +20,17 @@ export default class AccountCreate extends React.Component {
   }
 
   onNameBlur() {
-    const name = this.name.value;
+    const name = this.name.value.trim();
     this.setState({
       valid: true
     });
-    AccountActionCreators.checkExistence(name).then(({ ok, message }) => {
-      if (!ok) {
-        this.showErrorMessage(message);
-      }
-    });
+    if (name.length) {
+      AccountActionCreators.checkExistence(name).then(({ ok, message }) => {
+        if (!ok) {
+          this.showErrorMessage(message);
+        }
+      });
+    }
   }
 
   onCreateClick() {
@@ -63,7 +65,7 @@ export default class AccountCreate extends React.Component {
           <div className="alerts">
             {this.state.valid ?
               <p>Give us some input about you and your teammates</p> :
-              <p className="alert alert-error">{this.state.errorMessage}</p>
+                <p className="alert alert-error">{this.state.errorMessage}</p>
             }
           </div>
           <form>
