@@ -2,6 +2,7 @@ version: '2'
 services:
   db:
     image: klaemo/couchdb
+    restart: always
     ports:
       # exposing the port to access fauxton
       - 5984:5984
@@ -11,6 +12,9 @@ services:
 
   cache:
     image: redis:latest
+    restart: always
+    volumes:
+      - ./etc/redis:/data
 
   minni:
     image: node:latest
