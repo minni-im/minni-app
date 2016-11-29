@@ -37,13 +37,13 @@ class RoomCreate extends React.Component {
       this.state.type,
       this.state.usersId
     ).then(
-      ({ ok, errors }) => {
+      ({ ok, message }) => {
         if (ok) {
           this.context.router.transitionTo({ pathname: `/chat/${account.slug}/lobby` });
           return;
         }
-        if (errors) {
-          this.setState({ message: errors });
+        if (!ok && message) {
+          this.setState({ message });
         }
         this.name.focus();
       });
@@ -58,7 +58,7 @@ class RoomCreate extends React.Component {
   }
 
   render() {
-    let errors;
+    let errors = false;
     if (this.state.message) {
       errors = (
         <div className="alerts">

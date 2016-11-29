@@ -77,7 +77,7 @@ export default (app) => {
       const Account = recorder.model("Account");
       Account.where("name", { key: name }).then((accounts) => {
         if (accounts.length) {
-          return res.json({
+          return res.status(400).json({
             ok: false,
             message: `Account '${name}' is already taken`
           });

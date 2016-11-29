@@ -83,7 +83,7 @@ export default (app) => {
           ok: true,
           message: `Room '${room.name}' has been starred`
         });
-      }, error => {
+      }, (error) => {
         res.json({
           ok: false,
           message: "We did not managed to star the room. Please try again later.",
@@ -110,7 +110,7 @@ export default (app) => {
           ok: true,
           message: `Room '${room.name}' has been unstarred`
         });
-      }, error => {
+      }, (error) => {
         res.json({
           ok: false,
           message: "We did not managed to unstar the room. Please try again later.",
@@ -122,7 +122,7 @@ export default (app) => {
     list(req, res) {
       const Room = recorder.model("Room");
       Room.where("accountId", { key: req.params.accountId })
-        .then(rooms => {
+        .then((rooms) => {
           const { user } = req;
           rooms = rooms
             .filter(room => (
@@ -135,7 +135,7 @@ export default (app) => {
             ok: true,
             rooms
           });
-        }, error => {
+        }, (error) => {
           res.json({
             ok: false,
             errors: error
@@ -150,38 +150,49 @@ export default (app) => {
       const { user, account } = req;
 
       if (!account.userBelongTo(user.id)) {
-        res.json({
+        res.status(401).json({
           ok: false,
           message: "You are not allowed to create a room in this account."
         });
         return;
       }
 
-      const room = new Room({
-        name,
-        topic,
-        type,
-        accountId,
-        usersId,
-        adminId: user.id
-      });
+      Room.isValidName(accountId, name)
+        .then((valid) => {
+          if (!valid) {
+            res.status(400).json({
+              ok: false,
+              message: `A room with name: '${name}' already exist in account: '${account.name}'`
+            });
+            return;
+          }
 
-      room.save().then(newRoom => {
-        app.io.in(accountId).emit("room:create", {
-          room: room.toAPI()
+          const room = new Room({
+            name,
+            topic,
+            type,
+            accountId,
+            usersId,
+            adminId: user.id
+          });
+
+          room.save().then((newRoom) => {
+            app.io.in(accountId).emit("room:create", {
+              room: room.toAPI()
+            });
+            res.status(201).json({
+              ok: true,
+              message: `Room '${name}' has been successfully created`,
+              room: newRoom.toAPI(true)
+            });
+          }, (error) => {
+            res.json({
+              ok: false,
+              message: "Creation of new room failed.",
+              errors: error
+            });
+          });
         });
-        res.status(201).json({
-          ok: true,
-          message: `Room '${name}' has been successfully created`,
-          room: newRoom.toAPI(true)
-        });
-      }, error => {
-        res.json({
-          ok: false,
-          message: "Creation of new room failed.",
-          errors: error
-        });
-      });
     },
 
     update(req, res) {
@@ -240,12 +251,12 @@ export default (app) => {
       const { limit, latest, oldest } = req.query;
       // console.log(`Fetching ${limit} messages for room:${roomId}`);
       Message.getHistory(roomId, latest, oldest, limit)
-        .then(messages => {
+        .then((messages) => {
           res.json({
             ok: true,
             messages: messages.map(message => message.toAPI())
           });
-        }, error => {
+        }, (error) => {
           res.json({
             ok: false,
             message: `Fetching messages for room:${roomId} failed`,

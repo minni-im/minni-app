@@ -119,7 +119,6 @@ export default class Lobby extends React.Component {
             {rooms
               .sortBy(room => room.lastUpdated)
               .toArray()
-              .reverse()
               .map((room, index) => (
                 <Room
                   key={index}

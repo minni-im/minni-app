@@ -9,15 +9,19 @@ const instance = new Dispatcher();
 export default instance;
 
 export const dispatch = (payload) => {
-  const data = { ...payload };
-  delete data.type;
-  console.group(`%c${payload.type}`, STYLE, JSON.stringify(data));
+  if (__DEV__) {
+    const data = { ...payload };
+    delete data.type;
+    console.group(`%c${payload.type}`, STYLE, JSON.stringify(data));
+  }
   try {
     instance.dispatch.call(instance, payload);
   } catch (ex) {
     console.error(ex);
   } finally {
-    console.groupEnd();
+    if (__DEV__) {
+      console.groupEnd();
+    }
   }
 };
 

@@ -142,7 +142,7 @@ export function createRoom(account, name, topic, type, usersId = []) {
       type,
       usersId
     }
-  }).then(({ ok, room, errors }) => {
+  }).then(({ ok, room, message, errors }) => {
     if (ok) {
       dispatch({
         type: ActionTypes.ROOM_CREATE_SUCCESS,
@@ -154,8 +154,9 @@ export function createRoom(account, name, topic, type, usersId = []) {
       type: ActionTypes.ROOM_CREATE_FAILURE,
       accountId,
       room,
+      message,
       errors
     });
-    return { ok, room, errors };
+    return { ok, room, errors, message };
   });
 }

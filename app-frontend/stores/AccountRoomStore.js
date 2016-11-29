@@ -1,6 +1,6 @@
-import Dispatcher from "../Dispatcher";
 import Immutable from "immutable";
 
+import Dispatcher from "../Dispatcher";
 import { MapStore } from "../libs/Flux";
 import AccountStore from "./AccountStore";
 import RoomStore from "./RoomStore";
@@ -16,7 +16,10 @@ class AccountRoomStore extends MapStore {
   }
 
   getRooms(accountId) {
-    return this.getState().get(accountId, Immutable.Set()).toSet();
+    return this.getState()
+      .get(accountId, Immutable.Set())
+      .toSet()
+      .sortBy(room => room.name);
   }
 
   getRoomsSlug(accountId) {

@@ -39,6 +39,12 @@ RoomSchema.virtual({
   }
 });
 
+RoomSchema.static("isValidName", function isValidName(accountId, roomName) {
+  roomName = roomName.toLowerCase();
+  return this.where("accountId", { key: accountId })
+    .then(rooms => rooms.filter(({ name }) => name.toLowerCase() === roomName).length === 0);
+});
+
 RoomSchema.method("isDefaultRoom", function () {
   return this.type === TYPE.INITIAL;
 });
