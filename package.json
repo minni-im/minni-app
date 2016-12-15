@@ -96,7 +96,7 @@
     "react": "15.3.2",
     "react-addons-css-transition-group": "15.3.2",
     "react-dom": "15.3.2",
-    "react-router": "4.0.0-alpha.3",
+    "react-router": "4.0.0-alpha.6",
     "redis": "^2.6.3",
     "request": "^2.79.0",
     "simple-markdown": "^0.2.1",
