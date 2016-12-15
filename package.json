@@ -34,7 +34,7 @@
   "devDependencies": {
     "babel-core": "6.17.0",
     "babel-eslint": "7.0.0",
-    "babel-jest": "16.0.0",
+    "babel-jest": "^18.0.0",
     "babel-loader": "6.2.5",
     "babel-plugin-transform-class-properties": "6.16.0",
     "babel-plugin-transform-object-rest-spread": "6.16.0",
@@ -54,7 +54,7 @@
     "gulp-less": "^3.3.0",
     "gulp-plumber": "^1.0.1",
     "gulp-util": "^3.0.6",
-    "jest-cli": "16.0.1",
+    "jest-cli": "^18.1.0",
     "less-plugin-autoprefix": "^1.4.2",
     "less-plugin-clean-css": "^1.5.1",
     "react-svg-loader": "1.0.1",
