@@ -77,7 +77,7 @@
     "flux": "3.1.0",
     "highlight.js": "9.7.0",
     "immutable": "^3.7.6",
-    "js-yaml": "^3.3.1",
+    "js-yaml": "^3.7.0",
     "json-loader": "^0.5.2",
     "keymirror": "^0.1.1",
     "lodash": "4.16.4",
