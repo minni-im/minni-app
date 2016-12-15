@@ -84,7 +84,7 @@
     "long": "^3.0.1",
     "minni-auth-github": "minni-im/minni-auth-github",
     "moment": "2.15.1",
-    "node-fetch": "1.6.1",
+    "node-fetch": "^1.6.3",
     "node-libs-browser": "1.0.0",
     "node_hash": "^0.2.0",
     "object-path": "0.11.2",
