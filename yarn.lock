@@ -3763,11 +3763,7 @@ lodash@^3.10.0, lodash@^3.5.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.0.0, lodash@^4.13.1, lodash@^4.2.0, lodash@^4.3.0:
-  version "4.16.4"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.16.4.tgz#01ce306b9bad1319f2a5528674f88297aeb70127"
-
-lodash@^4.17.2:
+lodash@^4.0.0, lodash@^4.13.1, lodash@^4.17.2, lodash@^4.2.0, lodash@^4.3.0:
   version "4.17.2"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.2.tgz#34a3055babe04ce42467b607d700072c7ff6bf42"
 
@@ -5527,9 +5523,9 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.3"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.3.tgz#3da382f670f25ded78d7b3d1792119bca0b7132d"
 
-twitter-text@^1.13.2:
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/twitter-text/-/twitter-text-1.14.0.tgz#ff1c294d2d390d24f67a08790d67419525254af1"
+twitter-text@^1.14.2:
+  version "1.14.2"
+  resolved "https://registry.yarnpkg.com/twitter-text/-/twitter-text-1.14.2.tgz#ae57d6b2b0eeb8bbd62f205d93d280b5863a5049"
 
 type-check@~0.3.2:
   version "0.3.2"
