@@ -3759,13 +3759,17 @@ lodash@4.11.2:
   version "4.11.2"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.11.2.tgz#d6b4338b110a58e21dae5cebcfdbbfd2bc4cdb3b"
 
-lodash@4.16.4, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.2.0, lodash@^4.3.0:
-  version "4.16.4"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.16.4.tgz#01ce306b9bad1319f2a5528674f88297aeb70127"
-
 lodash@^3.10.0, lodash@^3.5.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
+
+lodash@^4.0.0, lodash@^4.13.1, lodash@^4.2.0, lodash@^4.3.0:
+  version "4.16.4"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.16.4.tgz#01ce306b9bad1319f2a5528674f88297aeb70127"
+
+lodash@^4.17.2:
+  version "4.17.2"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.2.tgz#34a3055babe04ce42467b607d700072c7ff6bf42"
 
 lodash@~1.0.1:
   version "1.0.2"
