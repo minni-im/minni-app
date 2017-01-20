@@ -59,8 +59,8 @@
     "less-plugin-clean-css": "^1.5.1",
     "react-svg-loader": "1.0.1",
     "run-sequence": "^1.1.2",
-    "webpack": "2.1.0-beta.25",
-    "webpack-manifest-plugin": "1.0.1"
+    "webpack": "2.2.0",
+    "webpack-manifest-plugin": "^1.1.0"
   },
   "dependencies": {
     "bcryptjs": "^2.4.0",
