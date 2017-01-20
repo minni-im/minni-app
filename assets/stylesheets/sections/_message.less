@@ -155,19 +155,23 @@ code {
 .message-group {
   blockquote {
     // quotes: "“" "”" "‘" "’";
-    font-family: 'Hoefler Text', Georgia, serif;
     @color: fadeout(@color-dark, 25%);
     color: @color;
     background-color: fadeout(@white, 55%);
 
     font-style: italic;
 
-    margin: 5px -5px;
-    border-left: 3px solid;
+    margin: 0 -10px;
+    border-left: 5px solid fadeout(@color-dark, 75%);
+    border-radius: inherit;
     padding: 0 10px;
 
+    & > blockquote {
+      border-radius: initial;
+    }
+
     .paragraph {
-      display: inline-block;
+      // display: inline-block;
     }
   }
 

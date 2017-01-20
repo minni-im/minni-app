@@ -139,7 +139,8 @@ export default class Room extends React.Component {
                 Formatting Tips
                 <div className="tooltip-content">
                   <span><em>_italics_</em></span>
-                  <span><strong>*bold*</strong></span>
+                  <span>__<span style={{ textDecoration: "underline" }}>underline</span>__</span>
+                  <span><strong>**bold**</strong></span>
                   <span>~<strike>strike</strike>~</span>
                   <span><code>`code`</code></span>
                   <span><code>```preformatted```</code></span>
