@@ -5619,9 +5619,9 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.3"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.3.tgz#3da382f670f25ded78d7b3d1792119bca0b7132d"
 
-twitter-text@^1.14.2:
-  version "1.14.2"
-  resolved "https://registry.yarnpkg.com/twitter-text/-/twitter-text-1.14.2.tgz#ae57d6b2b0eeb8bbd62f205d93d280b5863a5049"
+twitter-text@^1.14.3:
+  version "1.14.3"
+  resolved "https://registry.yarnpkg.com/twitter-text/-/twitter-text-1.14.3.tgz#72af718ba672d829a6e70eaefa8e18528cf49062"
 
 type-check@~0.3.2:
   version "0.3.2"
