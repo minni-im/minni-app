@@ -4,8 +4,6 @@ import { Match, Redirect } from "react-router";
 import Dashboard from "./DashboardContainer.react";
 import DashboardSidebar from "./sidebars/Dashboard.react";
 
-import CreateOrJoin from "./CreateOrJoin.react";
-
 import MultiRoom from "./MutliRoomContainer.react";
 
 import Lobby from "./LobbyContainer.react";
@@ -27,9 +25,10 @@ const App = () => (
     <Match pattern="/" component={RouterSessionStart} />
 
     {/* If only one account is available, and url is "/" <Dashboard /> will
-        redirect to the corresponding <Lobby /> */}
-    <Match exactly pattern="/(dashboard)?" component={DashboardSidebar} />
-    <Match exactly pattern="/(dashboard)?" component={Dashboard} />
+          redirect to the corresponding <Lobby /> */}
+    <Match exactly pattern="/dashboard" component={DashboardSidebar} />
+    <Match exactly pattern="/" component={Dashboard} />
+    <Match exactly pattern="/dashboard" component={Dashboard} />
 
     <Match
       exactly
@@ -53,6 +52,6 @@ const App = () => (
 
     <SoundPlayer />
   </div>
-);
+  );
 
 export default App;
