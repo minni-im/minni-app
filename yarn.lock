@@ -1421,9 +1421,9 @@ concat-stream@^1.4.6:
     readable-stream "~2.0.0"
     typedarray "~0.0.5"
 
-connect-redis@^3.0.1:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/connect-redis/-/connect-redis-3.1.0.tgz#25a3c0f20def3e462caa2583eefeb67ca6b10c09"
+connect-redis@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/connect-redis/-/connect-redis-3.2.0.tgz#2d29ea60c8ae8c2c818a710247fdfed158f43388"
   dependencies:
     debug "^2.2.0"
     redis "^2.1.0"
@@ -3823,11 +3823,7 @@ lodash@^3.10.0, lodash@^3.5.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.0.0, lodash@^4.13.1, lodash@^4.2.0, lodash@^4.3.0:
-  version "4.17.2"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.2.tgz#34a3055babe04ce42467b607d700072c7ff6bf42"
-
-lodash@^4.14.0, lodash@^4.17.4:
+lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -4917,9 +4913,9 @@ redis-parser@^2.0.0:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/redis-parser/-/redis-parser-2.0.4.tgz#70cbbb3cef8bf41a315388afe14904a65a7a1028"
 
-redis@^2.1.0, redis@^2.6.3:
-  version "2.6.3"
-  resolved "https://registry.yarnpkg.com/redis/-/redis-2.6.3.tgz#84305b92553c6a1f09c7c47c30b11ace7dbb7ad4"
+redis@^2.1.0, redis@^2.6.5:
+  version "2.6.5"
+  resolved "https://registry.yarnpkg.com/redis/-/redis-2.6.5.tgz#87c1eff4a489f94b70871f3d08b6988f23a95687"
   dependencies:
     double-ended-queue "^2.1.0-0"
     redis-commands "^1.2.0"
