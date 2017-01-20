@@ -116,7 +116,7 @@ describe("Embed processor", () => {
     });
   });
 
-  it("should process medium opengraph url", () => {
+  xit("should process medium opengraph url", () => {
     const url = "https://medium.com/@benostrower/rey-is-a-kenobi-362b5af09849";
     const tree = parse(`un peu de meidum sur #starwars ${url} attention ca spoile !`);
 

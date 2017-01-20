@@ -305,7 +305,6 @@ export default function Embed(props) {
 
     case "image.flickr":
     case "image.instagram":
-    case "web.medium":
     case "code.codepen":
       return (
         <BackgroundCoverEmbed

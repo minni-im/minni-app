@@ -12,7 +12,6 @@ import Video from "./video/basic";
 import Vimeo from "./video/vimeo";
 import Vine from "./video/vine";
 import Youtube from "./video/youtube";
-import Medium from "./web/medium";
 import Twitter from "./web/twitter";
 
 const { auth, embed } = config;
@@ -30,7 +29,6 @@ const list = {
   Vimeo,
   Vine,
   Youtube,
-  Medium,
   Twitter };
 
 const namedEmbeds = {};
