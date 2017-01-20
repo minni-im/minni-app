@@ -64,7 +64,7 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.0",
-    "body-parser": "^1.13.2",
+    "body-parser": "^1.16.0",
     "classnames": "^2.1.5",
     "click-outside": "2.0.2",
     "connect-redis": "^3.2.0",
