@@ -7,35 +7,26 @@ html
     meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
     meta(name="viewport", content="width=device-width,initial-scale=1.0,maximum-scale=1.0")
 
+    link(rel="apple-touch-icon", sizes="180x180", href="/apple-touch-icon.png")
+    link(rel="icon", type="image/png", href="/favicon-32x32.png", sizes="32x32")
+    link(rel="icon", type="image/png", href="/favicon-16x16.png", sizes="16x16")
+    link(rel="manifest", href="/manifest.json")
+    link(rel="mask-icon", href="/safari-pinned-tab.svg", color="#0061bc")
+    meta(name="apple-mobile-web-app-title", content=name)
+    meta(name="apple-mobile-web-app-capable", content="yes")
+    meta(name="apple-mobile-web-app-status-bar-style", content="black")
     meta(name="application-name", content=name)
+    meta(name="theme-color", content="#0061bc")
+
     meta(name="description", content="Your world wide offices in the cloud")
     meta(name="application-url", content=`${url.protocol}://${url.hostname}`)
 
-    //- iOS
-    link(rel="apple-touch-icon", sizes="57x57",   href="/images/logos/ios/apple-touch-icon-57x57.png")
-    link(rel="apple-touch-icon", sizes="60x60",   href="/images/logos/ios/apple-touch-icon-60x60.png")
-    link(rel="apple-touch-icon", sizes="72x72",   href="/images/logos/ios/apple-touch-icon-72x72.png")
-    link(rel="apple-touch-icon", sizes="76x76",   href="/images/logos/ios/apple-touch-icon-76x76.png")
-    link(rel="apple-touch-icon", sizes="114x114", href="/images/logos/ios/apple-touch-icon-114x114.png")
-    link(rel="apple-touch-icon", sizes="120x120", href="/images/logos/ios/apple-touch-icon-120x120.png")
-    link(rel="apple-touch-icon", sizes="144x144", href="/images/logos/ios/apple-touch-icon-144x144.png")
-    link(rel="apple-touch-icon", sizes="152x152", href="/images/logos/ios/apple-touch-icon-152x152.png")
-    link(rel="apple-touch-icon", sizes="180x180", href="/images/logos/ios/apple-touch-icon-180x180.png")
-
     //- IE9+
     meta(name="msapplication-tooltip", content=name)
-    meta(name="msapplication-starturl", content=`${url.protocol}://${url.hostname}/?origin=ieps`)
+    meta(name="msapplication-starturl", content=`${url.protocol}://${url.hostname}`)
     //- IE10+
     meta(name="msapplication-TileColor", content="#48a6ff")
-    meta(name="msapplication-TileImage", content=`${url.protocol}://${url.hostname}/images/logos/msapp/mstile-144x144.png`)
-    //- Fluid
-    link(rel="fluid-icon", href=`${url.protocol}://${url.hostname}/images/logos/logo-x512.png`, title=name)
-    //- Favicons
-    link(rel="icon", type="image/x-icon", href="/favicon.ico")
-    link(rel="icon", sizes="512x512", href="/images/logos/logo-x512.png")
-    link(rel="icon", sizes="256x256 192x192 194x194", href="/images/logos/logo-x256.png")
-    link(rel="icon", sizes="64x64 96x96 128x128", href="/images/logos/logo-x128.png")
-    link(rel="icon", sizes="16x16 24x24", href="/favicon.ico")
+    meta(name="msapplication-TileImage", content=`${url.protocol}://${url.hostname}/mstile-150x150.png`)
 
     block styles
       link(rel="stylesheet", href="/css/style.css")

@@ -10,6 +10,11 @@ const CleanCss = require("less-plugin-clean-css");
 const nodeEnv = process.env.NODE_ENV || "development";
 const RELEASE = nodeEnv === "production";
 
+const STATIC_PATHS = [
+  "./public/**/*",
+  "./assets/favicons/*"
+];
+
 const lessPlugins = [new Autoprefixer({
   browsers: ["last 2 versions"]
 })];
@@ -42,13 +47,12 @@ gulp.task("less", () =>
 );
 
 gulp.task("static", () =>
-  gulp.src(["./public/**/*"])
-    .pipe(gulp.dest("./dist/public"))
+  gulp.src(STATIC_PATHS).pipe(gulp.dest("./dist/public"))
 );
 
 
 gulp.task("watch", () => {
-  gulp.watch(["./public/**/*"], ["static"]);
+  gulp.watch(STATIC_PATHS, ["static"]);
   gulp.watch(["./assets/stylesheets/**/*.less"], ["less"]);
 });
 
