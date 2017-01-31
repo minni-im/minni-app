@@ -123,9 +123,10 @@ const handlers = {
   },
 
   room: {
-    create({ room, admin }) {
+    create({ room }) {
       const me = UserStore.getConnectedUser();
       if (Room.isAccessGranted(room, me.id) && room.adminId !== me.id) {
+        const admin = UserStore.get(room.adminId);
         AccountActionCreators.receiveRoom(room);
         NotificationsActionCreators.notify(
           `${admin.fullname} just created a new room: '${room.name}'`,
