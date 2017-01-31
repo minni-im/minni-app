@@ -51,7 +51,12 @@ function handleConnectionOpen(state, { user, users, presence }) {
 }
 
 function handleProfileUpdate(state, { user }) {
-  return handleUserAdd(state, { ...user, status: this.getStatus(user.id) });
+  return handleUserAdd(state, {
+    user: {
+      ...user,
+      status: this.getStatus(user.id)
+    }
+  });
 }
 
 class UserStore extends MapStore {
