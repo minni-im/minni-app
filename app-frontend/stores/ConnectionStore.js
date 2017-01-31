@@ -54,6 +54,9 @@ const handlers = {
 
   reconnect() {
     ActivityActionCreators.setStatus(USER_STATUS.ONLINE);
+    dispatch({
+      type: ActionTypes.CONNECTION_BACK
+    });
   },
 
   reconnect_failed(/* attempts */) {

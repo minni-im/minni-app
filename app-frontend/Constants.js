@@ -6,6 +6,7 @@ export const ActionTypes = keyMirror({
 
   CONNECTION_START: null,
   CONNECTION_OPEN: null,
+  CONNECTION_BACK: null,
   CONNECTION_CLOSE: null,
 
   LOAD_USER: null,

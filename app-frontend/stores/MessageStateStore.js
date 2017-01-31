@@ -35,7 +35,7 @@ function handleLoadMessagesFailure(state, { roomId }) {
 }
 
 function handleConnectionOpen(state, { rooms }) {
-  return state.withMutations(map => {
+  return state.withMutations((map) => {
     rooms.forEach(({ id }) => {
       map.set(id, new StateRecord());
     });

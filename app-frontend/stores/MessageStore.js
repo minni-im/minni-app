@@ -3,6 +3,7 @@ import moment from "moment";
 
 import Dispatcher from "../Dispatcher";
 import { MapStore } from "../libs/Flux";
+import Storage from "../libs/Storage";
 
 import { ActionTypes, MAX_MESSAGES_PER_ROOMS } from "../Constants";
 
@@ -15,6 +16,17 @@ import Message from "../models/Message";
 
 import Logger from "../libs/Logger";
 const logger = Logger.create("MessageStore");
+
+const LAST_MESSAGES_ID = "lastMessagesTimestamp";
+
+
+function updateLastMessageTimestamp(roomId, message) {
+  const history = Storage.get(LAST_MESSAGES_ID) || {};
+  Storage.set(LAST_MESSAGES_ID, {
+    ...history,
+    [roomId]: message.dateCreated.toISOString()
+  });
+}
 
 function transformMessage(message) {
   message.dateCreated = moment(message.dateCreated);
@@ -50,6 +62,7 @@ function handleMessageCreate(state, { roomId, message }) {
   } else {
     messages = messages.set(message.id, mergeMessage(messages, message));
   }
+  updateLastMessageTimestamp(roomId, message);
   return state.set(roomId, messages);
 }
 
@@ -77,6 +90,8 @@ function handleLoadMessagesSuccess(state, { roomId, messages: newMessages }) {
     );
     map.merge(oldMessages);
   });
+
+  updateLastMessageTimestamp(roomId, messages.last());
 
   return state.set(roomId, messages);
 }
