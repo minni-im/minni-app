@@ -155,7 +155,7 @@ export function createRoom(account, name, topic, type, usersId = []) {
         room
       });
       NotificationsActionCreators.notify(
-        `Your new room '${room.name}' has been successfuly created!`,
+        `Your new room '${room.name}' has been successfully created!`,
         5000
       );
       return { ok, room };
