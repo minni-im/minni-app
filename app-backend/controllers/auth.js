@@ -67,6 +67,8 @@ export default (app) => {
     });
 
   app.get("/logout", (req, res) => {
+    // Resetting flash messages
+    req.session.flash = [];
     req.logout();
     res.redirect("/");
   });
