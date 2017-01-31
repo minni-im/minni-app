@@ -51,7 +51,7 @@ function handleConnectionOpen(state, { user, users, presence }) {
 }
 
 function handleProfileUpdate(state, { user }) {
-  return handleUserAdd(state, { user });
+  return handleUserAdd(state, { ...user, status: this.getStatus(user.id) });
 }
 
 class UserStore extends MapStore {
@@ -79,6 +79,10 @@ class UserStore extends MapStore {
 
   getConnectedUser() {
     return this.get(connectedUserId);
+  }
+
+  getStatus(userId) {
+    return this.getUser(userId).get("status", 0);
   }
 
   getAll() {
