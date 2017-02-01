@@ -25,12 +25,14 @@ function cancelTimers() {
 
 function activateAwayTimer() {
   ActivityActionCreators.setIdle();
+  logger.info("Activating AWAY timer");
   awayTimeoutID = setTimeout(() => {
     ActivityActionCreators.setAway();
   }, AWAY_TIMEOUT);
 }
 
 function activateIdleTimer() {
+  logger.info("Activating IDLE timer");
   idleTimeoutID = setTimeout(activateAwayTimer, IDLE_TIMEOUT);
 }
 
@@ -50,7 +52,6 @@ function handleUserStatus({ status, force }) {
   if (force) {
     autoStatus = false;
     cancelTimers();
-    return;
   } else if (status === USER_STATUS.ONLINE) {
     autoStatus = true;
     activateIdleTimer();

@@ -5,8 +5,13 @@ import { ActionTypes, SOCKETIO_OPTIONS, USER_STATUS } from "../Constants";
 
 import * as AccountActionCreators from "../actions/AccountActionCreators";
 import * as ActivityActionCreators from "../actions/ActivityActionCreators";
+
 import * as RoomActionCreators from "../actions/RoomActionCreators";
 import * as UserActionCreators from "../actions/UserActionCreators";
+import * as NotificationsActionCreators from "../actions/NotificationsActionCreators";
+
+
+import Room from "../models/Room";
 
 import AccountStore from "../stores/AccountStore";
 import RoomStore from "../stores/RoomStore";
@@ -45,21 +50,30 @@ const handlers = {
     dispatch({
       type: ActionTypes.CONNECTION_LOST
     });
+    NotificationsActionCreators.notifyFatal(
+      "We are facing some difficulties. Sounds like your connection is a bit flaky");
   },
 
-  reconnecting() {
+  reconnecting(attempt) {
     const userId = UserStore.getConnectedUser().id;
+    const ms = SOCKETIO_OPTIONS.reconnectionDelay * Math.pow(2, attempt);
     ActivityActionCreators.updateStatus(userId, USER_STATUS.CONNECTING);
+    NotificationsActionCreators.notifyError(
+      `We are trying hard to reconnect to the server. #${attempt} attempt ...`,
+      ms
+    );
   },
 
   reconnect() {
     ActivityActionCreators.setStatus(USER_STATUS.ONLINE);
+    NotificationsActionCreators.notifyInfo("And we are back in the game. Connection seems ok!", 5000);
   },
 
   reconnect_failed(/* attempts */) {
-    // TODO: should notify the user that it is over.
     logger.error("Failed to reconnect. Refresh the page.");
     ActivityActionCreators.setStatus(USER_STATUS.OFFLINE);
+    NotificationsActionCreators.notifyFatal(`All reconnection attempts have failed.
+      Please refresh you browser`);
   },
 
   account: {
@@ -110,7 +124,15 @@ const handlers = {
 
   room: {
     create({ room }) {
-      AccountActionCreators.receiveRoom(room);
+      const me = UserStore.getConnectedUser();
+      if (Room.isAccessGranted(room, me.id) && room.adminId !== me.id) {
+        const admin = UserStore.get(room.adminId);
+        AccountActionCreators.receiveRoom(room);
+        NotificationsActionCreators.notify(
+          `${admin.fullname} just created a new room: '${room.name}'`,
+          7500
+        );
+      }
     },
 
     delete({ room }) {

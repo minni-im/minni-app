@@ -177,6 +177,7 @@ export default (app) => {
           });
 
           room.save().then((newRoom) => {
+            // TODO: Security fix, we should only send to concerned people
             app.io.in(accountId).emit("room:create", {
               room: room.toAPI()
             });
