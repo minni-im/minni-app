@@ -12,6 +12,8 @@ import { setup as authSetup } from "./auth";
 import config from "./config";
 import expressLocals from "./express-locals";
 
+import * as ErrorHandlers from "./errors";
+
 const RedisStore = connectRedis(express.session);
 const app = express();
 
@@ -40,6 +42,7 @@ const session = {
   secret: config.session.secret,
   resave: true,
   saveUninitialized: true,
+  unset: "destroy",
   cookie: {
     path: "/",
     httpOnly: true,
@@ -72,8 +75,11 @@ function bootstrap() {
     require(`./libs/commands/${command}`).setup(app);
   });
 
-  const { port, host } = config;
+  /* =Errors= */
+  app.use(ErrorHandlers.OAuthErrorHandler(config));
+  app.use(ErrorHandlers.ClientErrorHandler);
 
+  const { port, host } = config;
   app.listen(port, host);
   console.log("Minni application started and listenning on http://%s:%s", host, port);
 }

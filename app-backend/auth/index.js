@@ -9,6 +9,8 @@ import LocalProvider from "./local";
 import settings from "../config";
 import { getPlugin } from "../plugins";
 
+import { UserFromSessionDoesNotExistError } from "../errors";
+
 let enabledProviders = [];
 const providersSettings = {};
 
@@ -17,7 +19,7 @@ function getProviders() {
     throw new Error(`No auth provider found!
 You have to specify at least one in your setting.yml file.`);
   }
-  return settings.auth.providers.map(provider => {
+  return settings.auth.providers.map((provider) => {
     let Provider;
     if (provider === "local") {
       Provider = LocalProvider;
@@ -42,12 +44,12 @@ export function setup(app, session) {
   passport.use(new BearerStrategy((token, done) => {
     const User = recorder.model("User");
     User.findByToken(token)
-      .then(user => {
+      .then((user) => {
         if (user) {
           user.usingToken = true;
         }
         done(null, user);
-      }, error => {
+      }, (error) => {
         done(error);
       });
   }));
@@ -58,12 +60,15 @@ export function setup(app, session) {
 
   passport.deserializeUser((id, done) => {
     const User = recorder.model("User");
-    User.findById(id).then(user => done(null, user), error => done(error));
+    User.findById(id).then(
+      user => done(null, user),
+      error => done(new UserFromSessionDoesNotExistError(`Unknown user id to be revived from cookie [id: ${id}]`))
+    );
   });
 
 
   enabledProviders = getProviders();
-  enabledProviders.forEach(p => {
+  enabledProviders.forEach((p) => {
     p.provider.setup();
     providersSettings[p.key] = p.provider.options;
   });
@@ -80,7 +85,9 @@ export function setup(app, session) {
   });
 
   app.use(passport.initialize());
-  app.use(passport.session());
+  app.use(passport.session({
+    failWithError: true
+  }));
 
   const ioSession = Object.assign({}, session, {
     cookieParser,
@@ -91,15 +98,16 @@ export function setup(app, session) {
   app.io.use((socket, next) => {
     const User = recorder.model("User");
     if (socket.request._query && socket.request._query.token) {
-      User.findByToken(socket.request._query.token)
-        .then(user => {
+      const { token } = socket.request._query;
+      User.findByToken(token)
+        .then((user) => {
           socket.request.user = user;
           socket.request.user.loggedIn = true;
           socket.request.user.usingToken = true;
           return next();
         }, (error) => {
           console.error(error);
-          return next("Fail");
+          return next(new UserFromSessionDoesNotExistError(`Unable to retrieve user with [token: ${token}]`));
         });
     } else {
       psiAuth(socket, next);

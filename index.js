@@ -4,7 +4,8 @@ require("babel-register")({
   ],
   plugins: [
     "transform-object-rest-spread",
-    "transform-class-properties"
+    "transform-class-properties",
+    ["transform-builtin-extend", { globals: ["Error"] }]
   ]
 });
 

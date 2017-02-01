@@ -35,7 +35,7 @@ export default (app) => {
     }
   });
 
-  // =Middelwares= */
+  /* =Middelwares= */
   app.use(requireEmailRedirect);
 
   /* =Routes= */

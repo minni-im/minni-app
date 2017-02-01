@@ -63,6 +63,7 @@
     "webpack-manifest-plugin": "^1.1.0"
   },
   "dependencies": {
+    "babel-plugin-transform-builtin-extend": "^1.1.0",
     "bcryptjs": "^2.4.0",
     "body-parser": "^1.16.0",
     "classnames": "^2.1.5",
