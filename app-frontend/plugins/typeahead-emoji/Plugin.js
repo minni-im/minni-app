@@ -1,7 +1,8 @@
 import { ALL as EMOJIS, MASK_BY_PROVIDER } from "emojify";
-import { Constants, register as PluginRegister, SettingsStore } from "minni-plugins-toolkit";
+import { Constants, register as PluginRegister, Stores } from "minni-plugins-toolkit";
 import ResultsPanel from "./Results.react";
 
+const { SettingsStore } = Stores;
 const { COMPOSER_TYPEAHEAD } = Constants.PLUGIN_TYPES;
 const SENTINEL = ":";
 

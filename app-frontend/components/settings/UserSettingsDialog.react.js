@@ -19,20 +19,6 @@ import Logger from "../../libs/Logger";
 const logger = Logger.create("UserSettingsDialog");
 
 
-const NOTIFICATION_GRANTED = "granted";
-
-function checkPermission() {
-  if (window.Notification && window.Notification.permission) {
-    return window.Notification.permission;
-  }
-  return false;
-}
-
-function grantPermission(callback) {
-  window.Notification.requestPermission(permission =>
-    callback(permission === NOTIFICATION_GRANTED, permission));
-}
-
 export default class UserSettingsDialog extends React.Component {
   static propTypes = {
     user: PropTypes.instanceOf(User),
@@ -43,14 +29,12 @@ export default class UserSettingsDialog extends React.Component {
     super(props);
 
     this.onCloseDialog = this.onCloseDialog.bind(this);
-    this.onGrantNotificationClick = this.onGrantNotificationClick.bind(this);
     this.onSettingChange = this.onSettingChange.bind(this);
     this.onUserInfoChange = this.onUserInfoChange.bind(this);
   }
 
   state = {
-    selectedTab: 0,
-    notifGranted: checkPermission() === NOTIFICATION_GRANTED
+    selectedTab: 0
   }
 
   componentDidMount() {
@@ -80,22 +64,6 @@ export default class UserSettingsDialog extends React.Component {
   onUserInfoChange({ target: input }) {
     const { id, value } = input;
     this.userInfo = this.userInfo.set(id, value);
-  }
-
-  onGrantNotificationClick() {
-    grantPermission((granted) => {
-      this.setState({
-        notifGranted: granted
-      });
-
-      updateSettings({
-        global: {
-          notification: {
-            desktop: true
-          }
-        }
-      });
-    });
   }
 
   generateGeneral() {
@@ -161,25 +129,8 @@ export default class UserSettingsDialog extends React.Component {
   }
 
   generateNotifications() {
-    const activation = (
-      this.state.notifGranted ?
-        <SettingItem
-          setting="global.notification.desktop"
-          title="Use the native broswer&#39;s or operating system ability to display desktop notifications."
-          onChange={this.onSettingChange}
-        /> :
-        <div className="setting-item flex-horizontal">
-          <div className="flex-spacer">Use the native broswer&#39;s or operating system ability to display desktop notifications.</div>
-          <button
-            className="button-secondary"
-            onClick={this.onGrantNotificationClick}
-          >Grant permissions</button>
-        </div>
-      );
     return [
       <section>
-        <h3>Desktop notification</h3>
-        {activation}
         <h3>Sound blips</h3>
         <SettingItem
           setting="global.notification.sound"
@@ -313,15 +264,19 @@ export default class UserSettingsDialog extends React.Component {
       connections: [].concat(this.generateConnections())
     };
 
-    PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_TEXT)
+    PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_TEXT | PLUGIN_TYPES.MESSAGE)
       .filter(plugin => !!plugin.SettingsPanel)
       .map(plugin => plugin.SettingsPanel)
-      .forEach(panel => {
-        const { category } = panel;
-        categories[category] = (categories[category] || []).concat(panel);
+      .forEach((panel) => {
+        const { category, prepend } = panel;
+        if (prepend && prepend === true) {
+          categories[category] = [panel].concat(categories[category] || []);
+        } else {
+          categories[category] = (categories[category] || []).concat(panel);
+        }
       });
 
-    const tabs = Object.keys(categories).map(category => {
+    const tabs = Object.keys(categories).map((category) => {
       const contentSections = categories[category]
         .map((Section, index) => (
           React.isValidElement(Section) ?

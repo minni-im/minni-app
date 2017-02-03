@@ -138,7 +138,8 @@ export const PLUGIN_TYPES = {
   COMPOSER_TYPEAHEAD: 1 << 0,
   COMPOSER_TEXT: 1 << 1,
   COMPOSER_ACTION: 1 << 2,
-  COMPOSER_COMMAND: 1 << 3
+  COMPOSER_COMMAND: 1 << 3,
+  MESSAGE: 1 << 4
 };
 
 export const AVATAR_SIZES = keyMirror({

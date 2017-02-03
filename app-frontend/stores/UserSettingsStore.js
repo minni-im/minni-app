@@ -22,7 +22,6 @@ const DEFAULT_SETTINGS = {
       enter: true
     },
     notification: {
-      desktop: false,
       sound: true,
       mentions: true,
       sound_volume: 50

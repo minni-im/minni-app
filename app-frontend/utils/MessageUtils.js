@@ -144,8 +144,10 @@ export function decode(text) {
 }
 
 export function createMessage(roomId, text) {
-  const composerPlugins = PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_TEXT);
-  const preProcessors = composerPlugins.map(plugin => plugin.encodeMessage);
+  const COMPOSER_TEXT_PLUGINS = PluginsStore.getPlugins(
+    PLUGIN_TYPES.COMPOSER_TEXT
+  ).map(plugin => plugin.encodeMessage);
+
 
   const message = {
     id: createNonce().toString(),
@@ -156,8 +158,10 @@ export function createMessage(roomId, text) {
     userId: UserStore.getConnectedUser().id
   };
 
-  return preProcessors.reduce((onGoing, processor) =>
-    onGoing.then(processor), Promise.resolve(message));
+  return COMPOSER_TEXT_PLUGINS.reduce(
+    (onGoing, processor) => onGoing.then(processor),
+    Promise.resolve(message)
+  );
 }
 
 export function createSystemMessage(roomId, content, subType) {
@@ -170,4 +174,19 @@ export function createSystemMessage(roomId, content, subType) {
     accountId: SelectedAccountStore.getAccount().id,
     userId: UserStore.getConnectedUser().id
   };
+}
+
+export function receiveMessage(roomId, message, optimistic) {
+  const MESSAGE_PLUGINS = PluginsStore.getPlugins(
+    PLUGIN_TYPES.MESSAGE
+  ).map(plugin => plugin.receiveMessage.bind(plugin, decode(message.content)));
+
+  message = Promise.resolve(message);
+  if (optimistic) {
+    return message;
+  }
+  return MESSAGE_PLUGINS.reduce(
+    (onGoing, processor) => onGoing.then(processor),
+    message
+  );
 }

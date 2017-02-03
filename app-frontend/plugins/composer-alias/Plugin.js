@@ -1,9 +1,10 @@
-import { Constants, register as PluginRegister, SettingsStore } from "minni-plugins-toolkit";
+import { Constants, register as PluginRegister, Stores } from "minni-plugins-toolkit";
 import SettingsPanel from "./Settings.react";
 
+const { SettingsStore } = Stores;
 const { COMPOSER_TEXT } = Constants.PLUGIN_TYPES;
 
-const MATCHING = (alias) => `(?:^|\\s+)${alias}(?:\\s+|$)`;
+const MATCHING = alias => `(?:^|\\s+)${alias}(?:\\s+|$)`;
 const SUPER_ALIAS = /(.*)(\/.+\/.+\/)$/;
 const PROCESS_SUPER_ALIAS = /([\w&.-]+)\/([^\/]+)\/([^\/]+)\//g;
 
@@ -17,7 +18,7 @@ function escapeExpr(text) {
 
 function replaceAliases(text) {
   const aliases = SettingsStore.getValue("plugins.aliases.list", {});
-  Object.keys(aliases).forEach(alias => {
+  Object.keys(aliases).forEach((alias) => {
     const subst = aliases[alias];
     if (alias.startsWith("/") && alias.endsWith("/")) {
       alias = alias.substring(1, alias.length - 1);
