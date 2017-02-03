@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from "react";
-import { SettingsStore, UI } from "minni-plugins-toolkit";
+import { Stores, UI } from "minni-plugins-toolkit";
 
+const { SettingsStore } = Stores;
 const { SettingItem } = UI;
 
 export default class Settings extends Component {

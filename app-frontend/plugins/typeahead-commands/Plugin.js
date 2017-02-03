@@ -1,6 +1,7 @@
-import { Constants, register as PluginRegister, PluginsStore } from "minni-plugins-toolkit";
+import { Constants, register as PluginRegister, Stores } from "minni-plugins-toolkit";
 import ResultsPanel from "./Results.react";
 
+const { PluginsStore } = Stores;
 const {
   COMPOSER_TYPEAHEAD,
   COMPOSER_COMMAND

@@ -6,7 +6,7 @@ import SelectedAccountStore from "../stores/SelectedAccountStore";
 import ConnectedRoomStore from "../stores/ConnectedRoomStore";
 import SelectedRoomStore from "../stores/SelectedRoomStore";
 
-import { createMessage } from "../utils/MessageUtils";
+import * as MessageUtils from "../utils/MessageUtils";
 
 import Logger from "../libs/Logger";
 
@@ -111,17 +111,29 @@ export function fetchMessages(roomId, latest, oldest = null, limit = MAX_MESSAGE
 }
 
 export function receiveMessage(roomId, message, optimistic = false) {
+  MessageUtils.receiveMessage(roomId, message, optimistic).then(
+    (processedMessage) => {
+      dispatch({
+        type: ActionTypes.MESSAGE_CREATE,
+        roomId,
+        message: processedMessage,
+        optimistic
+      });
+    }
+  );
+}
+
+export function updateMessage(roomId, message) {
   dispatch({
-    type: ActionTypes.MESSAGE_CREATE,
+    type: ActionTypes.MESSAGE_UPDATE,
     roomId,
-    message,
-    optimistic
+    message
   });
 }
 
 export function sendMessage(roomId, text) {
   logger.info(`sending message '${text}' to roomId:${roomId}`);
-  createMessage(roomId, text).then((rawMessage) => {
+  MessageUtils.createMessage(roomId, text).then((rawMessage) => {
     // Optimistic UI pattern. First display it, then send it to the server
     receiveMessage(roomId, { ...rawMessage }, true);
 
@@ -142,14 +154,6 @@ export function sendMessage(roomId, text) {
         });
       }
     });
-  });
-}
-
-export function updateMessage(roomId, message) {
-  dispatch({
-    type: ActionTypes.MESSAGE_UPDATE,
-    roomId,
-    message
   });
 }
 
