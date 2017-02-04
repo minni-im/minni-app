@@ -8,6 +8,7 @@ import RoomUsersList from "./sidebars/RoomUsersList.react";
 import MessagesContainer from "./MessagesContainer.react";
 import Composer from "./Composer.react";
 import TypingInfo from "./TypingInfo.react";
+import FormattingHints from "./FormatingHints.react";
 
 import {
   FavoriteIcon,
@@ -135,18 +136,7 @@ export default class Room extends React.Component {
             <TypingInfo room={room} />
             &nbsp;
             <div className="contextual-info">
-              <span className="formatting-tips has-tooltip">
-                Formatting Tips
-                <div className="tooltip-content">
-                  <span><em>_italics_</em></span>
-                  <span>__<span style={{ textDecoration: "underline" }}>underline</span>__</span>
-                  <span><strong>**bold**</strong></span>
-                  <span>~<strike>strike</strike>~</span>
-                  <span><code>`code`</code></span>
-                  <span><code>```preformatted```</code></span>
-                  <span>&gt;quote</span>
-                </div>
-              </span>
+              <FormattingHints />
             </div>
           </div>
         </footer>
