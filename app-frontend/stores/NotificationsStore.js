@@ -1,10 +1,12 @@
-import Dispatcher from "../Dispatcher";
 import Immutable from "immutable";
+
+import Dispatcher from "../Dispatcher";
 
 import * as NotificationsActionCreators from "../actions/NotificationsActionCreators";
 import { MapStore } from "../libs/Flux";
 
 import { ActionTypes } from "../Constants";
+
 let internalId = 0;
 
 function scheduleDismiss(notifId, delay) {
@@ -13,8 +15,8 @@ function scheduleDismiss(notifId, delay) {
   }, delay);
 }
 
-function handleNotification(state, { role, content, dismiss }) {
-  const notificationId = internalId++;
+function handleNotification(state, { id, role, content, dismiss }) {
+  const notificationId = id || internalId++;
   if (dismiss) {
     scheduleDismiss(notificationId, dismiss);
   }

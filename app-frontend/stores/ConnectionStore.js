@@ -65,12 +65,14 @@ const handlers = {
   },
 
   reconnect() {
+    NotificationsActionCreators.dismissAll();
     ActivityActionCreators.setStatus(USER_STATUS.ONLINE);
     NotificationsActionCreators.notifyInfo("And we are back in the game. Connection seems ok!", 5000);
   },
 
   reconnect_failed(/* attempts */) {
     logger.error("Failed to reconnect. Refresh the page.");
+    NotificationsActionCreators.dismissAll();
     ActivityActionCreators.setStatus(USER_STATUS.OFFLINE);
     NotificationsActionCreators.notifyFatal(`All reconnection attempts have failed.
       Please refresh you browser`);
