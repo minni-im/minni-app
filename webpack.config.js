@@ -22,7 +22,7 @@ module.exports = {
   },
   output: {
     path: "./dist/public/js",
-    filename: RELEASE ? "[name]-bundle.[chunkhash].min.js" : "[name]-bundle.js",
+    filename: RELEASE ? "[name]-bundle.[chunkhash:8].min.js" : "[name]-bundle.js",
     publicPath: "/",
     pathinfo: !RELEASE
   },
@@ -51,7 +51,7 @@ module.exports = {
         }
       }, {
         test: /\.json$/,
-        loader: "json"
+        loader: "json-loader"
       }
     ],
   },

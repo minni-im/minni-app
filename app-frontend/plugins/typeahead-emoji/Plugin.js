@@ -12,11 +12,12 @@ PluginRegister("EmojiTypeahead", COMPOSER_TYPEAHEAD, {
 
   reduce(prefix, index, test) {
     if (prefix.length > 2) {
+      const providerMask = MASK_BY_PROVIDER[SettingsStore.getValue("global.emojis_type")];
       return Object.keys(EMOJIS)
         .reduce((matching, emoji) => {
           if (
             test(emoji) &&
-            EMOJIS[emoji].mask & MASK_BY_PROVIDER[SettingsStore.getValue("global.emojis_type")]
+            EMOJIS[emoji].mask & providerMask
           ) {
             matching.push(emoji);
           }

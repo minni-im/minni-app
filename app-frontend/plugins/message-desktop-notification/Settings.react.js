@@ -59,7 +59,7 @@ export default class Settings extends Component {
         {this.state.notifGranted ?
           <SettingItem
             setting={SETTING_KEY}
-            default={isNan(NaN)}
+            default={isNaN(NaN)}
             title="Use the native broswer's or operating system ability to display desktop notifications."
             onChange={this.onActivateChange}
           /> :

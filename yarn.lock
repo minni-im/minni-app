@@ -891,19 +891,12 @@ babel-runtime@^5.0.0:
   dependencies:
     core-js "^1.0.0"
 
-babel-runtime@^6.18.0, babel-runtime@^6.2.0, babel-runtime@^6.22.0:
+babel-runtime@^6.18.0, babel-runtime@^6.2.0, babel-runtime@^6.22.0, babel-runtime@^6.9.2:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.22.0.tgz#1cf8b4ac67c77a4ddb0db2ae1f74de52ac4ca611"
   dependencies:
     core-js "^2.4.0"
     regenerator-runtime "^0.10.0"
-
-babel-runtime@^6.9.2:
-  version "6.11.6"
-  resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.11.6.tgz#6db707fef2d49c49bfa3cb64efdb436b518b8222"
-  dependencies:
-    core-js "^2.4.0"
-    regenerator-runtime "^0.9.5"
 
 babel-template@^6.16.0, babel-template@^6.22.0, babel-template@^6.3.0, babel-template@^6.7.0, babel-template@^6.9.0:
   version "6.22.0"
@@ -1774,9 +1767,9 @@ elliptic@^6.0.0:
     hash.js "^1.0.0"
     inherits "^2.0.1"
 
-emojify@minni-im/emojify#v2:
-  version "2.0.0"
-  resolved "https://codeload.github.com/minni-im/emojify/tar.gz/8c1dda26880d8b115b7648535d18dd52d1aaf5e2"
+"emojify@https://github.com/minni-im/emojify/tarball/v2":
+  version "1.0.0"
+  resolved "https://github.com/minni-im/emojify/tarball/v2#283a4c6261a08a796b80a40f281ca94e8b02f50d"
 
 emojis-list@^2.0.0:
   version "2.1.0"
@@ -4018,9 +4011,9 @@ minimist@^1.1.0, minimist@^1.1.1, minimist@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
 
-minni-auth-github@minni-im/minni-auth-github:
+"minni-auth-github@https://github.com/minni-im/minni-auth-github/tarball/master":
   version "1.0.0"
-  resolved "https://codeload.github.com/minni-im/minni-auth-github/tar.gz/0ecb9149b54b3ed75b366abf21fa425f45e651d0"
+  resolved "https://github.com/minni-im/minni-auth-github/tarball/master#2e35a1dbd12cce701a659588131ce0b8d2c7f7b0"
   dependencies:
     passport "^0.3.2"
     passport-github "^1.0.0"
@@ -4957,10 +4950,6 @@ regenerate@^1.2.1:
 regenerator-runtime@^0.10.0:
   version "0.10.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.10.1.tgz#257f41961ce44558b18f7814af48c17559f9faeb"
-
-regenerator-runtime@^0.9.5:
-  version "0.9.5"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.9.5.tgz#403d6d40a4bdff9c330dd9392dcbb2d9a8bba1fc"
 
 regenerator-transform@0.9.8:
   version "0.9.8"
