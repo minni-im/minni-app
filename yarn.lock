@@ -1767,9 +1767,9 @@ elliptic@^6.0.0:
     hash.js "^1.0.0"
     inherits "^2.0.1"
 
-"emojify@https://github.com/minni-im/emojify/tarball/v2":
+"emojify@https://github.com/minni-im/emojify#v2":
   version "1.0.0"
-  resolved "https://github.com/minni-im/emojify/tarball/v2#283a4c6261a08a796b80a40f281ca94e8b02f50d"
+  resolved "https://github.com/minni-im/emojify#115c3094a35298e658ac1a2bc8cb761db7a6000a"
 
 emojis-list@^2.0.0:
   version "2.1.0"
@@ -4011,9 +4011,9 @@ minimist@^1.1.0, minimist@^1.1.1, minimist@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
 
-"minni-auth-github@https://github.com/minni-im/minni-auth-github/tarball/master":
+"minni-auth-github@https://github.com/minni-im/minni-auth-github":
   version "1.0.0"
-  resolved "https://github.com/minni-im/minni-auth-github/tarball/master#2e35a1dbd12cce701a659588131ce0b8d2c7f7b0"
+  resolved "https://github.com/minni-im/minni-auth-github#0ecb9149b54b3ed75b366abf21fa425f45e651d0"
   dependencies:
     passport "^0.3.2"
     passport-github "^1.0.0"
