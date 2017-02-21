@@ -8,8 +8,12 @@ export default class AccountSelector extends React.Component {
   }
 
   componentWillUpdate(nextProps) {
-    selectAccount(nextProps.params.accountSlug);
+    if (this.props.params.accountSlug !== nextProps.params.accountSlug) {
+      selectAccount(nextProps.params.accountSlug);
+    }
   }
 
-  render() { return null; }
+  render() {
+    return null;
+  }
 }
