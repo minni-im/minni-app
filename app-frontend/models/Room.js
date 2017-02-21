@@ -5,7 +5,7 @@ export const TYPE = {
   INITIAL: 0,
   PUBLIC: 1,
   PRIVATE: 2,
-  DELETED: 9
+  DELETED: 9,
 };
 
 const RoomRecord = Immutable.Record({
@@ -24,17 +24,13 @@ const RoomRecord = Immutable.Record({
   usersList: true,
   starred: false,
   active: false, // when the associated account is active
-  connected: false // when a user joins the room
+  connected: false, // when a user joins the room
 });
 
 export default class Room extends RoomRecord {
   static isAccessGranted(room, userId) {
-    return room.type === TYPE.PUBLIC || (
-      room.type === TYPE.PRIVATE && (
-        room.adminId === userId ||
-        room.usersId.includes(userId)
-      )
-    );
+    return room.type === TYPE.PUBLIC ||
+      room.type === TYPE.PRIVATE && (room.adminId === userId || room.usersId.includes(userId));
   }
 
   get private() {
@@ -42,7 +38,7 @@ export default class Room extends RoomRecord {
   }
 
   get public() {
-    return this.type === TYPE.PUBLIC || TYPE.INITIAL;
+    return this.type === (TYPE.PUBLIC || TYPE.INITIAL);
   }
 
   get slug() {
