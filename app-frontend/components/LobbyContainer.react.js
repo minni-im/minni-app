@@ -1,6 +1,7 @@
 import React from "react";
 import { Container } from "flux/utils";
 import Immutable from "immutable";
+import DocumentTitle from "react-document-title";
 
 import AccountRoomStore from "../stores/AccountRoomStore";
 import SelectedAccountStore from "../stores/SelectedAccountStore";
@@ -12,11 +13,7 @@ import ContactList from "./sidebars/ContactListContainer.react";
 
 class LobbyContainer extends React.Component {
   static getStores() {
-    return [
-      AccountStore,
-      AccountRoomStore,
-      SelectedAccountStore
-    ];
+    return [AccountStore, AccountRoomStore, SelectedAccountStore];
   }
 
   static calculateState() {
@@ -25,16 +22,18 @@ class LobbyContainer extends React.Component {
     return {
       viewer: UserStore.getConnectedUser(),
       account,
-      rooms
+      rooms,
     };
   }
 
   render() {
     return (
-      <main className="flex-spacer flex-horizontal lobby">
-        <Lobby {...this.state} />
-        <ContactList />
-      </main>
+      <DocumentTitle title={`Lobby • ${window.Minni.name}`}>
+        <main className="flex-spacer flex-horizontal lobby">
+          <Lobby {...this.state} />
+          <ContactList />
+        </main>
+      </DocumentTitle>
     );
   }
 }
