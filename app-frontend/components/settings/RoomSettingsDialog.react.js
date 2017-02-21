@@ -9,7 +9,6 @@ import ConfirmButton from "../generic/ConfirmButton.react";
 import Dialog from "../generic/Dialog.react";
 import TabBar, { TabPanel } from "../generic/TabBar.react";
 
-
 import PluginsStore from "../../stores/PluginsStore";
 import { PLUGIN_TYPES } from "../../Constants";
 
@@ -22,11 +21,11 @@ export default class RoomSettingsDialog extends React.Component {
   static propTypes = {
     room: React.PropTypes.instanceOf(Room).isRequired,
     onClose: React.PropTypes.func.isRequired
-  }
+  };
 
   static contextTypes = {
     router: React.PropTypes.object.isRequired
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -40,7 +39,7 @@ export default class RoomSettingsDialog extends React.Component {
   state = {
     selectedTab: 0,
     visible: true
-  }
+  };
 
   componentDidMount() {
     this.newSettings = Immutable.Map();
@@ -52,28 +51,24 @@ export default class RoomSettingsDialog extends React.Component {
       let [app, accountSlug, ...roomSlugs] = document.location.pathname.slice(1).split("/");
       /* eslint-enable  */
       const active = roomSlugs.includes(this.props.room.slug);
-      RoomActionCreators.deleteRoom(this.props.room.id)
-        .then(() => {
-          if (active) {
-            this.context.router.transitionTo(`/chat/${accountSlug}/lobby`);
-          } else {
-            this.props.onClose(action);
-          }
-        });
+      RoomActionCreators.deleteRoom(this.props.room.id).then(() => {
+        if (active) {
+          this.context.router.transitionTo(`/chat/${accountSlug}/lobby`);
+        } else {
+          this.props.onClose(action);
+        }
+      });
       return;
     }
 
     if (action === "save") {
       if (!this.newSettings.isEmpty()) {
         const payload = this.newSettings.toJS();
-        RoomActionCreators
-          .updateRoom(this.props.room.id, payload)
-          .then(({ ok, message }) => {
-            if (ok) {
-              this.props.onClose(action);
-              return;
-            }
-          });
+        RoomActionCreators.updateRoom(this.props.room.id, payload).then(({ ok, message }) => {
+          if (ok) {
+            this.props.onClose(action);
+          }
+        });
         return;
       }
     }
@@ -91,9 +86,7 @@ export default class RoomSettingsDialog extends React.Component {
     this.newSettings = this.newSettings.set("usersId", usersId);
   }
 
-  onSettingChange() {
-
-  }
+  onSettingChange() {}
 
   onDescChange(event) {
     const { id: key, value } = event.target;
@@ -106,31 +99,23 @@ export default class RoomSettingsDialog extends React.Component {
       topic
     } = this.props.room;
     const sections = [
-      <section>
+      (
+        <section>
         <h3>Room details</h3>
         <h4>
-          <label htmlFor="name">Room name</label>
-        </h4>
+            <label htmlFor="name">Room name</label>
+          </h4>
         <div>
-          <input
-            type="text"
-            readOnly
-            defaultValue={name}
-            id="name"
-          />
-        </div>
+            <input type="text" readOnly defaultValue={name} id="name" />
+          </div>
         <h4>
-          <label htmlFor="topic">Room topic</label>
-        </h4>
+            <label htmlFor="topic">Room topic</label>
+          </h4>
         <div>
-          <input
-            type="text"
-            defaultValue={topic}
-            id="topic"
-            onBlur={this.onDescChange}
-          />
-        </div>
+            <input type="text" defaultValue={topic} id="topic" onBlur={this.onDescChange} />
+          </div>
       </section>
+      )
     ];
     if (this.props.room.type !== 0) {
       sections.push(this.generateMembersAccess());
@@ -140,9 +125,11 @@ export default class RoomSettingsDialog extends React.Component {
 
   generateInvites() {
     return [
-      <section>
+      (
+        <section>
         <h3>Invite other team members</h3>
       </section>
+      )
     ];
   }
 
@@ -161,22 +148,20 @@ export default class RoomSettingsDialog extends React.Component {
   }
 
   renderRoomPrivate() {
-    return (
-      <div>This room is private</div>
-    );
+    return <div>This room is private</div>;
   }
 
   renderRoomPublic() {
     return (
-      <div>This is room is public.
-      Anyone from the team can see it and access it.</div>
+      <div>
+        This is room is public.
+        Anyone from the team can see it and access it.
+      </div>
     );
   }
 
   render() {
-    const buttons = [
-      { action: "save", label: "Save", isPrimary: true }
-    ];
+    const buttons = [{ action: "save", label: "Save", isPrimary: true }];
 
     if (this.props.room.type !== 0) {
       buttons.unshift(
@@ -195,7 +180,7 @@ export default class RoomSettingsDialog extends React.Component {
     }
 
     const categories = {
-      overview: [].concat(this.generateOverview()),
+      overview: [].concat(this.generateOverview())
       // "instant invitations": [].concat(this.generateInvites())
     };
 
@@ -207,14 +192,13 @@ export default class RoomSettingsDialog extends React.Component {
         categories[category] = (categories[category] || []).concat(panel);
       });
 
-
     const tabs = Object.keys(categories).map((category) => {
-      const contentSections = categories[category]
-        .map((Section, index) => (
-          React.isValidElement(Section) ?
-            React.cloneElement(Section, { key: index }) :
-            <Section key={index} onChange={this.onSettingChange} />
-        ));
+      const contentSections = categories[category].map(
+        (Section, index) =>
+          React.isValidElement(Section)
+            ? React.cloneElement(Section, { key: index })
+            : <Section key={index} onChange={this.onSettingChange} />
+      );
       return (
         <TabPanel key={category} label={camelize(category)}>
           {contentSections}

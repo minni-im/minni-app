@@ -8,7 +8,7 @@ import UserStore from "../../stores/UserStore";
 
 class ContactListContainer extends React.Component {
   static getStores() {
-    return [ SelectedAccountStore, UserStore ];
+    return [SelectedAccountStore, UserStore];
   }
 
   static calculateState() {
@@ -17,7 +17,7 @@ class ContactListContainer extends React.Component {
     return {
       viewer,
       account,
-      users: UserStore.getUsers(account.usersId, [ viewer.id ])
+      users: UserStore.getUsers(account.usersId, [viewer.id])
     };
   }
 

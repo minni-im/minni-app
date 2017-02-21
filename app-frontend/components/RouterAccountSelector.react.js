@@ -11,5 +11,7 @@ export default class AccountSelector extends React.Component {
     selectAccount(nextProps.params.accountSlug);
   }
 
-  render() { return null; }
+  render() {
+    return null;
+  }
 }

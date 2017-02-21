@@ -15,8 +15,7 @@ export default class SpotifyEmbed extends Base {
   }
 
   match(source) {
-    return REGEXP_OPEN_SPOTIFY.exec(source) ||
-      REGEXP_SPOTIFY.exec(source);
+    return REGEXP_OPEN_SPOTIFY.exec(source) || REGEXP_SPOTIFY.exec(source);
   }
 
   parse(capture) {
@@ -24,16 +23,16 @@ export default class SpotifyEmbed extends Base {
       url: capture[0],
       resource: capture[1],
       id: capture[2]
-    }
+    };
   }
 
   extractTitle({ title }, { resource }) {
     if (resource === "track" || resource === "album") {
-      const [ author, ...rest ] = title.split("-");
+      const [author, ...rest] = title.split("-");
       return { title: author.trim() };
     }
     if (resource.indexOf("user") === 0) {
-      const [ noise, username, type ] = resource.split("/");
+      const [noise, username, type] = resource.split("/");
       return { title: username };
     }
     return { title };
@@ -41,7 +40,7 @@ export default class SpotifyEmbed extends Base {
 
   extractDescription({ title }, { resource }) {
     if (resource === "track" || resource === "album") {
-      const [ author, ...rest ] = title.split("-");
+      const [author, ...rest] = title.split("-");
       return { description: rest.join("-").trim() };
     }
     if (resource.indexOf("user") === 0) {
@@ -59,4 +58,4 @@ export default class SpotifyEmbed extends Base {
       }
     };
   }
-};
+}

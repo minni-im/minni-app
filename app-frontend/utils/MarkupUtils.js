@@ -27,7 +27,9 @@ const DEFAULT_RULES = {
           href={SimpleMarkdown.sanitizeUrl(node.target)}
           title={node.title}
           target="_blank"
-        >{output(node.content, state)}</a>
+        >
+          {output(node.content, state)}
+        </a>
       );
     }
   },
@@ -44,9 +46,7 @@ const DEFAULT_RULES = {
     match: SimpleMarkdown.inlineRegex(/^~([\s\S]+?)~(?!_)/),
     parse: SimpleMarkdown.defaultRules.u.parse,
     react(node, output, state) {
-      return (
-        <s key={state.key}>{output(node.content, state)}</s>
-      );
+      return <s key={state.key}>{output(node.content, state)}</s>;
     }
   },
   codeBlock: {
@@ -73,26 +73,20 @@ const DEFAULT_RULES = {
       if (node.lang && highlight.getLanguage(node.lang) !== null) {
         const code = highlight.highlight(node.lang, node.content);
         return (
-          <div
-            className="message--code-block"
-            key={state.key}
-          >
+          <div className="message--code-block" key={state.key}>
             <div className="language">{`</> ${code.language}`}</div>
             <pre>
               <code
                 className={`hljs ${code.language}`}
                 dangerouslySetInnerHTML={{ __html: code.value }}
-              ></code>
+              />
             </pre>
           </div>
         );
       }
       const code = highlight.highlightAuto(node.content);
       return (
-        <div
-          className="message--code-block"
-          key={state.key}
-        >
+        <div className="message--code-block" key={state.key}>
           <div className="language">{`<?> Is it some '${code.language}' ?`}</div>
           <pre>
             <code className="hljs">{node.content}</code>
@@ -127,19 +121,16 @@ const DEFAULT_RULES = {
       const user = UserStore.getUser(capture[1]);
       return {
         userId: user !== null ? user.id : null,
-        content: [{
-          type: "text",
-          content: user !== null ? `@${user.nickname}` : capture[0]
-        }]
+        content: [
+          {
+            type: "text",
+            content: user !== null ? `@${user.nickname}` : capture[0]
+          }
+        ]
       };
     },
     react(node, output, state) {
-      return (
-        <b
-          className="mention"
-          key={state.key}
-        >{output(node.content, state)}</b>
-      );
+      return <b className="mention" key={state.key}>{output(node.content, state)}</b>;
     }
   },
 
@@ -159,10 +150,12 @@ const DEFAULT_RULES = {
       return {
         accountSlug,
         roomSlug: room.slug,
-        content: [{
-          type: "text",
-          content: `#${room.slug}`
-        }]
+        content: [
+          {
+            type: "text",
+            content: `#${room.slug}`
+          }
+        ]
       };
     },
     react(node, output, state) {
@@ -172,7 +165,9 @@ const DEFAULT_RULES = {
             key={state.key}
             className="hashtag"
             title="There used to be a room here. It's gone..."
-          >#deleted-room</span>
+          >
+            #deleted-room
+          </span>
         );
       }
       return (
@@ -180,7 +175,9 @@ const DEFAULT_RULES = {
           key={state.key}
           className="hashtag hashtag--room"
           to={`/chat/${node.accountSlug}/messages/${node.roomSlug}`}
-        >{output(node.content, state)}</Link>
+        >
+          {output(node.content, state)}
+        </Link>
       );
     }
   },
@@ -199,9 +196,7 @@ const DEFAULT_RULES = {
       };
     },
     react(node, output, state) {
-      return (
-        <b key={state.key} className="hashtag">#{node.content}</b>
-      );
+      return <b key={state.key} className="hashtag">#{node.content}</b>;
     }
   }
 };

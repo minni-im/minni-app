@@ -8,14 +8,11 @@ export default function UserStatusIcon(props) {
 
   return (
     <div
-      className={classNames(
-        "user-status-icon",
-        {
-          "user--is-typing": props.typing
-        }
-      )}
+      className={classNames("user-status-icon", {
+        "user--is-typing": props.typing
+      })}
       data-status={statusCode}
-    ></div>
+    />
   );
 }
 

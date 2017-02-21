@@ -1,7 +1,5 @@
 require("babel-register")({
-  presets: [
-    "node6"
-  ],
+  presets: ["node6"],
   plugins: [
     "transform-object-rest-spread",
     "transform-class-properties",

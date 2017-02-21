@@ -16,8 +16,7 @@ export default class FlickrEmbed extends Base {
   }
 
   match(source) {
-    return REGEXP_FLICKR.exec(source) ||
-      REGEXP_FLICKR_SHORT.exec(source);
+    return REGEXP_FLICKR.exec(source) || REGEXP_FLICKR_SHORT.exec(source);
   }
 
   parse(capture) {

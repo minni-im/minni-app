@@ -7,7 +7,6 @@ import { LobbyIcon } from "../utils/IconsUtils";
 import AccountStore from "../stores/AccountStore";
 import SelectedAccountStore from "../stores/SelectedAccountStore";
 
-
 class AccountLobbyLink extends React.Component {
   static getStores() {
     return [SelectedAccountStore, AccountStore];
@@ -21,7 +20,7 @@ class AccountLobbyLink extends React.Component {
 
   static propTypes = {
     className: React.PropTypes.string
-  }
+  };
 
   render() {
     const { account } = this.state;

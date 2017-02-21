@@ -4,7 +4,6 @@ import { ReduceStore } from "../libs/Flux";
 
 import { ActionTypes } from "../Constants";
 
-
 function handleRegister(state, { plugin }) {
   return state.add(plugin);
 }

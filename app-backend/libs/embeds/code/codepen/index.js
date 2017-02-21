@@ -1,6 +1,6 @@
 import Base from "../../base";
 
-const REGEX_CODEPEN = /^https?:\/\/codepen\.io\/([a-zA-Z0-9_-]+)\/pen\/([^\s$]*)/
+const REGEX_CODEPEN = /^https?:\/\/codepen\.io\/([a-zA-Z0-9_-]+)\/pen\/([^\s$]*)/;
 
 export default class CodePenEmbed extends Base {
   constructor() {
@@ -13,7 +13,7 @@ export default class CodePenEmbed extends Base {
     return {
       url: capture[0],
       user: capture[1]
-    }
+    };
   }
 
   endpointUrl({ url }) {

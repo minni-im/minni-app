@@ -75,12 +75,14 @@ class AccountSwitcher extends React.Component {
       return <div className="account-switcher" style={{ flexBasis: 0 }} />;
     }
 
-    const links = accounts.toArray().map((account, index) => {
-      return (<Account key={account.slug} account={account}
+    const links = accounts.toArray().map((account, index) => (
+      <Account
+        key={account.slug}
+        account={account}
         selected={selectedAccountSlug === account.slug}
         index={index + 1}
-      />);
-    });
+      />
+      ));
 
     return (
       <div className="account-switcher" style={{ flexBasis: "auto" }}>
@@ -88,8 +90,11 @@ class AccountSwitcher extends React.Component {
         <Link to="/create" className="account create" activeClassName="account-selected">
           <div>+</div>
         </Link>
-        <a href="https://minni.im" className="powered-by-minni"
-          target="_blank" title="Powered by Minni.im"
+        <a
+          href="https://minni.im"
+          className="powered-by-minni"
+          target="_blank"
+          title="Powered by Minni.im"
         >
           <img src="/images/logo-color.png" />
         </a>

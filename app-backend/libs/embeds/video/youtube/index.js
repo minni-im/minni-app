@@ -11,7 +11,7 @@ export default class YoutubeEmbed extends Base {
     this.type = "video.youtube";
   }
 
-  endpointUrl({id: videoId}) {
+  endpointUrl({ id: videoId }) {
     const videoUrl = encodeURI(`https://youtube.com/watch?v=${videoId}`);
     return `http://www.youtube.com/oembed?url=${videoUrl}&format=json`;
   }
@@ -26,6 +26,6 @@ export default class YoutubeEmbed extends Base {
     return {
       url: capture[0],
       id: capture[1]
-    }
+    };
   }
-};
+}

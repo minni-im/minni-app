@@ -2,12 +2,13 @@ import Logger from "../libs/Logger";
 const logger = Logger.create("TextUtils");
 
 export function slugify(text) {
-  return text.toLowerCase()
-      .trim()
-      .replace(/[ _]/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/[^\w-]+/g, "")
-      .replace(/-$/, "");
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[ _]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/[^\w-]+/g, "")
+    .replace(/-$/, "");
 }
 
 export function unslugify(text) {

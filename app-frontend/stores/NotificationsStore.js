@@ -10,9 +10,12 @@ import { ActionTypes } from "../Constants";
 let internalId = 0;
 
 function scheduleDismiss(notifId, delay) {
-  setTimeout(() => {
-    NotificationsActionCreators.dismiss(notifId);
-  }, delay);
+  setTimeout(
+    () => {
+      NotificationsActionCreators.dismiss(notifId);
+    },
+    delay
+  );
 }
 
 function handleNotification(state, { id, role, content, dismiss }) {

@@ -9,23 +9,22 @@ export function getInvitationList(accountId) {
     type: ActionTypes.LOAD_INVITATIONS,
     accountId
   });
-  return request(EndPoints.INVITATION_LIST(accountId))
-    .then(({ ok, invites, error, message }) => {
-      if (ok) {
-        dispatch({
-          type: ActionTypes.LOAD_INVITATIONS_SUCCESS,
-          invites,
-          accountId
-        });
-      } else {
-        dispatch({
-          type: ActionTypes.LOAD_INVITATIONS_FAILURE,
-          error,
-          message
-        });
-      }
-      return { ok, invites, error, message };
-    });
+  return request(EndPoints.INVITATION_LIST(accountId)).then(({ ok, invites, error, message }) => {
+    if (ok) {
+      dispatch({
+        type: ActionTypes.LOAD_INVITATIONS_SUCCESS,
+        invites,
+        accountId
+      });
+    } else {
+      dispatch({
+        type: ActionTypes.LOAD_INVITATIONS_FAILURE,
+        error,
+        message
+      });
+    }
+    return { ok, invites, error, message };
+  });
 }
 
 export function createInvite(accountId, maxAge = INVITATION_MAX_AGE, maxUsage) {
@@ -93,25 +92,24 @@ export function validateInvite(inviteToken) {
     type: ActionTypes.INVITATION_VALIDATE,
     inviteToken
   });
-  return request(EndPoints.INVITATION_VALIDATE(inviteToken))
-    .then((payload) => {
-      const { ok, invite, errors, message } = payload;
-      if (ok) {
-        dispatch({
-          type: ActionTypes.INVITATION_VALIDATE_SUCCESS,
-          inviteToken,
-          invite
-        });
-      } else {
-        dispatch({
-          type: ActionTypes.INVITATION_VALIDATE_FAILURE,
-          inviteToken,
-          errors,
-          message
-        });
-      }
-      return payload;
-    });
+  return request(EndPoints.INVITATION_VALIDATE(inviteToken)).then((payload) => {
+    const { ok, invite, errors, message } = payload;
+    if (ok) {
+      dispatch({
+        type: ActionTypes.INVITATION_VALIDATE_SUCCESS,
+        inviteToken,
+        invite
+      });
+    } else {
+      dispatch({
+        type: ActionTypes.INVITATION_VALIDATE_FAILURE,
+        inviteToken,
+        errors,
+        message
+      });
+    }
+    return payload;
+  });
 }
 
 export function acceptInvite(inviteToken) {

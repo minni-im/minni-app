@@ -24,22 +24,24 @@ const config = {};
 
 [
   // loadDefaultSettings
-  context => {
+  (context) => {
     const file = fs.readFileSync(path.join(__dirname, "..", "default.yml"), "utf8");
     Object.assign(context, yaml.safeLoad(file));
   },
 
   // loadSettings
-  context => {
+  (context) => {
     const file = fs.readFileSync(path.join(__dirname, "..", "settings.yml"), "utf8");
     Object.assign(context, yaml.safeLoad(file));
   },
 
   // mergeEnvSettings
-  context => {
+  (context) => {
     const merge = (baseKey, object) => {
       for (const key in object) {
-        if (!object.hasOwnProperty(key)) { continue; }
+        if (!object.hasOwnProperty(key)) {
+          continue;
+        }
         const value = object[key];
         const envKey = `${baseKey}_${key.replace(/([A-Z]+)/g, "_$1").toUpperCase()}`;
         if (isPlainObject(value)) {

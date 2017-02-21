@@ -12,13 +12,9 @@ module.exports = {
   context: path.join(__dirname, "app-frontend"),
   entry: {
     minni: "./app.react.js",
-    plugins: glob.sync(
-      path.join(__dirname, "app-frontend", "plugins", "**", "Plugin.js")
-    ).concat(
-      glob.sync(
-        path.join(__dirname, "node_modules", "minni-*", "frontend", "Plugin.js")
-      )
-    )
+    plugins: glob
+      .sync(path.join(__dirname, "app-frontend", "plugins", "**", "Plugin.js"))
+      .concat(glob.sync(path.join(__dirname, "node_modules", "minni-*", "frontend", "Plugin.js")))
   },
   output: {
     path: "./dist/public/js",
@@ -49,11 +45,12 @@ module.exports = {
         query: {
           babelrc: path.resolve(".babelrc")
         }
-      }, {
+      },
+      {
         test: /\.json$/,
         loader: "json-loader"
       }
-    ],
+    ]
   },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
@@ -66,32 +63,36 @@ module.exports = {
       chunks: ["plugins"],
       minChunks: Infinity
     })
-  ].concat(RELEASE ? [
-    new ManifestPlugin(),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        screw_ie8: true,
-        warnings: false
-      },
-      mangle: {
-        screw_ie8: true
-      },
-      output: {
-        comments: false,
-        screw_ie8: true
-      },
-      sourcemaps: true
-    }),
-    new webpack.DefinePlugin({
-      __DEV__: false,
-      "process.env.NODE_ENV": JSON.stringify(nodeEnv)
-    })
-  ] : [
-    new webpack.DefinePlugin({
-      __DEV__: true,
-      "process.env.NODE_ENV": JSON.stringify(nodeEnv)
-    })
-  ])
+  ].concat(
+    RELEASE
+      ? [
+        new ManifestPlugin(),
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.UglifyJsPlugin({
+          compressor: {
+            screw_ie8: true,
+            warnings: false
+          },
+          mangle: {
+            screw_ie8: true
+          },
+          output: {
+            comments: false,
+            screw_ie8: true
+          },
+          sourcemaps: true
+        }),
+        new webpack.DefinePlugin({
+          __DEV__: false,
+          "process.env.NODE_ENV": JSON.stringify(nodeEnv)
+        })
+      ]
+      : [
+        new webpack.DefinePlugin({
+          __DEV__: true,
+          "process.env.NODE_ENV": JSON.stringify(nodeEnv)
+        })
+      ]
+  )
 };

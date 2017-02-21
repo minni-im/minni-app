@@ -12,19 +12,19 @@ PluginRegister("ImageExtractor", COMPOSER_TEXT, {
     if (!potentialImages.length) {
       return Promise.resolve(message);
     }
-    return Promise.all(
-      potentialImages
-        .filter(url => REGEX_IMAGE.test(url))
-        .map(url => {
+    return Promise
+      .all(
+        potentialImages.filter(url => REGEX_IMAGE.test(url)).map((url) => {
           const image = ImageStore.getImage(url);
           if (image) {
             return { url, width: image.width, height: image.height };
           }
           return ImageActionCreators.loadImage(url);
         })
-      ).then(images => {
+      )
+      .then((images) => {
         if (images.length) {
-          message.embeds = images.map(image => {
+          message.embeds = images.map((image) => {
             image.type = "image";
             image.thumbnail = {
               url: image.url

@@ -10,7 +10,7 @@ import NotificationsStore from "../stores/NotificationsStore";
 class Notifications extends Component {
   static propTypes = {
     notifications: PropTypes.object
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -27,30 +27,28 @@ class Notifications extends Component {
 
     const messages = notifications
       .toArray()
-      .map((notificationType) => (
-        notificationType.toArray()
-          .map(notification => (
-            <div
-              key={notification.id}
-              className={classNames(
-                "notifier-message flex-horizontal",
-                { [`notifier-${notification.role}`]: true }
-              )}
+      .map(notificationType => notificationType.toArray().map(notification => (
+        <div
+          key={notification.id}
+          className={classNames("notifier-message flex-horizontal", {
+            [`notifier-${notification.role}`]: true
+          })}
+        >
+          <div className="flex-spacer">
+            {notification.content}
+          </div>
+          {notification.autoDismissable
+            ? false
+            : <span
+              key="notifier-close"
+              className="notifier-close"
+              data-id={notification.id}
+              onClick={this.onCloseNotification}
             >
-              <div className="flex-spacer">
-                {notification.content}
-              </div>
-              {notification.autoDismissable ? false : (
-                <span
-                  key="notifier-close"
-                  className="notifier-close"
-                  data-id={notification.id}
-                  onClick={this.onCloseNotification}
-                >&times;</span>
-              )}
-            </div>
-          ))
-      ));
+                ×
+              </span>}
+        </div>
+      )));
 
     return (
       <ReactCSSTransitionGroup

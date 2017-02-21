@@ -1,6 +1,6 @@
 export function debounce(fn) {
   let id = null;
-  return function() {
+  return function () {
     clearImmediate(id);
     id = setImmediate(fn);
   };

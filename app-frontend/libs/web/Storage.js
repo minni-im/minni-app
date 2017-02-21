@@ -4,7 +4,7 @@ function isLocalStorageActive() {
     localStorage.setItem(value, value);
     localStorage.removeItem(value);
     return true;
-  } catch(e) {
+  } catch (e) {
     return false;
   }
 }
@@ -14,7 +14,8 @@ class LocalStorage {
     let value = localStorage.getItem(key);
     try {
       value = JSON.parse(value);
-    } catch(e) {} //eslint-disable-line no-empty
+    } catch (e) {
+    } // eslint-disable-line no-empty
     return value;
   }
 
@@ -53,4 +54,4 @@ class ObjectStorage {
   }
 }
 
-export default isLocalStorageActive() ? new LocalStorage() : new ObjectStorage();
+export default (isLocalStorageActive() ? new LocalStorage() : new ObjectStorage());

@@ -16,7 +16,9 @@ export default function FormattingHints() {
             <span className="flex-spacer">_italic_</span>
           </div>
           <div className="message-group flex-horizontal">
-            <span className="hint"><span style={{ textDecoration: "underline" }}>underline</span></span>
+            <span className="hint">
+              <span style={{ textDecoration: "underline" }}>underline</span>
+            </span>
             <span className="flex-spacer">__underline__</span>
           </div>
           <div className="message-group flex-horizontal">
@@ -38,9 +40,19 @@ export default function FormattingHints() {
           <div className="message-group flex-horizontal">
             <span className="hint message--code-block">
               <pre>
-                <code className="hljs javascript"><span className="hljs-function"><span className="hljs-keyword">function</span> <span className="hljs-title">notify</span>(<span className="hljs-params">msg</span>) </span>{"{"}
+                <code className="hljs javascript">
+                  <span className="hljs-function">
+                    <span className="hljs-keyword">function</span>
+                    {" "}
+                    <span className="hljs-title">notify</span>
+                    (
+                    <span className="hljs-params">msg</span>
+                    ){" "}
+                  </span>
+                  {"{"}
                   <br />&nbsp;&nbsp;alert(msg);<br />
-                  {"}"}</code>
+                  {"}"}
+                </code>
               </pre>
             </span>
             <span className="code-block flex-spacer"><pre>{CODE}</pre></span>

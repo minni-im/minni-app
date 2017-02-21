@@ -1,9 +1,9 @@
 import { requireLogin } from "../middlewares/auth";
 import * as auth from "../auth";
 
-
 export default (app) => {
-  app.route("/profile")
+  app
+    .route("/profile")
     .all(requireLogin)
     .get((req, res) => {
       res.render("profile", {
@@ -15,7 +15,8 @@ export default (app) => {
       req.io.route("me:profile");
     });
 
-  app.route("/api/me")
+  app
+    .route("/api/me")
     .all(requireLogin)
     .get((req) => {
       req.io.route("me:whoami");
@@ -24,23 +25,17 @@ export default (app) => {
       req.io.route("me:profile");
     });
 
-  app.get("/api/me/token/generate",
-    requireLogin,
-    (req) => {
-      req.io.route("me:generateToken");
-    });
+  app.get("/api/me/token/generate", requireLogin, (req) => {
+    req.io.route("me:generateToken");
+  });
 
-  app.get("/api/me/token/revoke",
-    requireLogin,
-    (req) => {
-      req.io.route("me:revokeToken");
-    });
+  app.get("/api/me/token/revoke", requireLogin, (req) => {
+    req.io.route("me:revokeToken");
+  });
 
-  app.post("/api/me/settings",
-    requireLogin,
-    (req) => {
-      req.io.route("me:settings");
-    });
+  app.post("/api/me/settings", requireLogin, (req) => {
+    req.io.route("me:settings");
+  });
 
   /* =Socket routes= */
   app.io.route("me", {
@@ -98,11 +93,21 @@ export default (app) => {
     profile(req, res) {
       const user = req.user;
       const { firstname, lastname, nickname, email, gravatarEmail } = req.body;
-      if (firstname) { user.firstname = firstname; }
-      if (lastname) { user.lastname = lastname; }
-      if (nickname) { user.nickname = nickname; }
-      if (email) { user.email = email; }
-      if (gravatarEmail) { user.gravatarEmail = gravatarEmail === "" ? null : gravatarEmail; }
+      if (firstname) {
+        user.firstname = firstname;
+      }
+      if (lastname) {
+        user.lastname = lastname;
+      }
+      if (nickname) {
+        user.nickname = nickname;
+      }
+      if (email) {
+        user.email = email;
+      }
+      if (gravatarEmail) {
+        user.gravatarEmail = gravatarEmail === "" ? null : gravatarEmail;
+      }
 
       user.save().then((newUser) => {
         if (req.accepts("text/html")) {
@@ -114,8 +119,7 @@ export default (app) => {
           user: newUser.toAPI(true)
         });
       }, (error) => {
-        const errorMessage =
-          "Oh noes! Something went wrong! Apparently, that didn't work. Please try again.";
+        const errorMessage = "Oh noes! Something went wrong! Apparently, that didn't work. Please try again.";
         if (req.accepts("text/html")) {
           console.error(error);
           req.flash("error", errorMessage);
@@ -134,11 +138,9 @@ export default (app) => {
       const user = req.user;
       user.settings = req.body;
       user.save().then(() => {
-        res.status(200)
-          .json({ ok: true });
+        res.status(200).json({ ok: true });
       }, (error) => {
-        const errorMessage =
-          "Oh noes! Something went wrong! Apparently, that didn't work. Please try again.";
+        const errorMessage = "Oh noes! Something went wrong! Apparently, that didn't work. Please try again.";
         res.status(500).json({
           ok: false,
           message: errorMessage,

@@ -60,7 +60,6 @@ function handleProfileUpdate(state, { user }) {
 }
 
 class UserStore extends MapStore {
-
   initialize() {
     this.addAction(ActionTypes.CONNECTION_OPEN, handleConnectionOpen);
     this.addAction(ActionTypes.LOAD_USER_SUCCESS, handleUserAdd);
@@ -91,9 +90,7 @@ class UserStore extends MapStore {
   }
 
   getAll() {
-    return this.getState()
-      .filter(user => user.id !== connectedUserId)
-      .toArray();
+    return this.getState().filter(user => user.id !== connectedUserId).toArray();
   }
 }
 

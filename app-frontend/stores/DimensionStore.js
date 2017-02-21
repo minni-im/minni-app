@@ -17,9 +17,13 @@ function handleScroll(state, { roomId, scrollTop, scrollHeight }) {
   if (scrollTop === undefined) {
     return state.delete(roomId);
   }
-  return state.set(roomId, new DimensionRecord({
-    scrollTop, scrollHeight
-  }));
+  return state.set(
+    roomId,
+    new DimensionRecord({
+      scrollTop,
+      scrollHeight
+    })
+  );
 }
 
 function handleRoomLeave(state, { roomSlug }) {

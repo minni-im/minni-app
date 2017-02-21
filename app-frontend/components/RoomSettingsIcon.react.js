@@ -10,7 +10,7 @@ export default class extends React.Component {
   static propTypes = {
     room: React.PropTypes.object.isRequired,
     className: React.PropTypes.string
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -20,7 +20,7 @@ export default class extends React.Component {
 
   state = {
     visible: false
-  }
+  };
 
   onClose() {
     this.setState({ visible: false });

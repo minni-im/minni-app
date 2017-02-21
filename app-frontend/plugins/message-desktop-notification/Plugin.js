@@ -1,8 +1,4 @@
-import {
-  Constants,
-  register as PluginRegister,
-  Stores
-} from "minni-plugins-toolkit";
+import { Constants, register as PluginRegister, Stores } from "minni-plugins-toolkit";
 
 import SettingsPanel, { SETTING_KEY, NOTIFICATION_GRANTED, checkPermission } from "./Settings.react";
 
@@ -10,10 +6,10 @@ const {
   SettingsStore,
   UserStore,
   RoomStore,
-  SelectedAccountStore } = Stores;
+  SelectedAccountStore
+} = Stores;
 
 const NOTIFICATION_DISPLAY_TIME = 7.5 * 1000; // time in milliseconds
-
 
 function capitalize(text) {
   return text.replace(/(?:^|\s)([a-z])/, `${"$1".toUpperCase()}`);
@@ -43,9 +39,12 @@ PluginRegister("DesktopNotifications", Constants.PLUGIN_TYPES.MESSAGE, {
         window.focus();
         notification.close();
       };
-      setTimeout(() => {
-        notification.close();
-      }, NOTIFICATION_DISPLAY_TIME);
+      setTimeout(
+        () => {
+          notification.close();
+        },
+        NOTIFICATION_DISPLAY_TIME
+      );
 
       return message;
     }

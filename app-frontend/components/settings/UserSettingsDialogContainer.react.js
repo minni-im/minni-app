@@ -47,12 +47,14 @@ class UserSettingsDialogContainer extends React.Component {
   }
 
   render() {
-    return (<UserSettingsDialog
-      {...this.props}
-      onClose={this.onCloseDialog}
-      settings={this.state.settings}
-      user={this.state.user}
-    />);
+    return (
+      <UserSettingsDialog
+        {...this.props}
+        onClose={this.onCloseDialog}
+        settings={this.state.settings}
+        user={this.state.user}
+      />
+    );
   }
 }
 

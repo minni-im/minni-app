@@ -13,6 +13,7 @@ export default function Welcome(props) {
   return (
     <div className="welcome">
       <h2>
+        {" "}
         Welcome to {Minni.name}
         {user ? `, ${user.firstname}` : ""}
       </h2>

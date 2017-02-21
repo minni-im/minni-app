@@ -49,7 +49,9 @@ class ConnectedRoomStore extends MapStore {
 
   getInitialState() {
     const list = Storage.get(CONNECTED_ROOMS);
-    if (!list) { return Immutable.Map(); }
+    if (!list) {
+      return Immutable.Map();
+    }
     return Immutable.fromJS(list).map(i => i.toSet());
   }
 

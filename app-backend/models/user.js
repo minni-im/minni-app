@@ -25,12 +25,10 @@ UserSchema.virtual({
   initials: {
     get() {
       if (this.firstname && this.lastname) {
-        return [
-          this.firstname,
-          this.lastname
-        ].map(text => text[0])
-        .map(letter => letter.toUpperCase())
-        .join("");
+        return [this.firstname, this.lastname]
+          .map(text => text[0])
+          .map(letter => letter.toUpperCase())
+          .join("");
       }
       return this.nickname[0].toUpperCase();
     }
@@ -126,8 +124,8 @@ UserSchema
   .static("findByToken", function findByToken(token) {
     const [userId, hash] = new Buffer(token, "base64").toString("ascii").split(":");
 
-    return this.findById(userId)
-      .then(user => new Promise((resolve, reject) => {
+    return this.findById(userId).then(
+      user => new Promise((resolve, reject) => {
         bcrypt.compare(hash, user.token, (errorHash, isMatch) => {
           if (errorHash) {
             reject(errorHash);
@@ -135,16 +133,16 @@ UserSchema
           }
           resolve(isMatch ? user : false);
         });
-      }));
+      })
+    );
   })
   .static("authenticate", function authenticate(identifier, password) {
-    return this.where("email", { key: identifier })
-      .then(users => {
-        if (users.length) {
-          return users[0].authenticate(password);
-        }
-        return false;
-      });
+    return this.where("email", { key: identifier }).then((users) => {
+      if (users.length) {
+        return users[0].authenticate(password);
+      }
+      return false;
+    });
   });
 
 UserSchema
@@ -158,8 +156,7 @@ UserSchema
     }`
   })
   .static("findByProviderId", function findByProviderId(provider, id) {
-    return this.where("byProviderId", { key: [provider, id] })
-      .then(users => users[0]);
+    return this.where("byProviderId", { key: [provider, id] }).then(users => users[0]);
   });
 
 export default recorder.model("User", UserSchema);

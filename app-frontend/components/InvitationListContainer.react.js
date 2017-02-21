@@ -26,11 +26,8 @@ class InvitationListContainer extends React.Component {
   }
 
   render() {
-    return (
-      <InvitationList {...this.state} />
-    );
+    return <InvitationList {...this.state} />;
   }
 }
-
 
 export default Container.create(InvitationListContainer);

@@ -1,7 +1,7 @@
 import Immutable from "immutable";
 
 function makeOrderedMap(map, list, ownerID, hash) {
-  let omap = Object.create(Immutable.OrderedMap.prototype);
+  const omap = Object.create(Immutable.OrderedMap.prototype);
   omap.size = map ? map.size : 0;
   omap._map = map;
   omap._list = list;
@@ -11,16 +11,16 @@ function makeOrderedMap(map, list, ownerID, hash) {
 }
 
 Immutable.OrderedMap.prototype.replace = function (oldKey, newKey, newValue) {
-  let map = this._map;
-  let list = this._list;
-  let i = map.get(oldKey);
+  const map = this._map;
+  const list = this._list;
+  const i = map.get(oldKey);
 
   if (i === undefined) {
     return this.set(newKey, newValue);
   }
 
-  let newMap = map.delete(oldKey).set(newKey, i);
-  let newList = list.set(i, [newKey, newValue]);
+  const newMap = map.delete(oldKey).set(newKey, i);
+  const newList = list.set(i, [newKey, newValue]);
   if (this.__ownerID) {
     this.size = newMap.size;
     this._map = newMap;

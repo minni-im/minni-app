@@ -9,7 +9,7 @@ export default function RoomList(props) {
   const { account, rooms } = props;
   return (
     <div className="room-list">
-      {rooms.map(room => {
+      {rooms.map((room) => {
         let roomIcon = <RoomIcons.RoomPublicIcon />;
         if (room.private) {
           roomIcon = <RoomIcons.RoomPrivateIcon />;

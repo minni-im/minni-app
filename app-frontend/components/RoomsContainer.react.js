@@ -20,7 +20,7 @@ function activateSelectedRoom(props) {
 class RoomsContainer extends React.Component {
   static propTypes = {
     params: React.PropTypes.objectOf(React.PropTypes.string)
-  }
+  };
 
   static getStores() {
     return [RoomStore];
@@ -53,14 +53,7 @@ class RoomsContainer extends React.Component {
       <main className={classNames}>
         {this.state.rooms
           .toArray()
-          .map(room => (
-            <Room
-              key={room.id}
-              room={room}
-              multiRooms={size > 1}
-            />
-          ))
-        }
+          .map(room => <Room key={room.id} room={room} multiRooms={size > 1} />)}
       </main>
     );
   }

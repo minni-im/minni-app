@@ -7,14 +7,14 @@ import UserStore from "../stores/UserStore";
 
 class UserListContainer extends React.Component {
   static getStores() {
-    return [ UserStore ];
+    return [UserStore];
   }
 
   static calculateState(prevState, prevProps) {
     const viewer = UserStore.getConnectedUser();
     return {
-      viewer: viewer,
-      users: UserStore.getUsers(prevProps.usersId, [ viewer.id ])
+      viewer,
+      users: UserStore.getUsers(prevProps.usersId, [viewer.id])
     };
   }
 

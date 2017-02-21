@@ -45,20 +45,21 @@ export default function Invitation(props) {
       <div className="invite--expires"><Countdown expiration={expirationDate} /></div>
       <div className="invite--revoke">
         {inviter.id === currentUser.id &&
-          (
-            expired ?
-              <button
-                className="button-small"
-                onClick={() => deleteInvite(props.token)}
-                title="Delete this expired invitation token"
-              >Delete</button> :
-              <button
-                className="button-danger button-small"
-                onClick={() => deleteInvite(props.token)}
-                title="Revoke this invitation token"
-              >Revoke</button>
-          )
-        }
+          (expired
+            ? <button
+              className="button-small"
+              onClick={() => deleteInvite(props.token)}
+              title="Delete this expired invitation token"
+            >
+                Delete
+              </button>
+            : <button
+              className="button-danger button-small"
+              onClick={() => deleteInvite(props.token)}
+              title="Revoke this invitation token"
+            >
+                Revoke
+              </button>)}
       </div>
     </div>
   );

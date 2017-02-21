@@ -29,7 +29,8 @@ const list = {
   Vimeo,
   Vine,
   Youtube,
-  Twitter };
+  Twitter
+};
 
 const namedEmbeds = {};
 export const embeds = [];
@@ -43,9 +44,7 @@ const RULES = {
 };
 
 embeds.forEach((e) => {
-  const embedName = e.name
-    .replace(/\s/g, "_")
-    .toLowerCase();
+  const embedName = e.name.replace(/\s/g, "_").toLowerCase();
   namedEmbeds[embedName] = e;
   RULES[embedName] = {
     order: SimpleMarkdown.defaultRules.url.order,
@@ -57,16 +56,18 @@ embeds.forEach((e) => {
 const parser = SimpleMarkdown.parserFor(RULES);
 
 export function parse(message) {
-  return parser(message, { inline: true })
-    .filter(p => p.type !== "text");
+  return parser(message, { inline: true }).filter(p => p.type !== "text");
 }
 
 export function process(tree) {
-  return Promise.all(tree.map((element) => {
-    const embedProcessor = namedEmbeds[element.type];
-    return embedProcessor.process(element);
-  }))
-  .then(results => results.filter(result => result !== false));
+  return Promise
+    .all(
+      tree.map((element) => {
+        const embedProcessor = namedEmbeds[element.type];
+        return embedProcessor.process(element);
+      })
+    )
+    .then(results => results.filter(result => result !== false));
 }
 
 export default function (message) {

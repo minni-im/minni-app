@@ -41,10 +41,7 @@ class AccountStore extends MapStore {
   }
 
   getById(accountId) {
-    return this.getState()
-      .toSeq()
-      .filter(account => account.id === accountId)
-      .first();
+    return this.getState().toSeq().filter(account => account.id === accountId).first();
   }
 
   getAccount(accountSlug) {

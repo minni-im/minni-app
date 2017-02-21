@@ -6,7 +6,6 @@ import SelectedAccountStore from "../stores/SelectedAccountStore";
 
 import * as AccountActionCreators from "../actions/AccountActionCreators";
 
-
 class RoomCreate extends React.Component {
   constructor(props) {
     super(props);
@@ -18,7 +17,7 @@ class RoomCreate extends React.Component {
   state = {
     type: 1,
     usersId: []
-  }
+  };
 
   onCreateClick(event) {
     event.preventDefault();
@@ -30,14 +29,9 @@ class RoomCreate extends React.Component {
       this.name.focus();
       return;
     }
-    AccountActionCreators.createRoom(
-      account,
-      this.name.value,
-      this.topic.value,
-      this.state.type,
-      this.state.usersId
-    ).then(
-      ({ ok, message }) => {
+    AccountActionCreators
+      .createRoom(account, this.name.value, this.topic.value, this.state.type, this.state.usersId)
+      .then(({ ok, message }) => {
         if (ok) {
           this.context.router.transitionTo({ pathname: `/chat/${account.slug}/lobby` });
           return;
@@ -83,7 +77,9 @@ class RoomCreate extends React.Component {
                 <label>
                   <span>Name</span>
                   <input
-                    ref={(input) => { this.name = input; }}
+                    ref={(input) => {
+                      this.name = input;
+                    }}
                     autoFocus
                     placeholder="Give a name to your room"
                   />
@@ -94,7 +90,9 @@ class RoomCreate extends React.Component {
                 <label>
                   <span>Topic</span>
                   <input
-                    ref={(input) => { this.topic = input; }}
+                    ref={(input) => {
+                      this.topic = input;
+                    }}
                     placeholder="Describe your room, what should it be used for ?"
                   />
                 </label>

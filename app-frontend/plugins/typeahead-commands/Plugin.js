@@ -17,9 +17,8 @@ PluginRegister("CommandTypeahead", COMPOSER_TYPEAHEAD, {
   reduce(prefix, index, test) {
     if (index === 0) {
       const COMMANDS = PluginsStore.getPlugins(COMPOSER_COMMAND);
-      return COMMANDS.filter(({ command, enabled }) =>
-          enabled(command) && test(command)
-        ).slice(0, 10);
+      return COMMANDS.filter(({ command, enabled }) => enabled(command) && test(command))
+        .slice(0, 10);
     }
     return null;
   }

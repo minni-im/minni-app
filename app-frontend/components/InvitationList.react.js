@@ -12,18 +12,20 @@ export default class InvitationList extends React.Component {
   }
 
   renderList() {
-    const inviteList = this.props.invitations.map((invitation) => {
-      const props = {
-        token: invitation.token,
-        dateCreated: invitation.dateCreated,
-        inviter: invitation.inviter,
-        expired: invitation.isExpired,
-        expirationDate: invitation.getExpiresAt(),
-        usage: invitation.usage,
-        maxUsage: invitation.maxUsage
-      };
-      return <Invitation key={invitation.token} {...props} />;
-    }).toArray();
+    const inviteList = this.props.invitations
+      .map((invitation) => {
+        const props = {
+          token: invitation.token,
+          dateCreated: invitation.dateCreated,
+          inviter: invitation.inviter,
+          expired: invitation.isExpired,
+          expirationDate: invitation.getExpiresAt(),
+          usage: invitation.usage,
+          maxUsage: invitation.maxUsage
+        };
+        return <Invitation key={invitation.token} {...props} />;
+      })
+      .toArray();
 
     return (
       <div className="flex-vertical">
@@ -36,22 +38,15 @@ export default class InvitationList extends React.Component {
   }
 
   renderEmpty() {
-    return (
-      <div>No invitation links</div>
-    );
+    return <div>No invitation links</div>;
   }
 
   render() {
     return (
       <div className="invitation-list">
-        {this.props.invitations.isEmpty() ?
-          this.renderEmpty() :
-          this.renderList()}
+        {this.props.invitations.isEmpty() ? this.renderEmpty() : this.renderList()}
         <div className="invitation-list--create">
-          <button
-            className="button-highlight"
-            onClick={() => this.onGenerateClick()}
-          >
+          <button className="button-highlight" onClick={() => this.onGenerateClick()}>
             Create invitation link
           </button>
         </div>

@@ -10,20 +10,19 @@ export default function WelcomeMessage(props) {
     <div className="message-welcome">
       <h3>Welcome to the very beginning of this room's history.</h3>
       <p>
-        <em>{room.isUserAdmin(me.id) ?
-          "You" :
-          author.fullname} created this room on{" "}
-          <strong>{dateCreated}</strong>.</em>
+        <em>
+          {room.isUserAdmin(me.id) ? "You" : author.fullname} created this room on{" "}
+          <strong>{dateCreated}</strong>.
+        </em>
       </p>
       <p>
-        <em>{room.private ?
-          `This is a private room, only ${
-            room.usersId.map(
-              userId => UserStore.getUser(userId).fullname
-            )
-            .join(", ")
-          } and yourself can join it.` :
-          "This room is public, anyone in the team can join it."}</em>
+        <em>
+          {room.private
+            ? `This is a private room, only ${room.usersId
+                .map(userId => UserStore.getUser(userId).fullname)
+                .join(", ")} and yourself can join it.`
+            : "This room is public, anyone in the team can join it."}
+        </em>
       </p>
     </div>
   );

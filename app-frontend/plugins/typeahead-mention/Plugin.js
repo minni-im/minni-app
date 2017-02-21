@@ -11,9 +11,7 @@ PluginRegister("MentionTypeahead", COMPOSER_TYPEAHEAD, {
 
   reduce(prefix) {
     return UserStore.getAll()
-      .filter(user =>
-        user.nickname.startsWith(prefix.slice(1))
-      )
+      .filter(user => user.nickname.startsWith(prefix.slice(1)))
       .slice(0, 10);
   }
 });

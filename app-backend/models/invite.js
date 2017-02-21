@@ -48,9 +48,7 @@ InviteSchema.method("toAPI", function toAPI() {
 
 InviteSchema.static("generateToken", (userId, accountId, maxAge, maxUsage) => {
   const Invite = recorder.model("Invite");
-  const token = new Buffer(
-    crypto.randomBytes(3).toString("hex")
-  ).toString("base64");
+  const token = new Buffer(crypto.randomBytes(3).toString("hex")).toString("base64");
 
   const payload = {
     accountId,
@@ -68,13 +66,12 @@ InviteSchema.static("generateToken", (userId, accountId, maxAge, maxUsage) => {
 });
 
 InviteSchema.static("findByToken", function findByToken(token) {
-  return this.where("token", { key: token })
-    .then((invites) => {
-      if (invites.length) {
-        return invites[0];
-      }
-      return Promise.reject(false);
-    });
+  return this.where("token", { key: token }).then((invites) => {
+    if (invites.length) {
+      return invites[0];
+    }
+    return Promise.reject(false);
+  });
 });
 
 export default recorder.model("Invite", InviteSchema);

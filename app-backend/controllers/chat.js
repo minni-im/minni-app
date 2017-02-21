@@ -36,47 +36,50 @@ export default (app) => {
         return Room.where("accountId", { key: account.id });
       });
 
-      const usersId = accounts.reduce((ids, account) => {
-        account.usersId.forEach((id) => {
-          ids.add(id);
-        });
-        return ids;
-      }, new Set());
+      const usersId = accounts.reduce(
+        (ids, account) => {
+          account.usersId.forEach((id) => {
+            ids.add(id);
+          });
+          return ids;
+        },
+        new Set()
+      );
       const users = Array.from(usersId).map(userId => User.findById(userId));
 
       const presence = new Set();
 
-      Promise.all([...rooms, ...users]).then((results) => {
-        const finalRooms = results
-          .slice(0, size)
-          .reduce((flat, flatRooms) => flat.concat(flatRooms), [])
-          .filter(room => room.isAccessGranted(user.id))
-          .map(room => room.toAPI(user.id === room.adminId));
-        const finalUsers = results
-          .slice(size)
-          .map(finalUser => finalUser.toAPI());
+      Promise.all([...rooms, ...users])
+        .then((results) => {
+          const finalRooms = results
+            .slice(0, size)
+            .reduce((flat, flatRooms) => flat.concat(flatRooms), [])
+            .filter(room => room.isAccessGranted(user.id))
+            .map(room => room.toAPI(user.id === room.adminId));
+          const finalUsers = results.slice(size).map(finalUser => finalUser.toAPI());
 
-        for (const clientSocket of Object.keys(app.io.sockets.adapter.nsp.connected)) {
-          const client = app.io.sockets.adapter.nsp.connected[clientSocket];
-          if (client.request.user.id !== user.id) {
-            presence.add({
-              userId: client.request.user.id,
-              status: client.status
-            });
+          for (const clientSocket of Object.keys(app.io.sockets.adapter.nsp.connected)) {
+            const client = app.io.sockets.adapter.nsp.connected[clientSocket];
+            if (client.request.user.id !== user.id) {
+              presence.add({
+                userId: client.request.user.id,
+                status: client.status
+              });
+            }
           }
-        }
 
-        socket.emit("connected", {
-          user: user.toAPI(true),
-          accounts,
-          rooms: finalRooms,
-          users: finalUsers,
-          presence: Array.from(presence)
+          socket.emit("connected", {
+            user: user.toAPI(true),
+            accounts,
+            rooms: finalRooms,
+            users: finalUsers,
+            presence: Array.from(presence)
+          });
+        })
+        .catch((ex) => {
+          console.log(`Socket connection failed [sid: ${socket.id}, id:${user.id}]`);
+          console.error(ex);
         });
-      }).catch((ex) => {
-        console.log(`Socket connection failed [sid: ${socket.id}, id:${user.id}]`);
-        console.error(ex);
-      });
     });
   });
 

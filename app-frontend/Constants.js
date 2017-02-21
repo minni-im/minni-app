@@ -124,7 +124,7 @@ export const ActionTypes = keyMirror({
 
   NOTIFICATION: null,
   NOTIFICATION_ACK: null,
-  NOTIFICATION_ACK_ALL: null,
+  NOTIFICATION_ACK_ALL: null
 });
 
 export const NOTIFICATION_ROLES = {
@@ -171,7 +171,7 @@ export const USER_STATUS_TEXT = {
   [USER_STATUS.ONLINE]: "online",
   [USER_STATUS.IDLE]: "idle",
   [USER_STATUS.AWAY]: "away",
-  [USER_STATUS.DND]: "do not disturb",
+  [USER_STATUS.DND]: "do not disturb"
 };
 
 export const IDLE_TIMEOUT = 2 * 60 * 1000; // 2 minutes
@@ -207,8 +207,7 @@ export const INVITATION_MAX_AGE = 24 * 60 * 60 * 1000;
 
 export const EndPoints = {
   ACCOUNT_CREATE: "/api/accounts/",
-  ACCOUNT_CHECK_EXISTENCE:
-    name => `/api/accounts/check_existence?name=${name}`,
+  ACCOUNT_CHECK_EXISTENCE: name => `/api/accounts/check_existence?name=${name}`,
   ACCOUNT_ROOMS: accountId => `/api/accounts/${accountId}/rooms`,
   ACCOUNT_USERS: accountId => `/api/accounts/${accountId}/users`,
   ROOM_STAR: roomId => `/api/rooms/${roomId}/star`,
@@ -225,5 +224,5 @@ export const EndPoints = {
   INVITATION_CREATE: "/api/invites/",
   INVITATION_VALIDATE: inviteId => `/api/invites/${inviteId}`,
   INVITATION_DELETE: inviteId => `/api/invites/${inviteId}`,
-  INVITATION_ACCEPT: inviteId => `/api/invites/${inviteId}`,
+  INVITATION_ACCEPT: inviteId => `/api/invites/${inviteId}`
 };

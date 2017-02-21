@@ -5,7 +5,7 @@ export default class ConfirmButton extends Component {
   static propTypes = {
     action: React.PropTypes.string.isRequired,
     onClick: React.PropTypes.func
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -15,7 +15,7 @@ export default class ConfirmButton extends Component {
 
   state = {
     confirmed: false
-  }
+  };
 
   onClick(event) {
     this.props.onClick(event);
@@ -39,15 +39,10 @@ export default class ConfirmButton extends Component {
     });
     return (
       <span
-        className={
-          classnames(
-            "button-confirm",
-            { "button-confirm--active": this.state.confirmed }
-          )
-        }
+        className={classnames("button-confirm", { "button-confirm--active": this.state.confirmed })}
       >
-      {icon}
-      {action}
+        {icon}
+        {action}
       </span>
     );
   }

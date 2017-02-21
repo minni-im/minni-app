@@ -10,9 +10,7 @@ import Composer from "./Composer.react";
 import TypingInfo from "./TypingInfo.react";
 import FormattingHints from "./FormatingHints.react";
 
-import {
-  FavoriteIcon,
-  CloseIcon } from "../utils/IconsUtils";
+import { FavoriteIcon, CloseIcon } from "../utils/IconsUtils";
 import { parseTitle } from "../utils/MarkupUtils";
 
 import ComposerStore from "../stores/ComposerStore";
@@ -74,7 +72,7 @@ export default class Room extends React.Component {
       this.context.router.transitionTo(`/chat/${accountSlug}/messages/${roomSlugs.join(",")}`);
     }
 
-    if (!(event.shiftKey)) {
+    if (!event.shiftKey) {
       RoomActionCreators.leaveRoom(accountSlug, room.slug);
     }
   }
@@ -92,10 +90,9 @@ export default class Room extends React.Component {
           <div className="header-info flex-spacer">
             <h2>
               <span>{parseTitle(name)}</span>
-              <span
-                className="icon icon--favorite"
-                onClick={this.handleRoomFavoriteToggle}
-              ><FavoriteIcon /></span>
+              <span className="icon icon--favorite" onClick={this.handleRoomFavoriteToggle}>
+                <FavoriteIcon />
+              </span>
             </h2>
             <h3>{parseTitle(topic)}</h3>
           </div>
@@ -105,15 +102,16 @@ export default class Room extends React.Component {
               title="Toggle connected users panel"
             >
               <RoomIcons.RoomPublicIcon />
-            </span> */}
+            </span> */
+            }
             <RoomSettingsIcon room={room} />
             <span
               className="icon"
               onClick={this.handleRoomLeave}
               title={
-                multiRooms ?
-                "Leave this room (Shift+Click will just deselect it)" :
-                "Leave this room"
+                multiRooms
+                  ? "Leave this room (Shift+Click will just deselect it)"
+                  : "Leave this room"
               }
             >
               <CloseIcon />
@@ -122,12 +120,11 @@ export default class Room extends React.Component {
         </header>
         {room.usersList ? <RoomUsersList room={room} /> : null}
         <MessagesContainer room={room} />
-        <footer
-          className="flex-vertical"
-          onClick={this.handleFooterOnClick}
-        >
+        <footer className="flex-vertical" onClick={this.handleFooterOnClick}>
           <Composer
-            ref={(composer) => { this.composer = composer; }}
+            ref={(composer) => {
+              this.composer = composer;
+            }}
             room={room}
             defaultValue={defaultValue}
             onSubmit={this.handleSendMessage}

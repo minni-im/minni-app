@@ -19,14 +19,15 @@ PluginRegister("RoomTypeahead", COMPOSER_TYPEAHEAD, {
       const rooms = AccountRoomStore.getRooms(connectedAccount.id);
       return rooms
         .filter(room => test(room.slug))
-        .filter(room =>
-          room.public || (
-            room.private && (
-              room.usersId.includes(user.id) ||
-              room.isUserAdmin(user.id)
-            )
-          )
-        )
+        .filter((room) => {
+          if (room.public) {
+            return true;
+          }
+          if (room.private && (room.usersId.includes(user.id) || room.isUserAdmin(user.id))) {
+            return true;
+          }
+          return false;
+        })
         .toArray()
         .slice(0, 10);
     }

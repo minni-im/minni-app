@@ -1,2 +1,2 @@
-let Storage = require("./web/Storage").default;
+const Storage = require("./web/Storage").default;
 export default Storage;

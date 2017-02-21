@@ -28,7 +28,9 @@ export { default as Stores } from "../stores/PluginStores.js";
 export function register(name, type, plugin) {
   name = name.toLowerCase();
   if (plugin.name || plugin.type) {
-    throw new TypeError(`Plugin ${name}: properties 'name' and 'type' are reserved keyword and cannot be used.`);
+    throw new TypeError(
+      `Plugin ${name}: properties 'name' and 'type' are reserved keyword and cannot be used.`
+    );
   }
 
   if (type & PLUGIN_TYPES.COMPOSER_TEXT && plugin.encodeMessage === undefined) {
@@ -44,7 +46,7 @@ export function register(name, type, plugin) {
       throw new TypeError(`Plugin ${name} should declare a 'SENTINEL'.`);
     }
 
-    if (plugin.reduce === undefined || (plugin.reduce && typeof plugin.reduce !== "function")) {
+    if (plugin.reduce === undefined || plugin.reduce && typeof plugin.reduce !== "function") {
       throw new TypeError(`Plugin ${name} should declare a 'reduce()' method.`);
     }
 

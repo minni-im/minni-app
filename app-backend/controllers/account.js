@@ -7,39 +7,40 @@ import { requireValidAccount } from "../middlewares/account";
 import { TYPE } from "../models/room";
 
 function sanitizeName(name) {
-  return name.toLowerCase()
-    .replace(/[^a-z0-9 -]/g, " ")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
+  return name.toLowerCase().replace(/[^a-z0-9 -]/g, " ").replace(/\s+/g, "-").replace(/-+/g, "-");
 }
 
 export default (app) => {
   /* =Routes= */
-  app.get([
-    "/",
-    "/create",
-    "/dashboard",
-    "/settings/:accountName",
-    "/settings/:accountName/*",
-    "/chat/:accountName",
-    "/chat/:accountName/*"
-  ], requireLoginRedirect, requireProfileInfoRedirect, (req, res) => {
-    const Account = recorder.model("Account");
-    Account.getListForUser(req.user.id).then((accounts) => {
-      const { accountName } = req.params;
-      if (
-        accountName &&
-        !accounts.map(account => account.name).includes(sanitizeName(accountName))
-      ) {
-        res.redirect("/");
-        return;
-      }
+  app.get(
+    [
+      "/",
+      "/create",
+      "/dashboard",
+      "/settings/:accountName",
+      "/settings/:accountName/*",
+      "/chat/:accountName",
+      "/chat/:accountName/*"
+    ],
+    requireLoginRedirect,
+    requireProfileInfoRedirect,
+    (req, res) => {
+      const Account = recorder.model("Account");
+      Account.getListForUser(req.user.id).then((accounts) => {
+        const { accountName } = req.params;
+        if (
+          accountName && !accounts.map(account => account.name).includes(sanitizeName(accountName))
+        ) {
+          res.redirect("/");
+          return;
+        }
 
-      res.render("chat", {
-        accounts: accounts.map(account => account.toAPI(req.user.id === account.adminId))
+        res.render("chat", {
+          accounts: accounts.map(account => account.toAPI(req.user.id === account.adminId))
+        });
       });
-    });
-  });
+    }
+  );
 
   /* =API routes= */
   app.get("/api/accounts/", requireLogin, (req) => {
@@ -115,23 +116,24 @@ export default (app) => {
 
     list(req, res) {
       const Account = recorder.model("Account");
-      Account.getListForUser(req.user.id).then((accounts) => {
-        res.json({
-          ok: true,
-          accounts: accounts.map((account) => {
-            // Joining the corresponding account socket.io room
-            console.log(`'${req.user.id}' joining account:${account.id} (${account.name})`);
-            req.socket.join(account.id);
-            return account.toAPI(req.user.id === account.adminId);
-          })
+      Account.getListForUser(req.user.id)
+        .then((accounts) => {
+          res.json({
+            ok: true,
+            accounts: accounts.map((account) => {
+              // Joining the corresponding account socket.io room
+              console.log(`'${req.user.id}' joining account:${account.id} (${account.name})`);
+              req.socket.join(account.id);
+              return account.toAPI(req.user.id === account.adminId);
+            })
+          });
+        })
+        .catch((error) => {
+          res.json({
+            ok: false,
+            errors: error
+          });
         });
-      })
-      .catch((error) => {
-        res.json({
-          ok: false,
-          errors: error
-        });
-      });
     },
 
     create(req, res) {
@@ -155,25 +157,34 @@ export default (app) => {
         usersId: [user.id]
       });
 
-      account.save().then((savedAccount) => {
-        const Room = recorder.model("Room");
-        const room = new Room({
-          name: "The General Room",
-          topic: "This is room is for team-wide communication. All team members can access this room.",
-          type: TYPE.INITIAL,
-          adminId: user.id,
-          accountId: savedAccount.id
-        });
+      account
+        .save()
+        .then(
+          (savedAccount) => {
+            const Room = recorder.model("Room");
+            const room = new Room({
+              name: "The General Room",
+              topic: "This is room is for team-wide communication. All team members can access this room.",
+              type: TYPE.INITIAL,
+              adminId: user.id,
+              accountId: savedAccount.id
+            });
 
-        room.save().then(savedRoom => res.status(201).json({
-          ok: true,
-          message: `Account '${name}' succesfully created.`,
-          account: savedAccount.toAPI(true),
-          room: savedRoom.toAPI(true)
-        }), genericFail);
-      }, genericFail).catch((err) => {
-        console.log(err);
-      });
+            room.save().then(
+              savedRoom => res.status(201).json({
+                ok: true,
+                message: `Account '${name}' succesfully created.`,
+                account: savedAccount.toAPI(true),
+                room: savedRoom.toAPI(true)
+              }),
+              genericFail
+            );
+          },
+          genericFail
+        )
+        .catch((err) => {
+          console.log(err);
+        });
     },
 
     update(req, res) {
@@ -187,9 +198,7 @@ export default (app) => {
     users(req, res) {
       const User = recorder.model("User");
       // TODO improve by fetching a list of known ID directly instead of looping
-      Promise.all(
-        req.account.usersId.map(userId => User.findById(userId))
-      ).then((users) => {
+      Promise.all(req.account.usersId.map(userId => User.findById(userId))).then((users) => {
         res.json({
           ok: true,
           users

@@ -20,13 +20,20 @@ function filterWindowEvent(event, callback) {
   }
 }
 
-window.addEventListener("focus", event =>
-  filterWindowEvent(event, () => WindowActionCreators.focus(true)), false);
-window.addEventListener("blur", event =>
-  filterWindowEvent(event, () => WindowActionCreators.focus(false)), false);
+window.addEventListener(
+  "focus",
+  event => filterWindowEvent(event, () => WindowActionCreators.focus(true)),
+  false
+);
+window.addEventListener(
+  "blur",
+  event => filterWindowEvent(event, () => WindowActionCreators.focus(false)),
+  false
+);
 
-ReactDOM.render((
+ReactDOM.render(
   <Router>
     <Minni pathname="" />
-  </Router>
-), document.querySelector("#minni"));
+  </Router>,
+  document.querySelector("#minni")
+);

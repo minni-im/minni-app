@@ -13,7 +13,7 @@ import SelectedAccountStore from "../../stores/SelectedAccountStore";
 class RoomUsersList extends Component {
   static propTypes = {
     room: PropTypes.instanceOf(Room).isRequired
-  }
+  };
 
   static getStores() {
     return [TypingStore, UserStore];

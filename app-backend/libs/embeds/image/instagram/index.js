@@ -16,8 +16,7 @@ export default class InstagramEmbed extends Base {
   }
 
   match(source) {
-    return REGEXP_INSTAGRAM.exec(source) ||
-      REGEXP_INSTAGRAM_SHORT.exec(source);
+    return REGEXP_INSTAGRAM.exec(source) || REGEXP_INSTAGRAM_SHORT.exec(source);
   }
 
   parse(capture) {

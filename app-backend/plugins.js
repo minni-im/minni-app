@@ -9,7 +9,9 @@ export const getPlugin = (key, type) => {
     plugin = interopDefault(require(pluginName));
   } catch (exception) {
     console.error(exception);
-    throw new Error(`Module '${pluginName}' seems to not be available. Did you declare it in your package.json ? If yes, we failed trying to intanciate it.`);
+    throw new Error(
+      `Module '${pluginName}' seems to not be available. Did you declare it in your package.json ? If yes, we failed trying to intanciate it.`
+    );
   }
 
   const Provider = plugin && plugin[type];
@@ -18,4 +20,4 @@ export const getPlugin = (key, type) => {
   }
 
   throw new Error(`Module '${pluginName}' is not a '${type}' provider`);
-}
+};

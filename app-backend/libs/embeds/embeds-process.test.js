@@ -1,17 +1,19 @@
 import { parse, process } from ".";
 
 describe("Embed processor", () => {
-  it("should return empty array in case nothing is detected",
-    () => process(parse("Hello there !")).then((results) => {
-      expect(results).toBeDefined();
-      expect(Array.isArray(results)).toBe(true);
-      expect(results.length).toEqual(0);
-    })
-  );
+  it("should return empty array in case nothing is detected", () => process(
+    parse("Hello there !")
+  ).then((results) => {
+    expect(results).toBeDefined();
+    expect(Array.isArray(results)).toBe(true);
+    expect(results.length).toEqual(0);
+  }));
 
   it("should process twice the same url in message", () => {
-    const tree = parse(`https://www.youtube.com/watch?v=4SbiiyRSIwo
-      and https://www.youtube.com/watch?v=4SbiiyRSIwo`);
+    const tree = parse(
+      `https://www.youtube.com/watch?v=4SbiiyRSIwo
+      and https://www.youtube.com/watch?v=4SbiiyRSIwo`
+    );
 
     return process(tree).then((results) => {
       expect(results.length).toEqual(2);
@@ -20,10 +22,7 @@ describe("Embed processor", () => {
   });
 
   it("should process audio urls", () => {
-    const urls = [
-      "http://example.com/foo/baz.mp3",
-      "https://example.org/music/free.ogg"
-    ];
+    const urls = ["http://example.com/foo/baz.mp3", "https://example.org/music/free.ogg"];
     const tree = parse(`Some raw music ${urls[0]} and ${urls[1]}`);
     return process(tree).then((results) => {
       expect(results.length).toEqual(2);
@@ -37,10 +36,7 @@ describe("Embed processor", () => {
   });
 
   it("should process video urls", () => {
-    const urls = [
-      "https://example.com/foo/bar/baz.ogv",
-      "https://vine.co/v/im5wjA9qDvM"
-    ];
+    const urls = ["https://example.com/foo/bar/baz.ogv", "https://vine.co/v/im5wjA9qDvM"];
     const tree = parse(`ovg: ${urls[0]} and vine: ${urls[1]}`);
     return process(tree).then((results) => {
       expect(results.length).toEqual(2);
@@ -60,7 +56,9 @@ describe("Embed processor", () => {
   });
 
   it("should process gist urls", () => {
-    const tree = parse("This is solange: https://gist.github.com/bbaliguet/4e4b3d8ec2868ae63596 et ca envoie de la buche");
+    const tree = parse(
+      "This is solange: https://gist.github.com/bbaliguet/4e4b3d8ec2868ae63596 et ca envoie de la buche"
+    );
 
     return process(tree).then((results) => {
       expect(results.length).toEqual(1);
@@ -101,9 +99,10 @@ describe("Embed processor", () => {
     });
   });
 
-
   it("should process flickr url", () => {
-    const tree = parse("here is a nice pic: https://www.flickr.com/photos/78986993@N00/3372549602/");
+    const tree = parse(
+      "here is a nice pic: https://www.flickr.com/photos/78986993@N00/3372549602/"
+    );
 
     return process(tree).then((results) => {
       expect(results.length).toEqual(1);
@@ -156,7 +155,9 @@ describe("Embed processor", () => {
         author
       } = results[0];
       expect(title).toEqual("Patrick Brosset");
-      expect(description).toEqual("xmas is the only time of year I have time to take photos anymore. So there, trees &amp; sunrise: https://t.co/TvvgacvMUy https://t.co/UmaJjr6FmN");
+      expect(description).toEqual(
+        "xmas is the only time of year I have time to take photos anymore. So there, trees &amp; sunrise: https://t.co/TvvgacvMUy https://t.co/UmaJjr6FmN"
+      );
       expect(author).toEqual({
         name: "@patrickbrosset",
         url: "https://twitter.com/patrickbrosset"
@@ -170,10 +171,12 @@ describe("Embed processor", () => {
 
   it("should process all detected urls from message", () => {
     const privateVimeo = "https://vimeo.com/120876824";
-    const tree = parse(`https://www.youtube.com/watch?v=4SbiiyRSIwo
+    const tree = parse(
+      `https://www.youtube.com/watch?v=4SbiiyRSIwo
       and https://open.spotify.com/track/7Hj2D61IPaPICdGBXFj0cU
       and ${privateVimeo}
-      and https://example.com/foo/bar/baz.webm`);
+      and https://example.com/foo/bar/baz.webm`
+    );
 
     return process(tree).then((results) => {
       expect(results.length).toEqual(3);

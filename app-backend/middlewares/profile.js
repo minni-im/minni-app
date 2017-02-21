@@ -16,7 +16,7 @@ export function requireEmailRedirect(req, res, next) {
     req.flash(
       "info",
       "You have to specify an email address as we use it to recognize you" +
-      "from various auhtentication providers"
+        "from various auhtentication providers"
     );
     res.redirect("/profile");
     return;

@@ -102,7 +102,7 @@ class UserSettingsStore extends MapStore {
     const name = this.getValue("global.emojis_type");
     return {
       name,
-      type: { apple: "png", emojione: "svg", twitter: "svg" }[name]
+      type: ({ apple: "png", emojione: "svg", twitter: "svg" })[name]
     };
   }
 

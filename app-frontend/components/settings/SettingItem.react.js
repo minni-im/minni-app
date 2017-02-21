@@ -11,18 +11,17 @@ export default class SettingItem extends React.Component {
     desc: PropTypes.string,
     children: PropTypes.node,
     onChange: PropTypes.func.isRequired,
-    choices: PropTypes.arrayOf(PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.any.isRequired
-    }))
-  }
+    choices: PropTypes.arrayOf(
+      PropTypes.shape({
+        label: PropTypes.string.isRequired,
+        value: PropTypes.any.isRequired
+      })
+    )
+  };
 
   static defaultProps = {
-    choices: [
-      { label: "On", value: true },
-      { label: "Off", value: false }
-    ]
-  }
+    choices: [{ label: "On", value: true }, { label: "Off", value: false }]
+  };
 
   constructor(props) {
     super(props);
@@ -31,7 +30,7 @@ export default class SettingItem extends React.Component {
 
   state = {
     value: this.getValueFromStore(this.props.setting, this.props.default)
-  }
+  };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.setting !== this.props.setting) {
@@ -69,15 +68,9 @@ export default class SettingItem extends React.Component {
     const { title, desc, children, choices } = this.props;
     let description;
     if (children) {
-      description = (
-        <em>{children}</em>
-      );
+      description = <em>{children}</em>;
     } else {
-      description = (
-        desc ?
-          <em dangerouslySetInnerHTML={{ __html: desc }} /> :
-          false
-      );
+      description = desc ? <em dangerouslySetInnerHTML={{ __html: desc }} /> : false;
     }
     return (
       <div className="setting-item flex-horizontal">

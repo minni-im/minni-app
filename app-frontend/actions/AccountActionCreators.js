@@ -40,23 +40,22 @@ export function createAccount({ name, description }) {
 }
 
 export function checkExistence(name) {
-  return request(EndPoints.ACCOUNT_CHECK_EXISTENCE(name))
-    .then(({ ok, message }) => {
-      if (ok) {
-        dispatch({
-          type: ActionTypes.ACCOUNT_CHECK_VALID,
-          name,
-          message
-        });
-      } else {
-        dispatch({
-          type: ActionTypes.ACCOUNT_CHECK_INVALID,
-          name,
-          message
-        });
-      }
-      return { ok, message };
-    });
+  return request(EndPoints.ACCOUNT_CHECK_EXISTENCE(name)).then(({ ok, message }) => {
+    if (ok) {
+      dispatch({
+        type: ActionTypes.ACCOUNT_CHECK_VALID,
+        name,
+        message
+      });
+    } else {
+      dispatch({
+        type: ActionTypes.ACCOUNT_CHECK_INVALID,
+        name,
+        message
+      });
+    }
+    return { ok, message };
+  });
 }
 
 export function selectAccount(accountSlug) {
@@ -101,25 +100,24 @@ export function fetchRooms(accountId) {
     type: ActionTypes.LOAD_ROOMS,
     accountId
   });
-  return request(EndPoints.ACCOUNT_ROOMS(accountId))
-    .then(({ ok, rooms, errors }) => {
-      if (ok) {
-        dispatch({
-          type: ActionTypes.LOAD_ROOMS_SUCCESS,
-          accountId,
-          rooms
-        });
-      } else {
-        dispatch({
-          type: ActionTypes.LOAD_ROOMS_FAILURE,
-          accountId,
-          errors
-        });
-        NotificationsActionCreators.notifyError(
-          "Something weird just occured. We did not manage to properly fetch some rooms."
-        );
-      }
-    });
+  return request(EndPoints.ACCOUNT_ROOMS(accountId)).then(({ ok, rooms, errors }) => {
+    if (ok) {
+      dispatch({
+        type: ActionTypes.LOAD_ROOMS_SUCCESS,
+        accountId,
+        rooms
+      });
+    } else {
+      dispatch({
+        type: ActionTypes.LOAD_ROOMS_FAILURE,
+        accountId,
+        errors
+      });
+      NotificationsActionCreators.notifyError(
+        "Something weird just occured. We did not manage to properly fetch some rooms."
+      );
+    }
+  });
 }
 
 export function receiveRoom(room) {

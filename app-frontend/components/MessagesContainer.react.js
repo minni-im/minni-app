@@ -14,16 +14,10 @@ import Messages from "./Messages.react";
 class MessagesContainer extends React.Component {
   static propTypes = {
     room: React.PropTypes.object.isRequired
-  }
+  };
 
   static getStores() {
-    return [
-      UserStore,
-      UserSettingsStore,
-      MessageStore,
-      MessageStateStore,
-      DimensionStore
-    ];
+    return [UserStore, UserSettingsStore, MessageStore, MessageStateStore, DimensionStore];
   }
 
   static calculateState(prevProps, nextProps) {
@@ -54,9 +48,7 @@ class MessagesContainer extends React.Component {
   }
 
   render() {
-    return (
-      <Messages room={this.props.room} {...this.state} />
-    );
+    return <Messages room={this.props.room} {...this.state} />;
   }
 }
 

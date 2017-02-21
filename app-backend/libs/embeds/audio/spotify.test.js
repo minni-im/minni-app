@@ -50,7 +50,9 @@ describe("Spotify embed", () => {
     const url = "https://d3rt1990lpmkn.cloudfront.net/cover/d83a086148afe6539dae524607cbe4b6ccdd0360";
 
     const { thumbnail } = embed.extractThumbnail({ thumbnail_url: url });
-    expect(thumbnail.url).toEqual("https://d3rt1990lpmkn.cloudfront.net/640/d83a086148afe6539dae524607cbe4b6ccdd0360");
+    expect(thumbnail.url).toEqual(
+      "https://d3rt1990lpmkn.cloudfront.net/640/d83a086148afe6539dae524607cbe4b6ccdd0360"
+    );
     expect(thumbnail.width).toEqual(320);
   });
 });

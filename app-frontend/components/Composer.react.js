@@ -42,11 +42,11 @@ export default class Composer extends React.Component {
     onSubmit: React.PropTypes.func.isRequired,
     defaultValue: React.PropTypes.string,
     room: React.PropTypes.instanceOf(Room)
-  }
+  };
 
   static defautProps = {
     defaultValue: ""
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -63,14 +63,13 @@ export default class Composer extends React.Component {
 
   state = {
     results: null
-  }
+  };
 
   componentDidMount() {
     this.lineHeight = parseInt(
-      window
-        .getComputedStyle(this.textarea, null)
-        .getPropertyValue("line-height"),
-      10);
+      window.getComputedStyle(this.textarea, null).getPropertyValue("line-height"),
+      10
+    );
     this.computeTextAreaHeight(1);
     this.moveCursorAtEnd();
   }
@@ -182,15 +181,15 @@ export default class Composer extends React.Component {
     const TYPEAHEAD_PLUGINS = PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_TYPEAHEAD);
     const COMMAND_PLUGINS = PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_COMMAND);
     const COMMAND_RE_TEXT = `^/(${COMMAND_PLUGINS.filter(c => c.typeahead)
-        .map(c => c.command)
-        .join("|")
-      })\\s(.+)`;
+      .map(c => c.command)
+      .join("|")})\\s(.+)`;
     const COMMAND_RE = new RegExp(COMMAND_RE_TEXT, "i");
 
-    const PREFIX_RE = new RegExp(TYPEAHEAD_PLUGINS
-      .filter(plugin => plugin.PREFIX || plugin.SENTINEL)
-      .map(plugin => plugin.PREFIX || plugin.SENTINEL)
-      .join("|"));
+    const PREFIX_RE = new RegExp(
+      TYPEAHEAD_PLUGINS.filter(plugin => plugin.PREFIX || plugin.SENTINEL)
+        .map(plugin => plugin.PREFIX || plugin.SENTINEL)
+        .join("|")
+    );
 
     const commandMatch = value.match(COMMAND_RE);
     if (commandMatch) {
@@ -255,23 +254,27 @@ export default class Composer extends React.Component {
     const actions = [SmileyIcon].map((action, index) => (
       <div className="icon action" key={`action-${index}`}>
         {React.createElement(action)}
-      </div>)
-    );
+      </div>
+    ));
 
     const PLUGINS = PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_TYPEAHEAD);
-    const PLUGINS_COMPONENTS = PLUGINS.reduce((dict, plugin) => {
-      dict[plugin.name] = plugin.ResultsPanel;
-      return dict;
-    }, {});
+    const PLUGINS_COMPONENTS = PLUGINS.reduce(
+      (dict, plugin) => {
+        dict[plugin.name] = plugin.ResultsPanel;
+        return dict;
+      },
+      {}
+    );
 
     let autocomplete;
-    const autocompleteComponent =
-      /* this.state.focused && */
-      PLUGINS_COMPONENTS[this.state.type];
+    const autocompleteComponent = /* this.state.focused && */
+    PLUGINS_COMPONENTS[this.state.type];
 
     if (autocompleteComponent) {
       autocomplete = React.createElement(autocompleteComponent, {
-        ref: (suggestions) => { this.suggestions = suggestions; },
+        ref: (suggestions) => {
+          this.suggestions = suggestions;
+        },
         key: this.state.query || this.state.prefix,
         prefix: this.state.prefix,
         command: this.state.command,
@@ -283,12 +286,12 @@ export default class Composer extends React.Component {
     }
 
     return (
-      <div
-        className="composer flex-spacer flex-horizontal"
-      >
+      <div className="composer flex-spacer flex-horizontal">
         <textarea
           className="flex-spacer"
-          ref={(textarea) => { this.textarea = textarea; }}
+          ref={(textarea) => {
+            this.textarea = textarea;
+          }}
           autoCorrect="off"
           autoComplete="off"
           spellCheck="true"

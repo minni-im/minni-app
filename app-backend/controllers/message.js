@@ -15,7 +15,7 @@ export default (app) => {
       const { content, accountId, roomId, userId, embeds } = req.body;
       const message = new Message({ content, userId, roomId, embeds });
 
-      message.save().then(newMessage => {
+      message.save().then((newMessage) => {
         const json = newMessage.toAPI();
         const socketKey = `${accountId}:${message.roomId}`;
         res.status(201).json({
@@ -24,21 +24,24 @@ export default (app) => {
         });
         app.io.in(socketKey).emit("messages:create", json);
 
-        embed(json.content).then(detectedEmbeds => {
-          if (detectedEmbeds.length > 0) {
-            newMessage.embeds = detectedEmbeds;
-            newMessage.save().then(embeddedMessage => {
-              app.io.in(socketKey).emit("messages:update", embeddedMessage.toAPI());
+        embed(json.content).then(
+          (detectedEmbeds) => {
+            if (detectedEmbeds.length > 0) {
+              newMessage.embeds = detectedEmbeds;
+              newMessage.save().then((embeddedMessage) => {
+                app.io.in(socketKey).emit("messages:update", embeddedMessage.toAPI());
+              });
+            }
+          },
+          (error) => {
+            app.io.in(socketKey).emit("messages:update-failed", {
+              id: json.id,
+              roomId,
+              messages: [error]
             });
           }
-        }, error => {
-          app.io.in(socketKey).emit("messages:update-failed", {
-            id: json.id,
-            roomId,
-            messages: [error]
-          });
-        });
-      }, error => {
+        );
+      }, (error) => {
         res.json({
           ok: false,
           body: req.body,

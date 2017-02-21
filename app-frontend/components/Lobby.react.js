@@ -19,7 +19,7 @@ class Room extends React.Component {
     viewer: React.PropTypes.object.isRequired,
     accountName: React.PropTypes.string,
     className: React.PropTypes.string
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -39,15 +39,11 @@ class Room extends React.Component {
     return (
       <Link
         to={`/chat/${accountName}/messages/${room.slug}`}
-        className={classnames(
-          "room", "flex-horizontal",
-          this.props.className,
-          {
-            "room-favorite": room.starred,
-            "room-public": room.public,
-            "room-private": room.private
-          }
-        )}
+        className={classnames("room", "flex-horizontal", this.props.className, {
+          "room-favorite": room.starred,
+          "room-public": room.public,
+          "room-private": room.private
+        })}
         title={title}
       >
         <div className="room--name">
@@ -56,10 +52,7 @@ class Room extends React.Component {
         {room.private ? <RoomIcons.RoomPrivateIcon className="icon" /> : null}
         <div className="room--topic flex-spacer">{parseTitleWithoutLinks(room.topic)}</div>
         <RoomSettingsIcon className="room--icon" room={room} />
-        <span
-          className="room--icon icon--favorite"
-          onClick={this.onRoomStarClick}
-        >
+        <span className="room--icon icon--favorite" onClick={this.onRoomStarClick}>
           <FavoriteIcon />
         </span>
       </Link>
@@ -72,7 +65,7 @@ export default class Lobby extends React.Component {
     account: React.PropTypes.object,
     rooms: React.PropTypes.object,
     viewer: React.PropTypes.object
-  }
+  };
 
   render() {
     const { account, rooms } = this.props;
@@ -109,10 +102,9 @@ export default class Lobby extends React.Component {
           <header className="rooms--header flex-horizontal">
             <h2 className="flex-spacer">Rooms</h2>
             <div className="actions">
-              <Link
-                to={`/chat/${account.name}/create`}
-                className="button button-primary"
-              >Create a room</Link>
+              <Link to={`/chat/${account.name}/create`} className="button button-primary">
+                Create a room
+              </Link>
             </div>
           </header>
           <div className="rooms--list">

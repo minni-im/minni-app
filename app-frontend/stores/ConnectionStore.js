@@ -10,7 +10,6 @@ import * as RoomActionCreators from "../actions/RoomActionCreators";
 import * as UserActionCreators from "../actions/UserActionCreators";
 import * as NotificationsActionCreators from "../actions/NotificationsActionCreators";
 
-
 import Room from "../models/Room";
 
 import AccountStore from "../stores/AccountStore";
@@ -51,7 +50,8 @@ const handlers = {
       type: ActionTypes.CONNECTION_LOST
     });
     NotificationsActionCreators.notifyFatal(
-      "We are facing some difficulties. Sounds like your connection is a bit flaky");
+      "We are facing some difficulties. Sounds like your connection is a bit flaky"
+    );
   },
 
   reconnecting(attempt) {
@@ -67,15 +67,20 @@ const handlers = {
   reconnect() {
     NotificationsActionCreators.dismissAll();
     ActivityActionCreators.setStatus(USER_STATUS.ONLINE);
-    NotificationsActionCreators.notifyInfo("And we are back in the game. Connection seems ok!", 5000);
+    NotificationsActionCreators.notifyInfo(
+      "And we are back in the game. Connection seems ok!",
+      5000
+    );
   },
 
-  reconnect_failed(/* attempts */) {
+  reconnect_failed() {
     logger.error("Failed to reconnect. Refresh the page.");
     NotificationsActionCreators.dismissAll();
     ActivityActionCreators.setStatus(USER_STATUS.OFFLINE);
-    NotificationsActionCreators.notifyFatal(`All reconnection attempts have failed.
-      Please refresh you browser`);
+    NotificationsActionCreators.notifyFatal(
+      `All reconnection attempts have failed.
+      Please refresh you browser`
+    );
   },
 
   account: {
@@ -97,9 +102,7 @@ const handlers = {
   },
 
   users: {
-    connect({ user }) {
-
-    },
+    connect({ user }) {},
 
     join({ user }) {
       // TODO: Should append a system message to the given room
@@ -185,8 +188,7 @@ function handleUserStatus({ status, oldStatus }) {
       // TODO: Investigate why we could be here this early ?? (meaning w/o user)
       return;
     }
-    const accountIds = AccountStore.getAccounts()
-      .toArray().map(account => account.id);
+    const accountIds = AccountStore.getAccounts().toArray().map(account => account.id);
     socket.emit("users:presence", { userId: user.id, status, accountIds });
   }
 }

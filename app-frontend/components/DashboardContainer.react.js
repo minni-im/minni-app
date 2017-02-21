@@ -10,7 +10,7 @@ import Dashboard from "./Dashboard.react";
 class DashboardContainer extends React.Component {
   static contextTypes = {
     router: React.PropTypes.object.isRequired
-  }
+  };
 
   static getStores() {
     return [AccountStore, ConnectionStore, UserStore];
@@ -28,9 +28,12 @@ class DashboardContainer extends React.Component {
     const noRedirect = nextProps.pathname === "/dashboard";
     if (accounts.size === 1 && !noRedirect) {
       const account = accounts.first();
-      setTimeout(() => {
-        this.context.router.transitionTo(`/chat/${account.slug}/lobby`);
-      }, 0);
+      setTimeout(
+        () => {
+          this.context.router.transitionTo(`/chat/${account.slug}/lobby`);
+        },
+        0
+      );
     }
   }
 

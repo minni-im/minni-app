@@ -1,12 +1,14 @@
 import React from "react";
 import moment from "moment";
 
-const padLeft = number => (number < 10 ? `0${number}` : number);
+const padLeft = function (number) {
+  return number < 10 ? `0${number}` : number;
+};
 
 export default class Countdown extends React.Component {
   static propTypes = {
     expiration: React.PropTypes.instanceOf(Date).isRequired
-  }
+  };
 
   componentDidMount() {
     this.interval = setInterval(() => this.forceUpdate(), 1000);

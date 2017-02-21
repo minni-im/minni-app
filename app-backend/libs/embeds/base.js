@@ -17,8 +17,9 @@ export default class Base {
 
   extractData(data = {}, element) {
     // default implementation supports only oEmbed endpoints
-    return [{
-        type: this.type || data.type,
+    return [
+      {
+        type: this.type || data.type
       },
       this.extractTitle(data, element),
       this.extractHtml(data, element),
@@ -29,9 +30,10 @@ export default class Base {
       this.extractWidth(data, element),
       this.extractHeight(data, element),
       this.extractMeta(data, element)
-    ].reduce((ongoing, data) => {
-      return Object.assign(ongoing, data);
-    }, {});
+    ].reduce(
+      (ongoing, data) => Object.assign(ongoing, data),
+      {}
+    );
   }
 
   extractTitle(data, element) {
@@ -39,13 +41,11 @@ export default class Base {
   }
 
   extractDescription(data, element) {
-    return data.description ?
-      { description: data.description } :
-      { };
+    return data.description ? { description: data.description } : {};
   }
 
   extractHtml(data, element) {
-    return { };
+    return {};
   }
 
   extractThumbnail(data, element) {
@@ -59,8 +59,8 @@ export default class Base {
   }
 
   extractAuthor(data, element) {
-    let extractedData = {};
-    if (data.author_name &&  data.author_url) {
+    const extractedData = {};
+    if (data.author_name && data.author_url) {
       extractedData.author = {
         name: data.author_name,
         url: data.author_url
@@ -70,32 +70,28 @@ export default class Base {
   }
 
   extractProvider(data, element) {
-    let extractedData = {};
+    const extractedData = {};
     if (data.provider_name && data.provider_url) {
       extractedData.provider = {
         name: data.provider_name,
         url: data.provider_url
-      }
+      };
     }
     return extractedData;
   }
 
   extractWidth(data, element) {
     const condition = data.width && data.width != null;
-    return condition ?
-      { width: data.width } :
-      { };
+    return condition ? { width: data.width } : {};
   }
 
   extractHeight(data, element) {
     const condition = data.height && data.height != null;
-    return condition ?
-      { height: data.height } :
-      { };
+    return condition ? { height: data.height } : {};
   }
 
   extractMeta(data, element) {
-    return { };
+    return {};
   }
 
   process(element, options = {}) {
@@ -103,16 +99,14 @@ export default class Base {
     const apiUrl = this.endpointUrl(element);
     return new Promise((resolve) => {
       fetch(apiUrl, options)
-        .then(res => {
+        .then((res) => {
           if (res.status !== 200) {
             return resolve(false);
           }
           return res.json();
         })
-        .then(data => {
-          return this.extractData(data, element);
-        })
-        .then(embed => {
+        .then(data => this.extractData(data, element))
+        .then((embed) => {
           embed.url = element.url;
           if (!embed.provider) {
             embed.provider = {
@@ -124,14 +118,14 @@ export default class Base {
             embed.type = this.type;
           }
           return resolve(embed);
-        }).catch(ex => {
+        })
+        .catch((ex) => {
           console.error(ex);
           return resolve(false);
         });
     });
   }
 }
-
 
 function empty() {
   return {};
@@ -141,7 +135,7 @@ export class OpenGraph extends Base {
   parse(capture) {
     return {
       url: capture[0]
-    }
+    };
   }
 
   endpointUrl({ url }) {
@@ -157,7 +151,7 @@ export class OpenGraph extends Base {
   }
 
   extractProvider({ openGraph }) {
-    let provider = {
+    const provider = {
       provider: {
         name: openGraph.site_name
       }
@@ -174,6 +168,6 @@ export class OpenGraph extends Base {
       thumbnail: {
         url: openGraph.image
       }
-    }
+    };
   }
 }

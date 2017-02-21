@@ -9,7 +9,7 @@ export default class TypeaheadResults extends React.Component {
     results: PropTypes.array,
     command: PropTypes.object,
     onSelect: PropTypes.func.isRequired
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -20,7 +20,7 @@ export default class TypeaheadResults extends React.Component {
 
   state = {
     selectedIndex: 0
-  }
+  };
 
   handleKeyDown(event) {
     const results = this.props.results || this.state.results;
@@ -81,7 +81,7 @@ export default class TypeaheadResults extends React.Component {
       classNames["suggestions-images"] = !!this.props.command.images;
     }
 
-    let header = (
+    const header = (
       <div className="suggestions-header">
         {this.renderHeader && this.renderHeader()}
         <div className="header-help">

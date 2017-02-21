@@ -16,7 +16,7 @@ export default class MediumEmbed extends OpenGraph {
     return {
       url: capture[0],
       author: capture[1]
-    }
+    };
   }
 
   match(source) {
@@ -35,10 +35,13 @@ export default class MediumEmbed extends OpenGraph {
   extractThumbnail({ openGraph }) {
     return {
       thumbnail: {
-        url: openGraph.image.replace(REGEXP_MEDIUM_IMAGE_SIZE, `/fit/c/${THUMBNAIL_SIZE}/${THUMBNAIL_SIZE}/`),
+        url: openGraph.image.replace(
+          REGEXP_MEDIUM_IMAGE_SIZE,
+          `/fit/c/${THUMBNAIL_SIZE}/${THUMBNAIL_SIZE}/`
+        ),
         width: THUMBNAIL_SIZE,
         height: THUMBNAIL_SIZE
       }
-    }
+    };
   }
 }

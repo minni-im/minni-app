@@ -1,12 +1,11 @@
 import React, { PropTypes } from "react";
 
 function generateUnicodeAltText(unicodeAsString) {
-  return unicodeAsString.split("-")
-    .map(codePoint => (
-      codePoint === "200d"
-        ? "&zwj;"
-        : String.fromCodePoint(parseInt(codePoint, 16))
-    ))
+  return unicodeAsString
+    .split("-")
+    .map(
+      codePoint => codePoint === "200d" ? "&zwj;" : String.fromCodePoint(parseInt(codePoint, 16))
+    )
     .join("");
 }
 

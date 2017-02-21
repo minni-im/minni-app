@@ -5,15 +5,13 @@ import ModalStore from "../../stores/ModalStore";
 
 class Modal extends React.Component {
   render() {
-    return <div className="modal">
-
-    </div>;
+    return <div className="modal" />;
   }
 }
 
 class ModalsContainer extends React.Component {
   static getStores() {
-    return [ ModalStore ];
+    return [ModalStore];
   }
 
   static calculateState() {

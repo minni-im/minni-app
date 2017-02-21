@@ -7,19 +7,19 @@ class Popover extends React.Component {
   static TYPE = keyMirror({
     UP: null,
     DOWN: null
-  })
+  });
 
   static propTypes = {
     className: React.PropTypes.string,
     buttonComponent: React.PropTypes.element.isRequired,
     direction: React.PropTypes.oneOf(Object.keys(Popover.TYPE)),
     onOpen: React.PropTypes.func,
-    onClose: React.PropTypes.func,
-  }
+    onClose: React.PropTypes.func
+  };
 
   static defaultProps = {
     direction: Popover.TYPE.UP
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -31,7 +31,7 @@ class Popover extends React.Component {
 
   state = {
     visible: false
-  }
+  };
 
   componentDidMount() {
     this.clickOutsideHandler = clickOutside(this.popoverContainer, this.onClickOutside.bind(this));
@@ -89,7 +89,8 @@ class Popover extends React.Component {
 
   focusFirstElement() {
     let matches = this.popover.querySelectorAll("[tabIndex], input, a");
-    matches = [].slice.call(matches)
+    matches = [].slice
+      .call(matches)
       .map((node) => {
         if (node.tabIndex > 0) {
           return [node.tabIndex, node];
@@ -124,7 +125,9 @@ class Popover extends React.Component {
           className={classnames("popover", {
             [`popover-${this.props.direction}`.toLowerCase()]: true
           })}
-          ref={(popover) => { this.popover = popover; }}
+          ref={(popover) => {
+            this.popover = popover;
+          }}
         >
           {React.cloneElement(this.props.children)}
         </div>
@@ -134,7 +137,9 @@ class Popover extends React.Component {
     return (
       <div
         className={classnames("popover-container", this.props.className)}
-        ref={(popoverContainer) => { this.popoverContainer = popoverContainer; }}
+        ref={(popoverContainer) => {
+          this.popoverContainer = popoverContainer;
+        }}
         onKeyDown={this.onKeyDown}
       >
         {wrapperComponent}

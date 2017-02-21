@@ -42,10 +42,11 @@ MessageSchema.view("historyByRoomAndDate", {
 });
 
 MessageSchema.static("getHistory", function getHistory(
-    roomId,
-    latest = new Date().toISOString(),
-    oldest = 0,
-    count = MAX_MESSAGES_COUNT) {
+  roomId,
+  latest = new Date().toISOString(),
+  oldest = 0,
+  count = MAX_MESSAGES_COUNT
+) {
   const range = latest && oldest;
   const options = {
     startkey: [roomId, {}],

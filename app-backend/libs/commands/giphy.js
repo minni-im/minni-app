@@ -1,3 +1,1 @@
-export function setup(app) {
-
-}
+export function setup(app) {}

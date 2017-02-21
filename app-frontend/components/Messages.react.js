@@ -5,10 +5,7 @@ import * as RoomActionCreators from "../actions/RoomActionCreators";
 import * as DimensionActionCreators from "../actions/DimensionActionCreators";
 import * as MessageActionCreators from "../actions/MessageActionCreators";
 
-import {
-  MessageStreamTypes,
-  FETCH_HISTORY_TRESHOLD
-} from "../Constants";
+import { MessageStreamTypes, FETCH_HISTORY_TRESHOLD } from "../Constants";
 
 import Avatar from "./generic/Avatar.react";
 import Embed from "./Embed.react";
@@ -24,11 +21,11 @@ class Message extends React.Component {
     renderEmbeds: React.PropTypes.bool,
     inlineImages: React.PropTypes.bool,
     clock24: React.PropTypes.bool
-  }
+  };
 
   static defaultProps = {
     first: false
-  }
+  };
 
   render() {
     const { message, renderEmbeds, inlineImages, clock24 } = this.props;
@@ -70,23 +67,27 @@ class Message extends React.Component {
         content = (
           <Embed
             {...message.embeds.get(0).toJS()}
-            onHidePreview={() => { MessageActionCreators.togglePreview(message); }}
+            onHidePreview={() => {
+              MessageActionCreators.togglePreview(message);
+            }}
           />
         );
-      } else {
-        if (renderEmbeds) {
-          embeds = (
-            <div className="message--embeds">
-              {message.embeds.map((embed, index) => (
-                <Embed
-                  key={index}
-                  {...embed.toJS()}
-                  onHidePreview={() => { MessageActionCreators.togglePreview(message); }}
-                />
-              )).toArray()}
-            </div>
+      } else if (renderEmbeds) {
+        embeds = (
+          <div className="message--embeds">
+            {message.embeds
+                .map((embed, index) => (
+                  <Embed
+                    key={index}
+                    {...embed.toJS()}
+                    onHidePreview={() => {
+                      MessageActionCreators.togglePreview(message);
+                    }}
+                  />
+                ))
+                .toArray()}
+          </div>
           );
-        }
       }
     }
 
@@ -106,7 +107,6 @@ class Message extends React.Component {
   }
 }
 
-
 class MessageGroup extends React.Component {
   static propTypes = {
     messages: React.PropTypes.array.isRequired,
@@ -114,7 +114,7 @@ class MessageGroup extends React.Component {
     inlineImages: React.PropTypes.bool,
     clock24: React.PropTypes.bool,
     emphasisMe: React.PropTypes.bool
-  }
+  };
 
   render() {
     const user = this.props.messages[0].user;
@@ -162,7 +162,7 @@ export default class Messages extends React.Component {
     inlineImages: React.PropTypes.bool,
     emphasisMe: React.PropTypes.bool,
     clock24: React.PropTypes.bool
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -176,8 +176,10 @@ export default class Messages extends React.Component {
 
   componentDidUpdate(prevProps) {
     // This would affect the overall scroll size. We don't bother, let's move back to bottom
-    if (prevProps.renderEmbeds !== this.props.renderEmbeds ||
-      prevProps.inlineImages !== this.props.inlineImages) {
+    if (
+      prevProps.renderEmbeds !== this.props.renderEmbeds ||
+      prevProps.inlineImages !== this.props.inlineImages
+    ) {
       this.scrollToBottom();
     } else if (this.props.messages.last() !== prevProps.messages.last()) {
       // Last message has changed.
@@ -190,8 +192,10 @@ export default class Messages extends React.Component {
       if (latestMessage && latestMessage.user.id === currentUser.id || this.isAtBottom()) {
         this.scrollToBottom();
       }
-    } else if (prevProps.messages.first() !== this.props.messages.first() &&
-      prevProps.messagesState.loadingMore) {
+    } else if (
+      prevProps.messages.first() !== this.props.messages.first() &&
+      prevProps.messagesState.loadingMore
+    ) {
       // The first message changed and was previously loading more.
       this.handleLoadMore();
     }
@@ -205,8 +209,9 @@ export default class Messages extends React.Component {
 
     const { scroller } = this;
     // Reaching the top when scrolling with a scrollable viewport
-    if (scroller.scrollTop < FETCH_HISTORY_TRESHOLD &&
-      scroller.scrollHeight > scroller.offsetHeight) {
+    if (
+      scroller.scrollTop < FETCH_HISTORY_TRESHOLD && scroller.scrollHeight > scroller.offsetHeight
+    ) {
       if (this.props.messagesState.hasMore && !this.props.messagesState.loadingMore) {
         this.loadMore();
       }
@@ -274,10 +279,12 @@ export default class Messages extends React.Component {
     const messageGroups = [];
     messages.forEach((message) => {
       const lastMessageGroup = messageGroups[messageGroups.length - 1];
-      if (lastMessageGroup == null ||
-          lastMessageGroup[0].user.id !== message.user.id ||
-          lastMessageGroup[0].dateCreated.day() !== message.dateCreated.day() ||
-          lastMessageGroup[0].dateCreated.hour() !== message.dateCreated.hour()) {
+      if (
+        lastMessageGroup == null ||
+        lastMessageGroup[0].user.id !== message.user.id ||
+        lastMessageGroup[0].dateCreated.day() !== message.dateCreated.day() ||
+        lastMessageGroup[0].dateCreated.hour() !== message.dateCreated.hour()
+      ) {
         messageGroups.push([message]);
       } else {
         lastMessageGroup.push(message);
@@ -326,35 +333,34 @@ export default class Messages extends React.Component {
     });
     if (this.props.messagesState.loadingMore || !this.props.messagesState.ready) {
       messageGroupFinal.unshift(
-        <div
-          key="loading-more"
-          className="message-loading-more"
-        >Retrieving messages history...</div>
+        <div key="loading-more" className="message-loading-more">
+          Retrieving messages history...
+        </div>
       );
     } else if (this.props.messagesState.hasMore) {
       messageGroupFinal.unshift(
         <div
           key="has-more"
-          ref={(hasMore) => { this.hasMore = hasMore; }}
+          ref={(hasMore) => {
+            this.hasMore = hasMore;
+          }}
           className="message-has-more"
         >
-          <span
-            role="link"
-            title="Click to retrieve more messages"
-            onClick={this.onHandleLoadMore}
-          >And more...</span>
+          <span role="link" title="Click to retrieve more messages" onClick={this.onHandleLoadMore}>
+            And more...
+          </span>
         </div>
       );
     } else {
-      messageGroupFinal.unshift(
-        <WelcomeMessage key="welcome-message" room={this.props.room} />
-      );
+      messageGroupFinal.unshift(<WelcomeMessage key="welcome-message" room={this.props.room} />);
     }
 
     return (
       <section
         className="panel panel--contrast flex-vertical flex-spacer"
-        ref={(scroller) => { this.scroller = scroller; }}
+        ref={(scroller) => {
+          this.scroller = scroller;
+        }}
         onScroll={this.onHandleScroll}
       >
         <div className="panel-wrapper messages">{messageGroupFinal}</div>

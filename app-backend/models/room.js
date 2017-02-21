@@ -26,10 +26,7 @@ const RoomSchema = new recorder.Schema({
 RoomSchema.virtual({
   public: {
     get() {
-      return (
-        this.type === TYPE.PUBLIC ||
-        this.type === TYPE.INITIAL
-      );
+      return this.type === TYPE.PUBLIC || this.type === TYPE.INITIAL;
     }
   },
   private: {
@@ -41,7 +38,8 @@ RoomSchema.virtual({
 
 RoomSchema.static("isValidName", function isValidName(accountId, roomName) {
   roomName = roomName.toLowerCase();
-  return this.where("accountId", { key: accountId })
+  return this
+    .where("accountId", { key: accountId })
     .then(rooms => rooms.filter(({ name }) => name.toLowerCase() === roomName).length === 0);
 });
 
@@ -54,12 +52,7 @@ RoomSchema.method("isAdmin", function isAdmin(user) {
 });
 
 RoomSchema.method("isAccessGranted", function isAccessGranted(userId) {
-  return this.public || (
-    this.private && (
-      this.adminId === userId ||
-      this.usersId.includes(userId)
-    )
-  );
+  return this.public || this.private && (this.adminId === userId || this.usersId.includes(userId));
 });
 
 RoomSchema.method("toAPI", function toAPI(admin = false) {

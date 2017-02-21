@@ -54,8 +54,10 @@ describe("Embed parser", () => {
 
   describe("Vine", () => {
     it("should detect standard url", () => {
-      const tree = parse(`Hello foo, check this Vine
-      https://vine.co/v/im5wjA9qDvM`);
+      const tree = parse(
+        `Hello foo, check this Vine
+      https://vine.co/v/im5wjA9qDvM`
+      );
       expect(tree.length).toEqual(1);
       expect(tree[0].type).toEqual("vine");
       expect(tree[0].id).toEqual("im5wjA9qDvM");
@@ -128,15 +130,19 @@ describe("Embed parser", () => {
   describe("CodePen", () => {
     it("should detect codepen url", () => {
       const url = "http://codepen.io/captainbrosset/pen/lHpnK";
-      const tree = parse("tu sais comment marche les CSS Transforms? Regarde ce pen http://codepen.io/captainbrosset/pen/lHpnK");
+      const tree = parse(
+        "tu sais comment marche les CSS Transforms? Regarde ce pen http://codepen.io/captainbrosset/pen/lHpnK"
+      );
       expect(tree.length).toEqual(1);
       expect(tree[0].url).toEqual(url);
     });
   });
 
   it("should detect all urls from message", () => {
-    const tree = parse(`Hello there ! please check these 2 links this morning: https://www.youtube.com/watch?v=4SbiiyRSIwo and https://twitter.com/patrickbrosset/status/675448727285448705 and
-      https://example.com/foo/bar/baz.ogg`);
+    const tree = parse(
+      `Hello there ! please check these 2 links this morning: https://www.youtube.com/watch?v=4SbiiyRSIwo and https://twitter.com/patrickbrosset/status/675448727285448705 and
+      https://example.com/foo/bar/baz.ogg`
+    );
     expect(tree.length).toEqual(3);
     expect(tree[0].type).toEqual("youtube");
     expect(tree[1].type).toEqual("twitter");

@@ -1,26 +1,14 @@
 import bcrypt from "bcryptjs";
 import recorder from "tape-recorder";
 
-import {
-    providers,
-    initialize,
-    authenticate,
-    connect,
-    disconnect } from "../auth";
+import { providers, initialize, authenticate, connect, disconnect } from "../auth";
 import { requireLoginRedirect } from "../middlewares/auth";
-import {
-  requireEmailRedirect,
-  requireProfileInfoRedirect } from "../middlewares/profile";
+import { requireEmailRedirect, requireProfileInfoRedirect } from "../middlewares/profile";
 
-
-const oauthProvidersInfo =
-  Object.keys(providers)
-    .filter(p => (p !== "local"))
-    .map((name) => {
-      const { logo } = providers[name];
-      return { name, logo };
-    });
-
+const oauthProvidersInfo = Object.keys(providers).filter(p => p !== "local").map((name) => {
+  const { logo } = providers[name];
+  return { name, logo };
+});
 
 export default (app) => {
   /* =Parameters= */
@@ -39,15 +27,12 @@ export default (app) => {
   app.use(requireEmailRedirect);
 
   /* =Routes= */
-  app.get("/",
-    requireLoginRedirect,
-    requireProfileInfoRedirect,
-    (req, res) => {
-      res.render("chat");
-    }
-  );
+  app.get("/", requireLoginRedirect, requireProfileInfoRedirect, (req, res) => {
+    res.render("chat");
+  });
 
-  app.route("/login")
+  app
+    .route("/login")
     .get((req, res) => {
       res.render("login", {
         title: "Signin",
@@ -56,7 +41,8 @@ export default (app) => {
     })
     .post(authenticate("local"));
 
-  app.route("/login/reset-password")
+  app
+    .route("/login/reset-password")
     .get((req, res) => {
       res.render("reset-password", {
         title: "Reset your password"
@@ -73,14 +59,14 @@ export default (app) => {
     res.redirect("/");
   });
 
-
   const signupViewOptions = {
     title: "Sign Up",
     providers: oauthProvidersInfo,
     fields: {}
   };
 
-  app.route("/signup")
+  app
+    .route("/signup")
     .get((req, res) => {
       res.render("signup", signupViewOptions);
     })
@@ -88,9 +74,15 @@ export default (app) => {
       const { username, email, password } = req.body;
       const errors = [];
 
-      if (!username) { errors.push("Username"); }
-      if (!email) { errors.push("Email address"); }
-      if (!password) { errors.push("Password"); }
+      if (!username) {
+        errors.push("Username");
+      }
+      if (!email) {
+        errors.push("Email address");
+      }
+      if (!password) {
+        errors.push("Password");
+      }
 
       const newSignupViewOptions = Object.assign({}, signupViewOptions, { fields: req.body });
 
@@ -113,15 +105,14 @@ export default (app) => {
           password: hash
         });
 
-        user.save()
-          .then(() => {
-            req.flash("info", "Your account has been created. Please try to logging in now!");
-            res.redirect(providers.local.successRedirect);
-          }, (err) => {
-            console.error(err);
-            res.flash("error", "Sorry, we could not process your request");
-            res.render("signup", newSignupViewOptions);
-          });
+        user.save().then(() => {
+          req.flash("info", "Your account has been created. Please try to logging in now!");
+          res.redirect(providers.local.successRedirect);
+        }, (err) => {
+          console.error(err);
+          res.flash("error", "Sorry, we could not process your request");
+          res.render("signup", newSignupViewOptions);
+        });
       });
     });
 
@@ -137,9 +128,7 @@ export default (app) => {
   }
 
   /* =API routes= */
-  app.post("/api/auth/register", (req, res) => {
-
-  });
+  app.post("/api/auth/register", (req, res) => {});
 
   /* =Socket routes= */
   app.io.route("auth", {

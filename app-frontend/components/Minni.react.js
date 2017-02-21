@@ -27,7 +27,8 @@ const App = () => (
       <Match pattern="/" component={RouterSessionStart} />
 
       {/* If only one account is available, and url is "/" <Dashboard /> will
-          redirect to the corresponding <Lobby /> */}
+          redirect to the corresponding <Lobby /> */
+      }
       <Match exactly pattern="/dashboard" component={DashboardSidebar} />
       <Match exactly pattern="/" component={Dashboard} />
       <Match exactly pattern="/dashboard" component={Dashboard} />
@@ -55,6 +56,6 @@ const App = () => (
       <SoundPlayer />
     </div>
   </div>
-  );
+);
 
 export default App;

@@ -4,13 +4,16 @@ import { MapStore } from "../libs/Flux";
 import { ActionTypes, TYPING_TIMEOUT } from "../Constants";
 
 function willBeCleared(roomId, userId) {
-  return setTimeout(() => {
-    dispatch({
-      type: ActionTypes.TYPING_STOP,
-      roomId,
-      userId
-    });
-  }, TYPING_TIMEOUT);
+  return setTimeout(
+    () => {
+      dispatch({
+        type: ActionTypes.TYPING_STOP,
+        roomId,
+        userId
+      });
+    },
+    TYPING_TIMEOUT
+  );
 }
 
 function handleTypingStart(state, { roomId, userId }) {
@@ -30,7 +33,7 @@ function handleMessageCreate(state, { roomId, message: { userId } }) {
 }
 
 function handleConnectionOpen(state, { rooms }) {
-  return state.clear().withMutations(map => {
+  return state.clear().withMutations((map) => {
     rooms.forEach(({ id: roomId }) => {
       map.set(roomId, Immutable.OrderedMap());
     });

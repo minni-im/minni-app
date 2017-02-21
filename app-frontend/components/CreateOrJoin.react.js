@@ -11,21 +11,15 @@ function CreateOrJoin(props) {
       <div className="create">
         <h3>Create</h3>
         <GroupIcon />
-        <p>Create a new team &amp; invite teammates to join.</p>
-        <button
-          className="button-primary"
-          onClick={props.onCreate}
-        >Create a Team</button>
+        <p>Create a new team & invite teammates to join.</p>
+        <button className="button-primary" onClick={props.onCreate}>Create a Team</button>
       </div>
       <div className="separator" data-text="or" />
       <div className="join">
         <h3>Join</h3>
         <GroupAddIcon />
-        <p>Enter an invitation link &amp; join an existing team.</p>
-        <button
-          className="button-highlight"
-          onClick={props.onJoin}
-        >Join a Team</button>
+        <p>Enter an invitation link & join an existing team.</p>
+        <button className="button-highlight" onClick={props.onJoin}>Join a Team</button>
       </div>
     </div>
   );
@@ -38,7 +32,7 @@ CreateOrJoin.propTypes = {
 export default class CreateOrJoinContainer extends React.Component {
   static contextTypes = {
     router: React.PropTypes.object.isRequired
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -48,7 +42,7 @@ export default class CreateOrJoinContainer extends React.Component {
 
   state = {
     step: 0
-  }
+  };
 
   onCreateClick(account) {
     this.context.router.transitionTo(`/chat/${account.name}/lobby`);

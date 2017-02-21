@@ -12,16 +12,16 @@ let __connected = false;
 
 function handleConnectionOpen(state, { accounts }) {
   __connected = true;
-  return state.withMutations(map => {
-    accounts.forEach(account => {
+  return state.withMutations((map) => {
+    accounts.forEach((account) => {
       map.set(account.id, Immutable.Map());
     });
   });
 }
 
 function handleLoadRoomsSuccess(state, { rooms }) {
-  return state.withMutations(map => {
-    rooms.forEach(room => {
+  return state.withMutations((map) => {
+    rooms.forEach((room) => {
       map.set(room.accountId, Immutable.Map());
     });
   });
@@ -36,7 +36,7 @@ function handleMessageCreate(state, { roomId, message }) {
   const accountState = state.get(accountId, Immutable.Map());
   let roomState = accountState.get(roomId, Immutable.Map());
 
-  roomState = roomState.withMutations(map => {
+  roomState = roomState.withMutations((map) => {
     if (!selectedRoomsSlugs.has(room.slug)) {
       map.set("unreadCount", map.get("unreadCount", 0) + 1);
     }
@@ -51,7 +51,8 @@ function handleRoomSelect(state, { roomSlug }) {
     return state;
   }
   const room = RoomStore.getRoom(...roomSlug);
-  const roomId = room.id, accountId = room.accountId;
+  const roomId = room.id,
+    accountId = room.accountId;
   const accountState = state.get(accountId, Immutable.Map());
   const roomState = accountState.get(roomId, Immutable.Map());
   return state.set(accountId, accountState.set(roomId, roomState.set("unreadCount", 0)));
@@ -67,7 +68,8 @@ class UnreadMessageStore extends MapStore {
   }
 
   getUnreadCount(accountId, roomId) {
-    return this.getState()
+    return this
+      .getState()
       .get(accountId, Immutable.Map())
       .get(roomId, Immutable.Map())
       .get("unreadCount", 0);
@@ -75,21 +77,21 @@ class UnreadMessageStore extends MapStore {
 
   getTotalUnreadCount(accountId) {
     if (accountId) {
-      return this.getState()
-        .get(accountId, Immutable.Map())
-        .reduce((sum, roomState) => {
+      return this.getState().get(accountId, Immutable.Map()).reduce(
+        (sum, roomState) => {
           sum += roomState.get("unreadCount", 0);
           return sum;
-        }, 0);
+        },
+        0
+      );
     }
-    return this.getState().reduce((sum, account) =>
-      account.reduce(
-        (subSum, room) => sum + room.get("unreadCount", 0), sum
-      ),
-      0
-    );
+    return this
+      .getState()
+      .reduce(
+        (sum, account) => account.reduce((subSum, room) => sum + room.get("unreadCount", 0), sum),
+        0
+      );
   }
-
 }
 
 const instance = new UnreadMessageStore(Dispatcher);

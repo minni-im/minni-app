@@ -13,7 +13,6 @@ export function withNoMutations(handler) {
   };
 }
 
-
 const StoreOverlay = {
   addAction(...args) {
     const actionTypes = args.slice(0, args.length - 1);
@@ -46,7 +45,7 @@ const StoreOverlay = {
       invariant(
         endingState !== undefined,
         "%s returned undefined from a syncWith(...) callback, did you forget to return " +
-        "state in the default case? (use null if this was intentional)",
+          "state in the default case? (use null if this was intentional)",
         this.constructor.name
       );
       if (startingState !== endingState) {

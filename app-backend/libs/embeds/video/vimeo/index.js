@@ -24,4 +24,4 @@ export default class VimeoEmbed extends Base {
       id: capture[1]
     };
   }
-};
+}

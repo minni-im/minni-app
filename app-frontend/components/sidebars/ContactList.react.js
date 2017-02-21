@@ -34,12 +34,13 @@ export default class ContactList extends React.Component {
             <h2>Coworkers</h2>
             <h3>{teamSize} teammate{teamSize > 1 ? "s" : ""}</h3>
           </div>
-          {teamSize ?
-            <div className="actions">
+          {teamSize
+            ? <div className="actions">
               <InvitationDialog className="icon pointer">
                 <GroupAddIcon />
               </InvitationDialog>
-            </div> : false}
+            </div>
+            : false}
         </header>
         <section className="panel panel--wrapper flex-vertical flex-spacer">
           {teamSize ? this.renderList() : this.renderEmptyList()}

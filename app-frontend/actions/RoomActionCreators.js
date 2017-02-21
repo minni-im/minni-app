@@ -57,24 +57,21 @@ export function toggleFavorite(roomId, isStarred) {
     roomId
   });
   const url = isStarred ? EndPoints.ROOM_UNSTAR(roomId) : EndPoints.ROOM_STAR(roomId);
-  return request(
-      url,
-      { method: "POST" }
-    ).then(({ ok, message, errors }) => {
-      if (ok) {
-        dispatch({
-          type: isStarred ? ActionTypes.ROOM_UNSTAR_SUCCESS : ActionTypes.ROOM_STAR_SUCCESS,
-          roomId
-        });
-      } else {
-        logger.error(errors);
-        dispatch({
-          type: isStarred ? ActionTypes.ROOM_UNSTAR_FAILURE : ActionTypes.ROOM_STAR_FAILURE,
-          roomId,
-          message
-        });
-      }
-    });
+  return request(url, { method: "POST" }).then(({ ok, message, errors }) => {
+    if (ok) {
+      dispatch({
+        type: isStarred ? ActionTypes.ROOM_UNSTAR_SUCCESS : ActionTypes.ROOM_STAR_SUCCESS,
+        roomId
+      });
+    } else {
+      logger.error(errors);
+      dispatch({
+        type: isStarred ? ActionTypes.ROOM_UNSTAR_FAILURE : ActionTypes.ROOM_STAR_FAILURE,
+        roomId,
+        message
+      });
+    }
+  });
 }
 
 export function fetchMessages(roomId, latest, oldest = null, limit = MAX_MESSAGES_PER_ROOMS) {
@@ -111,16 +108,14 @@ export function fetchMessages(roomId, latest, oldest = null, limit = MAX_MESSAGE
 }
 
 export function receiveMessage(roomId, message, optimistic = false) {
-  MessageUtils.receiveMessage(roomId, message, optimistic).then(
-    (processedMessage) => {
-      dispatch({
-        type: ActionTypes.MESSAGE_CREATE,
-        roomId,
-        message: processedMessage,
-        optimistic
-      });
-    }
-  );
+  MessageUtils.receiveMessage(roomId, message, optimistic).then((processedMessage) => {
+    dispatch({
+      type: ActionTypes.MESSAGE_CREATE,
+      roomId,
+      message: processedMessage,
+      optimistic
+    });
+  });
 }
 
 export function updateMessage(roomId, message) {

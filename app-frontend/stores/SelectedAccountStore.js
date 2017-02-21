@@ -12,7 +12,6 @@ import Logger from "../libs/Logger";
 
 const logger = Logger.create("SelectedAccountStore");
 
-
 function handleAccountSelect(state, { accountSlug }) {
   if (state === accountSlug) {
     return state;
@@ -45,7 +44,7 @@ class SelectedAccountStore extends ReduceStore {
   }
 
   getUsers(except) {
-    return UserStore.getUsers((this.getAccount() && this.getAccount().usersId) || [], except);
+    return UserStore.getUsers(this.getAccount() && this.getAccount().usersId || [], except);
   }
 }
 

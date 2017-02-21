@@ -16,7 +16,9 @@ const StateRecord = Immutable.Record({
 
 function updateState(loadingMore = false, hasMore = true, ready = false) {
   return new StateRecord({
-    loadingMore, hasMore, ready
+    loadingMore,
+    hasMore,
+    ready
   });
 }
 
@@ -35,7 +37,7 @@ function handleLoadMessagesFailure(state, { roomId }) {
 }
 
 function handleConnectionOpen(state, { rooms }) {
-  return state.withMutations(map => {
+  return state.withMutations((map) => {
     rooms.forEach(({ id }) => {
       map.set(id, new StateRecord());
     });
@@ -54,7 +56,6 @@ function handleResetHasMore(state, { roomId, scrollTop }) {
   }
   return state;
 }
-
 
 class MessageStateStore extends MapStore {
   initialize() {

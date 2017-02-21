@@ -25,14 +25,14 @@ import { RoomIcons } from "../utils/IconsUtils";
 class Room extends Component {
   static contextTypes = {
     router: PropTypes.object
-  }
+  };
 
   static propTypes = {
     room: PropTypes.instanceOf(RoomModel).isRequired,
     selected: PropTypes.bool,
     unreadCount: PropTypes.number,
     onLeave: PropTypes.func
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return this.props.room !== nextProps.room ||
@@ -41,9 +41,7 @@ class Room extends Component {
   }
 
   onClick(event, slug) {
-    const multiRoom = isOSX ?
-      event.metaKey && event.shiftKey :
-      event.ctrlKey && event.shiftKey;
+    const multiRoom = isOSX ? event.metaKey && event.shiftKey : event.ctrlKey && event.shiftKey;
     if (multiRoom) {
       event.preventDefault();
       const slugs = SelectedRoomStore.getRooms().add(slug).toArray();
@@ -69,19 +67,13 @@ class Room extends Component {
         to={`/chat/${accountSlug}/messages/${slug}`}
       >
         <span className="icon">
-          {room.private ?
-            <RoomIcons.RoomPrivateIcon /> :
-              <RoomIcons.RoomPublicIcon />
-          }
+          {room.private ? <RoomIcons.RoomPrivateIcon /> : <RoomIcons.RoomPublicIcon />}
         </span>
         <span className="name">{name}</span>
         {unreadCount > 0 ? <span className="unread">{unreadCount}</span> : false}
-        <span
-          rel="button"
-          className="quit"
-          title="Leave this room"
-          onClick={this.props.onLeave}
-        >×</span>
+        <span rel="button" className="quit" title="Leave this room" onClick={this.props.onLeave}>
+          ×
+        </span>
       </Link>
     );
   }
@@ -89,12 +81,7 @@ class Room extends Component {
 
 class AccountRooms extends Component {
   static getStores() {
-    return [
-      AccountRoomStore,
-      ConnectedRoomStore,
-      SelectedRoomStore,
-      UnreadMessageStore
-    ];
+    return [AccountRoomStore, ConnectedRoomStore, SelectedRoomStore, UnreadMessageStore];
   }
 
   static calculateState(prevState, { account }) {
@@ -106,7 +93,7 @@ class AccountRooms extends Component {
 
   static propTypes = {
     account: PropTypes.instanceOf(AccountModel).isRequired
-  }
+  };
 
   componentWillReceiveProps(nextProps) {
     if (this.props.account !== nextProps.account) {
@@ -126,7 +113,7 @@ class AccountRooms extends Component {
     const { rooms, selectedRooms } = this.state;
     const { account } = this.props;
     const roomList = rooms
-      .sortBy(({ starred, name }) => (starred ? `a-${name}` : `z-${name}`))
+      .sortBy(({ starred, name }) => starred ? `a-${name}` : `z-${name}`)
       .map(room => (
         <Room
           key={room.slug}

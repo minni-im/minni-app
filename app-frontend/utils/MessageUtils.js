@@ -48,10 +48,7 @@ const ENCODING_RULES = {
       if (/^|[\s]+/.test(lookBehind)) {
         const match = source.match(/^#([a-z0-9-]{1,30})/);
         if (match) {
-          return state.rooms
-            .filter(({ slug }) => slug === match[1])
-            .map(({ id }) => [match[0], id])
-            [0];
+          return state.rooms.filter(({ slug }) => slug === match[1]).map(({ id }) => [match[0], id])[0];
         }
       }
       return null;
@@ -74,8 +71,7 @@ const ENCODING_RULES = {
         if (match) {
           return state.users
             .filter(({ nickname }) => nickname === match[1])
-            .map(({ id }) => [match[0], id])
-            [0];
+            .map(({ id }) => [match[0], id])[0];
         }
       }
       return null;
@@ -134,20 +130,20 @@ export function encode(text) {
 
 // Used when editing a message to revert private objects to @mention and #room
 export function decode(text) {
-  return text.replace(/<@([a-zA-Z0-9-]{32})>/g, (match, userId) => {
-    const user = UserStore.getUser(userId);
-    return user == null ? match : `@${user.nickname}`;
-  }).replace(/<#([a-zA-Z0-9-]{32})>/g, (match, roomId) => {
-    const room = RoomStore.get(roomId);
-    return room == null ? match : `#${room.slug}`;
-  });
+  return text
+    .replace(/<@([a-zA-Z0-9-]{32})>/g, (match, userId) => {
+      const user = UserStore.getUser(userId);
+      return user == null ? match : `@${user.nickname}`;
+    })
+    .replace(/<#([a-zA-Z0-9-]{32})>/g, (match, roomId) => {
+      const room = RoomStore.get(roomId);
+      return room == null ? match : `#${room.slug}`;
+    });
 }
 
 export function createMessage(roomId, text) {
-  const COMPOSER_TEXT_PLUGINS = PluginsStore.getPlugins(
-    PLUGIN_TYPES.COMPOSER_TEXT
-  ).map(plugin => plugin.encodeMessage);
-
+  const COMPOSER_TEXT_PLUGINS = PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_TEXT)
+    .map(plugin => plugin.encodeMessage);
 
   const message = {
     id: createNonce().toString(),
@@ -177,16 +173,12 @@ export function createSystemMessage(roomId, content, subType) {
 }
 
 export function receiveMessage(roomId, message, optimistic) {
-  const MESSAGE_PLUGINS = PluginsStore.getPlugins(
-    PLUGIN_TYPES.MESSAGE
-  ).map(plugin => plugin.receiveMessage.bind(plugin, decode(message.content)));
+  const MESSAGE_PLUGINS = PluginsStore.getPlugins(PLUGIN_TYPES.MESSAGE)
+    .map(plugin => plugin.receiveMessage.bind(plugin, decode(message.content)));
 
   message = Promise.resolve(message);
   if (optimistic) {
     return message;
   }
-  return MESSAGE_PLUGINS.reduce(
-    (onGoing, processor) => onGoing.then(processor),
-    message
-  );
+  return MESSAGE_PLUGINS.reduce((onGoing, processor) => onGoing.then(processor), message);
 }

@@ -22,11 +22,12 @@ class SoundPlayer extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const me = UserStore.getConnectedUser();
-    if (prevState.unreadCount < this.state.unreadCount &&
+    if (
+      prevState.unreadCount < this.state.unreadCount &&
       me.status !== USER_STATUS.DND &&
       me.status !== USER_STATUS.AWAY &&
       UserSettingsStore.hasSoundNotifications()
-     ) {
+    ) {
       this.playSound("notification");
     }
   }

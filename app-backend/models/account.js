@@ -28,10 +28,9 @@ AccountSchema.method("userBelongTo", function userBelongTo(userId) {
 });
 
 AccountSchema.static("getListForUser", function getListForUser(userId) {
-  return this.findAll()
-    .then(accounts => accounts
-      .filter(account => account.usersId.indexOf(userId) !== -1)
-    );
+  return this
+    .findAll()
+    .then(accounts => accounts.filter(account => account.usersId.indexOf(userId) !== -1));
 });
 
 export default recorder.model("Account", AccountSchema);

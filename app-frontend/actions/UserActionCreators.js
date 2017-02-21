@@ -24,20 +24,19 @@ export function updateProfile(profile) {
   return request(EndPoints.USER_PROFILE, {
     method: "POST",
     body: profile
-  })
-    .then(({ ok, message, user }) => {
-      if (ok) {
-        dispatch({
-          type: ActionTypes.PROFILE_UPDATE_SUCCESS,
-          user
-        });
-      } else {
-        logger.error(message);
-        dispatch({
-          type: ActionTypes.PROFILE_UPDATE_FAILURE,
-          profile
-        });
-      }
-      return { ok, message };
-    });
+  }).then(({ ok, message, user }) => {
+    if (ok) {
+      dispatch({
+        type: ActionTypes.PROFILE_UPDATE_SUCCESS,
+        user
+      });
+    } else {
+      logger.error(message);
+      dispatch({
+        type: ActionTypes.PROFILE_UPDATE_FAILURE,
+        profile
+      });
+    }
+    return { ok, message };
+  });
 }

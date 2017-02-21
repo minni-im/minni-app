@@ -26,9 +26,12 @@ function cancelTimers() {
 function activateAwayTimer() {
   ActivityActionCreators.setIdle();
   logger.info("Activating AWAY timer");
-  awayTimeoutID = setTimeout(() => {
-    ActivityActionCreators.setAway();
-  }, AWAY_TIMEOUT);
+  awayTimeoutID = setTimeout(
+    () => {
+      ActivityActionCreators.setAway();
+    },
+    AWAY_TIMEOUT
+  );
 }
 
 function activateIdleTimer() {

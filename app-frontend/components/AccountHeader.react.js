@@ -8,10 +8,7 @@ export default function AccountHeader({ className, account, hasLogo }) {
   }
   return (
     <h2 className={className}>
-      { account ?
-        account.toString() :
-        "..."
-      }
+      {account ? account.toString() : "..."}
     </h2>
   );
 }

@@ -7,7 +7,7 @@ import Settings from "./Settings.react";
 
 class SettingsContainer extends React.Component {
   static getStores() {
-    return [ SelectedAccountStore ];
+    return [SelectedAccountStore];
   }
 
   static calculateState() {

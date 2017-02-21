@@ -29,10 +29,8 @@ function replaceAliases(text) {
     if (toBeMatched.test(text)) {
       text = text.replace(new RegExp(alias, "g"), subst);
       if (isSuperAlias(subst)) {
-        text = text.replace(PROCESS_SUPER_ALIAS,
-          (matches, intermediateText, regex, repl) =>
-            intermediateText.replace(new RegExp(escapeExpr(regex), "g"), repl)
-        );
+        text = text.replace(PROCESS_SUPER_ALIAS, (matches, intermediateText, regex, repl) =>
+          intermediateText.replace(new RegExp(escapeExpr(regex), "g"), repl));
       }
     }
   });

@@ -5,10 +5,8 @@ import AccountHeader from "./AccountHeader.react";
 import AccountRooms from "./AccountRooms.react";
 import { InfoPanelPopover } from "./UserInfoPanel.react";
 
-
 import AccountStore from "../stores/AccountStore";
 import SelectedAccountStore from "../stores/SelectedAccountStore";
-
 
 class Rooms extends React.Component {
   static getStores() {

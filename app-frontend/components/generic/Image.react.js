@@ -2,14 +2,14 @@ import React from "react";
 import classnames from "classnames";
 import { Container } from "flux/utils";
 
-import ImageActionCreators from "../../actions/ImageActionCreators" ;
+import ImageActionCreators from "../../actions/ImageActionCreators";
 import ImageStore from "../../stores/ImageStore";
 
 import { MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT } from "../../Constants";
 
 class ImageContainer extends React.Component {
   static getStores() {
-    return [ ImageStore ];
+    return [ImageStore];
   }
 
   static calculateState(prevProps, nextProps) {
@@ -78,34 +78,36 @@ class ImageContainer extends React.Component {
     const width = this.props.thumbnailWidth || this.getWidth();
     const height = this.props.thumbnailHeight || this.getHeight();
     if (!this.state.loaded) {
-      return <div className="image image--loader" style={{width, height}}></div>;
+      return <div className="image image--loader" style={{ width, height }} />;
     } else {
-      let props = {
+      const props = {
         width,
         height,
         src: this.props.src
       };
-      let classNames = {
+      const classNames = {
         "image--gif": this.isGIF()
       };
 
       if (this.isGIF()) {
-        return <span className="image">
-          <span className="image--gif">&#9658; GIF</span>
-          <img {...props} />
-        </span>;
-      //   props.onMouseEnter = this.handleMouseEnter.bind(this);
-      //   props.onMouseLeave = this.handleMouseLeave.bind(this);
-      //   if (!this.state.animate) {
-      //     return <img className="image image-static" {...props} src={this.state.staticFrame} />;
-      //   }
+        return (
+          <span className="image">
+            <span className="image--gif">► GIF</span>
+            <img {...props} />
+          </span>
+        );
+        //   props.onMouseEnter = this.handleMouseEnter.bind(this);
+        //   props.onMouseLeave = this.handleMouseLeave.bind(this);
+        //   if (!this.state.animate) {
+        //     return <img className="image image-static" {...props} src={this.state.staticFrame} />;
+        //   }
       }
       return <img className={classnames("image", classNames, this.props.className)} {...props} />;
     }
   }
 
   isGIF() {
-    return (/\.gif/i).test(this.props.src);
+    return /\.gif/i.test(this.props.src);
   }
 
   handleMouseEnter() {
