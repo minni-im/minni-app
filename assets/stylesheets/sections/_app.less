@@ -98,16 +98,31 @@
           cursor: text;
 
           margin-bottom: 5px;
-          right: -5px;
+          padding: 0;
+          color: @color-dark !important;
+          min-width: 400px; // TODO: no idea why we need this min-width instead of just width
+          background-color: @background-light;
+          box-shadow: 0px 0px 4px @gray-light;
+          border: 0px;
 
-          width: 400px;
-
-          div {
-            padding: 4px 0;
+          .dialog__header h3 {
+            color: @color-light;
           }
 
-          div:not(:last-child) {
-            border-bottom: 1px dotted @gray-lighter;
+          .dialog__content {
+            padding: 10px 0;
+          }
+
+          .dialog__content > div {
+            padding: 4px 10px;
+
+            &:nth-child(even) {
+              background-color: @gray-lighter;
+            }
+
+            &:not(:last-child) {
+              border-bottom: 1px dotted @gray-lighter;
+            }
           }
 
           .hint {
@@ -121,6 +136,7 @@
 
           blockquote {
             margin: 0;
+            color: inherit;
           }
 
           .message--code-block {
