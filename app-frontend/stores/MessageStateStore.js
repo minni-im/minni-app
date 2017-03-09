@@ -11,12 +11,14 @@ import RoomStore from "./RoomStore";
 const StateRecord = Immutable.Record({
   loadingMore: false,
   hasMore: true,
-  ready: false
+  ready: false,
 });
 
 function updateState(loadingMore = false, hasMore = true, ready = false) {
   return new StateRecord({
-    loadingMore, hasMore, ready
+    loadingMore,
+    hasMore,
+    ready,
   });
 }
 
@@ -35,7 +37,7 @@ function handleLoadMessagesFailure(state, { roomId }) {
 }
 
 function handleConnectionOpen(state, { rooms }) {
-  return state.withMutations(map => {
+  return state.withMutations((map) => {
     rooms.forEach(({ id }) => {
       map.set(id, new StateRecord());
     });
@@ -55,6 +57,11 @@ function handleResetHasMore(state, { roomId, scrollTop }) {
   return state;
 }
 
+/* On connection lost we reset the ready flag, so when connection is back
+  and user is going to a room, a fetch will be done */
+function handleConnectionLost(state) {
+  return state.map(roomState => updateState(roomState.loadingMore, roomState.hasMore, false));
+}
 
 class MessageStateStore extends MapStore {
   initialize() {
@@ -64,6 +71,7 @@ class MessageStateStore extends MapStore {
     this.addAction(ActionTypes.LOAD_MESSAGES_FAILURE, handleLoadMessagesFailure);
 
     this.addAction(ActionTypes.CONNECTION_OPEN, handleConnectionOpen);
+    this.addAction(ActionTypes.CONNECTION_LOST, handleConnectionLost);
     this.addAction(ActionTypes.ROOM_JOIN, handleRoomJoin);
     this.addAction(ActionTypes.UPDATE_DIMENSIONS, handleResetHasMore);
   }

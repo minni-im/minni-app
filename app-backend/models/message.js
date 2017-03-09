@@ -9,13 +9,13 @@ const MessageSchema = new recorder.Schema({
   userId: String,
   bot: Object,
   type: {
-    type: String
+    type: String,
   },
   subType: String,
   embeds: {
     type: Array,
-    default: []
-  }
+    default: [],
+  },
 });
 
 MessageSchema.method("toAPI", function toAPI() {
@@ -28,7 +28,7 @@ MessageSchema.method("toAPI", function toAPI() {
     dateCreated: this.dateCreated,
     lastUpdated: this.lastUpdated,
     content: this.content,
-    embeds: this.embeds
+    embeds: this.embeds,
   };
   return json;
 });
@@ -38,26 +38,26 @@ MessageSchema.view("historyByRoomAndDate", {
     if (doc.modelType === "Message") {
       emit([doc.roomId, doc.dateCreated], doc)
     }
-  }`
+  }`,
 });
 
 MessageSchema.static("getHistory", function getHistory(
-    roomId,
-    latest = new Date().toISOString(),
-    oldest = 0,
-    count = MAX_MESSAGES_COUNT) {
+  roomId,
+  latest = new Date().toISOString(),
+  oldest = 0,
+  count = MAX_MESSAGES_COUNT,
+) {
   const range = latest && oldest;
   const options = {
     startkey: [roomId, {}],
     endkey: [roomId, null],
     descending: true,
-    limit: count
+    limit: count,
   };
 
   if (range) {
     options.startkey[1] = latest;
     options.endkey[1] = oldest;
-    options.descending = false;
     options.inclusive_end = false; // eslint-disable-line camelcase
   } else {
     if (latest) {

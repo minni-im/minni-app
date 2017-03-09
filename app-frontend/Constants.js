@@ -6,7 +6,9 @@ export const ActionTypes = keyMirror({
 
   CONNECTION_START: null,
   CONNECTION_OPEN: null,
+  CONNECTION_LOST: null,
   CONNECTION_CLOSE: null,
+  RECONNECTION: null,
 
   LOAD_USER: null,
   LOAD_USER_SUCCESS: null,
@@ -131,7 +133,7 @@ export const NOTIFICATION_ROLES = {
   INFO: "info",
   WARNING: "warn",
   ERROR: "error",
-  FATAL: "fatal"
+  FATAL: "fatal",
 };
 
 export const PLUGIN_TYPES = {
@@ -139,20 +141,20 @@ export const PLUGIN_TYPES = {
   COMPOSER_TEXT: 1 << 1,
   COMPOSER_ACTION: 1 << 2,
   COMPOSER_COMMAND: 1 << 3,
-  MESSAGE: 1 << 4
+  MESSAGE: 1 << 4,
 };
 
 export const AVATAR_SIZES = keyMirror({
   SMALL: null,
   MEDIUM: null,
   LARGE: null,
-  XLARGE: null
+  XLARGE: null,
 });
 
 export const MessageStreamTypes = keyMirror({
   DIVIDER_TIME_STAMP: null,
   MESSAGE_GROUP: null,
-  WELCOME_MESSAGE: null
+  WELCOME_MESSAGE: null,
 });
 
 export const USER_STATUS = {
@@ -162,7 +164,7 @@ export const USER_STATUS = {
   IDLE: 1 << 3,
   AWAY: 1 << 4,
   DND: 1 << 5,
-  TYPING: 1 << 6
+  TYPING: 1 << 6,
 };
 
 export const USER_STATUS_TEXT = {
@@ -187,7 +189,7 @@ export const SOCKETIO_OPTIONS = {
   reconnectionDelay: 1000,
   reconnectionAttempts: 7,
   reconnectionDelayMax: 45000,
-  randomizationFactor: 0
+  randomizationFactor: 0,
 };
 
 export const MAX_IMAGE_WIDTH = 400;
@@ -198,7 +200,7 @@ export const MAX_IMAGE_HEIGHT = 300;
 
 export const EMBED_OPTIONS = {
   MAX_WIDTH: 400,
-  MAX_HEIGHT: 250
+  MAX_HEIGHT: 250,
 };
 
 export const MAX_MULTI_ROOMS = 3;
@@ -207,8 +209,7 @@ export const INVITATION_MAX_AGE = 24 * 60 * 60 * 1000;
 
 export const EndPoints = {
   ACCOUNT_CREATE: "/api/accounts/",
-  ACCOUNT_CHECK_EXISTENCE:
-    name => `/api/accounts/check_existence?name=${name}`,
+  ACCOUNT_CHECK_EXISTENCE: name => `/api/accounts/check_existence?name=${name}`,
   ACCOUNT_ROOMS: accountId => `/api/accounts/${accountId}/rooms`,
   ACCOUNT_USERS: accountId => `/api/accounts/${accountId}/users`,
   ROOM_STAR: roomId => `/api/rooms/${roomId}/star`,

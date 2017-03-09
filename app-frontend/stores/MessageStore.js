@@ -33,9 +33,11 @@ function transformMessage(message) {
 function mergeMessage(messages, message) {
   const newMessage = transformMessage(message);
   const oldMessage = messages.get(message.id);
-  if (oldMessage == null ||
+  if (
+    oldMessage == null ||
     oldMessage.content !== newMessage.content ||
-    !oldMessage.embeds.equals(newMessage.embeds)) {
+    !oldMessage.embeds.equals(newMessage.embeds)
+  ) {
     return newMessage;
   }
   return oldMessage;
@@ -60,21 +62,24 @@ function handleMessageUpdate(state, { message: newMessage }) {
     return state;
   }
 
-  return state.set(roomId, messages.update(newMessage.id, (message) => {
-    if (newMessage.embeds) {
-      message = message.set("embeds", Immutable.fromJS(newMessage.embeds));
-    }
-    return message;
-  }));
+  return state.set(
+    roomId,
+    messages.update(newMessage.id, (message) => {
+      if (newMessage.embeds) {
+        message = message.set("embeds", Immutable.fromJS(newMessage.embeds));
+      }
+      return message;
+    }),
+  );
 }
 
 function handleLoadMessagesSuccess(state, { roomId, messages: newMessages }) {
   const oldMessages = this.getMessages(roomId);
 
   const messages = Immutable.OrderedMap().withMutations((map) => {
-    newMessages.reverse().forEach(message =>
-      map.set(message.id, mergeMessage(oldMessages, message))
-    );
+    newMessages
+      .reverse()
+      .forEach(message => map.set(message.id, mergeMessage(oldMessages, message)));
     map.merge(oldMessages);
   });
 
@@ -99,9 +104,7 @@ function handleMessageTogglePreview(state, { messageId, roomId }) {
 
   return state.set(
     roomId,
-    messages.update(messageId, message =>
-      message.set("preview", !message.preview)
-    )
+    messages.update(messageId, message => message.set("preview", !message.preview)),
   );
 }
 
@@ -117,6 +120,10 @@ class MessageStore extends MapStore {
 
   getMessages(roomId) {
     return this.getState().get(roomId, Immutable.OrderedMap());
+  }
+
+  getLastestMessage(roomId) {
+    return this.getMessages(roomId).last();
   }
 }
 

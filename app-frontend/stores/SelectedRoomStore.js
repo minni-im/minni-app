@@ -1,5 +1,5 @@
 import Immutable from "immutable";
-import { MapStore } from "../libs/Flux";
+import { MapStore, withNoMutations } from "../libs/Flux";
 
 import Dispatcher from "../Dispatcher";
 
@@ -14,7 +14,6 @@ import Logger from "../libs/Logger";
 
 const logger = Logger.create("SelectedRoomStore");
 
-
 function handleRoomSelect(state, { accountSlug, roomSlug }) {
   const account = SelectedAccountStore.getAccount();
   if (account) {
@@ -25,11 +24,7 @@ function handleRoomSelect(state, { accountSlug, roomSlug }) {
 }
 
 function handleRoomsDeselect(state, { accountSlug, roomSlugs }) {
-  return state.update(
-    accountSlug,
-    Immutable.Set(),
-    slugs => slugs.subtract(roomSlugs)
-  );
+  return state.update(accountSlug, Immutable.Set(), slugs => slugs.subtract(roomSlugs));
 }
 
 function handleAccountNew(state, { account }) {
