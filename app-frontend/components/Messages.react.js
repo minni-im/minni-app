@@ -11,6 +11,8 @@ import Avatar from "./generic/Avatar.react";
 import Embed from "./Embed.react";
 import WelcomeMessage from "./WelcomeMessage.react";
 
+import { debounce } from "../utils/FunctionUtils";
+
 import Logger from "../libs/Logger";
 const logger = Logger.create("Messages.react");
 
@@ -169,7 +171,7 @@ export default class Messages extends React.Component {
 
   constructor(props) {
     super(props);
-    this.onHandleScroll = this.onHandleScroll.bind(this);
+    this.onHandleScroll = debounce(this.onHandleScroll.bind(this), 50);
     this.onHandleLoadMore = this.onHandleLoadMore.bind(this);
   }
 
