@@ -181,6 +181,7 @@ export const AWAY_TIMEOUT = 5 * 60 * 1000; // 5 minutes after IDLE is fired
 
 export const TYPING_TIMEOUT = 1500;
 
+export const MAX_JUMBOABLE_EMOJIS = 5;
 export const MAX_MESSAGES_PER_ROOMS = 50;
 export const MAX_MESSAGE_LENGTH = 2000;
 export const FETCH_HISTORY_TRESHOLD = 30;

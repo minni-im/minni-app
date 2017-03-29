@@ -1,4 +1,5 @@
 import React, { PropTypes } from "react";
+import classnames from "classnames";
 
 function generateUnicodeAltText(unicodeAsString) {
   return unicodeAsString.split("-")
@@ -14,13 +15,13 @@ function format(shortname, skinTone) {
   return skinTone ? `:${shortname}::skin-tone-${skinTone}:` : `:${shortname}:`;
 }
 
-export default function Emoji({ name, unicode, skinTone, src }) {
+export default function Emoji({ className, name, unicode, skinTone, src }) {
   if (!src) {
     return <span>{format(name)}</span>;
   }
   return (
     <img
-      className="emoji"
+      className={classnames("emoji", className)}
       draggable={false}
       alt={generateUnicodeAltText(unicode)}
       title={format(name, skinTone)}
@@ -30,6 +31,7 @@ export default function Emoji({ name, unicode, skinTone, src }) {
 }
 
 Emoji.propTypes = {
+  className: PropTypes.string,
   name: PropTypes.string.isRequired,
   unicode: PropTypes.string,
   src: PropTypes.string,
