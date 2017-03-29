@@ -16,43 +16,54 @@ const providersSettings = {};
 
 function getProviders() {
   if (!settings.auth.providers) {
-    throw new Error(`No auth provider found!
-You have to specify at least one in your setting.yml file.`);
+    throw new Error(
+      `No auth provider found!
+You have to specify at least one in your setting.yml file.`,
+    );
   }
   return settings.auth.providers.map((provider) => {
     let Provider;
+    let minniModule = false;
     if (provider === "local") {
       Provider = LocalProvider;
     } else {
-      Provider = getPlugin(provider, "auth");
+      if (provider.startsWith("minni-")) {
+        minniModule = true;
+        provider = provider.replace("minni-", "");
+      }
+      Provider = getPlugin(provider, "auth", minniModule);
     }
 
     return {
       key: provider,
-      provider: new Provider(settings.auth[provider] || {})
+      provider: new Provider(settings.auth[provider] || {}),
     };
   });
 }
 
 function getProvider(key) {
-  return enabledProviders
-    .map(p => p.key === key ? p : false) // eslint-disable-line no-confusing-arrow
-    .filter(item => item !== false)[0].provider;
+  return enabledProviders.map(p => p.key === key ? p : false).filter(item => item !== false)[ // eslint-disable-line no-confusing-arrow
+    0
+  ].provider;
 }
 
 export function setup(app, session) {
-  passport.use(new BearerStrategy((token, done) => {
-    const User = recorder.model("User");
-    User.findByToken(token)
-      .then((user) => {
-        if (user) {
-          user.usingToken = true;
-        }
-        done(null, user);
-      }, (error) => {
-        done(error);
-      });
-  }));
+  passport.use(
+    new BearerStrategy((token, done) => {
+      const User = recorder.model("User");
+      User.findByToken(token).then(
+        (user) => {
+          if (user) {
+            user.usingToken = true;
+          }
+          done(null, user);
+        },
+        (error) => {
+          done(error);
+        },
+      );
+    }),
+  );
 
   passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -62,10 +73,14 @@ export function setup(app, session) {
     const User = recorder.model("User");
     User.findById(id).then(
       user => done(null, user),
-      error => done(new UserFromSessionDoesNotExistError(`Unknown user id to be revived from cookie [id: ${id}]`))
+      error =>
+        done(
+          new UserFromSessionDoesNotExistError(
+            `Unknown user id to be revived from cookie [id: ${id}]`,
+          ),
+        ),
     );
   });
-
 
   enabledProviders = getProviders();
   enabledProviders.forEach((p) => {
@@ -85,13 +100,15 @@ export function setup(app, session) {
   });
 
   app.use(passport.initialize());
-  app.use(passport.session({
-    failWithError: true
-  }));
+  app.use(
+    passport.session({
+      failWithError: true,
+    }),
+  );
 
   const ioSession = Object.assign({}, session, {
     cookieParser,
-    passport
+    passport,
   });
   const psiAuth = passportSocketIo.authorize(ioSession);
   /* eslint-disable no-underscore-dangle */
@@ -99,16 +116,20 @@ export function setup(app, session) {
     const User = recorder.model("User");
     if (socket.request._query && socket.request._query.token) {
       const { token } = socket.request._query;
-      User.findByToken(token)
-        .then((user) => {
+      User.findByToken(token).then(
+        (user) => {
           socket.request.user = user;
           socket.request.user.loggedIn = true;
           socket.request.user.usingToken = true;
           return next();
-        }, (error) => {
+        },
+        (error) => {
           console.error(error);
-          return next(new UserFromSessionDoesNotExistError(`Unable to retrieve user with [token: ${token}]`));
-        });
+          return next(
+            new UserFromSessionDoesNotExistError(`Unable to retrieve user with [token: ${token}]`),
+          );
+        },
+      );
     } else {
       psiAuth(socket, next);
     }
