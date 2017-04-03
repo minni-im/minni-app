@@ -1,10 +1,6 @@
 import React, { PropTypes } from "react";
 import { Container } from "flux/utils";
-import {
-  ALL as EMOJIS,
-  MASK_BY_PROVIDER,
-  SKIN_TONE_INDEX
-} from "emojify";
+import { ALL as EMOJIS, MASK_BY_PROVIDER, SKIN_TONE_INDEX } from "@minni-im/emojify";
 
 import UserSettingsStore from "../stores/UserSettingsStore";
 
@@ -13,8 +9,8 @@ import Emoji from "./generic/Emoji.react";
 class EmojiContainer extends React.Component {
   static propTypes = {
     shortname: PropTypes.string.isRequired,
-    skinTone: PropTypes.oneOf(["1-2", "3", "4", "5", "6"])
-  }
+    skinTone: PropTypes.oneOf(["1-2", "3", "4", "5", "6"]),
+  };
 
   static getStores() {
     return [UserSettingsStore];
@@ -23,7 +19,7 @@ class EmojiContainer extends React.Component {
   static calculateState() {
     return {
       active: UserSettingsStore.getValue("global.emoticons"),
-      provider: UserSettingsStore.getEmojiProviderInfo()
+      provider: UserSettingsStore.getEmojiProviderInfo(),
     };
   }
 
@@ -47,14 +43,7 @@ class EmojiContainer extends React.Component {
         src = `/images/emoji/${provider.name}/${unicode}.${provider.type}`;
       }
     }
-    return (
-      <Emoji
-        name={name}
-        unicode={unicode}
-        skinTone={skinTone}
-        src={src}
-      />
-    );
+    return <Emoji name={name} unicode={unicode} skinTone={skinTone} src={src} />;
   }
 }
 

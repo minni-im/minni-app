@@ -19,7 +19,9 @@ redis:
   port: 6379
 
 auth:
-  providers: [ local, github ]
+  providers:
+    - local
+    - minni-github # @minni-im/minni-auth-github
   github:
     scope: user
     callback: /auth/github/callback
