@@ -16,9 +16,9 @@ module.exports = {
       .sync(path.join(__dirname, "app-frontend", "plugins", "**", "Plugin.js"))
       .concat(
         glob.sync(
-          path.join(__dirname, "node_modules", "@minni-im", "minni-*", "frontend", "Plugin.js"),
+          path.join(__dirname, "node_modules", "@minni-im", "minni-*", "frontend", "Plugin.js")
         ),
-        glob.sync(path.join(__dirname, "node_modules", "minni-*", "frontend", "Plugin.js")),
+        glob.sync(path.join(__dirname, "node_modules", "minni-*", "frontend", "Plugin.js"))
       ),
   },
   output: {
@@ -44,7 +44,7 @@ module.exports = {
           path.join(__dirname, "app-frontend"),
           path.join(__dirname, "public", "images", "svgs"),
         ].concat(
-          glob.sync(path.join(__dirname, "node_modules", "minni-composer-*"), { realpath: true }),
+          glob.sync(path.join(__dirname, "node_modules", "minni-composer-*"), { realpath: true })
         ),
         loader: "babel-loader",
         query: {
@@ -98,6 +98,6 @@ module.exports = {
           __DEV__: true,
           "process.env.NODE_ENV": JSON.stringify(nodeEnv),
         }),
-      ],
+      ]
   ),
 };

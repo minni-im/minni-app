@@ -13,6 +13,6 @@ rules:
   indent: 2
   func-style: 0
   func-names: 0
-  comma-dangle: 0
+  comma-dangle: ["error", {"arrays": "always-multiline", "objects": "always-multiline", "imports": "never", "exports": "never", "functions": "never"}]
   no-console: 0
   no-param-reassign: 0
