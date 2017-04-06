@@ -1,15 +1,28 @@
-import React from "react";
+import React, { PropTypes } from "react";
 import classnames from "classnames";
 import { Container } from "flux/utils";
 
-import ImageActionCreators from "../../actions/ImageActionCreators" ;
+import * as ImageActionCreators from "../../actions/ImageActionCreators";
 import ImageStore from "../../stores/ImageStore";
 
 import { MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT } from "../../Constants";
 
 class ImageContainer extends React.Component {
+  static propTypes = {
+    src: PropTypes.string.isRequired,
+    width: PropTypes.number,
+    height: PropTypes.number,
+    thumbnailWidth: PropTypes.number,
+    thumbnailHeight: PropTypes.number,
+    className: PropTypes.string,
+  };
+
+  static defaultProps = {
+    className: "",
+  };
+
   static getStores() {
-    return [ ImageStore ];
+    return [ImageStore];
   }
 
   static calculateState(prevProps, nextProps) {
@@ -17,8 +30,13 @@ class ImageContainer extends React.Component {
     return {
       animate: false,
       loaded: state,
-      imageState: state
+      imageState: state,
     };
+  }
+
+  constructor(props) {
+    super(props);
+    this.showLightbox = this.showLightbox.bind(this);
   }
 
   // updateStaticFrame() {
@@ -74,46 +92,54 @@ class ImageContainer extends React.Component {
     return Math.round(this.props.height * this.getRatio());
   }
 
+  isGIF() {
+    return /\.gif/i.test(this.props.src);
+  }
+
+  // handleMouseEnter() {
+  //   this.setState({ animate: true });
+  // }
+  //
+  // handleMouseLeave() {
+  //   this.setState({ animate: false });
+  // }
+
+  showLightbox(event) {
+    ImageActionCreators.showLightbox(event.target.src);
+    event.preventDefault();
+  }
+
   render() {
     const width = this.props.thumbnailWidth || this.getWidth();
     const height = this.props.thumbnailHeight || this.getHeight();
     if (!this.state.loaded) {
-      return <div className="image image--loader" style={{width, height}}></div>;
-    } else {
-      let props = {
-        width,
-        height,
-        src: this.props.src
-      };
-      let classNames = {
-        "image--gif": this.isGIF()
-      };
+      return <div className="image image--loader" style={{ width, height }} />;
+    }
+    const props = {
+      width,
+      height,
+      src: this.props.src,
+      alt: "There should be something here",
+      onClick: this.showLightbox,
+    };
+    const classNames = {
+      "image--gif": this.isGIF(),
+    };
 
-      if (this.isGIF()) {
-        return <span className="image">
-          <span className="image--gif">&#9658; GIF</span>
-          <img {...props} />
-        </span>;
+    if (this.isGIF()) {
+      return (
+        <span className="image">
+          <span className="image--gif">► GIF</span>
+          <img {...props} alt="There should be something here" />
+        </span>
+      );
       //   props.onMouseEnter = this.handleMouseEnter.bind(this);
       //   props.onMouseLeave = this.handleMouseLeave.bind(this);
       //   if (!this.state.animate) {
       //     return <img className="image image-static" {...props} src={this.state.staticFrame} />;
       //   }
-      }
-      return <img className={classnames("image", classNames, this.props.className)} {...props} />;
     }
-  }
-
-  isGIF() {
-    return (/\.gif/i).test(this.props.src);
-  }
-
-  handleMouseEnter() {
-    this.setState({ animate: true });
-  }
-
-  handleMouseLeave() {
-    this.setState({ animate: false });
+    return <img className={classnames("image", classNames, this.props.className)} {...props} />;
   }
 }
 

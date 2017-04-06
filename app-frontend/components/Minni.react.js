@@ -18,6 +18,7 @@ import Rooms from "./Rooms.react";
 
 import Notifications from "./Notifications.react";
 import AccountSwitcher from "./sidebars/AccountSwitcher.react";
+import Lightbox from "./generic/Lightbox.react";
 import SoundPlayer from "./generic/SoundPlayer.react";
 
 const App = () => (
@@ -52,6 +53,7 @@ const App = () => (
 
         <Match pattern="/chat/:accountSlug/messages" component={MultiRoom} />
 
+        <Lightbox />
         <SoundPlayer />
       </div>
     </div>

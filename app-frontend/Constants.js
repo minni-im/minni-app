@@ -127,6 +127,9 @@ export const ActionTypes = keyMirror({
   NOTIFICATION: null,
   NOTIFICATION_ACK: null,
   NOTIFICATION_ACK_ALL: null,
+
+  LIGHTBOX_SHOW_IMAGE: null,
+  LIGHTBOX_HIDE: null,
 });
 
 export const NOTIFICATION_ROLES = {
