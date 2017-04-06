@@ -7,7 +7,7 @@ function handleImageLoad(state, { url, width, height }) {
 }
 
 function handleImageLoadFailed(state, { url }) {
- return state.set(url, { errored: true });
+  return state.set(url, { errored: true });
 }
 
 class ImageStore extends MapStore {

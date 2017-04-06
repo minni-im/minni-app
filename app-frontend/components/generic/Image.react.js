@@ -1,52 +1,57 @@
-import React from "react";
+import React, { PropTypes } from "react";
+import ReactDOM from "react-dom";
 import classnames from "classnames";
 import { Container } from "flux/utils";
 
-import ImageActionCreators from "../../actions/ImageActionCreators" ;
+import * as ImageActionCreators from "../../actions/ImageActionCreators";
 import ImageStore from "../../stores/ImageStore";
 
 import { MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT } from "../../Constants";
 
 class ImageContainer extends React.Component {
+  static propTypes = {
+    src: PropTypes.string.isRequired,
+    width: PropTypes.number,
+    height: PropTypes.number,
+    thumbnailWidth: PropTypes.number,
+    thumbnailHeight: PropTypes.number,
+    className: PropTypes.string,
+  };
+
+  static defaultProps = {
+    className: "",
+  };
+
   static getStores() {
-    return [ ImageStore ];
+    return [ImageStore];
   }
 
   static calculateState(prevProps, nextProps) {
     const state = ImageStore.getImage(nextProps.src);
     return {
       animate: false,
-      loaded: state,
-      imageState: state
+      loaded: !!state,
+      imageState: state,
     };
   }
 
-  // updateStaticFrame() {
-  //   if (!this.state.loaded) { return; }
-  //   ImageActionCreators.loadImage(this.props.src).then(({ image, width, height }) => {
-  //     console.log({ image, width, height });
-  //     // let canvas = document.createElement("canvas");
-  //     // canvas.width = width;
-  //     // canvas.height = height;
-  //     // let ctx = canvas.getContext("2d");
-  //     // ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-  //     // console.log(canvas);
-  //     //this.setState({staticFrame: canvas.toDataURL("image/png")});
-  //   });
-  // }
+  constructor(props) {
+    super(props);
+    this.showLightbox = this.showLightbox.bind(this);
+    this.handleMouseEnter = this.handleMouseEnter.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
+  }
 
   componentDidMount() {
+    this.updateStaticFrame();
     if (!this.state.loaded) {
       ImageActionCreators.loadImage(this.props.src);
     }
   }
 
-  // componentDidUpdate() {
-  //   console.log("updated");
-  //   // if (this.isGIF()) {
-  //   //   this.updateStaticFrame();
-  //   // }
-  // }
+  componentDidUpdate() {
+    this.updateStaticFrame();
+  }
 
   getRatio() {
     let { width, height } = this.props;
@@ -74,38 +79,25 @@ class ImageContainer extends React.Component {
     return Math.round(this.props.height * this.getRatio());
   }
 
-  render() {
-    const width = this.props.thumbnailWidth || this.getWidth();
-    const height = this.props.thumbnailHeight || this.getHeight();
-    if (!this.state.loaded) {
-      return <div className="image image--loader" style={{width, height}}></div>;
-    } else {
-      let props = {
-        width,
-        height,
-        src: this.props.src
+  updateStaticFrame() {
+    if (!this.state.loaded) return;
+    let image;
+    if (this.canvas) {
+      const drawImage = () => {
+        this.canvas.getContext("2d").drawImage(image, 0, 0, this.getWidth(), this.getHeight());
       };
-      let classNames = {
-        "image--gif": this.isGIF()
-      };
-
-      if (this.isGIF()) {
-        return <span className="image">
-          <span className="image--gif">&#9658; GIF</span>
-          <img {...props} />
-        </span>;
-      //   props.onMouseEnter = this.handleMouseEnter.bind(this);
-      //   props.onMouseLeave = this.handleMouseLeave.bind(this);
-      //   if (!this.state.animate) {
-      //     return <img className="image image-static" {...props} src={this.state.staticFrame} />;
-      //   }
+      image = new window.Image();
+      image.src = this.props.src;
+      if (image.complete) {
+        drawImage();
+      } else {
+        image.onLoad = drawImage;
       }
-      return <img className={classnames("image", classNames, this.props.className)} {...props} />;
     }
   }
 
   isGIF() {
-    return (/\.gif/i).test(this.props.src);
+    return /\.gif/i.test(this.props.src);
   }
 
   handleMouseEnter() {
@@ -114,6 +106,49 @@ class ImageContainer extends React.Component {
 
   handleMouseLeave() {
     this.setState({ animate: false });
+  }
+
+  showLightbox(event) {
+    if (event.altKey) {
+      return;
+    }
+    ImageActionCreators.showLightbox(event.target.getAttribute("src"));
+  }
+
+  render() {
+    const width = this.props.thumbnailWidth || this.getWidth();
+    const height = this.props.thumbnailHeight || this.getHeight();
+    if (!this.state.loaded) {
+      return <span className="image image--loader" style={{ width, height }} />;
+    }
+    const props = {
+      width,
+      height,
+      src: this.props.src,
+      onClick: this.showLightbox,
+    };
+    const classNames = {
+      "image--gif": this.isGIF(),
+    };
+
+    if (this.isGIF()) {
+      props.onMouseEnter = this.handleMouseEnter;
+      props.onMouseLeave = this.handleMouseLeave;
+      return (
+        <span className="image">
+          <span className="image--gif">► GIF</span>
+          {!this.state.animate &&
+            <canvas
+              ref={(node) => {
+                this.canvas = node;
+              }}
+              {...props}
+            />}
+          {this.state.animate && <img {...props} alt="There should be something here" />}
+        </span>
+      );
+    }
+    return <img className={classnames("image", classNames, this.props.className)} {...props} />;
   }
 }
 
