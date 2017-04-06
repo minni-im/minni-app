@@ -4,7 +4,7 @@ import * as ImageActionCreators from "../../actions/ImageActionCreators";
 import ImageStore from "../../stores/ImageStore";
 
 const { COMPOSER_TEXT } = Constants.PLUGIN_TYPES;
-const REGEX_IMAGE = /\.(?:jpe?g|png|gif|webp|bmp|tiff|svg)$/i;
+const REGEX_IMAGE = /\.(?:jpe?g|png|gif|webp|bmp|tiff|svg)(?:\?[^#]*)?(?:#.*)?$/i;
 
 PluginRegister("ImageExtractor", COMPOSER_TEXT, {
   encodeMessage(message) {
