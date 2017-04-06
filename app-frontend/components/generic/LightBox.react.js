@@ -51,10 +51,10 @@ class Lightbox extends React.Component {
 
     if (height >= maxHeight || width >= maxWidth) {
       if (ratioScreen > ratioImage) {
-        width = maxHeight * width / height;
+        width *= maxHeight / height;
         height = maxHeight;
       } else {
-        height = maxWidth * height / width;
+        height *= maxWidth / width;
         width = maxWidth;
       }
     }

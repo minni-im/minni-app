@@ -17,7 +17,9 @@ function EmbedWrapper(props) {
         className="embed-hide"
         title="Hide this preview (alt+click message to make it appear again)"
         onClick={props.onHidePreview}
-      >&times;</span>
+      >
+        ×
+      </span>
       {props.children}
     </div>
   );
@@ -26,13 +28,12 @@ function EmbedWrapper(props) {
 EmbedWrapper.propTypes = {
   className: React.PropTypes.string,
   children: React.PropTypes.any,
-  onHidePreview: React.PropTypes.func
+  onHidePreview: React.PropTypes.func,
 };
 
 EmbedWrapper.defaultProps = {
-  onHidePreview() {}
+  onHidePreview() {},
 };
-
 
 class OEmbed extends React.Component {
   renderTitle() {
@@ -46,7 +47,7 @@ class OEmbed extends React.Component {
   }
 
   renderAuthor(prefix = "") {
-    if (!this.props.author || this.props.author && !this.props.author.name) {
+    if (!this.props.author || (this.props.author && !this.props.author.name)) {
       return null;
     }
     const { name, url } = this.props.author;
@@ -58,7 +59,7 @@ class OEmbed extends React.Component {
   }
 
   renderProvider() {
-    if (!this.props.provider || this.props.provider && !this.props.provider.name) {
+    if (!this.props.provider || (this.props.provider && !this.props.provider.name)) {
       return null;
     }
     const { name, url } = this.props.provider;
@@ -76,11 +77,7 @@ class OEmbed extends React.Component {
     const { url, width, height } = this.props.thumbnail;
     if (withLink) {
       return (
-        <a
-          href={this.props.url}
-          target="_blank"
-          className="embed--thumbnail"
-        >
+        <a href={this.props.url} target="_blank" className="embed--thumbnail">
           <Image
             src={url}
             width={this.props.width}
@@ -149,11 +146,8 @@ class ImageEmbed extends OEmbed {
   render() {
     const { classNames } = this.props;
     return (
-      <EmbedWrapper
-        className={classnames("message--embed", classNames)}
-        {...this.props}
-      >
-        {this.renderThumbnail(true)}
+      <EmbedWrapper className={classnames("message--embed", classNames)} {...this.props}>
+        {this.renderThumbnail()}
       </EmbedWrapper>
     );
   }
@@ -164,21 +158,14 @@ class BackgroundCoverEmbed extends OEmbed {
     const { url, thumbnail, fallbackCover } = this.props;
     const { url: thumbnailUrl, width } = thumbnail;
     const style = {
-      backgroundImage: `url(${thumbnailUrl})`
+      backgroundImage: `url(${thumbnailUrl})`,
     };
 
     if (fallbackCover) {
       style.backgroundImage += `, url(${fallbackCover})`;
     }
 
-    return (
-      <a
-        href={url}
-        target="_blank"
-        className="embed--thumbnail"
-        style={style}
-      >&nbsp;</a>
-    );
+    return <a href={url} target="_blank" className="embed--thumbnail" style={style}>&nbsp;</a>;
   }
 
   renderAuthor() {
@@ -187,17 +174,19 @@ class BackgroundCoverEmbed extends OEmbed {
 }
 
 BackgroundCoverEmbed.defaultProps = {
-  fallbackCover: false
+  fallbackCover: false,
 };
 
 class TwitterEmbed extends OEmbed {
   renderTitle() {
     const { author, title } = this.props;
     const { name, url } = author;
-    return (<h3>
-      <a href={url} target="_blank">{title}</a>
-      <span className="embed--author">{name}</span>
-    </h3>);
+    return (
+      <h3>
+        <a href={url} target="_blank">{title}</a>
+        <span className="embed--author">{name}</span>
+      </h3>
+    );
   }
 
   renderContent() {
@@ -213,10 +202,7 @@ class TwitterEmbed extends OEmbed {
   render() {
     const { classNames } = this.props;
     return (
-      <EmbedWrapper
-        className={classnames("message--embed", classNames)}
-        {...this.props}
-      >
+      <EmbedWrapper className={classnames("message--embed", classNames)} {...this.props}>
         {this.renderContent()}
         {this.renderProvider()}
       </EmbedWrapper>
@@ -233,7 +219,7 @@ class SpotifyEmbed extends OEmbed {
         target="_blank"
         className="embed--thumbnail"
         style={{
-          backgroundImage: `url(${thumbnail.url})`
+          backgroundImage: `url(${thumbnail.url})`,
         }}
       />
     );
@@ -267,8 +253,12 @@ class VideoEmbed extends ImageEmbed {
   renderThumbnail() {
     return (
       <video
-        ref={(video) => { this.video = video; }}
-        onLoadedMetadata={() => { this.guessSize(); }}
+        ref={(video) => {
+          this.video = video;
+        }}
+        onLoadedMetadata={() => {
+          this.guessSize();
+        }}
         src={this.props.url}
         controls
       />
@@ -280,11 +270,10 @@ class VideoEmbed extends ImageEmbed {
   }
 }
 
-
 export default function Embed(props) {
   const { type } = props;
   const classNames = {
-    [`embed-${type.replace(/\./g, "-")}`]: true
+    [`embed-${type.replace(/\./g, "-")}`]: true,
   };
 
   switch (type) {
@@ -328,5 +317,5 @@ export default function Embed(props) {
 }
 
 Embed.propTypes = {
-  type: React.PropTypes.string
+  type: React.PropTypes.string,
 };
