@@ -8,14 +8,8 @@ export default function UserList(props) {
   return (
     <div className="user-list">
       {props.users.toIndexedSeq().map(user => (
-        <div
-          className="user-info flex-horizontal"
-          key={user.id}
-        >
-          <Avatar
-            className="user-avatar"
-            user={user} withStatus
-          />
+        <div className="user-info flex-horizontal" key={user.id}>
+          <Avatar className="user-avatar" user={user} withStatus showOffline />
           <div className="flex-spacer">
             <div className="user-name" title={user.fullname}>{user.fullname}</div>
             <UserStatus status={user.status} />
@@ -27,5 +21,5 @@ export default function UserList(props) {
 }
 
 UserList.defaultProps = {
-  users: Map()
+  users: Map(),
 };

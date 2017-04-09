@@ -7,12 +7,12 @@ import { AVATAR_SIZES, USER_STATUS } from "../../Constants";
 import UserStatusIcon from "../UserStatusIcon.react";
 
 export default function Avatar(props) {
-  const { user, size, isTyping, withStatus } = props;
+  const { user, size, isTyping, withStatus, showOffline } = props;
   const styles = {};
   const classNames = {
     [`avatar-${size}`.toLowerCase()]: true,
     "avatar--with-initials": !user.picture,
-    "avatar--offline": user.status === USER_STATUS.OFFLINE
+    "avatar--offline": user.status === USER_STATUS.OFFLINE && showOffline,
   };
   if (user.picture) {
     styles.backgroundImage = `url(${user.picture})`;
@@ -36,15 +36,17 @@ Avatar.propTypes = {
     AVATAR_SIZES.SMALL,
     AVATAR_SIZES.MEDIUM,
     AVATAR_SIZES.LARGE,
-    AVATAR_SIZES.XLARGE
+    AVATAR_SIZES.XLARGE,
   ]),
   className: React.PropTypes.string,
   isTyping: React.PropTypes.bool,
-  withStatus: React.PropTypes.bool
+  withStatus: React.PropTypes.bool,
+  showOffline: React.PropTypes.bool,
 };
 
 Avatar.defaultProps = {
   size: AVATAR_SIZES.MEDIUM,
   isTyping: false,
-  withStatus: false
+  withStatus: false,
+  showOffline: false,
 };

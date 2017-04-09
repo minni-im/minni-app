@@ -12,8 +12,8 @@ import SelectedAccountStore from "../../stores/SelectedAccountStore";
 
 class RoomUsersList extends Component {
   static propTypes = {
-    room: PropTypes.instanceOf(Room).isRequired
-  }
+    room: PropTypes.instanceOf(Room).isRequired,
+  };
 
   static getStores() {
     return [TypingStore, UserStore];
@@ -34,13 +34,13 @@ class RoomUsersList extends Component {
       [USER_STATUS.IDLE]: "b",
       [USER_STATUS.DND]: "c",
       [USER_STATUS.AWAY]: "d",
-      [USER_STATUS.OFFLINE]: "z"
+      [USER_STATUS.OFFLINE]: "z",
     };
     users = users.toArray().sort((a, b) => WEIGHT[a.status] > WEIGHT[b.status]);
 
     return {
       users,
-      typingUsers: TypingStore.getTypingUsers(nextRoom.id)
+      typingUsers: TypingStore.getTypingUsers(nextRoom.id),
     };
   }
 
@@ -51,6 +51,7 @@ class RoomUsersList extends Component {
           <Avatar
             key={index}
             withStatus
+            showOffline
             user={user}
             isTyping={this.state.typingUsers.has(user.id)}
           />
