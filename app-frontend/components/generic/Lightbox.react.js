@@ -64,16 +64,17 @@ class Lightbox extends React.Component {
         {this.state.isVisible
           ? <div className="lightbox" onClick={this.onClick}>
             <div className="lightbox-content">
-              <img style={{ height, width }} src={this.state.image} />
+              <img style={{ height, width }} src={this.state.image} alt={this.state.image} />
               <a
                 className="lightbox--open-original"
                 href={this.state.image}
                 target="_blank"
                 rel="noopener noreferrer"
+                title="Open original in a new tab"
                 onClick={event => event.stopPropagation()}
               >
-                  Open original
-                </a>
+                {this.state.image}
+              </a>
             </div>
           </div>
           : null}

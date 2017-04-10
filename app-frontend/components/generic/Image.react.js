@@ -110,7 +110,7 @@ class ImageContainer extends React.Component {
 
   showLightbox(event) {
     if (event.altKey) {
-      return;
+      return; // We just ignore altKey which is used at upper level to hide embeds
     }
     ImageActionCreators.showLightbox(event.target.getAttribute("src"));
   }
