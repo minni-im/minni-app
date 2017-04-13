@@ -18,3 +18,5 @@ yarn-error.log
 *.csr
 ehthumbs.db
 Thumbs.db
+
+*.couch
