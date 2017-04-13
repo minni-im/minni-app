@@ -5,10 +5,8 @@ import AccountHeader from "./AccountHeader.react";
 import AccountRooms from "./AccountRooms.react";
 import { InfoPanelPopover } from "./UserInfoPanel.react";
 
-
 import AccountStore from "../stores/AccountStore";
 import SelectedAccountStore from "../stores/SelectedAccountStore";
-
 
 class Rooms extends React.Component {
   static getStores() {
@@ -18,20 +16,17 @@ class Rooms extends React.Component {
   static calculateState() {
     return {
       accounts: AccountStore.getAccounts(),
-      account: AccountStore.getAccount(SelectedAccountStore.getSlug())
+      account: AccountStore.getAccount(SelectedAccountStore.getSlug()),
     };
   }
 
   render() {
     const { account, accounts } = this.state;
+    const singleAccount = accounts && accounts.size === 1;
     return (
       <header className="flex-vertical">
-        <AccountHeader
-          className="lobby flex-horizontal"
-          account={account}
-          hasLogo={accounts && accounts.size === 1}
-        />
-        {account && <AccountRooms account={account} />}
+        <AccountHeader account={account} hasLogo={singleAccount} />
+        {account && <AccountRooms account={account} withAccountName={singleAccount} />}
         <InfoPanelPopover />
       </header>
     );

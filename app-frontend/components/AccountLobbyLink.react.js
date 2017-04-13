@@ -7,7 +7,6 @@ import { LobbyIcon } from "../utils/IconsUtils";
 import AccountStore from "../stores/AccountStore";
 import SelectedAccountStore from "../stores/SelectedAccountStore";
 
-
 class AccountLobbyLink extends React.Component {
   static getStores() {
     return [SelectedAccountStore, AccountStore];
@@ -15,16 +14,23 @@ class AccountLobbyLink extends React.Component {
 
   static calculateState() {
     return {
-      account: SelectedAccountStore.getAccount()
+      account: SelectedAccountStore.getAccount(),
     };
   }
 
   static propTypes = {
-    className: React.PropTypes.string
-  }
+    className: React.PropTypes.string,
+    withAccountName: React.PropTypes.bool,
+  };
+
+  static defaultProps = {
+    className: "",
+    withAccountName: true,
+  };
 
   render() {
     const { account } = this.state;
+    const { withAccountName } = this.props;
     return (
       <Link
         to={`/chat/${account && account.name}/lobby`}
@@ -34,7 +40,7 @@ class AccountLobbyLink extends React.Component {
         <span className="icon"><LobbyIcon /></span>
         <span className="name">
           Lobby
-          <span> • {account && account.toString()}</span>
+          {withAccountName && <span> • {account && account.toString()}</span>}
         </span>
       </Link>
     );

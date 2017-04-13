@@ -10,14 +10,24 @@
     background-size: 64px 64px;
   }
 
-  h2.account {
-    font-weight: 300;
+  .account {
     padding: 0 20px;
     height: @main-header-height;
-    line-height: @main-header-height;
     text-transform: capitalize;
     background-color: darken(@background-dark, 2%);
     border-bottom: 1px solid @main-account-switcher-background-color;
+
+    h2 {
+      margin-top: 10px;
+      font-weight: 300;
+      .text-overflow;
+    }
+
+    em {
+      font-size: 12px;
+      display: block;
+      .text-overflow;
+    }
   }
 
   .user-info {

@@ -9,7 +9,7 @@ const AccountRecord = Immutable.Record({
   usersId: [],
   adminId: undefined,
   /* UI related properties */
-  active: false
+  active: false,
 });
 
 export default class Account extends AccountRecord {

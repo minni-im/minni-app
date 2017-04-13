@@ -24,26 +24,26 @@ import { RoomIcons } from "../utils/IconsUtils";
 
 class Room extends Component {
   static contextTypes = {
-    router: PropTypes.object
-  }
+    router: PropTypes.object,
+  };
 
   static propTypes = {
     room: PropTypes.instanceOf(RoomModel).isRequired,
     selected: PropTypes.bool,
     unreadCount: PropTypes.number,
-    onLeave: PropTypes.func
-  }
+    onLeave: PropTypes.func,
+  };
 
   shouldComponentUpdate(nextProps) {
-    return this.props.room !== nextProps.room ||
+    return (
+      this.props.room !== nextProps.room ||
       this.props.selected !== nextProps.selected ||
-      this.props.unreadCount !== nextProps.unreadCount;
+      this.props.unreadCount !== nextProps.unreadCount
+    );
   }
 
   onClick(event, slug) {
-    const multiRoom = isOSX ?
-      event.metaKey && event.shiftKey :
-      event.ctrlKey && event.shiftKey;
+    const multiRoom = isOSX ? event.metaKey && event.shiftKey : event.ctrlKey && event.shiftKey;
     if (multiRoom) {
       event.preventDefault();
       const slugs = SelectedRoomStore.getRooms().add(slug).toArray();
@@ -63,25 +63,19 @@ class Room extends Component {
         className={classNames("room", "flex-horizontal", {
           "room--starred": starred,
           "room--selected": selected,
-          "room--unread": unreadCount > 0
+          "room--unread": unreadCount > 0,
         })}
         onClick={event => this.onClick(event, slug)}
         to={`/chat/${accountSlug}/messages/${slug}`}
       >
         <span className="icon">
-          {room.private ?
-            <RoomIcons.RoomPrivateIcon /> :
-              <RoomIcons.RoomPublicIcon />
-          }
+          {room.private ? <RoomIcons.RoomPrivateIcon /> : <RoomIcons.RoomPublicIcon />}
         </span>
         <span className="name">{name}</span>
         {unreadCount > 0 ? <span className="unread">{unreadCount}</span> : false}
-        <span
-          rel="button"
-          className="quit"
-          title="Leave this room"
-          onClick={this.props.onLeave}
-        >×</span>
+        <span rel="button" className="quit" title="Leave this room" onClick={this.props.onLeave}>
+          ×
+        </span>
       </Link>
     );
   }
@@ -89,30 +83,30 @@ class Room extends Component {
 
 class AccountRooms extends Component {
   static getStores() {
-    return [
-      AccountRoomStore,
-      ConnectedRoomStore,
-      SelectedRoomStore,
-      UnreadMessageStore
-    ];
+    return [AccountRoomStore, ConnectedRoomStore, SelectedRoomStore, UnreadMessageStore];
   }
 
   static calculateState(prevState, { account }) {
     return {
       rooms: ConnectedRoomStore.getRooms(account && account.id) || [],
-      selectedRooms: SelectedRoomStore.getRooms()
+      selectedRooms: SelectedRoomStore.getRooms(),
     };
   }
 
   static propTypes = {
-    account: PropTypes.instanceOf(AccountModel).isRequired
-  }
+    account: PropTypes.instanceOf(AccountModel).isRequired,
+    withAccountName: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    withAccountName: true,
+  };
 
   componentWillReceiveProps(nextProps) {
     if (this.props.account !== nextProps.account) {
       this.setState({
         rooms: AccountRoomStore.getRooms(nextProps.account.id),
-        selectedRooms: SelectedRoomStore.getRooms()
+        selectedRooms: SelectedRoomStore.getRooms(),
       });
     }
   }
@@ -124,7 +118,7 @@ class AccountRooms extends Component {
 
   render() {
     const { rooms, selectedRooms } = this.state;
-    const { account } = this.props;
+    const { account, withAccountName } = this.props;
     const roomList = rooms
       .sortBy(({ starred, name }) => (starred ? `a-${name}` : `z-${name}`))
       .map(room => (
@@ -139,7 +133,7 @@ class AccountRooms extends Component {
       .toArray();
     return (
       <nav className="flex-vertical flex-spacer">
-        <AccountLobbyLink className="lobby flex-horizontal" />
+        <AccountLobbyLink className="lobby flex-horizontal" withAccountName={withAccountName} />
         <a className="separator">{rooms.size === 0 ? "No connected rooms" : "Rooms"}</a>
         {roomList}
       </nav>
