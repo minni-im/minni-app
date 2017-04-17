@@ -1,18 +1,26 @@
 kbd {
+  @color: darken(@gray-light, 8%);
   display: inline-block;
   background-color: @background-light;
-  color: @gray-light;
-  border: 1px solid darken(@gray-lighter, 8%);
+  color: @color;
+  border: 1px solid @color;
   font-family: Menlo, Monaco, Consolas;
   border-radius: 3px;
   min-width: 26px;
   text-align: center;
-  text-transform: lowercase;
+  text-transform: uppercase;
   font-size: 1.5em;
+  line-height: 18px;
   vertical-align: middle;
+  box-shadow: inset 0 -4px #c8c8c8;
+  padding-bottom: 6px;
+
+  cursor: default;
 
   &.text {
     font-size: 12px;
+    line-height: 14px;
+    padding: 4px 6px;
   }
 }
 
