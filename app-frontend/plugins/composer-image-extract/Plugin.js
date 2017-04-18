@@ -27,6 +27,7 @@ PluginRegister("ImageExtractor", COMPOSER_TEXT, {
           image.thumbnail = {
             url: image.url,
           };
+          delete image.image;
           return image;
         });
       }
