@@ -1,4 +1,4 @@
-// We import it here so it is loaded. Store has public API and thus would never
+// We import it here so it is loaded. Store has no public API and thus would never
 // be loaded by a component.
 import "./PresenceStore";
 
@@ -54,13 +54,12 @@ function handleProfileUpdate(state, { user }) {
   return handleUserAdd(state, {
     user: {
       ...user,
-      status: this.getStatus(user.id)
-    }
+      status: this.getStatus(user.id),
+    },
   });
 }
 
 class UserStore extends MapStore {
-
   initialize() {
     this.addAction(ActionTypes.CONNECTION_OPEN, handleConnectionOpen);
     this.addAction(ActionTypes.LOAD_USER_SUCCESS, handleUserAdd);
@@ -91,9 +90,7 @@ class UserStore extends MapStore {
   }
 
   getAll() {
-    return this.getState()
-      .filter(user => user.id !== connectedUserId)
-      .toArray();
+    return this.getState().filter(user => user.id !== connectedUserId).toArray();
   }
 }
 
