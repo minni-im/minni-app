@@ -28,12 +28,12 @@ function matchAsText(simpleRule) {
     parse(capture) {
       return {
         type: "text",
-        content: capture[0]
+        content: capture[0],
       };
     },
     text(node) {
       return node.content;
-    }
+    },
   };
 }
 
@@ -50,8 +50,7 @@ const ENCODING_RULES = {
         if (match) {
           return state.rooms
             .filter(({ slug }) => slug === match[1])
-            .map(({ id }) => [match[0], id])
-            [0];
+            .map(({ id }) => [match[0], id])[0];
         }
       }
       return null;
@@ -59,12 +58,12 @@ const ENCODING_RULES = {
     parse(capture) {
       return {
         type: "room",
-        content: `<#${capture[1]}>`
+        content: `<#${capture[1]}>`,
       };
     },
     text(node) {
       return node.content;
-    }
+    },
   },
   mention: {
     order: DEFAULT_RULES.mention.order,
@@ -74,8 +73,7 @@ const ENCODING_RULES = {
         if (match) {
           return state.users
             .filter(({ nickname }) => nickname === match[1])
-            .map(({ id }) => [match[0], id])
-            [0];
+            .map(({ id }) => [match[0], id])[0];
         }
       }
       return null;
@@ -83,19 +81,19 @@ const ENCODING_RULES = {
     parse(capture) {
       return {
         type: "mention",
-        content: `<@${capture[1]}>`
+        content: `<@${capture[1]}>`,
       };
     },
     text(node) {
       return node.content;
-    }
+    },
   },
   text: {
     ...DEFAULT_TEXT_RULE,
     text(node) {
       return node.content;
-    }
-  }
+    },
+  },
 };
 
 // Generate proper rule's order index based
@@ -121,33 +119,34 @@ export function encode(text) {
     meta: {},
     account,
     users,
-    rooms
+    rooms,
   };
 
   const parser = SimpleMarkdown.parserFor(ENCODING_RULES);
   const textFor = SimpleMarkdown.htmlFor(SimpleMarkdown.ruleOutput(ENCODING_RULES, "text"));
   const parsed = {
-    content: textFor(parser(text, state))
+    content: textFor(parser(text, state)),
   };
   return parsed;
 }
 
 // Used when editing a message to revert private objects to @mention and #room
 export function decode(text) {
-  return text.replace(/<@([a-zA-Z0-9-]{32})>/g, (match, userId) => {
-    const user = UserStore.getUser(userId);
-    return user == null ? match : `@${user.nickname}`;
-  }).replace(/<#([a-zA-Z0-9-]{32})>/g, (match, roomId) => {
-    const room = RoomStore.get(roomId);
-    return room == null ? match : `#${room.slug}`;
-  });
+  return text
+    .replace(/<@([a-zA-Z0-9-]{32})>/g, (match, userId) => {
+      const user = UserStore.getUser(userId);
+      return user == null ? match : `@${user.nickname}`;
+    })
+    .replace(/<#([a-zA-Z0-9-]{32})>/g, (match, roomId) => {
+      const room = RoomStore.get(roomId);
+      return room == null ? match : `#${room.slug}`;
+    });
 }
 
 export function createMessage(roomId, text) {
-  const COMPOSER_TEXT_PLUGINS = PluginsStore.getPlugins(
-    PLUGIN_TYPES.COMPOSER_TEXT
-  ).map(plugin => plugin.encodeMessage);
-
+  const COMPOSER_TEXT_PLUGINS = PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_TEXT).map(
+    plugin => plugin.encodeMessage
+  );
 
   const message = {
     id: createNonce().toString(),
@@ -155,7 +154,7 @@ export function createMessage(roomId, text) {
     content: encode(text).content,
     type: "chat",
     accountId: SelectedAccountStore.getAccount().id,
-    userId: UserStore.getConnectedUser().id
+    userId: UserStore.getConnectedUser().id,
   };
 
   return COMPOSER_TEXT_PLUGINS.reduce(
@@ -172,21 +171,18 @@ export function createSystemMessage(roomId, content, subType) {
     type: "system",
     subType,
     accountId: SelectedAccountStore.getAccount().id,
-    userId: UserStore.getConnectedUser().id
+    userId: UserStore.getConnectedUser().id,
   };
 }
 
 export function receiveMessage(roomId, message, optimistic) {
-  const MESSAGE_PLUGINS = PluginsStore.getPlugins(
-    PLUGIN_TYPES.MESSAGE
-  ).map(plugin => plugin.receiveMessage.bind(plugin, decode(message.content)));
+  const MESSAGE_PLUGINS = PluginsStore.getPlugins(PLUGIN_TYPES.MESSAGE).map(plugin =>
+    plugin.receiveMessage.bind(plugin, decode(message.content))
+  );
 
   message = Promise.resolve(message);
   if (optimistic) {
     return message;
   }
-  return MESSAGE_PLUGINS.reduce(
-    (onGoing, processor) => onGoing.then(processor),
-    message
-  );
+  return MESSAGE_PLUGINS.reduce((onGoing, processor) => onGoing.then(processor), message);
 }

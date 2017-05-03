@@ -11,13 +11,14 @@ export default class Base {
 
   parse(capture) {
     return {
-      url: capture[0]
+      url: capture[0],
     };
   }
 
   extractData(data = {}, element) {
     // default implementation supports only oEmbed endpoints
-    return [{
+    return [
+      {
         type: this.type || data.type,
       },
       this.extractTitle(data, element),
@@ -28,10 +29,8 @@ export default class Base {
       this.extractAuthor(data, element),
       this.extractWidth(data, element),
       this.extractHeight(data, element),
-      this.extractMeta(data, element)
-    ].reduce((ongoing, data) => {
-      return Object.assign(ongoing, data);
-    }, {});
+      this.extractMeta(data, element),
+    ].reduce((ongoing, data) => Object.assign(ongoing, data), {});
   }
 
   extractTitle(data, element) {
@@ -39,13 +38,11 @@ export default class Base {
   }
 
   extractDescription(data, element) {
-    return data.description ?
-      { description: data.description } :
-      { };
+    return data.description ? { description: data.description } : {};
   }
 
   extractHtml(data, element) {
-    return { };
+    return {};
   }
 
   extractThumbnail(data, element) {
@@ -53,17 +50,17 @@ export default class Base {
       thumbnail: {
         width: data.thumbnail_width,
         height: data.thumbnail_height,
-        url: data.thumbnail_url
-      }
+        url: data.thumbnail_url,
+      },
     };
   }
 
   extractAuthor(data, element) {
     let extractedData = {};
-    if (data.author_name &&  data.author_url) {
+    if (data.author_name && data.author_url) {
       extractedData.author = {
         name: data.author_name,
-        url: data.author_url
+        url: data.author_url,
       };
     }
     return extractedData;
@@ -74,28 +71,24 @@ export default class Base {
     if (data.provider_name && data.provider_url) {
       extractedData.provider = {
         name: data.provider_name,
-        url: data.provider_url
-      }
+        url: data.provider_url,
+      };
     }
     return extractedData;
   }
 
   extractWidth(data, element) {
     const condition = data.width && data.width != null;
-    return condition ?
-      { width: data.width } :
-      { };
+    return condition ? { width: data.width } : {};
   }
 
   extractHeight(data, element) {
     const condition = data.height && data.height != null;
-    return condition ?
-      { height: data.height } :
-      { };
+    return condition ? { height: data.height } : {};
   }
 
   extractMeta(data, element) {
-    return { };
+    return {};
   }
 
   process(element, options = {}) {
@@ -103,20 +96,18 @@ export default class Base {
     const apiUrl = this.endpointUrl(element);
     return new Promise((resolve) => {
       fetch(apiUrl, options)
-        .then(res => {
+        .then((res) => {
           if (res.status !== 200) {
             return resolve(false);
           }
           return res.json();
         })
-        .then(data => {
-          return this.extractData(data, element);
-        })
-        .then(embed => {
+        .then(data => this.extractData(data, element))
+        .then((embed) => {
           embed.url = element.url;
           if (!embed.provider) {
             embed.provider = {
-              name: this.name
+              name: this.name,
             };
           }
 
@@ -124,7 +115,8 @@ export default class Base {
             embed.type = this.type;
           }
           return resolve(embed);
-        }).catch(ex => {
+        })
+        .catch((ex) => {
           console.error(ex);
           return resolve(false);
         });
@@ -132,16 +124,11 @@ export default class Base {
   }
 }
 
-
-function empty() {
-  return {};
-}
-
 export class OpenGraph extends Base {
   parse(capture) {
     return {
-      url: capture[0]
-    }
+      url: capture[0],
+    };
   }
 
   endpointUrl({ url }) {
@@ -159,8 +146,8 @@ export class OpenGraph extends Base {
   extractProvider({ openGraph }) {
     let provider = {
       provider: {
-        name: openGraph.site_name
-      }
+        name: openGraph.site_name,
+      },
     };
 
     if (this.url) {
@@ -172,8 +159,8 @@ export class OpenGraph extends Base {
   extractThumbnail({ openGraph }) {
     return {
       thumbnail: {
-        url: openGraph.image
-      }
-    }
+        url: openGraph.image,
+      },
+    };
   }
 }
