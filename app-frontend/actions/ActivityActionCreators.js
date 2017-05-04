@@ -9,7 +9,7 @@ export function setStatus(status) {
     dispatchAsync({
       type: ActionTypes.SET_USER_STATUS,
       status,
-      oldStatus
+      oldStatus,
     });
   }
 }
@@ -18,7 +18,7 @@ export function updateStatus(userId, status) {
   dispatch({
     type: ActionTypes.UPDATE_USER_STATUS,
     userId,
-    status
+    status,
   });
 }
 
@@ -30,7 +30,7 @@ export function forceAway() {
   dispatchAsync({
     type: ActionTypes.SET_USER_STATUS,
     status: USER_STATUS.AWAY,
-    force: true
+    force: true,
   });
 }
 
@@ -38,6 +38,6 @@ export function forceDnd() {
   dispatchAsync({
     type: ActionTypes.SET_USER_STATUS,
     status: USER_STATUS.DND,
-    force: true
+    force: true,
   });
 }

@@ -1,76 +1,58 @@
+import Immutable from "immutable";
+
 import Dispatcher from "../Dispatcher";
-import { MapStore, withNoMutations } from "../libs/Flux";
-import { ActionTypes, USER_STATUS, IDLE_TIMEOUT, AWAY_TIMEOUT } from "../Constants";
+import { MapStore } from "../libs/Flux";
+import { ActionTypes } from "../Constants";
 
 import * as ActivityActionCreators from "../actions/ActivityActionCreators";
 
-import ConnectionStore from "./ConnectionStore";
-import UserStore from "./UserStore";
+import IdleStore from "./IdleStore";
+import AwayStore from "./AwayStore";
 
 import Logger from "../libs/Logger";
+
 const logger = Logger.create("PresenceStore");
 
-let idleTimeoutID;
-let awayTimeoutID;
-let autoStatus = false;
-
-function cancelTimers() {
-  clearTimeout(idleTimeoutID);
-  clearTimeout(awayTimeoutID);
-  if (!autoStatus) {
-    return;
+function handleStatusUpdate(state, { status, force }) {
+  if (force === true) {
+    logger.info(`Activating forced status: ${status}`);
   }
-  ActivityActionCreators.setOnline();
+  return state.set("forcedStatus", force === true);
 }
 
-function activateAwayTimer() {
-  logger.info("Activating AWAY timer");
-  awayTimeoutID = setTimeout(() => {
-    ActivityActionCreators.setAway();
-  }, AWAY_TIMEOUT);
-  ActivityActionCreators.setIdle();
-}
-
-function activateIdleTimer() {
-  logger.info("Activating IDLE timer");
-  idleTimeoutID = setTimeout(activateAwayTimer, IDLE_TIMEOUT);
-}
-
-function handleConnectionOpen() {
-  autoStatus = true;
-  cancelTimers();
-  window.addEventListener("click", cancelTimers, true);
-}
-
-function handleConnectionLost() {
-  autoStatus = false;
-  cancelTimers();
-  window.removeEventListener("click", cancelTimers);
-}
-
-function handleUserStatus({ status, force }) {
-  if (force) {
-    autoStatus = false;
-    cancelTimers();
-  } else if (status === USER_STATUS.ONLINE) {
-    autoStatus = true;
-    activateIdleTimer();
+function handleWindowFocus(state, { focused }) {
+  if (focused && state.get("forcedStatus") === false) {
+    ActivityActionCreators.setOnline();
   }
+  return state;
 }
 
-function handleWindowFocus({ focused }) {
-  if (focused) {
-    cancelTimers();
+function handleActivateOnline(state) {
+  if (state.get("forcedStatus") === false) {
+    ActivityActionCreators.setOnline();
   }
+  return state;
 }
 
 class PresenceStore extends MapStore {
   initialize() {
-    this.waitFor(ConnectionStore);
-    this.addAction(ActionTypes.CONNECTION_OPEN, withNoMutations(handleConnectionOpen));
-    this.addAction(ActionTypes.CONNECTION_LOST, withNoMutations(handleConnectionLost));
-    this.addAction(ActionTypes.SET_USER_STATUS, withNoMutations(handleUserStatus));
-    this.addAction(ActionTypes.WINDOW_FOCUS, withNoMutations(handleWindowFocus));
+    this.waitFor(IdleStore, AwayStore);
+    this.addAction(ActionTypes.SET_USER_STATUS, handleStatusUpdate);
+    this.addAction(ActionTypes.WINDOW_FOCUS, handleWindowFocus);
+    this.addAction(
+      ActionTypes.TYPING_START,
+      ActionTypes.ACCOUNT_SELECT,
+      ActionTypes.ROOM_SELECT,
+      handleActivateOnline
+    );
+  }
+
+  getInitialState() {
+    return Immutable.fromJS({ forcedStatus: false });
+  }
+
+  get isForcedStatus() {
+    return this.getState().get("forcedStatus");
   }
 }
 

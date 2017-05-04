@@ -179,8 +179,8 @@ export const USER_STATUS_TEXT = {
   [USER_STATUS.DND]: "do not disturb",
 };
 
-export const IDLE_TIMEOUT = 2 * 60 * 1000; // 2 minutes
-export const AWAY_TIMEOUT = 5 * 60 * 1000; // 5 minutes after IDLE is fired
+export const IDLE_TIMEOUT = (__DEV__ ? 0.5 : 2) * 60 * 1000; // 2 minutes
+export const AWAY_TIMEOUT = (__DEV__ ? 0.5 : 5) * 60 * 1000; // 5 minutes after IDLE is fired
 
 export const TYPING_TIMEOUT = 1500;
 
