@@ -22,7 +22,7 @@ module.exports = {
       ),
   },
   output: {
-    path: "./dist/public/js",
+    path: path.join(__dirname, "dist", "public", "js"),
     filename: RELEASE ? "[name]-bundle.[chunkhash:8].min.js" : "[name]-bundle.js",
     publicPath: "/",
     pathinfo: !RELEASE,
@@ -73,7 +73,6 @@ module.exports = {
       ? [
         new ManifestPlugin(),
         new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin({
           compressor: {
             screw_ie8: true,

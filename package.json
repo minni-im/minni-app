@@ -59,14 +59,14 @@
     "less-plugin-clean-css": "^1.5.1",
     "react-svg-loader": "1.0.1",
     "run-sequence": "^1.1.2",
-    "webpack": "2.2.0",
+    "webpack": "^2.4.1",
     "webpack-manifest-plugin": "^1.1.0"
   },
   "dependencies": {
     "@minni-im/emojify": "^1.0.0",
     "@minni-im/minni-auth-github": "^1.0.0",
-    "babel-register": "^6.22.0",
     "babel-plugin-transform-builtin-extend": "^1.1.0",
+    "babel-register": "^6.22.0",
     "bcryptjs": "^2.4.0",
     "body-parser": "^1.16.0",
     "classnames": "^2.1.5",
