@@ -1,7 +1,7 @@
 import Immutable from "immutable";
 
 import Dispatcher from "../Dispatcher";
-import { MapStore, withNoMutations } from "../libs/Flux";
+import { MapStore } from "../libs/Flux";
 import { ActionTypes } from "../Constants";
 
 import * as ActivityActionCreators from "../actions/ActivityActionCreators";
@@ -9,7 +9,14 @@ import * as ActivityActionCreators from "../actions/ActivityActionCreators";
 import IdleStore from "./IdleStore";
 import AwayStore from "./AwayStore";
 
-function handleStatusUpdate(state, { force }) {
+import Logger from "../libs/Logger";
+
+const logger = Logger.create("PresenceStore");
+
+function handleStatusUpdate(state, { status, force }) {
+  if (force === true) {
+    logger.info(`Activating forced status: ${status}`);
+  }
   return state.set("forcedStatus", force === true);
 }
 
@@ -20,8 +27,11 @@ function handleWindowFocus(state, { focused }) {
   return state;
 }
 
-function handleTypingStart() {
-  ActivityActionCreators.setOnline();
+function handleActivateOnline(state) {
+  if (state.get("forcedStatus") === false) {
+    ActivityActionCreators.setOnline();
+  }
+  return state;
 }
 
 class PresenceStore extends MapStore {
@@ -29,14 +39,19 @@ class PresenceStore extends MapStore {
     this.waitFor(IdleStore, AwayStore);
     this.addAction(ActionTypes.SET_USER_STATUS, handleStatusUpdate);
     this.addAction(ActionTypes.WINDOW_FOCUS, handleWindowFocus);
-    this.addAction(ActionTypes.TYPING_START, withNoMutations(handleTypingStart));
+    this.addAction(
+      ActionTypes.TYPING_START,
+      ActionTypes.ACCOUNT_SELECT,
+      ActionTypes.ROOM_SELECT,
+      handleActivateOnline
+    );
   }
 
   getInitialState() {
     return Immutable.fromJS({ forcedStatus: false });
   }
 
-  isForcedStatus() {
+  get isForcedStatus() {
     return this.getState().get("forcedStatus");
   }
 }

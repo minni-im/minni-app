@@ -4,6 +4,10 @@ import { ActionTypes, USER_STATUS, IDLE_TIMEOUT } from "../Constants";
 
 import * as ActivityActionCreators from "../actions/ActivityActionCreators";
 
+import Logger from "../libs/Logger";
+
+const logger = Logger.create("IdleStore");
+
 function handleConnectionOpen() {
   // Let's start the timer
   this.startIdleTimeout();
@@ -15,15 +19,24 @@ function handleConnectionLost() {
 }
 
 function handleActivateIdle(state, { status, force }) {
-  if (!force && status === USER_STATUS.ONLINE) {
+  const isIdle = status === USER_STATUS.IDLE;
+  if (force) {
+    this.cancelIdleTimeout();
+    return isIdle;
+  } else if (status === USER_STATUS.ONLINE) {
     this.startIdleTimeout();
   }
-  return status === USER_STATUS.IDLE;
+
+  return isIdle;
 }
 
-function handleWindowFocus(state, { focused }) {
+function handleWindowFocus(state, { focused, userForcedStatus }) {
   if (focused) {
-    this.cancelIdleTimeout();
+    if (!userForcedStatus) {
+      this.startIdleTimeout();
+    } else {
+      this.cancelIdleTimeout();
+    }
     return false;
   }
   return state;
@@ -42,6 +55,8 @@ class IdleStore extends MapStore {
   cancelIdleTimeout() {
     if (this.idleTimeoutID) {
       window.clearTimeout(this.idleTimeoutID);
+      this.idleTimeoutID = false;
+      logger.info("Cleared idleTimeoutID");
     }
   }
 
@@ -50,13 +65,14 @@ class IdleStore extends MapStore {
     this.idleTimeoutID = window.setTimeout(() => {
       ActivityActionCreators.setIdle();
     }, IDLE_TIMEOUT);
+    logger.info("Activated idleTimeoutID");
   }
 
   getInitialState() {
     return false;
   }
 
-  isIdle() {
+  get isIdle() {
     return this.getState();
   }
 }

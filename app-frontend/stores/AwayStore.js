@@ -4,6 +4,10 @@ import { ActionTypes, USER_STATUS, AWAY_TIMEOUT } from "../Constants";
 
 import * as ActivityActionCreators from "../actions/ActivityActionCreators";
 
+import Logger from "../libs/Logger";
+
+const logger = Logger.create("AwayStore");
+
 function handleConnectionLost() {
   this.cancelAwayTimeout();
 }
@@ -37,6 +41,8 @@ class AwayStore extends MapStore {
   cancelAwayTimeout() {
     if (this.awayTimeoutID) {
       window.clearTimeout(this.awayTimeoutID);
+      this.awayTimeoutID = false;
+      logger.info("Cleared awayTimeoutID");
     }
   }
 
@@ -44,13 +50,14 @@ class AwayStore extends MapStore {
     this.awayTimeoutID = window.setTimeout(() => {
       ActivityActionCreators.setAway();
     }, AWAY_TIMEOUT);
+    logger.info("Activated awayTimeoutID");
   }
 
   getInitialState() {
     return false;
   }
 
-  isAway() {
+  get isAway() {
     return this.getState();
   }
 }
