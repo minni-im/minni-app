@@ -21,13 +21,13 @@
 
 .avatar {
   position: relative;
-  .square(40px);
-  background-size: 40px;
+  .square(@avatar-medium-size);
+  background-size: @avatar-medium-size;
   border-radius: 50%;
   background-color: darken(@gray-lighter, 5%);
   color: @gray-light;
   font-size: 20px;
-  line-height: 40px;
+  line-height: @avatar-medium-size;
 
   &.avatar--with-initials {
     &:after {
@@ -50,17 +50,19 @@
 }
 
 .avatar-small {
-  .square(20px);
-  background-size: 20px;
+  @size: @avatar-medium-size / 2;
+  .square(@size);
+  background-size: @size;
   font-size: 9px;
-  line-height: 20px
+  line-height: @size
 }
 
 .avatar-large {
-  .square(80px);
-  background-size: 80px;
+  @size: @avatar-medium-size * 2;
+  .square(@size);
+  background-size: @size;
   font-size: 36px;
-  line-height: 80px;
+  line-height: @size;
 }
 
 .avatar-xlarge {
