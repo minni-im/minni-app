@@ -68,6 +68,8 @@ module.exports = {
       chunks: ["plugins"],
       minChunks: Infinity,
     }),
+    // Ignore all locale files of moment.js
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
   ].concat(
     RELEASE
       ? [
