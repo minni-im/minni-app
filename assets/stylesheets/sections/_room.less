@@ -156,9 +156,13 @@
           background-repeat: no-repeat;
           background-position: 50% 50%;
 
+          filter: grayscale(100%);
+
           &.suggestion-item--active {
             box-shadow: 4px 4px 0 @electric-blue inset,
               -4px -4px 0 @electric-blue inset;
+            flex: 3;
+            filter: none;
           }
         }
       }
