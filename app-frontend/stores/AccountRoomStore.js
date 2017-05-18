@@ -6,8 +6,7 @@ import AccountStore from "./AccountStore";
 import RoomStore from "./RoomStore";
 
 function syncFromRoomChange() {
-  return RoomStore.getState()
-    .groupBy(room => room.accountId);
+  return RoomStore.getState().groupBy(room => room.accountId);
 }
 
 class AccountRoomStore extends MapStore {
@@ -15,11 +14,8 @@ class AccountRoomStore extends MapStore {
     this.syncWith([AccountStore, RoomStore], syncFromRoomChange);
   }
 
-  getRooms(accountId) {
-    return this.getState()
-      .get(accountId, Immutable.Set())
-      .toSet()
-      .sortBy(room => room.name);
+  getRooms(accountId, sorter = room => room.name) {
+    return this.getState().get(accountId, Immutable.Set()).toSet().sortBy(sorter);
   }
 
   getRoomsSlug(accountId) {
