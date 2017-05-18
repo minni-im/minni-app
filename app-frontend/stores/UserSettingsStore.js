@@ -19,19 +19,19 @@ const DEFAULT_SETTINGS = {
       image_preview: true,
       links_preview: true,
       emphasis: true,
-      enter: true
+      enter: true,
     },
     notification: {
       sound: true,
       mentions: true,
-      sound_volume: 50
-    }
+      sound_volume: 50,
+    },
   },
   plugins: {},
   starred: {
     rooms: [],
-    messages: []
-  }
+    messages: [],
+  },
 };
 
 const defaultValues = Immutable.fromJS(DEFAULT_SETTINGS);
@@ -60,7 +60,7 @@ class UserSettingsStore extends MapStore {
   getInitialState() {
     return Immutable.fromJS({
       saveOnGoing: false,
-      data: {}
+      data: {},
     });
   }
 
@@ -102,7 +102,7 @@ class UserSettingsStore extends MapStore {
     const name = this.getValue("global.emojis_type");
     return {
       name,
-      type: { apple: "png", emojione: "svg", twitter: "svg" }[name]
+      type: { apple: "png", /* emojione: "svg",*/ twitter: "svg" }[name],
     };
   }
 

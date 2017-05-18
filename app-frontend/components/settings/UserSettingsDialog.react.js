@@ -18,12 +18,11 @@ import { camelize } from "../../utils/TextUtils";
 import Logger from "../../libs/Logger";
 const logger = Logger.create("UserSettingsDialog");
 
-
 export default class UserSettingsDialog extends React.Component {
   static propTypes = {
     user: PropTypes.instanceOf(User),
-    onClose: PropTypes.func
-  }
+    onClose: PropTypes.func,
+  };
 
   constructor(props) {
     super(props);
@@ -34,8 +33,8 @@ export default class UserSettingsDialog extends React.Component {
   }
 
   state = {
-    selectedTab: 0
-  }
+    selectedTab: 0,
+  };
 
   componentDidMount() {
     this.newSettings = Immutable.Map();
@@ -45,7 +44,7 @@ export default class UserSettingsDialog extends React.Component {
   onCloseDialog(action) {
     const payload = {
       userInfo: false,
-      settings: false
+      settings: false,
     };
     if (!this.newSettings.isEmpty()) {
       payload.settings = this.newSettings.toJS();
@@ -87,7 +86,12 @@ export default class UserSettingsDialog extends React.Component {
           title="Allows emoticons replacement in typed text."
           setting="global.emoticons"
           onChange={this.onSettingChange}
-        >We support standard emoticons &amp; emojis. Hints available <a href="http://www.emoji-cheat-sheet.com/" target="_blank">here</a>.</SettingItem>
+        >
+          We support standard emoticons & emojis. Hints available
+          {" "}
+          <a href="http://www.emoji-cheat-sheet.com/" target="_blank">here</a>
+          .
+        </SettingItem>
 
         <SettingItem
           title="Type of emojis."
@@ -95,14 +99,14 @@ export default class UserSettingsDialog extends React.Component {
           setting="global.emojis_type"
           choices={[
             { label: "Apple", value: "apple" },
-            { label: "Emojione", value: "emojione" },
-            { label: "Twitter", value: "twitter" }
+            // { label: "Emojione", value: "emojione" },
+            { label: "Twitter", value: "twitter" },
           ]}
           onChange={this.onSettingChange}
         />
       </section>,
       <section>
-        <h3>Text &amp; images</h3>
+        <h3>Text & images</h3>
         <SettingItem
           setting="global.rooms.image_preview"
           title="Show inline preview of images."
@@ -124,7 +128,7 @@ export default class UserSettingsDialog extends React.Component {
           desc="Use a different background color for all your messages."
           onChange={this.onSettingChange}
         />
-      </section>
+      </section>,
     ];
   }
 
@@ -154,7 +158,7 @@ export default class UserSettingsDialog extends React.Component {
           ]}
           onChange={this.onSettingChange}
         />
-      </section>
+      </section>,
     ];
   }
 
@@ -162,20 +166,17 @@ export default class UserSettingsDialog extends React.Component {
     return [
       <section>
         <h3>One click login services</h3>
-        <p>One-click Login is not yet configurable in the chat application.
+        <p>
+          One-click Login is not yet configurable in the chat application.
           You can modify it on your profile page
-          <a href="/profile" target="_blank">here</a></p>
-      </section>
+          <a href="/profile" target="_blank">here</a>
+        </p>
+      </section>,
     ];
   }
 
   renderProfile() {
-    const {
-      firstname,
-      lastname,
-      nickname,
-      email,
-      gravatarEmail } = this.props.user;
+    const { firstname, lastname, nickname, email, gravatarEmail } = this.props.user;
 
     return (
       <TabPanel label="Profile">
@@ -246,7 +247,13 @@ export default class UserSettingsDialog extends React.Component {
           <section className="user-profile--avatar flex-spacer">
             <h4>Avatar</h4>
             <Avatar user={this.props.user} size={Avatar.SIZE.XLARGE} />
-            <p>Avatars are provided by <a href="https://gravatar.com" target="_blank">gravatar</a> services. You can change yours on their website.</p>
+            <p>
+              Avatars are provided by
+              {" "}
+              <a href="https://gravatar.com" target="_blank">gravatar</a>
+              {" "}
+              services. You can change yours on their website.
+            </p>
           </section>
         </div>
       </TabPanel>
@@ -254,14 +261,12 @@ export default class UserSettingsDialog extends React.Component {
   }
 
   render() {
-    const buttons = [
-      { action: "save", label: "Save" }
-    ];
+    const buttons = [{ action: "save", label: "Save" }];
 
     const categories = {
       general: [].concat(this.generateGeneral()),
       notifications: [].concat(this.generateNotifications()),
-      connections: [].concat(this.generateConnections())
+      connections: [].concat(this.generateConnections()),
     };
 
     PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_TEXT | PLUGIN_TYPES.MESSAGE)
@@ -277,12 +282,12 @@ export default class UserSettingsDialog extends React.Component {
       });
 
     const tabs = Object.keys(categories).map((category) => {
-      const contentSections = categories[category]
-        .map((Section, index) => (
-          React.isValidElement(Section) ?
-            React.cloneElement(Section, { key: index }) :
-            <Section key={index} onChange={this.onSettingChange} />
-        ));
+      const contentSections = categories[category].map(
+        (Section, index) =>
+          React.isValidElement(Section)
+            ? React.cloneElement(Section, { key: index })
+            : <Section key={index} onChange={this.onSettingChange} />
+      );
       return (
         <TabPanel key={category} label={camelize(category)}>
           {contentSections}
