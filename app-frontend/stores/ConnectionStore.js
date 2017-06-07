@@ -58,7 +58,7 @@ const handlers = {
       type: ActionTypes.CONNECTION_LOST,
     });
     NotificationsActionCreators.notifyFatal(
-      "We are facing some difficulties. Sounds like your connection is a bit flaky",
+      "We are facing some difficulties. Sounds like your connection is a bit flaky"
     );
   },
 
@@ -68,7 +68,7 @@ const handlers = {
     ActivityActionCreators.updateStatus(userId, USER_STATUS.CONNECTING);
     NotificationsActionCreators.notifyError(
       `We are trying hard to reconnect to the server. #${attempt} attempt ...`,
-      ms,
+      ms
     );
   },
 
@@ -77,7 +77,7 @@ const handlers = {
     ActivityActionCreators.setStatus(USER_STATUS.ONLINE);
     NotificationsActionCreators.notifyInfo(
       "And we are back in the game. Connection seems ok!",
-      5000,
+      5000
     );
     reconnection = true;
   },
@@ -88,7 +88,7 @@ const handlers = {
     ActivityActionCreators.setStatus(USER_STATUS.OFFLINE);
     NotificationsActionCreators.notifyFatal(
       `All reconnection attempts have failed.
-      Please refresh you browser`,
+      Please refresh you browser`
     );
   },
 
@@ -113,8 +113,12 @@ const handlers = {
   users: {
     connect({ user }) {},
 
-    join({ user }) {
-      // TODO: Should append a system message to the given room
+    join({ user, roomId }) {
+      RoomActionCreators.notifyUserJoin(roomId, user.id);
+    },
+
+    leave({ user, roomId }) {
+      RoomActionCreators.notifyUserLeave(roomId, user.id);
     },
 
     disconnect({ user }) {
@@ -144,7 +148,7 @@ const handlers = {
         AccountActionCreators.receiveRoom(room);
         NotificationsActionCreators.notify(
           `${admin.fullname} just created a new room: '${room.name}'`,
-          7500,
+          7500
         );
       }
     },

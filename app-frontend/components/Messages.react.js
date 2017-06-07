@@ -5,7 +5,7 @@ import * as RoomActionCreators from "../actions/RoomActionCreators";
 import * as DimensionActionCreators from "../actions/DimensionActionCreators";
 import * as MessageActionCreators from "../actions/MessageActionCreators";
 
-import { MessageStreamTypes, FETCH_HISTORY_TRESHOLD } from "../Constants";
+import { MESSAGE_TYPES, MESSAGE_STREAM_TYPES, FETCH_HISTORY_TRESHOLD } from "../Constants";
 
 import Avatar from "./generic/Avatar.react";
 import Embed from "./Embed.react";
@@ -81,7 +81,7 @@ class Message extends React.Component {
         embeds = (
           <div className="message--embeds">
             {message.embeds
-              .map((embed, index) => (
+              .map((embed, index) =>
                 <Embed
                   key={index}
                   {...embed.toJS()}
@@ -89,7 +89,7 @@ class Message extends React.Component {
                     MessageActionCreators.togglePreview(message);
                   }}
                 />
-              ))
+              )
               .toArray()}
           </div>
         );
@@ -123,7 +123,7 @@ class MessageGroup extends React.Component {
 
   render() {
     const user = this.props.messages[0].user;
-    const messages = this.props.messages.map((message, i) => (
+    const messages = this.props.messages.map((message, i) =>
       <Message
         key={message.id}
         first={i === 0}
@@ -132,7 +132,7 @@ class MessageGroup extends React.Component {
         renderEmbeds={this.props.renderEmbeds}
         inlineImages={this.props.inlineImages}
       />
-    ));
+    );
     const avatar = <Avatar user={user} />;
     const { emphasisMe } = this.props;
     const classNames = {
@@ -155,6 +155,15 @@ function MessageTimestamp(props) {
       {props.children}
     </div>
   );
+}
+
+function MessageSystemGroup(props) {
+  const messages = props.messages.map(message =>
+    <div key={message.id} className="message-system">
+      {message.content} <timestamp>{message.dateCreated.calendar()}</timestamp>
+    </div>
+  );
+  return <div className="message-group message-group-system">{messages}</div>;
 }
 
 export default class Messages extends React.Component {
@@ -194,7 +203,10 @@ export default class Messages extends React.Component {
 
       const latestMessage = this.props.messages.last();
       const currentUser = this.props.viewer;
-      if ((latestMessage && latestMessage.user.id === currentUser.id) || this.isAtBottom()) {
+      if (
+        (latestMessage && latestMessage.user && latestMessage.user.id === currentUser.id) ||
+        this.isAtBottom()
+      ) {
         this.scrollToBottom();
       }
     } else if (
@@ -215,7 +227,8 @@ export default class Messages extends React.Component {
     const { scroller } = this;
     // Reaching the top when scrolling with a scrollable viewport
     if (
-      scroller.scrollTop < FETCH_HISTORY_TRESHOLD && scroller.scrollHeight > scroller.offsetHeight
+      scroller.scrollTop < FETCH_HISTORY_TRESHOLD &&
+      scroller.scrollHeight > scroller.offsetHeight
     ) {
       if (this.props.messagesState.hasMore && !this.props.messagesState.loadingMore) {
         this.loadMore();
@@ -249,7 +262,7 @@ export default class Messages extends React.Component {
   loadMore() {
     return RoomActionCreators.fetchMessages(
       this.props.room.id,
-      this.props.messages.first().dateCreated.toISOString(),
+      this.props.messages.first().dateCreated.toISOString()
     );
   }
 
@@ -284,9 +297,13 @@ export default class Messages extends React.Component {
     const messageGroups = [];
     messages.forEach((message) => {
       const lastMessageGroup = messageGroups[messageGroups.length - 1];
+
       if (
         lastMessageGroup == null ||
-        lastMessageGroup[0].user.id !== message.user.id ||
+        lastMessageGroup[0].type !== message.type ||
+        (message.type !== MESSAGE_TYPES.SYSTEM_MESSAGE &&
+          lastMessageGroup[0].user &&
+          lastMessageGroup[0].user.id !== message.user.id) ||
         lastMessageGroup[0].dateCreated.day() !== message.dateCreated.day() ||
         lastMessageGroup[0].dateCreated.hour() !== message.dateCreated.hour()
       ) {
@@ -303,16 +320,24 @@ export default class Messages extends React.Component {
       if (timestamp !== lastTimestamp) {
         if (lastTimestamp != null) {
           messageStream.push({
-            type: MessageStreamTypes.DIVIDER_TIME_STAMP,
+            type: MESSAGE_STREAM_TYPES.DIVIDER_TIME_STAMP,
             content: timestamp,
           });
         }
         lastTimestamp = timestamp;
       }
-      messageStream.push({
-        type: MessageStreamTypes.MESSAGE_GROUP,
-        content: group,
-      });
+
+      if (group[0].type === MESSAGE_TYPES.SYSTEM_MESSAGE) {
+        messageStream.push({
+          type: MESSAGE_STREAM_TYPES.SYSTEM_MESSAGE,
+          content: group,
+        });
+      } else {
+        messageStream.push({
+          type: MESSAGE_STREAM_TYPES.MESSAGE_GROUP,
+          content: group,
+        });
+      }
     });
     return messageStream;
   }
@@ -320,8 +345,10 @@ export default class Messages extends React.Component {
   render() {
     const messageGroup = this.regroupMessages(this.props.messages);
     const messageGroupFinal = messageGroup.map(({ type, content }, i) => {
-      if (type === MessageStreamTypes.DIVIDER_TIME_STAMP) {
+      if (type === MESSAGE_STREAM_TYPES.DIVIDER_TIME_STAMP) {
         return <MessageTimestamp key={i}><h4>{content}</h4></MessageTimestamp>;
+      } else if (type === MESSAGE_STREAM_TYPES.SYSTEM_MESSAGE) {
+        return <MessageSystemGroup key={i} messages={content} />;
       }
 
       return (
@@ -340,7 +367,7 @@ export default class Messages extends React.Component {
       messageGroupFinal.unshift(
         <div key="loading-more" className="message-loading-more">
           Retrieving messages history...
-        </div>,
+        </div>
       );
     } else if (this.props.messagesState.hasMore) {
       messageGroupFinal.unshift(
@@ -354,7 +381,7 @@ export default class Messages extends React.Component {
           <span role="link" title="Click to retrieve more messages" onClick={this.onHandleLoadMore}>
             And more...
           </span>
-        </div>,
+        </div>
       );
     } else {
       messageGroupFinal.unshift(<WelcomeMessage key="welcome-message" room={this.props.room} />);

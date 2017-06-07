@@ -5,6 +5,7 @@ import { request } from "../utils/RequestUtils";
 import SelectedAccountStore from "../stores/SelectedAccountStore";
 import ConnectedRoomStore from "../stores/ConnectedRoomStore";
 import SelectedRoomStore from "../stores/SelectedRoomStore";
+import UserStore from "../stores/UserStore";
 
 import * as MessageUtils from "../utils/MessageUtils";
 
@@ -92,22 +93,31 @@ export function fetchMessages(roomId, latest, oldest = null, limit = MAX_MESSAGE
 
   return request(EndPoints.ROOM_MESSAGES(roomId), {
     params,
-  }).then(({ ok, messages, errors }) => {
-    if (ok) {
-      dispatch({
-        type: ActionTypes.LOAD_MESSAGES_SUCCESS,
-        roomId,
-        messages,
-        limit,
-      });
-    } else {
+  }).then(
+    ({ ok, messages, errors }) => {
+      if (ok) {
+        dispatch({
+          type: ActionTypes.LOAD_MESSAGES_SUCCESS,
+          roomId,
+          messages,
+          limit,
+        });
+      } else {
+        dispatch({
+          type: ActionTypes.LOAD_MESSAGES_FAILURE,
+          roomId,
+          errors,
+        });
+      }
+    },
+    (errors) => {
       dispatch({
         type: ActionTypes.LOAD_MESSAGES_FAILURE,
         roomId,
         errors,
       });
     }
-  });
+  );
 }
 
 export function receiveMessage(roomId, message, optimistic = false) {
@@ -131,28 +141,33 @@ export function updateMessage(roomId, message) {
 
 export function sendMessage(roomId, text) {
   logger.info(`sending message '${text}' to roomId:${roomId}`);
-  MessageUtils.createMessage(roomId, text).then((rawMessage) => {
-    // Optimistic UI pattern. First display it, then send it to the server
-    receiveMessage(roomId, { ...rawMessage }, true);
+  MessageUtils.createMessage(roomId, text).then(
+    (rawMessage) => {
+      // Optimistic UI pattern. First display it, then send it to the server
+      receiveMessage(roomId, { ...rawMessage }, true);
 
-    request(EndPoints.MESSAGES, {
-      method: "PUT",
-      body: Object.assign(rawMessage, {
-        nonce: rawMessage.id,
-      }),
-    }).then(({ ok, message }) => {
-      if (ok) {
-        receiveMessage(roomId, message);
-      } else {
-        logger.error(message);
-        dispatch({
-          type: ActionTypes.MESSAGE_SEND_FAILURE,
-          roomId,
-          message,
-        });
-      }
-    });
-  });
+      request(EndPoints.MESSAGES, {
+        method: "PUT",
+        body: Object.assign(rawMessage, {
+          nonce: rawMessage.id,
+        }),
+      }).then(({ ok, message }) => {
+        if (ok) {
+          receiveMessage(roomId, message);
+        } else {
+          logger.error(message);
+          dispatch({
+            type: ActionTypes.MESSAGE_SEND_FAILURE,
+            roomId,
+            message,
+          });
+        }
+      });
+    },
+    (error) => {
+      logger.error(error);
+    }
+  );
 }
 
 export function sendTyping(roomId) {
@@ -211,5 +226,35 @@ export function updateRoom(roomId, payload) {
       room,
     });
     return { ok, room, errors };
+  });
+}
+
+export function notifyUserJoin(roomId, userId) {
+  const user = UserStore.getUser(userId);
+  const message = MessageUtils.createSystemMessage(
+    roomId,
+    `${user} joined the conversation`,
+    "join"
+  );
+
+  dispatch({
+    type: ActionTypes.MESSAGE_CREATE,
+    roomId,
+    message,
+  });
+}
+
+export function notifyUserLeave(roomId, userId) {
+  const user = UserStore.getUser(userId);
+  const message = MessageUtils.createSystemMessage(
+    roomId,
+    `${user} left the conversation`,
+    "leave"
+  );
+
+  dispatch({
+    type: ActionTypes.MESSAGE_CREATE,
+    roomId,
+    message,
   });
 }

@@ -1,7 +1,7 @@
 import Long from "long";
 import SimpleMarkdown from "simple-markdown";
 
-import { PLUGIN_TYPES } from "../Constants";
+import { MESSAGE_TYPES, PLUGIN_TYPES } from "../Constants";
 
 import AccountRoomStore from "../stores/AccountRoomStore";
 import PluginsStore from "../stores/PluginsStore";
@@ -164,14 +164,15 @@ export function createMessage(roomId, text) {
 }
 
 export function createSystemMessage(roomId, content, subType) {
+  const now = new Date().toISOString();
   return {
     id: createNonce().toString(),
     roomId,
     content,
-    type: "system",
+    type: MESSAGE_TYPES.SYSTEM_MESSAGE,
     subType,
-    accountId: SelectedAccountStore.getAccount().id,
-    userId: UserStore.getConnectedUser().id,
+    dateCreated: now,
+    lastUpdated: now,
   };
 }
 

@@ -25,8 +25,11 @@ function transformMessage(message) {
 
   message.contentParsed = parseContent(message.content, false);
 
-  message.user = UserStore.getUser(message.userId);
-  message.embeds = Immutable.fromJS(message.embeds || []);
+  if (message.type !== "system") {
+    message.user = UserStore.getUser(message.userId);
+    message.embeds = Immutable.fromJS(message.embeds || []);
+  }
+
   return new Message(message);
 }
 
@@ -69,7 +72,7 @@ function handleMessageUpdate(state, { message: newMessage }) {
         message = message.set("embeds", Immutable.fromJS(newMessage.embeds));
       }
       return message;
-    }),
+    })
   );
 }
 
@@ -104,7 +107,7 @@ function handleMessageTogglePreview(state, { messageId, roomId }) {
 
   return state.set(
     roomId,
-    messages.update(messageId, message => message.set("preview", !message.preview)),
+    messages.update(messageId, message => message.set("preview", !message.preview))
   );
 }
 

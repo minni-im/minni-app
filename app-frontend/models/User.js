@@ -21,4 +21,8 @@ export default class User extends UserRecord {
     }
     return this.nickname[0].toUpperCase();
   }
+
+  toString() {
+    return `${this.firstname}${this.lastname ? ` ${this.lastname}` : ""}`;
+  }
 }
