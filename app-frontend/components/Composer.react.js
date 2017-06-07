@@ -42,10 +42,12 @@ export default class Composer extends React.Component {
     onSubmit: React.PropTypes.func.isRequired,
     defaultValue: React.PropTypes.string,
     room: React.PropTypes.instanceOf(Room),
+    disabled: React.PropTypes.bool,
   };
 
   static defautProps = {
     defaultValue: "",
+    disabled: false,
   };
 
   constructor(props) {
@@ -295,7 +297,7 @@ export default class Composer extends React.Component {
           autoCorrect="off"
           autoComplete="off"
           spellCheck="true"
-          placeholder="Type your message here"
+          placeholder={this.props.disabled ? "Trying to reconnect..." : "Type your message here"}
           rows="1"
           onFocus={this.handleTextareaFocus}
           onBlur={this.handleTextareaBlur}
@@ -305,6 +307,7 @@ export default class Composer extends React.Component {
           onKeyDown={this.handleOnKeyDown}
           onPaste={this.handleOnPaste}
           defaultValue={this.props.defaultValue}
+          disabled={this.props.disabled}
         />
         {actions}
         {autocomplete}

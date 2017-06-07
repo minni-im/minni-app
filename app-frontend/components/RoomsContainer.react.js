@@ -5,14 +5,10 @@ import DocumentTitle from "react-document-title";
 
 import Room from "./Room.react";
 
+import ConnectionStore from "../stores/ConnectionStore";
 import RoomStore from "../stores/RoomStore";
 
-import { unslugify, capitalize } from "../utils/TextUtils";
-
 import { selectRoom } from "../actions/RoomActionCreators";
-import Logger from "../libs/Logger";
-
-const logger = Logger.create("RoomsContainer.react");
 
 function activateSelectedRoom(props) {
   const { params } = props;
@@ -26,13 +22,14 @@ class RoomsContainer extends React.Component {
   };
 
   static getStores() {
-    return [RoomStore];
+    return [RoomStore, ConnectionStore];
   }
 
   static calculateState(prevState, prevProps) {
     const roomSlugs = prevProps.params.roomSlugs.split(",");
     return {
       rooms: RoomStore.getRoomsBySelectedAccount(...roomSlugs),
+      connection: ConnectionStore.isConnected(),
     };
   }
 
@@ -59,7 +56,14 @@ class RoomsContainer extends React.Component {
         <main className={classNames}>
           {this.state.rooms
             .toArray()
-            .map(room => <Room key={room.id} room={room} multiRooms={size > 1} />)}
+            .map(room =>
+              <Room
+                key={room.id}
+                room={room}
+                multiRooms={size > 1}
+                connection={this.state.connection}
+              />
+            )}
         </main>
       </DocumentTitle>
     );

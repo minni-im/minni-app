@@ -10,9 +10,7 @@ import Composer from "./Composer.react";
 import TypingInfo from "./TypingInfo.react";
 import FormattingHints from "./FormatingHints.react";
 
-import {
-  FavoriteIcon,
-  CloseIcon } from "../utils/IconsUtils";
+import { FavoriteIcon, CloseIcon } from "../utils/IconsUtils";
 import { parseTitle } from "../utils/MarkupUtils";
 
 import ComposerStore from "../stores/ComposerStore";
@@ -33,7 +31,7 @@ export default class Room extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.room !== this.props.room;
+    return nextProps.room !== this.props.room || nextProps.connection !== this.props.connection;
   }
 
   focusComposer() {
@@ -74,13 +72,13 @@ export default class Room extends React.Component {
       this.context.router.transitionTo(`/chat/${accountSlug}/messages/${roomSlugs.join(",")}`);
     }
 
-    if (!(event.shiftKey)) {
+    if (!event.shiftKey) {
       RoomActionCreators.leaveRoom(accountSlug, room.slug);
     }
   }
 
   render() {
-    const { room, multiRooms } = this.props;
+    const { room, multiRooms, connection } = this.props;
     const { name, topic } = room;
     const defaultValue = ComposerStore.getSavedText(room.id);
 
@@ -92,10 +90,9 @@ export default class Room extends React.Component {
           <div className="header-info flex-spacer">
             <h2>
               <span>{parseTitle(name)}</span>
-              <span
-                className="icon icon--favorite"
-                onClick={this.handleRoomFavoriteToggle}
-              ><FavoriteIcon /></span>
+              <span className="icon icon--favorite" onClick={this.handleRoomFavoriteToggle}>
+                <FavoriteIcon />
+              </span>
             </h2>
             <h3>{parseTitle(topic)}</h3>
           </div>
@@ -111,9 +108,9 @@ export default class Room extends React.Component {
               className="icon"
               onClick={this.handleRoomLeave}
               title={
-                multiRooms ?
-                "Leave this room (Shift+Click will just deselect it)" :
-                "Leave this room"
+                multiRooms
+                  ? "Leave this room (Shift+Click will just deselect it)"
+                  : "Leave this room"
               }
             >
               <CloseIcon />
@@ -122,14 +119,14 @@ export default class Room extends React.Component {
         </header>
         {room.usersList ? <RoomUsersList room={room} /> : null}
         <MessagesContainer room={room} />
-        <footer
-          className="flex-vertical"
-          onClick={this.handleFooterOnClick}
-        >
+        <footer className="flex-vertical" onClick={this.handleFooterOnClick}>
           <Composer
-            ref={(composer) => { this.composer = composer; }}
+            ref={(composer) => {
+              this.composer = composer;
+            }}
             room={room}
             defaultValue={defaultValue}
+            disabled={!connection}
             onSubmit={this.handleSendMessage}
           />
           <div className="footer flex-horizontal">
@@ -146,5 +143,5 @@ export default class Room extends React.Component {
 }
 
 Room.contextTypes = {
-  router: React.PropTypes.object.isRequired
+  router: React.PropTypes.object.isRequired,
 };
