@@ -6,6 +6,7 @@ import { ActionTypes } from "../Constants";
 
 import * as ActivityActionCreators from "../actions/ActivityActionCreators";
 
+import ConnectionStore from "./ConnectionStore";
 import IdleStore from "./IdleStore";
 import AwayStore from "./AwayStore";
 
@@ -34,16 +35,25 @@ function handleActivateOnline(state) {
   return state;
 }
 
+function checkConnection(action) {
+  return function (state, payload) {
+    if (!ConnectionStore.isConnected()) {
+      return state;
+    }
+    return action.call(this, state, payload);
+  };
+}
+
 class PresenceStore extends MapStore {
   initialize() {
-    this.waitFor(IdleStore, AwayStore);
-    this.addAction(ActionTypes.SET_USER_STATUS, handleStatusUpdate);
-    this.addAction(ActionTypes.WINDOW_FOCUS, handleWindowFocus);
+    this.waitFor(ConnectionStore, IdleStore, AwayStore);
+    this.addAction(ActionTypes.SET_USER_STATUS, checkConnection(handleStatusUpdate));
+    this.addAction(ActionTypes.WINDOW_FOCUS, checkConnection(handleWindowFocus));
     this.addAction(
       ActionTypes.TYPING_START,
       ActionTypes.ACCOUNT_SELECT,
       ActionTypes.ROOM_SELECT,
-      handleActivateOnline
+      checkConnection(handleActivateOnline)
     );
   }
 
