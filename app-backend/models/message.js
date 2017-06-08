@@ -10,6 +10,7 @@ const MessageSchema = new recorder.Schema({
   bot: Object,
   type: {
     type: String,
+    default: "chat",
   },
   subType: String,
   embeds: {
@@ -23,6 +24,7 @@ MessageSchema.method("toAPI", function toAPI() {
     id: this.id,
     roomId: this.roomId,
     userId: this.userId,
+    type: this.type,
     bot: this.bot,
     dateEdited: this.dateEdited,
     dateCreated: this.dateCreated,
@@ -45,7 +47,7 @@ MessageSchema.static("getHistory", function getHistory(
   roomId,
   latest = new Date().toISOString(),
   oldest = 0,
-  count = MAX_MESSAGES_COUNT,
+  count = MAX_MESSAGES_COUNT
 ) {
   const range = latest && oldest;
   const options = {

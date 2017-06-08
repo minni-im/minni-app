@@ -152,9 +152,10 @@ export function createMessage(roomId, text) {
     id: createNonce().toString(),
     roomId,
     content: encode(text).content,
-    type: "chat",
+    type: MESSAGE_TYPES.CHAT_MESSAGE,
     accountId: SelectedAccountStore.getAccount().id,
     userId: UserStore.getConnectedUser().id,
+    dateCreated: new Date().toISOString(),
   };
 
   return COMPOSER_TEXT_PLUGINS.reduce(

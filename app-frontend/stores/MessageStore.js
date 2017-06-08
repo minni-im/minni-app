@@ -4,7 +4,7 @@ import moment from "moment";
 import Dispatcher from "../Dispatcher";
 import { MapStore } from "../libs/Flux";
 
-import { ActionTypes, MAX_MESSAGES_PER_ROOMS } from "../Constants";
+import { ActionTypes, MESSAGE_TYPES, MAX_MESSAGES_PER_ROOMS } from "../Constants";
 
 import UserStore from "../stores/UserStore";
 import RoomStore from "../stores/RoomStore";
@@ -14,18 +14,21 @@ import { parseContent } from "../utils/MarkupUtils";
 import Message from "../models/Message";
 
 import Logger from "../libs/Logger";
+
 const logger = Logger.create("MessageStore");
 
 function transformMessage(message) {
-  message.dateCreated = moment(message.dateCreated);
-  message.lastUpdated = moment(message.lastUpdated);
+  message.dateCreated = moment(new Date(message.dateCreated));
+  if (message.lastUpdated) {
+    message.lastUpdated = moment(new Date(message.lastUpdated));
+  }
   if (message.dateEdited) {
     message.dateEdited = moment(message.dateEdited);
   }
 
   message.contentParsed = parseContent(message.content, false);
 
-  if (message.type !== "system") {
+  if (message.type !== MESSAGE_TYPES.SYSTEM_MESSAGE) {
     message.user = UserStore.getUser(message.userId);
     message.embeds = Immutable.fromJS(message.embeds || []);
   }
@@ -49,10 +52,15 @@ function mergeMessage(messages, message) {
 function handleMessageCreate(state, { roomId, message }) {
   let messages = state.get(roomId, Immutable.OrderedMap());
   const nonce = message.nonce;
+
+  if (!messages) {
+    return state;
+  }
   if (nonce !== null && messages.has(nonce)) {
     delete message.nonce;
     messages = messages.replace(nonce, message.id, transformMessage(message));
   } else {
+    // by this time message.id is a nonce
     messages = messages.set(message.id, mergeMessage(messages, message));
   }
   return state.set(roomId, messages);

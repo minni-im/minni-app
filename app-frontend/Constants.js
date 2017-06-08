@@ -154,9 +154,10 @@ export const AVATAR_SIZES = keyMirror({
   XLARGE: null,
 });
 
-export const MESSAGE_TYPES = keyMirror({
-  SYSTEM_MESSAGE: null,
-});
+export const MESSAGE_TYPES = {
+  CHAT_MESSAGE: "chat",
+  SYSTEM_MESSAGE: "system",
+};
 
 export const MESSAGE_STREAM_TYPES = keyMirror({
   DIVIDER_TIME_STAMP: null,

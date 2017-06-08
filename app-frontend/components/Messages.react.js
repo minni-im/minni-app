@@ -14,6 +14,7 @@ import WelcomeMessage from "./WelcomeMessage.react";
 import { debounce } from "../utils/FunctionUtils";
 
 import Logger from "../libs/Logger";
+
 const logger = Logger.create("Messages.react");
 
 class Message extends React.Component {
@@ -82,13 +83,13 @@ class Message extends React.Component {
           <div className="message--embeds">
             {message.embeds
               .map((embed, index) =>
-                <Embed
+                (<Embed
                   key={index}
                   {...embed.toJS()}
                   onHidePreview={() => {
                     MessageActionCreators.togglePreview(message);
                   }}
-                />
+                />)
               )
               .toArray()}
           </div>
@@ -124,14 +125,14 @@ class MessageGroup extends React.Component {
   render() {
     const user = this.props.messages[0].user;
     const messages = this.props.messages.map((message, i) =>
-      <Message
+      (<Message
         key={message.id}
         first={i === 0}
         message={message}
         clock24={this.props.clock24}
         renderEmbeds={this.props.renderEmbeds}
         inlineImages={this.props.inlineImages}
-      />
+      />)
     );
     const avatar = <Avatar user={user} />;
     const { emphasisMe } = this.props;
@@ -159,9 +160,9 @@ function MessageTimestamp(props) {
 
 function MessageSystemGroup(props) {
   const messages = props.messages.map(message =>
-    <div key={message.id} className="message-system">
+    (<div key={message.id} className="message-system">
       {message.content} <timestamp>{message.dateCreated.calendar()}</timestamp>
-    </div>
+    </div>)
   );
   return <div className="message-group message-group-system">{messages}</div>;
 }
@@ -295,6 +296,7 @@ export default class Messages extends React.Component {
 
   regroupMessages(messages) {
     const messageGroups = [];
+
     messages.forEach((message) => {
       const lastMessageGroup = messageGroups[messageGroups.length - 1];
 
