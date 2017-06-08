@@ -28,7 +28,7 @@ export default (app) => {
             socket.broadcast.to(socketKey).emit("users:join", {
               user: user.toAPI(),
               accountId,
-              roomId
+              roomId,
             });
             // console.log(`'${user.id}' has joined '${socketKey}'`);
           });
@@ -46,43 +46,58 @@ export default (app) => {
 
       const presence = new Set();
 
-      Promise.all([...rooms, ...users]).then((results) => {
-        const finalRooms = results
-          .slice(0, size)
-          .reduce((flat, flatRooms) => flat.concat(flatRooms), [])
-          .filter(room => room.isAccessGranted(user.id))
-          .map(room => room.toAPI(user.id === room.adminId));
-        const finalUsers = results
-          .slice(size)
-          .map(finalUser => finalUser.toAPI());
+      Promise.all([...rooms, ...users])
+        .then((results) => {
+          const finalRooms = results
+            .slice(0, size)
+            .reduce((flat, flatRooms) => flat.concat(flatRooms), [])
+            .filter(room => room.isAccessGranted(user.id))
+            .map(room => room.toAPI(user.id === room.adminId));
+          const finalUsers = results.slice(size).map(finalUser => finalUser.toAPI());
 
-        for (const clientSocket of Object.keys(app.io.sockets.adapter.nsp.connected)) {
-          const client = app.io.sockets.adapter.nsp.connected[clientSocket];
-          if (client.request.user.id !== user.id) {
-            presence.add({
-              userId: client.request.user.id,
-              status: client.status
-            });
+          for (const clientSocket of Object.keys(app.io.sockets.adapter.nsp.connected)) {
+            const client = app.io.sockets.adapter.nsp.connected[clientSocket];
+            if (client.request.user.id !== user.id) {
+              presence.add({
+                userId: client.request.user.id,
+                status: client.status,
+              });
+            }
           }
-        }
 
-        socket.emit("connected", {
-          user: user.toAPI(true),
-          accounts,
-          rooms: finalRooms,
-          users: finalUsers,
-          presence: Array.from(presence)
+          socket.emit("connected", {
+            user: user.toAPI(true),
+            accounts,
+            rooms: finalRooms,
+            users: finalUsers,
+            presence: Array.from(presence),
+          });
+        })
+        .catch((ex) => {
+          console.log(`Socket connection failed [sid: ${socket.id}, id:${user.id}]`);
+          console.error(ex);
         });
-      }).catch((ex) => {
-        console.log(`Socket connection failed [sid: ${socket.id}, id:${user.id}]`);
-        console.error(ex);
-      });
     });
   });
 
-  app.io.route("disconnect", (req) => {
-    const { user } = req;
-    // console.log(`'${user.id}' is disconnected`, req.isSocket);
+  app.io.route("disconnecting", (req) => {
+    const { socket, user } = req;
+    // console.log(`'${user.id}' is about to be disconnected`);
+    // Notifying all rooms the user was connected to
+    for (const socketRoomName of Object.keys(socket.rooms)) {
+      if (socketRoomName.includes(":")) {
+        const [accountId, roomId] = socketRoomName.split(":");
+        socket.broadcast.to(socketRoomName).emit("users:leave", {
+          user: user.toAPI(false),
+          accountId,
+          roomId,
+        });
+      }
+    }
+  });
+
+  app.io.route("disconnect", ({ user }) => {
     app.io.emit("users:disconnect", { user: user.toAPI() });
+    // console.log(`'${user.id}' is disconnected`);
   });
 };

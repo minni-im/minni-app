@@ -12,7 +12,6 @@ export class UserFromSessionDoesNotExistError extends OAuthError {
   }
 }
 
-
 export function OAuthErrorHandler(config) {
   return function (err, req, res, next) {
     if (err instanceof UserFromSessionDoesNotExistError) {
@@ -27,7 +26,7 @@ export function OAuthErrorHandler(config) {
 
 export function ClientErrorHandler(err, req, res, next) {
   if (req.xhr) {
-    res.json(500, { error: "Something went wrong!" });
+    res.status(500).json({ error: "Something went wrong!" });
     return;
   }
   next(err);
