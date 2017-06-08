@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Container } from "flux/utils";
 import { USER_STATUS } from "../../Constants";
 
@@ -47,15 +48,15 @@ class RoomUsersList extends Component {
   render() {
     return (
       <div className="room--users-list flex-horizontal">
-        {this.state.users.map((user, index) => (
-          <Avatar
+        {this.state.users.map((user, index) =>
+          (<Avatar
             key={index}
             withStatus
             showOffline
             user={user}
             isTyping={this.state.typingUsers.has(user.id)}
-          />
-        ))}
+          />)
+        )}
       </div>
     );
   }

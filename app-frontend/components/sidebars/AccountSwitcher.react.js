@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import classnames from "classnames";
 import { Container } from "flux/utils";
 
@@ -19,7 +20,7 @@ class Account extends React.Component {
     if (keyboardShorcut) {
       keyboard = {
         "data-kbd-modifier": isOSX() ? "⌘" : "CTRL",
-        "data-kbd-index": this.props.index
+        "data-kbd-index": this.props.index,
       };
     }
 
@@ -35,7 +36,7 @@ class Account extends React.Component {
         key={account.name}
         title={account.toString()}
         className={classnames("account", {
-          "account-selected": selected
+          "account-selected": selected,
         })}
         {...keyboard}
       >
@@ -47,14 +48,14 @@ class Account extends React.Component {
 
 Account.defaultProps = {
   selected: false,
-  keyboardShorcut: false
+  keyboardShorcut: false,
 };
 
 Account.propTypes = {
-  account: React.PropTypes.instanceOf(AccountRecord).isRequired,
-  index: React.PropTypes.number,
-  selected: React.PropTypes.bool,
-  keyboardShorcut: React.PropTypes.bool
+  account: PropTypes.instanceOf(AccountRecord).isRequired,
+  index: PropTypes.number,
+  selected: PropTypes.bool,
+  keyboardShorcut: PropTypes.bool,
 };
 
 class AccountSwitcher extends React.Component {
@@ -65,7 +66,7 @@ class AccountSwitcher extends React.Component {
   static calculateState() {
     return {
       selectedAccountSlug: SelectedAccountStore.getSlug(),
-      accounts: AccountStore.getAccounts()
+      accounts: AccountStore.getAccounts(),
     };
   }
 
@@ -75,12 +76,14 @@ class AccountSwitcher extends React.Component {
       return <div className="account-switcher" style={{ flexBasis: 0 }} />;
     }
 
-    const links = accounts.toArray().map((account, index) => {
-      return (<Account key={account.slug} account={account}
+    const links = accounts.toArray().map((account, index) => (
+      <Account
+        key={account.slug}
+        account={account}
         selected={selectedAccountSlug === account.slug}
         index={index + 1}
-      />);
-    });
+      />
+      ));
 
     return (
       <div className="account-switcher" style={{ flexBasis: "auto" }}>
@@ -88,8 +91,11 @@ class AccountSwitcher extends React.Component {
         <Link to="/create" className="account create" activeClassName="account-selected">
           <div>+</div>
         </Link>
-        <a href="https://minni.im" className="powered-by-minni"
-          target="_blank" title="Powered by Minni.im"
+        <a
+          href="https://minni.im"
+          className="powered-by-minni"
+          target="_blank"
+          title="Powered by Minni.im"
         >
           <img src="/images/logo-color.png" />
         </a>

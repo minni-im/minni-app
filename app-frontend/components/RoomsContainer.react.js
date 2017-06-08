@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Container } from "flux/utils";
 import classnames from "classnames";
 import DocumentTitle from "react-document-title";
@@ -18,7 +19,7 @@ function activateSelectedRoom(props) {
 
 class RoomsContainer extends React.Component {
   static propTypes = {
-    params: React.PropTypes.objectOf(React.PropTypes.string),
+    params: PropTypes.objectOf(PropTypes.string),
   };
 
   static getStores() {
@@ -57,12 +58,12 @@ class RoomsContainer extends React.Component {
           {this.state.rooms
             .toArray()
             .map(room =>
-              <Room
+              (<Room
                 key={room.id}
                 room={room}
                 multiRooms={size > 1}
                 connection={this.state.connection}
-              />
+              />)
             )}
         </main>
       </DocumentTitle>

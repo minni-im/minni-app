@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import Account from "../models/Account";
 
@@ -17,6 +18,6 @@ export default function AccountHeader({ account, hasLogo }) {
 }
 
 AccountHeader.propTypes = {
-  hasLogo: React.PropTypes.bool,
-  account: React.PropTypes.instanceOf(Account),
+  hasLogo: PropTypes.bool,
+  account: PropTypes.instanceOf(Account),
 };

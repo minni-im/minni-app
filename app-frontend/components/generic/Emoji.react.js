@@ -1,12 +1,12 @@
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 
 function generateUnicodeAltText(unicodeAsString) {
-  return unicodeAsString.split("-")
-    .map(codePoint => (
-      codePoint === "200d"
-        ? "&zwj;"
-        : String.fromCodePoint(parseInt(codePoint, 16))
-    ))
+  return unicodeAsString
+    .split("-")
+    .map(
+      codePoint => (codePoint === "200d" ? "&zwj;" : String.fromCodePoint(parseInt(codePoint, 16)))
+    )
     .join("");
 }
 
@@ -33,5 +33,5 @@ Emoji.propTypes = {
   name: PropTypes.string.isRequired,
   unicode: PropTypes.string,
   src: PropTypes.string,
-  skinTone: PropTypes.oneOf(["1-2", "3", "4", "5", "6"])
+  skinTone: PropTypes.oneOf(["1-2", "3", "4", "5", "6"]),
 };

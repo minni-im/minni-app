@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import classnames from "classnames";
 
 import * as RoomActionCreators from "../actions/RoomActionCreators";
@@ -143,5 +144,5 @@ export default class Room extends React.Component {
 }
 
 Room.contextTypes = {
-  router: React.PropTypes.object.isRequired,
+  router: PropTypes.object.isRequired,
 };

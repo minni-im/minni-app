@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import CreateOrJoin from "./CreateOrJoin.react";
 
 import User from "../models/User";
@@ -23,10 +24,10 @@ export default function Welcome(props) {
 }
 
 Welcome.propTypes = {
-  user: React.PropTypes.instanceOf(User),
-  explanation: React.PropTypes.bool
+  user: PropTypes.instanceOf(User),
+  explanation: PropTypes.bool,
 };
 
 Welcome.defaultProps = {
-  explanation: true
+  explanation: true,
 };

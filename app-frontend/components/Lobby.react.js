@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
 import classnames from "classnames";
 
@@ -15,10 +16,10 @@ const logger = Logger.create("Lobby");
 
 class Room extends React.Component {
   static propTypes = {
-    room: React.PropTypes.object.isRequired,
-    viewer: React.PropTypes.object.isRequired,
-    accountName: React.PropTypes.string,
-    className: React.PropTypes.string,
+    room: PropTypes.object.isRequired,
+    viewer: PropTypes.object.isRequired,
+    accountName: PropTypes.string,
+    className: PropTypes.string,
   };
 
   constructor(props) {
@@ -62,9 +63,9 @@ class Room extends React.Component {
 
 export default class Lobby extends React.Component {
   static propTypes = {
-    account: React.PropTypes.object,
-    rooms: React.PropTypes.object,
-    viewer: React.PropTypes.object,
+    account: PropTypes.object,
+    rooms: PropTypes.object,
+    viewer: PropTypes.object,
   };
 
   render() {
@@ -110,14 +111,14 @@ export default class Lobby extends React.Component {
           <div className="rooms--list">
             {rooms
               .toArray()
-              .map(room => (
-                <Room
+              .map(room =>
+                (<Room
                   key={room.id}
                   room={room}
                   accountName={account.name}
                   viewer={this.props.viewer}
-                />
-              ))}
+                />)
+              )}
           </div>
         </section>
       </section>

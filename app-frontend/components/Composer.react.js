@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 
 import { PLUGIN_TYPES } from "../Constants";
 
@@ -39,10 +40,10 @@ function extractFileName(htmlString) {
 
 export default class Composer extends React.Component {
   static propTypes = {
-    onSubmit: React.PropTypes.func.isRequired,
-    defaultValue: React.PropTypes.string,
-    room: React.PropTypes.instanceOf(Room),
-    disabled: React.PropTypes.bool,
+    onSubmit: PropTypes.func.isRequired,
+    defaultValue: PropTypes.string,
+    room: PropTypes.instanceOf(Room),
+    disabled: PropTypes.bool,
   };
 
   static defautProps = {

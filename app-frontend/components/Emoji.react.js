@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import { Container } from "flux/utils";
 import { ALL as EMOJIS, MASK_BY_PROVIDER, SKIN_TONE_INDEX } from "@minni-im/emojify";
 
@@ -27,7 +28,7 @@ class EmojiContainer extends React.Component {
     const { shortname, skinTone } = this.props;
     const emoji = EMOJIS[shortname];
     const { provider, active } = this.state;
-    let name = shortname;
+    const name = shortname;
     let src;
     let unicode;
     if (!active) {

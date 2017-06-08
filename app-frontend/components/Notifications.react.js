@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import { Container } from "flux/utils";
 import classNames from "classnames";
@@ -9,8 +10,8 @@ import NotificationsStore from "../stores/NotificationsStore";
 
 class Notifications extends Component {
   static propTypes = {
-    notifications: PropTypes.object
-  }
+    notifications: PropTypes.object,
+  };
 
   constructor(props) {
     super(props);
@@ -25,32 +26,30 @@ class Notifications extends Component {
   render() {
     const { notifications } = this.props;
 
-    const messages = notifications
-      .toArray()
-      .map((notificationType) => (
-        notificationType.toArray()
-          .map(notification => (
-            <div
-              key={notification.id}
-              className={classNames(
-                "notifier-message flex-horizontal",
-                { [`notifier-${notification.role}`]: true }
-              )}
+    const messages = notifications.toArray().map(notificationType =>
+      notificationType.toArray().map(notification =>
+        (<div
+          key={notification.id}
+          className={classNames("notifier-message flex-horizontal", {
+            [`notifier-${notification.role}`]: true,
+          })}
+        >
+          <div className="flex-spacer">
+            {notification.content}
+          </div>
+          {notification.autoDismissable
+            ? false
+            : <span
+              key="notifier-close"
+              className="notifier-close"
+              data-id={notification.id}
+              onClick={this.onCloseNotification}
             >
-              <div className="flex-spacer">
-                {notification.content}
-              </div>
-              {notification.autoDismissable ? false : (
-                <span
-                  key="notifier-close"
-                  className="notifier-close"
-                  data-id={notification.id}
-                  onClick={this.onCloseNotification}
-                >&times;</span>
-              )}
-            </div>
-          ))
-      ));
+                &times;
+              </span>}
+        </div>)
+      )
+    );
 
     return (
       <ReactCSSTransitionGroup
@@ -73,7 +72,7 @@ class NotificationsContainer extends Component {
 
   static calculateState() {
     return {
-      notifications: NotificationsStore.getAllNotifications()
+      notifications: NotificationsStore.getAllNotifications(),
     };
   }
 

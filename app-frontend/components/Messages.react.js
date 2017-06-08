@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import classnames from "classnames";
 
 import * as RoomActionCreators from "../actions/RoomActionCreators";
@@ -19,11 +20,11 @@ const logger = Logger.create("Messages.react");
 
 class Message extends React.Component {
   static propTypes = {
-    first: React.PropTypes.bool,
-    message: React.PropTypes.object.isRequired,
-    renderEmbeds: React.PropTypes.bool,
-    inlineImages: React.PropTypes.bool,
-    clock24: React.PropTypes.bool,
+    first: PropTypes.bool,
+    message: PropTypes.object.isRequired,
+    renderEmbeds: PropTypes.bool,
+    inlineImages: PropTypes.bool,
+    clock24: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -115,11 +116,11 @@ class Message extends React.Component {
 
 class MessageGroup extends React.Component {
   static propTypes = {
-    messages: React.PropTypes.array.isRequired,
-    renderEmbeds: React.PropTypes.bool,
-    inlineImages: React.PropTypes.bool,
-    clock24: React.PropTypes.bool,
-    emphasisMe: React.PropTypes.bool,
+    messages: PropTypes.array.isRequired,
+    renderEmbeds: PropTypes.bool,
+    inlineImages: PropTypes.bool,
+    clock24: PropTypes.bool,
+    emphasisMe: PropTypes.bool,
   };
 
   render() {
@@ -169,14 +170,14 @@ function MessageSystemGroup(props) {
 
 export default class Messages extends React.Component {
   static propTypes = {
-    room: React.PropTypes.object.isRequired,
-    messages: React.PropTypes.object.isRequired,
-    dimensions: React.PropTypes.object,
-    messagesState: React.PropTypes.object,
-    renderEmbeds: React.PropTypes.bool,
-    inlineImages: React.PropTypes.bool,
-    emphasisMe: React.PropTypes.bool,
-    clock24: React.PropTypes.bool,
+    room: PropTypes.object.isRequired,
+    messages: PropTypes.object.isRequired,
+    dimensions: PropTypes.object,
+    messagesState: PropTypes.object,
+    renderEmbeds: PropTypes.bool,
+    inlineImages: PropTypes.bool,
+    emphasisMe: PropTypes.bool,
+    clock24: PropTypes.bool,
   };
 
   constructor(props) {

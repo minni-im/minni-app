@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Container } from "flux/utils";
 
 import * as RoomActionCreators from "../actions/RoomActionCreators";
@@ -13,17 +14,11 @@ import Messages from "./Messages.react";
 
 class MessagesContainer extends React.Component {
   static propTypes = {
-    room: React.PropTypes.object.isRequired
-  }
+    room: PropTypes.object.isRequired,
+  };
 
   static getStores() {
-    return [
-      UserStore,
-      UserSettingsStore,
-      MessageStore,
-      MessageStateStore,
-      DimensionStore
-    ];
+    return [UserStore, UserSettingsStore, MessageStore, MessageStateStore, DimensionStore];
   }
 
   static calculateState(prevProps, nextProps) {
@@ -35,7 +30,7 @@ class MessagesContainer extends React.Component {
       emphasisMe: UserSettingsStore.getValue("global.rooms.emphasis"),
       clock24: UserSettingsStore.getValue("global.clock24"),
       renderEmbeds: UserSettingsStore.getValue("global.rooms.links_preview"),
-      inlineImages: UserSettingsStore.getValue("global.rooms.image_preview")
+      inlineImages: UserSettingsStore.getValue("global.rooms.image_preview"),
     };
   }
 
@@ -46,17 +41,17 @@ class MessagesContainer extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return this.state.messages !== nextState.messages ||
+    return (
+      this.state.messages !== nextState.messages ||
       this.state.messagesState !== nextState.messagesState ||
       this.props.room !== nextProps.room ||
       this.state.renderEmbeds !== nextState.renderEmbeds ||
-      this.state.inlineImages !== nextState.inlineImages;
+      this.state.inlineImages !== nextState.inlineImages
+    );
   }
 
   render() {
-    return (
-      <Messages room={this.props.room} {...this.state} />
-    );
+    return <Messages room={this.props.room} {...this.state} />;
   }
 }
 

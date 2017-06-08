@@ -1,11 +1,11 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import RoomAccessControl from "./RoomAccessControl.react";
 
 import SelectedAccountStore from "../stores/SelectedAccountStore";
 
 import * as AccountActionCreators from "../actions/AccountActionCreators";
-
 
 class RoomCreate extends React.Component {
   constructor(props) {
@@ -17,15 +17,15 @@ class RoomCreate extends React.Component {
 
   state = {
     type: 1,
-    usersId: []
-  }
+    usersId: [],
+  };
 
   onCreateClick(event) {
     event.preventDefault();
     const account = SelectedAccountStore.getAccount();
     if (this.name.value.length === 0) {
       this.setState({
-        message: "You must specify a name"
+        message: "You must specify a name",
       });
       this.name.focus();
       return;
@@ -36,17 +36,16 @@ class RoomCreate extends React.Component {
       this.topic.value,
       this.state.type,
       this.state.usersId
-    ).then(
-      ({ ok, message }) => {
-        if (ok) {
-          this.context.router.transitionTo({ pathname: `/chat/${account.slug}/lobby` });
-          return;
-        }
-        if (!ok && message) {
-          this.setState({ message });
-        }
-        this.name.focus();
-      });
+    ).then(({ ok, message }) => {
+      if (ok) {
+        this.context.router.transitionTo({ pathname: `/chat/${account.slug}/lobby` });
+        return;
+      }
+      if (!ok && message) {
+        this.setState({ message });
+      }
+      this.name.focus();
+    });
   }
 
   onRoomTypeChanged(type) {
@@ -83,7 +82,9 @@ class RoomCreate extends React.Component {
                 <label>
                   <span>Name</span>
                   <input
-                    ref={(input) => { this.name = input; }}
+                    ref={(input) => {
+                      this.name = input;
+                    }}
                     autoFocus
                     placeholder="Give a name to your room"
                   />
@@ -94,7 +95,9 @@ class RoomCreate extends React.Component {
                 <label>
                   <span>Topic</span>
                   <input
-                    ref={(input) => { this.topic = input; }}
+                    ref={(input) => {
+                      this.topic = input;
+                    }}
                     placeholder="Describe your room, what should it be used for ?"
                   />
                 </label>
@@ -120,7 +123,7 @@ class RoomCreate extends React.Component {
 }
 
 RoomCreate.contextTypes = {
-  router: React.PropTypes.object.isRequired
+  router: PropTypes.object.isRequired,
 };
 
 export default RoomCreate;

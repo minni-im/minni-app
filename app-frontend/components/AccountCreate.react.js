@@ -1,12 +1,13 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import * as AccountActionCreators from "../actions/AccountActionCreators";
 
 export default class AccountCreate extends React.Component {
   static propTypes = {
-    onBack: React.PropTypes.func.isRequired,
-    onCreate: React.PropTypes.func.isRequired
-  }
+    onBack: PropTypes.func.isRequired,
+    onCreate: PropTypes.func.isRequired,
+  };
 
   constructor(props) {
     super(props);
@@ -16,13 +17,13 @@ export default class AccountCreate extends React.Component {
 
   state = {
     valid: true,
-    errorMessage: ""
-  }
+    errorMessage: "",
+  };
 
   onNameBlur() {
     const name = this.name.value.trim();
     this.setState({
-      valid: true
+      valid: true,
     });
     if (name.length) {
       AccountActionCreators.checkExistence(name).then(({ ok, message }) => {
@@ -37,24 +38,29 @@ export default class AccountCreate extends React.Component {
     const name = this.name.value.trim();
     const description = this.desc.value.trim();
     if (name.length > 0) {
-      AccountActionCreators.createAccount({ name, description })
-        .then(({ ok, account, message }) => {
-          if (ok) {
-            this.props.onCreate(account);
-          } else {
-            this.showErrorMessage(message);
-          }
-        });
+      AccountActionCreators.createAccount({
+        name,
+        description,
+      }).then(({ ok, account, message }) => {
+        if (ok) {
+          this.props.onCreate(account);
+        } else {
+          this.showErrorMessage(message);
+        }
+      });
     }
   }
 
   showErrorMessage(message) {
-    this.setState({
-      valid: false,
-      errorMessage: message
-    }, () => {
-      this.name.focus();
-    });
+    this.setState(
+      {
+        valid: false,
+        errorMessage: message,
+      },
+      () => {
+        this.name.focus();
+      }
+    );
   }
 
   render() {
@@ -63,10 +69,9 @@ export default class AccountCreate extends React.Component {
         <div className="create">
           <h3>Create your team</h3>
           <div className="alerts">
-            {this.state.valid ?
-              <p>Give us some input about you and your teammates</p> :
-                <p className="alert alert-error">{this.state.errorMessage}</p>
-            }
+            {this.state.valid
+              ? <p>Give us some input about you and your teammates</p>
+              : <p className="alert alert-error">{this.state.errorMessage}</p>}
           </div>
           <form>
             <p className="block">
@@ -74,7 +79,9 @@ export default class AccountCreate extends React.Component {
                 <input
                   autoFocus
                   id="name"
-                  ref={(name) => { this.name = name; }}
+                  ref={(name) => {
+                    this.name = name;
+                  }}
                   placeholder="Give your team a name"
                   onBlur={this.onNameBlur}
                 />
@@ -89,7 +96,9 @@ export default class AccountCreate extends React.Component {
               <label htmlFor="desc">
                 <input
                   id="desc"
-                  ref={(desc) => { this.desc = desc; }}
+                  ref={(desc) => {
+                    this.desc = desc;
+                  }}
                   placeholder="Describe your team, what do you do ? Just a few words"
                 />
               </label>
@@ -99,10 +108,7 @@ export default class AccountCreate extends React.Component {
         <div className="actions flex-horizontal">
           <button onClick={this.props.onBack}>Back</button>
           <span className="flex-spacer" />
-          <button
-            onClick={this.onCreateClick}
-            className="button-primary"
-          >Create</button>
+          <button onClick={this.onCreateClick} className="button-primary">Create</button>
         </div>
       </div>
     );

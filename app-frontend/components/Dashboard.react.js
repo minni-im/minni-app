@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Map } from "immutable";
 import { Link } from "react-router";
 
@@ -9,11 +10,11 @@ const Dashboard = (props) => {
   const { accounts, user } = props;
   const hello = accounts.isEmpty();
 
-  if (!user) { return null; }
+  if (!user) {
+    return null;
+  }
   if (hello) {
-    return (
-      <Welcome user={user} />
-    );
+    return <Welcome user={user} />;
   }
 
   const list = accounts.toArray().map((account) => {
@@ -23,17 +24,14 @@ const Dashboard = (props) => {
         <div className="flex-spacer">
           <div className="name">{account.toString()}</div>
           <div className="description">{account.description}</div>
-          <div className="members">{
-            account.usersId.length > 0 ?
-              <span>{account.usersId.length} team member(s)</span> :
-              "Seems there is no members in this team"
-          }</div>
+          <div className="members">
+            {account.usersId.length > 0
+              ? <span>{account.usersId.length} team member(s)</span>
+              : "Seems there is no members in this team"}
+          </div>
         </div>
         <div className="actions flex-center">
-          <Link
-            to={url}
-            className="button button-secondary"
-          >Open this team</Link>
+          <Link to={url} className="button button-secondary">Open this team</Link>
         </div>
       </div>
     );
@@ -59,8 +57,8 @@ const Dashboard = (props) => {
 };
 
 Dashboard.propTypes = {
-  accounts: React.PropTypes.instanceOf(Map),
-  user: React.PropTypes.instanceOf(User)
+  accounts: PropTypes.instanceOf(Map),
+  user: PropTypes.instanceOf(User),
 };
 
 export default Dashboard;

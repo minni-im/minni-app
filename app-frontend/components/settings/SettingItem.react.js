@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import classnames from "classnames";
 
 import UserSettingsStore from "../../stores/UserSettingsStore";
@@ -11,18 +12,17 @@ export default class SettingItem extends React.Component {
     desc: PropTypes.string,
     children: PropTypes.node,
     onChange: PropTypes.func.isRequired,
-    choices: PropTypes.arrayOf(PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.any.isRequired
-    }))
-  }
+    choices: PropTypes.arrayOf(
+      PropTypes.shape({
+        label: PropTypes.string.isRequired,
+        value: PropTypes.any.isRequired,
+      })
+    ),
+  };
 
   static defaultProps = {
-    choices: [
-      { label: "On", value: true },
-      { label: "Off", value: false }
-    ]
-  }
+    choices: [{ label: "On", value: true }, { label: "Off", value: false }],
+  };
 
   constructor(props) {
     super(props);
@@ -30,13 +30,13 @@ export default class SettingItem extends React.Component {
   }
 
   state = {
-    value: this.getValueFromStore(this.props.setting, this.props.default)
-  }
+    value: this.getValueFromStore(this.props.setting, this.props.default),
+  };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.setting !== this.props.setting) {
       this.setState({
-        value: this.getValueFromStore(nextProps.setting, nextProps.default)
+        value: this.getValueFromStore(nextProps.setting, nextProps.default),
       });
     }
   }
@@ -55,7 +55,7 @@ export default class SettingItem extends React.Component {
     if (newValue !== this.state.value) {
       const oldValue = this.state.value;
       this.setState({
-        value: newValue
+        value: newValue,
       });
       this.props.onChange(this.props.setting, newValue, oldValue);
     }
@@ -69,15 +69,9 @@ export default class SettingItem extends React.Component {
     const { title, desc, children, choices } = this.props;
     let description;
     if (children) {
-      description = (
-        <em>{children}</em>
-      );
+      description = <em>{children}</em>;
     } else {
-      description = (
-        desc ?
-          <em dangerouslySetInnerHTML={{ __html: desc }} /> :
-          false
-      );
+      description = desc ? <em dangerouslySetInnerHTML={{ __html: desc }} /> : false;
     }
     return (
       <div className="setting-item flex-horizontal">
@@ -86,18 +80,18 @@ export default class SettingItem extends React.Component {
           <div>{description}</div>
         </div>
         <div className="setting-item--toggle" onClick={this.onToggleClick}>
-          {choices.map(({ label, value }, index) => (
-            <span
+          {choices.map(({ label, value }, index) =>
+            (<span
               key={`setting-${index}`}
               data-value={value}
               data-value-type={typeof value}
               className={classnames("button", "button-small", {
-                "button-highlight": value === this.state.value
+                "button-highlight": value === this.state.value,
               })}
             >
               {label}
-            </span>
-          ))}
+            </span>)
+          )}
         </div>
       </div>
     );

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export default class Badge extends React.Component {
   render() {
@@ -11,5 +12,5 @@ export default class Badge extends React.Component {
 }
 
 Badge.propTypes = {
-  number: React.PropTypes.number.isRequired
+  number: PropTypes.number.isRequired,
 };

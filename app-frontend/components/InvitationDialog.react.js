@@ -1,17 +1,18 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import Dialog from "./generic/Dialog.react";
 import InvitationListContainer from "./InvitationListContainer.react";
 
 class InvitationDialog extends React.Component {
   static propTypes = {
-    visible: React.PropTypes.bool,
-    onClose: React.PropTypes.func
-  }
+    visible: PropTypes.bool,
+    onClose: PropTypes.func,
+  };
 
   static defaultProps = {
-    visible: false
-  }
+    visible: false,
+  };
 
   render() {
     //
@@ -30,10 +31,12 @@ class InvitationDialog extends React.Component {
     // );
     return (
       <Dialog
-        buttons={[{
-          label: "Close",
-          action: "close"
-        }]}
+        buttons={[
+          {
+            label: "Close",
+            action: "close",
+          },
+        ]}
         {...this.props}
         title="Invite teammates"
         subtitle="Create invitation links for your coworkers"
@@ -47,16 +50,16 @@ class InvitationDialog extends React.Component {
 
 export default class InvitationDialogWrapper extends React.Component {
   static propTypes = {
-    className: React.PropTypes.string
-  }
+    className: PropTypes.string,
+  };
 
   state = {
-    visible: false
-  }
+    visible: false,
+  };
 
   toggleDialog() {
     this.setState(({ visible }) => ({
-      visible: !visible
+      visible: !visible,
     }));
   }
 
@@ -64,12 +67,9 @@ export default class InvitationDialogWrapper extends React.Component {
     const { visible } = this.state;
     return (
       <span className={this.props.className}>
-        <InvitationDialog
-          visible={visible}
-          onClose={() => this.toggleDialog()}
-        />
+        <InvitationDialog visible={visible} onClose={() => this.toggleDialog()} />
         {React.cloneElement(this.props.children, {
-          onClick: () => this.toggleDialog()
+          onClick: () => this.toggleDialog(),
         })}
       </span>
     );

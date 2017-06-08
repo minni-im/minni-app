@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import classnames from "classnames";
 
 import User from "../../models/User";
@@ -31,17 +32,17 @@ export default function Avatar(props) {
 
 Avatar.SIZE = AVATAR_SIZES;
 Avatar.propTypes = {
-  user: React.PropTypes.instanceOf(User).isRequired,
-  size: React.PropTypes.oneOf([
+  user: PropTypes.instanceOf(User).isRequired,
+  size: PropTypes.oneOf([
     AVATAR_SIZES.SMALL,
     AVATAR_SIZES.MEDIUM,
     AVATAR_SIZES.LARGE,
     AVATAR_SIZES.XLARGE,
   ]),
-  className: React.PropTypes.string,
-  isTyping: React.PropTypes.bool,
-  withStatus: React.PropTypes.bool,
-  showOffline: React.PropTypes.bool,
+  className: PropTypes.string,
+  isTyping: PropTypes.bool,
+  withStatus: PropTypes.bool,
+  showOffline: PropTypes.bool,
 };
 
 Avatar.defaultProps = {

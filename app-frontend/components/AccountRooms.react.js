@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Container } from "flux/utils";
 import classNames from "classnames";
 
@@ -121,15 +122,15 @@ class AccountRooms extends Component {
     const { account, withAccountName } = this.props;
     const roomList = rooms
       .sortBy(({ starred, name }) => (starred ? `a-${name}` : `z-${name}`))
-      .map(room => (
-        <Room
+      .map(room =>
+        (<Room
           key={room.slug}
           room={room}
           selected={selectedRooms.has(room.slug)}
           unreadCount={UnreadMessageStore.getUnreadCount(account.id, room.id)}
           onLeave={event => this.onRoomLeaveClick(event, room.slug)}
-        />
-      ))
+        />)
+      )
       .toArray();
     return (
       <nav className="flex-vertical flex-spacer">

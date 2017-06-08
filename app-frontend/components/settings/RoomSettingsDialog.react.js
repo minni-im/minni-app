@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import Immutable from "immutable";
 
 import * as RoomActionCreators from "../../actions/RoomActionCreators";
@@ -19,12 +20,12 @@ import { camelize } from "../../utils/TextUtils";
 
 export default class RoomSettingsDialog extends React.Component {
   static propTypes = {
-    room: React.PropTypes.instanceOf(Room).isRequired,
-    onClose: React.PropTypes.func.isRequired,
+    room: PropTypes.instanceOf(Room).isRequired,
+    onClose: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
-    router: React.PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -94,39 +95,33 @@ export default class RoomSettingsDialog extends React.Component {
   }
 
   generateOverview() {
-    const {
-      name,
-      topic,
-      type,
-    } = this.props.room;
+    const { name, topic, type } = this.props.room;
     const sections = [
-      (
-        <section>
+      <section>
         <h3>Room details</h3>
         <h4>
-            <label htmlFor="name">
-              Room name
-            </label>
-          </h4>
+          <label htmlFor="name">
+            Room name
+          </label>
+        </h4>
         <div>
-            {type === 0
-              ? <input
-                type="text"
-                readOnly
-                placeholder={`${name} (name of the default initial room can not be changed)`}
-                id="name"
-              />
-              : <input type="text" defaultValue={name} id="name" />}
+          {type === 0
+            ? <input
+              type="text"
+              readOnly
+              placeholder={`${name} (name of the default initial room can not be changed)`}
+              id="name"
+            />
+            : <input type="text" defaultValue={name} id="name" />}
 
-          </div>
+        </div>
         <h4>
-            <label htmlFor="topic">Room topic</label>
-          </h4>
+          <label htmlFor="topic">Room topic</label>
+        </h4>
         <div>
-            <input type="text" defaultValue={topic} id="topic" onBlur={this.onDescChange} />
-          </div>
-      </section>
-      ),
+          <input type="text" defaultValue={topic} id="topic" onBlur={this.onDescChange} />
+        </div>
+      </section>,
     ];
     if (this.props.room.type !== 0) {
       sections.push(this.generateMembersAccess());
@@ -136,11 +131,9 @@ export default class RoomSettingsDialog extends React.Component {
 
   generateInvites() {
     return [
-      (
-        <section>
+      <section>
         <h3>Invite other team members</h3>
-      </section>
-      ),
+      </section>,
     ];
   }
 
@@ -186,7 +179,7 @@ export default class RoomSettingsDialog extends React.Component {
           >
             Delete
           </button>
-        </ConfirmButton>,
+        </ConfirmButton>
       );
     }
 
@@ -208,7 +201,7 @@ export default class RoomSettingsDialog extends React.Component {
         (Section, index) =>
           React.isValidElement(Section)
             ? React.cloneElement(Section, { key: index })
-            : <Section key={index} onChange={this.onSettingChange} />,
+            : <Section key={index} onChange={this.onSettingChange} />
       );
       return (
         <TabPanel key={category} label={camelize(category)}>

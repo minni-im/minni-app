@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Container } from "flux/utils";
 import { Link } from "react-router";
 
@@ -19,8 +20,8 @@ class AccountLobbyLink extends React.Component {
   }
 
   static propTypes = {
-    className: React.PropTypes.string,
-    withAccountName: React.PropTypes.bool,
+    className: PropTypes.string,
+    withAccountName: PropTypes.bool,
   };
 
   static defaultProps = {

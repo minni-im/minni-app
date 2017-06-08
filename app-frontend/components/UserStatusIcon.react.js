@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import { USER_STATUS } from "../Constants";
@@ -8,25 +9,22 @@ export default function UserStatusIcon(props) {
 
   return (
     <div
-      className={classNames(
-        "user-status-icon",
-        {
-          "user--is-typing": props.typing
-        }
-      )}
+      className={classNames("user-status-icon", {
+        "user--is-typing": props.typing,
+      })}
       data-status={statusCode}
-    ></div>
+    />
   );
 }
 
 UserStatusIcon.propTypes = {
-  status: React.PropTypes.oneOf([
+  status: PropTypes.oneOf([
     USER_STATUS.OFFLINE,
     USER_STATUS.CONNECTING,
     USER_STATUS.ONLINE,
     USER_STATUS.IDLE,
     USER_STATUS.AWAY,
-    USER_STATUS.DND
+    USER_STATUS.DND,
   ]),
-  typing: React.PropTypes.bool
+  typing: PropTypes.bool,
 };

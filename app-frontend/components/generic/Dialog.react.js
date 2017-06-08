@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import classnames from "classnames";
 import clickOutside from "click-outside";
@@ -14,15 +15,15 @@ class DialogBase extends React.Component {
     subtitle: PropTypes.string,
     onDialogClose: PropTypes.func,
     onClickOutside: PropTypes.func,
-    buttons: PropTypes.arrayOf(PropTypes.any)
-  }
+    buttons: PropTypes.arrayOf(PropTypes.any),
+  };
 
   static defaultProps = {
     baseClassName: "dialog",
     autoFocus: true,
     title: "Dialog",
-    subtitle: ""
-  }
+    subtitle: "",
+  };
 
   componentDidMount() {
     this.focusTimeout = setTimeout(() => {
@@ -66,16 +67,12 @@ class DialogBase extends React.Component {
       return;
     }
 
-    this.close(
-      React.isValidElement(button) ?
-      button.props.action :
-      button.action
-    );
+    this.close(React.isValidElement(button) ? button.props.action : button.action);
   }
 
   getButtonClasses(button) {
     const classes = {
-      [button.className || "button"]: true
+      [button.className || "button"]: true,
     };
 
     if (button.isPrimary || this.props.buttons.length === 1) {
@@ -106,7 +103,9 @@ class DialogBase extends React.Component {
     return (
       <div
         className={buttonsClassName}
-        ref={(actionButtons) => { this.actionButtons = actionButtons; }}
+        ref={(actionButtons) => {
+          this.actionButtons = actionButtons;
+        }}
       >
         {this.props.buttons.map(this.renderButton, this)}
       </div>
@@ -117,13 +116,10 @@ class DialogBase extends React.Component {
     const clickHandler = this.onButtonClick.bind(this, button);
 
     if (React.isValidElement(button)) {
-      return React.cloneElement(
-        button,
-        {
-          key: `dialog-button-${index}`,
-          onClick: clickHandler
-        }
-      );
+      return React.cloneElement(button, {
+        key: `dialog-button-${index}`,
+        onClick: clickHandler,
+      });
     }
 
     const labelClass = `${this.props.baseClassName}__button-label`;
@@ -155,11 +151,15 @@ class DialogBase extends React.Component {
     return (
       <div
         className={backdropClassName}
-        ref={(backdrop) => { this.backdrop = backdrop; }}
+        ref={(backdrop) => {
+          this.backdrop = backdrop;
+        }}
       >
         <div
           className={dialogClassName}
-          ref={(dialog) => { this.dialog = dialog; }}
+          ref={(dialog) => {
+            this.dialog = dialog;
+          }}
           role="dialog"
         >
           <header className={headerClassName}>
@@ -170,10 +170,10 @@ class DialogBase extends React.Component {
             {this.renderButtonsBar()}
           </header>
           <div
-            className={
-              classnames(this.props.className, contentClassName)
-            }
-            ref={(content) => { this.content = content; }}
+            className={classnames(this.props.className, contentClassName)}
+            ref={(content) => {
+              this.content = content;
+            }}
             tabIndex="-1"
           >
             {this.props.children}
@@ -190,15 +190,15 @@ export default class Dialog extends React.Component {
     baseClassName: PropTypes.string,
     enterTimeout: PropTypes.number,
     leaveTimeout: PropTypes.number,
-    onClose: PropTypes.func
-  }
+    onClose: PropTypes.func,
+  };
 
   static defaultProps = {
     visible: false,
     baseClassName: "dialog",
     enterTimeout: 200,
-    leaveTimeout: 200
-  }
+    leaveTimeout: 200,
+  };
 
   constructor(props) {
     super(props);
@@ -221,9 +221,8 @@ export default class Dialog extends React.Component {
           transitionEnterTimeout={enterTimeout}
           transitionLeaveTimeout={leaveTimeout}
         >
-          {visible && (
-            <DialogBase {...this.props} key="dialog" onDialogClose={this.onDialogClose} />
-          )}
+          {visible &&
+            <DialogBase {...this.props} key="dialog" onDialogClose={this.onDialogClose} />}
         </ReactCSSTransitionGroup>
       </RootChild>
     );

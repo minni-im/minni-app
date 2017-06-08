@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import classnames from "classnames";
 import Image from "./generic/Image.react";
 
@@ -26,9 +27,9 @@ function EmbedWrapper(props) {
 }
 
 EmbedWrapper.propTypes = {
-  className: React.PropTypes.string,
-  children: React.PropTypes.any,
-  onHidePreview: React.PropTypes.func,
+  className: PropTypes.string,
+  children: PropTypes.any,
+  onHidePreview: PropTypes.func,
 };
 
 EmbedWrapper.defaultProps = {
@@ -87,18 +88,17 @@ class OEmbed extends React.Component {
           />
         </a>
       );
-    } else {
-      return (
-        <Image
-          src={url}
-          className="embed--thumbnail"
-          width={this.props.width}
-          height={this.props.height}
-          thumbnailWidth={width}
-          thumbnailHeight={height}
-        />
-      );
     }
+    return (
+      <Image
+        src={url}
+        className="embed--thumbnail"
+        width={this.props.width}
+        height={this.props.height}
+        thumbnailWidth={width}
+        thumbnailHeight={height}
+      />
+    );
   }
 
   renderHtml() {
@@ -317,5 +317,5 @@ export default function Embed(props) {
 }
 
 Embed.propTypes = {
-  type: React.PropTypes.string,
+  type: PropTypes.string,
 };

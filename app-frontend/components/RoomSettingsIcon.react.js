@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import classnames from "classnames";
 
 import RoomSettingsDialog from "./settings/RoomSettingsDialog.react";
@@ -8,9 +9,9 @@ import { SettingsIcon } from "../utils/IconsUtils";
 
 export default class extends React.Component {
   static propTypes = {
-    room: React.PropTypes.object.isRequired,
-    className: React.PropTypes.string
-  }
+    room: PropTypes.object.isRequired,
+    className: PropTypes.string,
+  };
 
   constructor(props) {
     super(props);
@@ -19,8 +20,8 @@ export default class extends React.Component {
   }
 
   state = {
-    visible: false
-  }
+    visible: false,
+  };
 
   onClose() {
     this.setState({ visible: false });

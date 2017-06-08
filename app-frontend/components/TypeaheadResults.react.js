@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import classnames from "classnames";
 
 import { KEYCODES } from "../utils/KeyboardUtils";
@@ -8,8 +9,8 @@ export default class TypeaheadResults extends React.Component {
     className: PropTypes.string,
     results: PropTypes.array,
     command: PropTypes.object,
-    onSelect: PropTypes.func.isRequired
-  }
+    onSelect: PropTypes.func.isRequired,
+  };
 
   constructor(props) {
     super(props);
@@ -19,8 +20,8 @@ export default class TypeaheadResults extends React.Component {
   }
 
   state = {
-    selectedIndex: 0
-  }
+    selectedIndex: 0,
+  };
 
   handleKeyDown(event) {
     const results = this.props.results || this.state.results;
@@ -73,7 +74,7 @@ export default class TypeaheadResults extends React.Component {
     const results = this.props.results || this.state.results;
     const classNames = {
       suggestions: true,
-      [this.constructor.className || ""]: true
+      [this.constructor.className || ""]: true,
     };
 
     if (this.props.command) {
@@ -81,7 +82,7 @@ export default class TypeaheadResults extends React.Component {
       classNames["suggestions-images"] = !!this.props.command.images;
     }
 
-    let header = (
+    const header = (
       <div className="suggestions-header">
         {this.renderHeader && this.renderHeader()}
         <div className="header-help">
@@ -92,20 +93,21 @@ export default class TypeaheadResults extends React.Component {
       </div>
     );
 
-    if (results == null || results.length === 0 && !this.props.command) {
+    if (results == null || (results.length === 0 && !this.props.command)) {
       return null;
     }
 
     let suggestions;
     if (results.length) {
-      const suggestionMapper = (result, index) => this.renderRow(result, {
-        key: index,
-        className: classnames("suggestion-item", {
-          "suggestion-item--active": this.state.selectedIndex === index
-        }),
-        onMouseDown: this.handleSelect,
-        onMouseEnter: () => this.setState({ selectedIndex: index })
-      });
+      const suggestionMapper = (result, index) =>
+        this.renderRow(result, {
+          key: index,
+          className: classnames("suggestion-item", {
+            "suggestion-item--active": this.state.selectedIndex === index,
+          }),
+          onMouseDown: this.handleSelect,
+          onMouseEnter: () => this.setState({ selectedIndex: index }),
+        });
       suggestions = (
         <div className="suggestions-list">
           {results.map(suggestionMapper)}

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Container } from "flux/utils";
 
 import * as AccountActionCreators from "../actions/AccountActionCreators";
@@ -9,8 +10,8 @@ import Dashboard from "./Dashboard.react";
 
 class DashboardContainer extends React.Component {
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
-  }
+    router: PropTypes.object.isRequired,
+  };
 
   static getStores() {
     return [AccountStore, ConnectionStore, UserStore];
@@ -19,7 +20,7 @@ class DashboardContainer extends React.Component {
   static calculateState() {
     return {
       accounts: AccountStore.getAccounts(),
-      user: UserStore.getConnectedUser()
+      user: UserStore.getConnectedUser(),
     };
   }
 

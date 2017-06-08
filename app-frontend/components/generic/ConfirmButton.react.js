@@ -1,11 +1,12 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import classnames from "classnames";
 
 export default class ConfirmButton extends Component {
   static propTypes = {
-    action: React.PropTypes.string.isRequired,
-    onClick: React.PropTypes.func
-  }
+    action: PropTypes.string.isRequired,
+    onClick: PropTypes.func,
+  };
 
   constructor(props) {
     super(props);
@@ -14,8 +15,8 @@ export default class ConfirmButton extends Component {
   }
 
   state = {
-    confirmed: false
-  }
+    confirmed: false,
+  };
 
   onClick(event) {
     this.props.onClick(event);
@@ -23,7 +24,7 @@ export default class ConfirmButton extends Component {
 
   onClickToggle() {
     this.setState({
-      confirmed: !this.state.confirmed
+      confirmed: !this.state.confirmed,
     });
   }
 
@@ -31,23 +32,18 @@ export default class ConfirmButton extends Component {
     const children = React.Children.toArray(this.props.children);
     const icon = React.cloneElement(children[0], {
       key: `${this.props.action}-icon`,
-      onClick: this.onClickToggle
+      onClick: this.onClickToggle,
     });
     const action = React.cloneElement(children[1], {
       key: `${this.props.action}-action`,
-      onClick: this.onClick
+      onClick: this.onClick,
     });
     return (
       <span
-        className={
-          classnames(
-            "button-confirm",
-            { "button-confirm--active": this.state.confirmed }
-          )
-        }
+        className={classnames("button-confirm", { "button-confirm--active": this.state.confirmed })}
       >
-      {icon}
-      {action}
+        {icon}
+        {action}
       </span>
     );
   }
