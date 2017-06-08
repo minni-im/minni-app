@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Match } from "react-router";
+import { Route } from "react-router";
 
 import { deselectRooms } from "../actions/RoomActionCreators";
 
@@ -16,6 +16,6 @@ export default class MutliRoomContainer extends React.Component {
   }
 
   render() {
-    return <Match pattern={`${this.props.pattern}/:roomSlugs`} component={Rooms} />;
+    return <Route path={`${this.props.pattern}/:roomSlugs`} component={Rooms} />;
   }
 }

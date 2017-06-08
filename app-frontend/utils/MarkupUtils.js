@@ -1,7 +1,7 @@
 import React from "react"; // needed for the jsx below.
 import SimpleMarkdown from "simple-markdown";
 import highlight from "highlight.js";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 import Emoji from "../components/Emoji.react";
 
@@ -27,9 +27,11 @@ const DEFAULT_RULES = {
           href={SimpleMarkdown.sanitizeUrl(node.target)}
           title={node.title}
           target="_blank"
-        >{output(node.content, state)}</a>
+        >
+          {output(node.content, state)}
+        </a>
       );
-    }
+    },
   },
   autolink: SimpleMarkdown.defaultRules.autolink,
   url: SimpleMarkdown.defaultRules.url,
@@ -44,10 +46,8 @@ const DEFAULT_RULES = {
     match: SimpleMarkdown.inlineRegex(/^~([\s\S]+?)~(?!_)/),
     parse: SimpleMarkdown.defaultRules.u.parse,
     react(node, output, state) {
-      return (
-        <s key={state.key}>{output(node.content, state)}</s>
-      );
-    }
+      return <s key={state.key}>{output(node.content, state)}</s>;
+    },
   },
   codeBlock: {
     order: SimpleMarkdown.defaultRules.codeBlock.order,
@@ -65,7 +65,7 @@ const DEFAULT_RULES = {
     parse(capture) {
       return {
         lang: (capture[2] || "").trim(),
-        content: (capture[3] || "").trim()
+        content: (capture[3] || "").trim(),
       };
     },
 
@@ -73,33 +73,27 @@ const DEFAULT_RULES = {
       if (node.lang && highlight.getLanguage(node.lang) !== null) {
         const code = highlight.highlight(node.lang, node.content);
         return (
-          <div
-            className="message--code-block"
-            key={state.key}
-          >
+          <div className="message--code-block" key={state.key}>
             <div className="language">{`</> ${code.language}`}</div>
             <pre>
               <code
                 className={`hljs ${code.language}`}
                 dangerouslySetInnerHTML={{ __html: code.value }}
-              ></code>
+              />
             </pre>
           </div>
         );
       }
       const code = highlight.highlightAuto(node.content);
       return (
-        <div
-          className="message--code-block"
-          key={state.key}
-        >
+        <div className="message--code-block" key={state.key}>
           <div className="language">{`<?> Is it some '${code.language}' ?`}</div>
           <pre>
             <code className="hljs">{node.content}</code>
           </pre>
         </div>
       );
-    }
+    },
   },
 
   blockQuote: SimpleMarkdown.defaultRules.blockQuote,
@@ -115,7 +109,7 @@ const DEFAULT_RULES = {
     },
     react(node, output, state) {
       return <Emoji key={state.key} shortname={node.name} skinTone={node.skinTone} />;
-    }
+    },
   },
 
   mention: {
@@ -127,20 +121,17 @@ const DEFAULT_RULES = {
       const user = UserStore.getUser(capture[1]);
       return {
         userId: user !== null ? user.id : null,
-        content: [{
-          type: "text",
-          content: user !== null ? `@${user.nickname}` : capture[0]
-        }]
+        content: [
+          {
+            type: "text",
+            content: user !== null ? `@${user.nickname}` : capture[0],
+          },
+        ],
       };
     },
     react(node, output, state) {
-      return (
-        <b
-          className="mention"
-          key={state.key}
-        >{output(node.content, state)}</b>
-      );
-    }
+      return <b className="mention" key={state.key}>{output(node.content, state)}</b>;
+    },
   },
 
   room: {
@@ -153,16 +144,18 @@ const DEFAULT_RULES = {
       const room = RoomStore.get(capture[1]);
       if (!room) {
         return {
-          content: "deleted-room"
+          content: "deleted-room",
         };
       }
       return {
         accountSlug,
         roomSlug: room.slug,
-        content: [{
-          type: "text",
-          content: `#${room.slug}`
-        }]
+        content: [
+          {
+            type: "text",
+            content: `#${room.slug}`,
+          },
+        ],
       };
     },
     react(node, output, state) {
@@ -172,7 +165,9 @@ const DEFAULT_RULES = {
             key={state.key}
             className="hashtag"
             title="There used to be a room here. It's gone..."
-          >#deleted-room</span>
+          >
+            #deleted-room
+          </span>
         );
       }
       return (
@@ -180,9 +175,11 @@ const DEFAULT_RULES = {
           key={state.key}
           className="hashtag hashtag--room"
           to={`/chat/${node.accountSlug}/messages/${node.roomSlug}`}
-        >{output(node.content, state)}</Link>
+        >
+          {output(node.content, state)}
+        </Link>
       );
-    }
+    },
   },
 
   hashtag: {
@@ -195,15 +192,13 @@ const DEFAULT_RULES = {
     },
     parse(capture) {
       return {
-        content: capture[1]
+        content: capture[1],
       };
     },
     react(node, output, state) {
-      return (
-        <b key={state.key} className="hashtag">#{node.content}</b>
-      );
-    }
-  }
+      return <b key={state.key} className="hashtag">#{node.content}</b>;
+    },
+  },
 };
 
 export function getDefaultRules() {
@@ -229,13 +224,13 @@ export function parseTitle(content, withLink = true) {
   const defaultRules = getDefaultRules();
   let rules = {
     emoji: defaultRules.emoji,
-    text: defaultRules.text
+    text: defaultRules.text,
   };
   if (withLink) {
     rules = {
       link: defaultRules.link,
       url: defaultRules.url,
-      ...rules
+      ...rules,
     };
   }
   return createContentParser(rules, content);

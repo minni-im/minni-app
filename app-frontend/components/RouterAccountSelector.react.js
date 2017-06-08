@@ -1,15 +1,16 @@
 import React from "react";
+import { withRouter } from "react-router";
 
 import { selectAccount } from "../actions/AccountActionCreators";
 
-export default class AccountSelector extends React.Component {
+class AccountSelector extends React.Component {
   componentWillMount() {
-    selectAccount(this.props.params.accountSlug);
+    selectAccount(this.props.match.params.accountSlug);
   }
 
   componentWillUpdate(nextProps) {
-    if (this.props.params.accountSlug !== nextProps.params.accountSlug) {
-      selectAccount(nextProps.params.accountSlug);
+    if (this.props.match.params.accountSlug !== nextProps.match.params.accountSlug) {
+      selectAccount(nextProps.match.params.accountSlug);
     }
   }
 
@@ -17,3 +18,5 @@ export default class AccountSelector extends React.Component {
     return null;
   }
 }
+
+export default withRouter(AccountSelector);
