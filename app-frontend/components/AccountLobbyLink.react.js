@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Container } from "flux/utils";
-import { Link } from "react-router";
+import { NavLink } from "react-router-dom";
 
 import { LobbyIcon } from "../utils/IconsUtils";
 
@@ -33,7 +33,7 @@ class AccountLobbyLink extends React.Component {
     const { account } = this.state;
     const { withAccountName } = this.props;
     return (
-      <Link
+      <NavLink
         to={`/chat/${account && account.name}/lobby`}
         className={this.props.className}
         activeClassName="selected"
@@ -43,7 +43,7 @@ class AccountLobbyLink extends React.Component {
           Lobby
           {withAccountName && <span> • {account && account.toString()}</span>}
         </span>
-      </Link>
+      </NavLink>
     );
   }
 }

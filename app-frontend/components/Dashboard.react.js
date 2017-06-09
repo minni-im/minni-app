@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Map } from "immutable";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 import Welcome from "./Welcome.react";
 import User from "../models/User";

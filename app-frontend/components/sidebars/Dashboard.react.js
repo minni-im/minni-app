@@ -1,6 +1,6 @@
 import React from "react";
 import { Container } from "flux/utils";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 import AccountStore from "../../stores/AccountStore";
 
@@ -11,12 +11,13 @@ class DashboardSidebar extends React.Component {
 
   static calculateState() {
     return {
-      render: !AccountStore.getAccounts().isEmpty()
+      render: !AccountStore.getAccounts().isEmpty(),
     };
   }
 
   render() {
-    return this.state.render && (
+    return (
+      this.state.render &&
       <header className="welcome">
         <h1>{Minni.name}</h1>
         <h2>Welcome to {Minni.name}</h2>

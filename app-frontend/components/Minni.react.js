@@ -1,5 +1,5 @@
 import React from "react";
-import { Match, Redirect } from "react-router";
+import { Route, Redirect } from "react-router-dom";
 import DocumentTitle from "react-document-title";
 
 import Dashboard from "./DashboardContainer.react";
@@ -21,43 +21,43 @@ import AccountSwitcher from "./sidebars/AccountSwitcher.react";
 import Lightbox from "./generic/Lightbox.react";
 import SoundPlayer from "./generic/SoundPlayer.react";
 
-const App = () => (
-  <DocumentTitle title={window.Minni.name}>
+const App = () =>
+  (<DocumentTitle title={window.Minni.name}>
     <div className="flex-vertical flex-spacer">
       <Notifications />
       <div className="minni-app flex-horizontal flex-spacer">
         <AccountSwitcher />
-        <Match pattern="/" component={RouterSessionStart} />
+        <Route path="/" component={RouterSessionStart} />
 
-        <Match exactly pattern="/dashboard" component={DashboardSidebar} />
-        <Match exactly pattern="/" component={Dashboard} />
-        <Match exactly pattern="/dashboard" component={Dashboard} />
+        <Route exact path="/dashboard" component={DashboardSidebar} />
+        <Route exact path="/" component={Dashboard} />
+        <Route exact path="/dashboard" component={Dashboard} />
 
-        <Match
-          exactly
-          pattern="/create"
-          render={props => <Welcome explanation={false} {...props} />}
+        <Route exact path="/create" render={props => <Welcome explanation={false} {...props} />} />
+
+        <Route
+          exact
+          path={"/chat/:accountSlug"}
+          render={({ match: { params, url } }) => {
+            if (params.accountSlug) {
+              return <Redirect to={`${url}/lobby`} />;
+            }
+            return <Redirect to="/" />;
+          }}
         />
 
-        <Match
-          exactly
-          pattern={"/chat/:accountSlug"}
-          render={({ pathname }) => <Redirect to={`${pathname}/lobby`} />}
-        />
+        <Route path="/chat/:accountSlug" component={RouterAccountSelector} />
+        <Route path="/chat/:accountSlug" component={Rooms} />
 
-        <Match pattern="/chat/:accountSlug" component={RouterAccountSelector} />
-        <Match pattern="/chat/:accountSlug" component={Rooms} />
+        <Route exact path="/chat/:accountSlug/lobby" component={Lobby} />
+        <Route exact path="/chat/:accountSlug/create" component={RoomCreate} />
 
-        <Match exactly pattern="/chat/:accountSlug/lobby" component={Lobby} />
-        <Match exactly pattern="/chat/:accountSlug/create" component={RoomCreate} />
-
-        <Match pattern="/chat/:accountSlug/messages" component={MultiRoom} />
+        <Route path="/chat/:accountSlug/messages" component={MultiRoom} />
 
         <Lightbox />
         <SoundPlayer />
       </div>
     </div>
-  </DocumentTitle>
-);
+  </DocumentTitle>);
 
 export default App;

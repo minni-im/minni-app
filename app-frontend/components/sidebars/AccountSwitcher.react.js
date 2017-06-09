@@ -11,7 +11,7 @@ import AccountStore from "../../stores/AccountStore";
 
 import AccountRecord from "../../models/Account";
 
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 class Account extends React.Component {
   render() {
@@ -76,14 +76,16 @@ class AccountSwitcher extends React.Component {
       return <div className="account-switcher" style={{ flexBasis: 0 }} />;
     }
 
-    const links = accounts.toArray().map((account, index) => (
-      <Account
-        key={account.slug}
-        account={account}
-        selected={selectedAccountSlug === account.slug}
-        index={index + 1}
-      />
-      ));
+    const links = accounts
+      .toArray()
+      .map((account, index) =>
+        (<Account
+          key={account.slug}
+          account={account}
+          selected={selectedAccountSlug === account.slug}
+          index={index + 1}
+        />)
+      );
 
     return (
       <div className="account-switcher" style={{ flexBasis: "auto" }}>

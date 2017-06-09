@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router";
+import { NavLink, Link } from "react-router-dom";
 import classnames from "classnames";
 
 import * as RoomActionCreators from "../actions/RoomActionCreators";
@@ -77,14 +77,14 @@ export default class Lobby extends React.Component {
     let settingsIcon;
     if (account.isUserAdmin(this.props.viewer.id)) {
       settingsIcon = (
-        <Link
+        <NavLink
           to={`/settings/${account.name}`}
           title="Edit this team's settings"
           className="icon"
           activeClassName="icon--active"
         >
           <SettingsIcon />
-        </Link>
+        </NavLink>
       );
     }
 

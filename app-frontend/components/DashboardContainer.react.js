@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import { Container } from "flux/utils";
 
 import * as AccountActionCreators from "../actions/AccountActionCreators";
@@ -9,8 +10,8 @@ import UserStore from "../stores/UserStore";
 import Dashboard from "./Dashboard.react";
 
 class DashboardContainer extends React.Component {
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
+  static propTypes = {
+    history: PropTypes.object.isRequired,
   };
 
   static getStores() {
@@ -30,7 +31,7 @@ class DashboardContainer extends React.Component {
     if (accounts.size === 1 && !noRedirect) {
       const account = accounts.first();
       setTimeout(() => {
-        this.context.router.transitionTo(`/chat/${account.slug}/lobby`);
+        nextProps.history.push(`/chat/${account.slug}/lobby`);
       }, 0);
     }
   }
@@ -45,4 +46,4 @@ class DashboardContainer extends React.Component {
 }
 
 const container = Container.create(DashboardContainer, { pure: true });
-export default container;
+export default withRouter(container);
