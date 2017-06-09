@@ -21,7 +21,7 @@ class UserInfoPanel extends React.Component {
   static calculateState() {
     return {
       user: UserStore.getConnectedUser(),
-      showSettingsDialog: false
+      showSettingsDialog: false,
     };
   }
 
@@ -46,20 +46,13 @@ class UserInfoPanel extends React.Component {
     return (
       <div className="user-info flex-horizontal">
         <div className="user flex-horizontal flex-spacer">
-          <Avatar
-            className="user-avatar"
-            user={user}
-            withStatus
-          />
+          <Avatar className="user-avatar" user={user} withStatus />
           <div className="flex-spacer">
             <div className="user-name" title={user.fullname}>{user.fullname}</div>
             <UserStatus status={user.status} />
           </div>
         </div>
-        <div
-          className="user-settings icon"
-          onClick={this.onSettingsClick}
-        >
+        <div className="user-settings icon" onClick={this.onSettingsClick}>
           <UserSettingsDialogContainer
             visible={showSettingsDialog}
             onClose={this.onUserSettingsCloseDialog}
@@ -71,7 +64,6 @@ class UserInfoPanel extends React.Component {
   }
 }
 
-
 const InfoContainer = Container.create(UserInfoPanel);
 export default InfoContainer;
 
@@ -79,9 +71,11 @@ export class InfoPanelPopover extends React.Component {
   render() {
     return (
       <Popover
-        ref={(popover) => { this.popover = popover; }}
+        ref={(popover) => {
+          this.popover = popover;
+        }}
         className="user-info--popover"
-        buttonComponent={<InfoContainer />}
+        buttonComponent={<InfoContainer ref={c => (this.infoContainer = c)} />}
       >
         <ul className="menu">
           <li
@@ -112,6 +106,21 @@ export class InfoPanelPopover extends React.Component {
           >
             <span className="user-status-icon" data-status="2" />
             Online
+          </li>
+          <li className="separator" />
+          <li>
+            <a
+              onClick={(evt) => {
+                evt.preventDefault();
+                this.popover.close();
+                this.infoContainer.onSettingsClick(evt);
+              }}
+            >
+              <span className="icon">
+                <SettingsIcon />
+              </span>
+              Settings
+            </a>
           </li>
           <li className="separator" />
           <li>
