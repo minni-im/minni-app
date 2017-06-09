@@ -38,7 +38,12 @@ const App = () =>
         <Route
           exact
           path={"/chat/:accountSlug"}
-          render={({ pathname }) => <Redirect to={`${pathname}/lobby`} />}
+          render={({ match: { params, url } }) => {
+            if (params.accountSlug) {
+              return <Redirect to={`${url}/lobby`} />;
+            }
+            return <Redirect to="/" />;
+          }}
         />
 
         <Route path="/chat/:accountSlug" component={RouterAccountSelector} />
