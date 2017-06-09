@@ -12,14 +12,14 @@ import RoomStore from "../stores/RoomStore";
 import { selectRoom } from "../actions/RoomActionCreators";
 
 function activateSelectedRoom(props) {
-  const { params } = props;
+  const { params } = props.match;
   const { accountSlug, roomSlugs } = params;
   selectRoom(accountSlug, roomSlugs.split(","));
 }
 
 class RoomsContainer extends React.Component {
   static propTypes = {
-    params: PropTypes.objectOf(PropTypes.string),
+    match: PropTypes.object.isRequired,
   };
 
   static getStores() {
@@ -27,7 +27,7 @@ class RoomsContainer extends React.Component {
   }
 
   static calculateState(prevState, prevProps) {
-    const roomSlugs = prevProps.params.roomSlugs.split(",");
+    const roomSlugs = prevProps.match.params.roomSlugs.split(",");
     return {
       rooms: RoomStore.getRoomsBySelectedAccount(...roomSlugs),
       connection: ConnectionStore.isConnected(),
@@ -39,7 +39,7 @@ class RoomsContainer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.params.roomSlugs !== this.props.params.roomSlugs) {
+    if (nextProps.match.params.roomSlugs !== this.props.match.params.roomSlugs) {
       activateSelectedRoom(nextProps);
     }
   }

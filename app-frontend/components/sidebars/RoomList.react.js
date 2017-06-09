@@ -1,6 +1,6 @@
 import React from "react";
 import classnames from "classnames";
-import { NavLink } from "react-router";
+import { NavLink } from "react-router-dom";
 
 import { RoomIcons } from "../../utils/IconsUtils";
 import { parseTitle } from "../../utils/MarkupUtils";

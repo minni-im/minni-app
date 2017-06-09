@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Container } from "flux/utils";
 import classNames from "classnames";
 
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 import AccountLobbyLink from "./AccountLobbyLink.react";
 
@@ -24,11 +24,8 @@ import { isOSX } from "../utils/PlatformUtils";
 import { RoomIcons } from "../utils/IconsUtils";
 
 class Room extends Component {
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   static propTypes = {
+    history: PropTypes.object.isRequired,
     room: PropTypes.instanceOf(RoomModel).isRequired,
     selected: PropTypes.bool,
     unreadCount: PropTypes.number,
@@ -50,7 +47,7 @@ class Room extends Component {
       const slugs = SelectedRoomStore.getRooms().add(slug).toArray();
       const { slug: accountSlug } = SelectedAccountStore.getAccount();
       if (slugs.length <= MAX_MULTI_ROOMS) {
-        this.context.router.transitionTo({ pathname: `/chat/${accountSlug}/messages/${slugs}` });
+        this.props.history.push(`/chat/${accountSlug}/messages/${slugs}`);
       }
     }
   }
@@ -81,6 +78,8 @@ class Room extends Component {
     );
   }
 }
+
+const RoomLink = withRouter(Room);
 
 class AccountRooms extends Component {
   static getStores() {
@@ -123,7 +122,7 @@ class AccountRooms extends Component {
     const roomList = rooms
       .sortBy(({ starred, name }) => (starred ? `a-${name}` : `z-${name}`))
       .map(room =>
-        (<Room
+        (<RoomLink
           key={room.slug}
           room={room}
           selected={selectedRooms.has(room.slug)}

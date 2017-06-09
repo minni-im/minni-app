@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Redirect } from "react-router";
+import { Route, Redirect } from "react-router-dom";
 import DocumentTitle from "react-document-title";
 
 import Dashboard from "./DashboardContainer.react";
