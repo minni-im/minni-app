@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
+import { withRouter } from "react-router-dom";
 
 import * as RoomActionCreators from "../actions/RoomActionCreators";
 
@@ -18,7 +19,7 @@ import ComposerStore from "../stores/ComposerStore";
 
 import { MAX_MESSAGE_LENGTH } from "../Constants";
 
-export default class Room extends React.Component {
+class Room extends React.Component {
   constructor(props) {
     super(props);
     this.handleRoomLeave = this.handleRoomLeave.bind(this);
@@ -66,14 +67,14 @@ export default class Room extends React.Component {
     let [app, accountSlug, messages, roomSlugs] = document.location.pathname.slice(1).split("/");
     /* eslint-enable  */
     if (!multiRooms) {
-      this.context.router.transitionTo({ pathname: `/chat/${accountSlug}/lobby` });
+      this.props.history.push({ pathname: `/chat/${accountSlug}/lobby` });
     } else {
       roomSlugs = roomSlugs.split(",");
       roomSlugs.splice(roomSlugs.indexOf(room.slug), 1);
-      this.context.router.transitionTo(`/chat/${accountSlug}/messages/${roomSlugs.join(",")}`);
+      this.props.history.push(`/chat/${accountSlug}/messages/${roomSlugs.join(",")}`);
     }
 
-    if (!event.shiftKey) {
+    if (event.shiftKey) {
       RoomActionCreators.leaveRoom(accountSlug, room.slug);
     }
   }
@@ -110,7 +111,7 @@ export default class Room extends React.Component {
               onClick={this.handleRoomLeave}
               title={
                 multiRooms
-                  ? "Leave this room (Shift+Click will just deselect it)"
+                  ? "Close this room panel (shift+click will leave the room)"
                   : "Leave this room"
               }
             >
@@ -143,6 +144,4 @@ export default class Room extends React.Component {
   }
 }
 
-Room.contextTypes = {
-  router: PropTypes.object.isRequired,
-};
+export default withRouter(Room);
