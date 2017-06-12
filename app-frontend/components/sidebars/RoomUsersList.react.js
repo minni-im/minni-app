@@ -37,7 +37,7 @@ class RoomUsersList extends Component {
       [USER_STATUS.AWAY]: "d",
       [USER_STATUS.OFFLINE]: "z",
     };
-    users = users.toArray().sort((a, b) => WEIGHT[a.status] > WEIGHT[b.status]);
+    users = users.sort((a, b) => WEIGHT[a.status] > WEIGHT[b.status]).toArray();
 
     return {
       users,
@@ -52,6 +52,7 @@ class RoomUsersList extends Component {
           (<Avatar
             key={index}
             withStatus
+            withTooltip
             showOffline
             user={user}
             isTyping={this.state.typingUsers.has(user.id)}
