@@ -25,7 +25,7 @@ if (RELEASE) {
   );
 }
 
-gulp.task("less", () =>
+gulp.task("less", () => {
   gulp
     .src(["./assets/stylesheets/style.less", "./assets/stylesheets/chat.less"])
     .pipe(
@@ -45,8 +45,8 @@ gulp.task("less", () =>
       })
     )
     .pipe(plumber.stop())
-    .pipe(gulp.dest("./dist/public/css"))
-);
+    .pipe(gulp.dest("./dist/public/css"));
+});
 
 gulp.task("static", () => gulp.src(STATIC_PATHS).pipe(gulp.dest("./dist/public")));
 

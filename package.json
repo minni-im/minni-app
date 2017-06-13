@@ -10,7 +10,7 @@
     "build:js": "webpack --progress",
     "build:css": "gulp less",
     "static": "gulp static",
-    "dist": "NODE_ENV=production npm run build:js && npm run build:css && npm run static"
+    "dist": "NODE_ENV=production npm run build:js && NODE_ENV=production npm run build:css && npm run static"
   },
   "repository": {
     "type": "git",
@@ -72,6 +72,7 @@
     "body-parser": "^1.16.0",
     "classnames": "^2.1.5",
     "click-outside": "2.0.2",
+    "combokeys": "2.4.6",
     "connect-redis": "^3.2.0",
     "cookie-parser": "^1.3.5",
     "deep-extend": "^0.5.0",

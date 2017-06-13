@@ -1,5 +1,6 @@
 import React from "react";
 import { Container } from "flux/utils";
+import Combokeys from "combokeys";
 
 import * as ActivityActionCreators from "../actions/ActivityActionCreators";
 
@@ -68,6 +69,18 @@ const InfoContainer = Container.create(UserInfoPanel);
 export default InfoContainer;
 
 export class InfoPanelPopover extends React.Component {
+  componentDidMount() {
+    this.combokeys = new Combokeys(document.documentElement);
+    this.combokeys.bind(["command+,", "ctrl+,"], (event) => {
+      this.infoContainer.onSettingsClick(event);
+      return false;
+    });
+  }
+
+  componentWillUnmount() {
+    this.combokeys.detach();
+  }
+
   render() {
     return (
       <Popover

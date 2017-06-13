@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import classnames from "classnames";
 import clickOutside from "click-outside";
+import Combokeys from "combokeys";
 import RootChild from "./RootChild.react";
 
 class DialogBase extends React.Component {
@@ -34,6 +35,9 @@ class DialogBase extends React.Component {
 
       this.unbindClickHandler = clickOutside(this.dialog, this.onBackgroundClick.bind(this));
     }, 10);
+    document.body.classList.add("dialog-open");
+    this.combokeys = new Combokeys(document.documentElement);
+    this.combokeys.bind("esc", () => this.close(), "keyup");
   }
 
   componentWillUnmount() {
@@ -46,6 +50,8 @@ class DialogBase extends React.Component {
       this.unbindClickHandler();
       this.unbindClickHandler = null;
     }
+    document.body.classList.remove("dialog-open");
+    this.combokeys.detach();
   }
 
   onBackgroundClick(event) {

@@ -56,25 +56,26 @@
 }
 
 .dialog {
-  max-width: 90%;
+  // max-width: 90%;
   opacity: 1;
   position: relative;
   transition: opacity .2s ease-in, transform .2s ease-in;
   overflow: hidden;
   // IE needs a horizontal margin values to properly center flex item
-  margin: auto 0;
+  // margin: auto 0;
 
   display: flex;
   flex-flow: column nowrap;
 
   color: @color-dark;
   background-color: @background-light;
-  border-radius: 4px;
+  // border-radius: 4px;
 
   .dialog-enter &,
   .dialog-leave.dialog-leave-active & {
     opacity: 0;
-    transform: scale(.85);
+    // transform: scale(.85);
+    transform: scale(1.2);
   }
 
   &,
