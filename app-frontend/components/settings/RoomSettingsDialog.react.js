@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Immutable from "immutable";
+import { withRouter } from "react-router-dom";
 
 import * as RoomActionCreators from "../../actions/RoomActionCreators";
 
@@ -16,23 +17,21 @@ import { PLUGIN_TYPES } from "../../Constants";
 import Room from "../../models/Room";
 
 import { TrashIcon } from "../../utils/IconsUtils";
-import { camelize } from "../../utils/TextUtils";
+import { camelize, slugify } from "../../utils/TextUtils";
 
-export default class RoomSettingsDialog extends React.Component {
+class RoomSettingsDialog extends React.Component {
   static propTypes = {
+    history: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
     room: PropTypes.instanceOf(Room).isRequired,
     onClose: PropTypes.func.isRequired,
-  };
-
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
   };
 
   constructor(props) {
     super(props);
     this.onCloseDialog = this.onCloseDialog.bind(this);
     this.onSettingChange = this.onSettingChange.bind(this);
-    this.onDescChange = this.onDescChange.bind(this);
+    this.onNameDescChange = this.onNameDescChange.bind(this);
     this.onTypeChange = this.onTypeChange.bind(this);
     this.onUsersChange = this.onUsersChange.bind(this);
   }
@@ -47,14 +46,12 @@ export default class RoomSettingsDialog extends React.Component {
   }
 
   onCloseDialog(action) {
+    const { accountSlug, roomSlugs } = this.props.match.params;
     if (action === "delete") {
-      /* eslint-disable */
-      let [app, accountSlug, ...roomSlugs] = document.location.pathname.slice(1).split("/");
-      /* eslint-enable  */
       const active = roomSlugs.includes(this.props.room.slug);
       RoomActionCreators.deleteRoom(this.props.room.id).then(() => {
         if (active) {
-          this.context.router.transitionTo(`/chat/${accountSlug}/lobby`);
+          this.props.history.push(`/chat/${accountSlug}/lobby`);
         } else {
           this.props.onClose(action);
         }
@@ -65,9 +62,11 @@ export default class RoomSettingsDialog extends React.Component {
     if (action === "save") {
       if (!this.newSettings.isEmpty()) {
         const payload = this.newSettings.toJS();
-        RoomActionCreators.updateRoom(this.props.room.id, payload).then(({ ok, message }) => {
+        RoomActionCreators.updateRoom(this.props.room.id, payload).then(({ ok, room }) => {
           if (ok) {
-            this.props.onClose(action);
+            if (this.props.room.name !== room.name) {
+              this.props.history.replace(`/chat/${accountSlug}/messages/${slugify(room.name)}`);
+            }
           }
         });
         return;
@@ -89,7 +88,7 @@ export default class RoomSettingsDialog extends React.Component {
 
   onSettingChange() {}
 
-  onDescChange(event) {
+  onNameDescChange(event) {
     const { id: key, value } = event.target;
     this.newSettings = this.newSettings.set(key, value);
   }
@@ -112,14 +111,14 @@ export default class RoomSettingsDialog extends React.Component {
               placeholder={`${name} (name of the default initial room can not be changed)`}
               id="name"
             />
-            : <input type="text" defaultValue={name} id="name" />}
+            : <input type="text" defaultValue={name} id="name" onBlur={this.onNameDescChange} />}
 
         </div>
         <h4>
           <label htmlFor="topic">Room topic</label>
         </h4>
         <div>
-          <input type="text" defaultValue={topic} id="topic" onBlur={this.onDescChange} />
+          <input type="text" defaultValue={topic} id="topic" onBlur={this.onNameDescChange} />
         </div>
       </section>,
     ];
@@ -226,3 +225,5 @@ export default class RoomSettingsDialog extends React.Component {
     );
   }
 }
+
+export default withRouter(RoomSettingsDialog);

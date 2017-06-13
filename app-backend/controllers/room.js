@@ -1,69 +1,43 @@
 import recorder from "tape-recorder";
 
+import { TYPE } from "../models/room";
+
 import { requireLogin } from "../middlewares/auth";
 import { requireValidAccount } from "../middlewares/account";
-import {
-  requireValidRoom,
-  requireRoomAdmin } from "../middlewares/room";
+import { requireValidRoom, requireRoomAdmin } from "../middlewares/room";
 
 export default (app) => {
-  app.get("/api/accounts/:accountId/rooms",
-    requireLogin,
-    requireValidAccount,
-    (req) => {
-      req.io.route("rooms:list");
-    });
+  app.get("/api/accounts/:accountId/rooms", requireLogin, requireValidAccount, (req) => {
+    req.io.route("rooms:list");
+  });
 
-  app.put("/api/accounts/:accountId/rooms/",
-    requireLogin,
-    requireValidAccount,
-    (req) => {
-      req.io.route("rooms:create");
-    });
+  app.put("/api/accounts/:accountId/rooms/", requireLogin, requireValidAccount, (req) => {
+    req.io.route("rooms:create");
+  });
 
-  app.delete("/api/rooms/:roomId",
-    requireLogin,
-    requireValidRoom,
-    requireRoomAdmin,
-    (req) => {
-      req.io.route("rooms:delete");
-    });
+  app.delete("/api/rooms/:roomId", requireLogin, requireValidRoom, requireRoomAdmin, (req) => {
+    req.io.route("rooms:delete");
+  });
 
-  app.post("/api/rooms/:roomId",
-    requireLogin,
-    requireValidRoom,
-    requireRoomAdmin,
-    (req) => {
-      req.io.route("rooms:update");
-    }
-  );
+  app.post("/api/rooms/:roomId", requireLogin, requireValidRoom, requireRoomAdmin, (req) => {
+    req.io.route("rooms:update");
+  });
 
-  app.post("/api/rooms/:roomId/star",
-    requireLogin,
-    requireValidRoom,
-    (req) => {
-      req.io.route("rooms:star");
-    });
+  app.post("/api/rooms/:roomId/star", requireLogin, requireValidRoom, (req) => {
+    req.io.route("rooms:star");
+  });
 
-  app.post("/api/rooms/:roomId/unstar",
-    requireLogin, requireValidRoom,
-    (req) => {
-      req.io.route("rooms:unstar");
-    });
+  app.post("/api/rooms/:roomId/unstar", requireLogin, requireValidRoom, (req) => {
+    req.io.route("rooms:unstar");
+  });
 
-  app.get("/api/rooms/:roomId/messages",
-    requireLogin,
-    requireValidRoom,
-    (req) => {
-      req.io.route("rooms:messages");
-    });
+  app.get("/api/rooms/:roomId/messages", requireLogin, requireValidRoom, (req) => {
+    req.io.route("rooms:messages");
+  });
 
-  app.post("/api/rooms/:roomId/typing",
-    requireLogin,
-    requireValidRoom,
-    (req) => {
-      req.io.route("rooms:typing");
-    });
+  app.post("/api/rooms/:roomId/typing", requireLogin, requireValidRoom, (req) => {
+    req.io.route("rooms:typing");
+  });
 
   app.io.route("rooms", {
     star(req, res) {
@@ -78,18 +52,21 @@ export default (app) => {
         rooms.push(room.id);
       }
 
-      user.save().then(() => {
-        res.json({
-          ok: true,
-          message: `Room '${room.name}' has been starred`
-        });
-      }, (error) => {
-        res.json({
-          ok: false,
-          message: "We did not managed to star the room. Please try again later.",
-          errors: error
-        });
-      });
+      user.save().then(
+        () => {
+          res.json({
+            ok: true,
+            message: `Room '${room.name}' has been starred`,
+          });
+        },
+        (error) => {
+          res.json({
+            ok: false,
+            message: "We did not managed to star the room. Please try again later.",
+            errors: error,
+          });
+        }
+      );
     },
 
     unstar(req, res) {
@@ -98,49 +75,51 @@ export default (app) => {
       if (!rooms || (rooms && rooms.indexOf(room.id) === -1)) {
         res.json({
           ok: true,
-          message: "Nothing to be done."
+          message: "Nothing to be done.",
         });
         return;
       }
 
       rooms = rooms.splice(rooms.indexOf(room.id), 1);
 
-      user.save().then(() => {
-        res.json({
-          ok: true,
-          message: `Room '${room.name}' has been unstarred`
-        });
-      }, (error) => {
-        res.json({
-          ok: false,
-          message: "We did not managed to unstar the room. Please try again later.",
-          errors: error
-        });
-      });
+      user.save().then(
+        () => {
+          res.json({
+            ok: true,
+            message: `Room '${room.name}' has been unstarred`,
+          });
+        },
+        (error) => {
+          res.json({
+            ok: false,
+            message: "We did not managed to unstar the room. Please try again later.",
+            errors: error,
+          });
+        }
+      );
     },
 
     list(req, res) {
       const Room = recorder.model("Room");
-      Room.where("accountId", { key: req.params.accountId })
-        .then((rooms) => {
+      Room.where("accountId", { key: req.params.accountId }).then(
+        (rooms) => {
           const { user } = req;
           rooms = rooms
-            .filter(room => (
-              room.public ||
-              (room.private && room.usersId.includes(user.id))
-            ))
+            .filter(room => room.public || (room.private && room.usersId.includes(user.id)))
             .map(room => room.toAPI(user.id === room.adminId));
 
           res.json({
             ok: true,
-            rooms
+            rooms,
           });
-        }, (error) => {
+        },
+        (error) => {
           res.json({
             ok: false,
-            errors: error
+            errors: error,
           });
-        });
+        }
+      );
     },
 
     create(req, res) {
@@ -152,53 +131,58 @@ export default (app) => {
       if (!account.userBelongTo(user.id)) {
         res.status(401).json({
           ok: false,
-          message: "You are not allowed to create a room in this account."
+          message: "You are not allowed to create a room in this account.",
         });
         return;
       }
 
-      Room.isValidName(accountId, name)
-        .then((valid) => {
-          if (!valid) {
-            res.status(400).json({
-              ok: false,
-              message: `A room with name: '${name}' already exist in account: '${account.name}'`
-            });
-            return;
-          }
-
-          const room = new Room({
-            name,
-            topic,
-            type,
-            accountId,
-            usersId,
-            adminId: user.id
+      Room.isValidName(accountId, name).then((valid) => {
+        if (!valid) {
+          res.status(400).json({
+            ok: false,
+            message: `A room with name: '${name}' already exist in account: '${account.name}'`,
           });
+          return;
+        }
 
-          room.save().then((newRoom) => {
+        const room = new Room({
+          name,
+          topic,
+          type,
+          accountId,
+          usersId,
+          adminId: user.id,
+        });
+
+        room.save().then(
+          (newRoom) => {
             // TODO: Security fix, we should only send to concerned people
             app.io.in(accountId).emit("room:create", {
-              room: room.toAPI()
+              room: room.toAPI(),
             });
             res.status(201).json({
               ok: true,
               message: `Room '${name}' has been successfully created`,
-              room: newRoom.toAPI(true)
+              room: newRoom.toAPI(true),
             });
-          }, (error) => {
+          },
+          (error) => {
             res.json({
               ok: false,
               message: "Creation of new room failed.",
-              errors: error
+              errors: error,
             });
-          });
-        });
+          }
+        );
+      });
     },
 
     update(req, res) {
-      const { topic, type, usersId } = req.body;
+      const { name, topic, type, usersId } = req.body;
       const { room } = req;
+      if (name && room.type !== TYPE.INITIAL) {
+        room.name = name;
+      }
       if (topic) {
         room.topic = topic;
       }
@@ -210,17 +194,18 @@ export default (app) => {
         (updatedRoom) => {
           res.json({
             ok: true,
-            room: updatedRoom.toAPI(true)
+            room: updatedRoom.toAPI(true),
           });
           app.io.in(room.accountId).emit("room:update", {
-            room: updatedRoom.toAPI()
+            room: updatedRoom.toAPI(),
           });
         },
         ({ message }) => {
           res.json({
             ok: false,
             message: "Room update failed.",
-            errors: message });
+            errors: message,
+          });
         }
       );
     },
@@ -231,7 +216,7 @@ export default (app) => {
         () => {
           res.json({ ok: true, room: room.toAPI(true) });
           app.io.in(room.accountId).emit("room:delete", {
-            room: room.toAPI()
+            room: room.toAPI(),
           });
         },
         ({ message, error, reason }) => {
@@ -242,8 +227,10 @@ export default (app) => {
           res.json({
             ok: false,
             message: "Room deletion failed.",
-            errors: message });
-        });
+            errors: message,
+          });
+        }
+      );
     },
 
     messages(req, res) {
@@ -251,19 +238,21 @@ export default (app) => {
       const { roomId } = req.params;
       const { limit, latest, oldest } = req.query;
       // console.log(`Fetching ${limit} messages for room:${roomId}`);
-      Message.getHistory(roomId, latest, oldest, limit)
-        .then((messages) => {
+      Message.getHistory(roomId, latest, oldest, limit).then(
+        (messages) => {
           res.json({
             ok: true,
-            messages: messages.map(message => message.toAPI())
+            messages: messages.map(message => message.toAPI()),
           });
-        }, (error) => {
+        },
+        (error) => {
           res.json({
             ok: false,
             message: `Fetching messages for room:${roomId} failed`,
-            errors: error
+            errors: error,
           });
-        });
+        }
+      );
     },
 
     join(req) {
@@ -276,7 +265,7 @@ export default (app) => {
       req.socket.broadcast.to(socketKey).emit("users:join", {
         user: req.user.toAPI(),
         accountId,
-        roomId
+        roomId,
       });
     },
 
@@ -290,7 +279,7 @@ export default (app) => {
       req.socket.broadcast.to(socketKey).emit("users:leave", {
         user: req.user.toAPI(),
         accountId,
-        roomId
+        roomId,
       });
     },
 
@@ -301,11 +290,11 @@ export default (app) => {
       const socketKey = `${accountId}:${roomId}`;
       app.io.in(socketKey).emit("users:typing", {
         roomId,
-        userId: user.id
+        userId: user.id,
       });
       if (!req.isSocket) {
         res.status(204).send();
       }
-    }
+    },
   });
 };
