@@ -19,4 +19,5 @@ yarn-error.log
 ehthumbs.db
 Thumbs.db
 
+etc/nginx.conf
 *.couch
