@@ -13,6 +13,15 @@ TabPanel.propTypes = {
 };
 
 export default class TabBar extends React.Component {
+  static propTypes = {
+    selected: PropTypes.number,
+    children: PropTypes.arrayOf(PropTypes.instanceOf(TabPanel)).isRequired,
+  };
+
+  static defaultProps = {
+    selected: 0,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -23,9 +32,6 @@ export default class TabBar extends React.Component {
   render() {
     let tab;
     const tabNav = React.Children.map(this.props.children, (child, index) => {
-      if (child.type.name !== "TabPanel") {
-        return false;
-      }
       const classNames = { "x-tab": true };
       if (this.state.selected === index) {
         classNames["x-tab-selected"] = true;
@@ -41,15 +47,15 @@ export default class TabBar extends React.Component {
     const tabClassNames = {
       "x-tab-content": true,
     };
-    if (tab.props.className) {
+    if (tab && tab.props.className) {
       tabClassNames[tab.props.className] = true;
     }
 
     return (
       <div className={classnames(this.props.className, "x-tabbar")}>
         <nav className="x-tabs" onClick={this._onNavClicked.bind(this)}>{tabNav}</nav>
-        <div className={classnames(tabClassNames)} onChange={tab.props.onChange}>
-          {tab.props.children}
+        <div className={classnames(tabClassNames)} onChange={tab && tab.props.onChange}>
+          {tab && tab.props.children}
         </div>
       </div>
     );
@@ -63,12 +69,3 @@ export default class TabBar extends React.Component {
     }
   }
 }
-
-TabBar.propTypes = {
-  selected: PropTypes.number /* ,
-  children: PropTypes.arrayOf(PropTypes.instanceOf(TabPanel))*/,
-};
-
-TabBar.defaultProps = {
-  selected: 0,
-};
