@@ -11,9 +11,14 @@ PluginRegister("MentionTypeahead", COMPOSER_TYPEAHEAD, {
 
   reduce(prefix) {
     return UserStore.getAll()
-      .filter(user =>
-        user.nickname.startsWith(prefix.slice(1))
-      )
+      .filter((user) => {
+        const match = prefix.slice(1);
+        return (
+          (user.nickname && user.nickname.startsWith(match)) ||
+          user.lastname.contains(match) ||
+          user.firstname.contains(match)
+        );
+      })
       .slice(0, 10);
-  }
+  },
 });
