@@ -7,7 +7,7 @@ block styles
 block header_scripts
   script(defer="defer", src="/socket.io/socket.io.js")
   if production
-    script(defer="defer", src="/js/#{hash['vendor.js']}")
+    script(defer="defer", src=`/js/${hash['vendor.js']}`)
   else
     script(defer="defer", src="/js/vendor-bundle.js")
 block header_outer
@@ -30,8 +30,8 @@ block main
 
 append scripts
   if production
-    script(defer="defer", src="/js/#{hash['minni.js']}")
-    script(defer="defer", src="/js/#{hash['plugins.js']}")
+    script(defer="defer", src=`/js/${hash['minni.js']}`)
+    script(defer="defer", src=`/js/${hash['plugins.js']}`)
   else
     script(defer="defer", src="/js/minni-bundle.js")
     script(defer="defer", src="/js/plugins-bundle.js")
