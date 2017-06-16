@@ -8,7 +8,7 @@ const nodeEnv = process.env.NODE_ENV || "development";
 const RELEASE = nodeEnv === "production";
 
 module.exports = {
-  devtool: RELEASE ? "hidden-source-map" : "cheap-module-source-map",
+  devtool: RELEASE ? "hidden-source-map" : "cheap-module-eval-source-map",
   context: path.join(__dirname, "app-frontend"),
   entry: {
     minni: "./app.react.js",
@@ -70,6 +70,14 @@ module.exports = {
     }),
     // Ignore all locale files of moment.js
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+
+    // Don't generate sourcemaps for vendor bundle.
+    new webpack.SourceMapDevToolPlugin({
+      exclude: ["vendor.js"],
+    }),
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: "development",
+    }),
   ].concat(
     RELEASE
       ? [
@@ -87,17 +95,14 @@ module.exports = {
             comments: false,
             screw_ie8: true,
           },
-          sourcemaps: true,
         }),
         new webpack.DefinePlugin({
           __DEV__: false,
-          "process.env.NODE_ENV": JSON.stringify(nodeEnv),
         }),
       ]
       : [
         new webpack.DefinePlugin({
           __DEV__: true,
-          "process.env.NODE_ENV": JSON.stringify(nodeEnv),
         }),
       ]
   ),
