@@ -15,8 +15,8 @@ PluginRegister("MentionTypeahead", COMPOSER_TYPEAHEAD, {
         const match = prefix.slice(1);
         return (
           (user.nickname && user.nickname.startsWith(match)) ||
-          user.lastname.contains(match) ||
-          user.firstname.contains(match)
+          user.lastname.includes(match) ||
+          user.firstname.includes(match)
         );
       })
       .slice(0, 10);
