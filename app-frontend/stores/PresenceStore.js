@@ -9,6 +9,7 @@ import * as ActivityActionCreators from "../actions/ActivityActionCreators";
 import ConnectionStore from "./ConnectionStore";
 import IdleStore from "./IdleStore";
 import AwayStore from "./AwayStore";
+import UserStore from "./UserStore";
 
 import Logger from "../libs/Logger";
 
@@ -28,6 +29,12 @@ function handleWindowFocus(state, { focused }) {
   return state;
 }
 
+function handleTyping(state, { userId }) {
+  if (userId === UserStore.getConnectedUser().id) {
+    ActivityActionCreators.setOnline();
+  }
+  return state;
+}
 function handleActivateOnline(state) {
   if (state.get("forcedStatus") === false) {
     ActivityActionCreators.setOnline();
@@ -49,8 +56,8 @@ class PresenceStore extends MapStore {
     this.waitFor(ConnectionStore, IdleStore, AwayStore);
     this.addAction(ActionTypes.SET_USER_STATUS, checkConnection(handleStatusUpdate));
     this.addAction(ActionTypes.WINDOW_FOCUS, checkConnection(handleWindowFocus));
+    this.addAction(ActionTypes.TYPING_START, checkConnection(handleTyping));
     this.addAction(
-      ActionTypes.TYPING_START,
       ActionTypes.ACCOUNT_SELECT,
       ActionTypes.ROOM_SELECT,
       checkConnection(handleActivateOnline)
