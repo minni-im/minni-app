@@ -9,6 +9,8 @@ import Badge from "../components/generic/Badge.react";
 import Dialog from "../components/generic/Dialog.react";
 import TabBar from "../components/generic/TabBar.react";
 import SettingItem from "../components/settings/SettingItem.react";
+import UserStatus from "../components/UserStatus.react";
+import UserStatusIcon from "../components/UserStatusIcon.react";
 
 import "../stores/SlashCommandStore";
 
@@ -20,7 +22,7 @@ export const Constants = {
   PLUGIN_REGISTER,
   PLUGIN_UNREGISTER,
   PLUGIN_TYPES,
-  USER_STATUS
+  USER_STATUS,
 };
 
 export { default as Stores } from "../stores/PluginStores.js";
@@ -28,7 +30,9 @@ export { default as Stores } from "../stores/PluginStores.js";
 export function register(name, type, plugin) {
   name = name.toLowerCase();
   if (plugin.name || plugin.type) {
-    throw new TypeError(`Plugin ${name}: properties 'name' and 'type' are reserved keyword and cannot be used.`);
+    throw new TypeError(
+      `Plugin ${name}: properties 'name' and 'type' are reserved keyword and cannot be used.`
+    );
   }
 
   if (type & PLUGIN_TYPES.COMPOSER_TEXT && plugin.encodeMessage === undefined) {
@@ -58,17 +62,19 @@ export function register(name, type, plugin) {
     plugin: {
       ...plugin,
       name,
-      type
-    }
+      type,
+    },
   });
 }
 
 export const UI = {
   Avatar,
+  UserStatus,
+  UserStatusIcon,
   Badge,
   Dialog,
   Emoji,
   TabBar,
   SettingItem,
-  TypeaheadResults
+  TypeaheadResults,
 };

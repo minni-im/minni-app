@@ -68,8 +68,8 @@ const ENCODING_RULES = {
   mention: {
     order: DEFAULT_RULES.mention.order,
     match(source, state, lookBehind) {
-      if (/^|[^a-zA-Z0-9_!#$%&*@＠]/.test(lookBehind)) {
-        const match = source.match(/^[@＠]([a-zA-Z0-9_]{1,20})/);
+      if (/^|[^a-zA-Z0-9._!#$%&*@＠]/.test(lookBehind)) {
+        const match = source.match(/^[@＠]([a-zA-Z0-9_.]{1,20})/);
         if (match) {
           return state.users
             .filter(({ nickname }) => nickname === match[1])

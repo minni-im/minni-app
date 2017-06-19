@@ -138,6 +138,10 @@ const handlers = {
         ActivityActionCreators.updateStatus(userId, status);
       }
     },
+
+    update(user) {
+      UserActionCreators.receiveUpdateProfile(user);
+    },
   },
 
   room: {

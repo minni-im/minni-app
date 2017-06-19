@@ -1,15 +1,11 @@
-import Immutable from "immutable";
 import { MapStore } from "../libs/Flux";
 
 import { ActionTypes } from "../Constants";
 import Dispatcher from "../Dispatcher";
-import { dispatch } from "../Dispatcher";
-
-import { slugify } from "../utils/TextUtils";
 
 import Account from "../models/Account";
-
 import Logger from "../libs/Logger";
+
 const logger = Logger.create("AccountStore");
 
 function handleConnectionOpen(state, { accounts }) {
@@ -41,10 +37,7 @@ class AccountStore extends MapStore {
   }
 
   getById(accountId) {
-    return this.getState()
-      .toSeq()
-      .filter(account => account.id === accountId)
-      .first();
+    return this.getState().toSeq().filter(account => account.id === accountId).first();
   }
 
   getAccount(accountSlug) {

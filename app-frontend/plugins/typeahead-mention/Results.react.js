@@ -1,7 +1,7 @@
 import React from "react";
 
 import { UI } from "minni-plugins-toolkit";
-const { Avatar, TypeaheadResults } = UI;
+const { Avatar, UserStatus, UserStatusIcon, TypeaheadResults } = UI;
 
 const MENTION_SENTINEL = "@";
 
@@ -33,7 +33,7 @@ export default class extends TypeaheadResults {
           {` - ${user.fullname}`}
         </div>
         <div className="suggestion-item--info">
-          {user.status}
+          <UserStatus status={user.status} />
         </div>
       </div>
     );

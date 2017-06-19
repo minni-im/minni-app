@@ -8,6 +8,8 @@ import { ActionTypes, USER_STATUS } from "../Constants";
 import Dispatcher from "../Dispatcher";
 import User from "../models/User";
 
+import AccountStore from "../stores/AccountStore";
+
 import Logger from "../libs/Logger";
 
 const logger = Logger.create("UserStore");
