@@ -1,22 +1,17 @@
-import {
-  Constants,
-  register as PluginRegister,
-  Stores
-} from "minni-plugins-toolkit";
+import { Constants, register as PluginRegister, Stores } from "minni-plugins-toolkit";
 
-import SettingsPanel, { SETTING_KEY, NOTIFICATION_GRANTED, checkPermission } from "./Settings.react";
+import SettingsPanel, {
+  SETTING_KEY,
+  NOTIFICATION_GRANTED,
+  checkPermission
+} from "./Settings.react";
 
-const {
-  SettingsStore,
-  UserStore,
-  RoomStore,
-  SelectedAccountStore } = Stores;
+const { SettingsStore, UserStore, RoomStore, SelectedAccountStore } = Stores;
 
 const NOTIFICATION_DISPLAY_TIME = 7.5 * 1000; // time in milliseconds
 
-
 function capitalize(text) {
-  return text.replace(/(?:^|\s)([a-z])/, `${"$1".toUpperCase()}`);
+  return text.replace(/(?:^|\s)([a-z])/g, m => m.toUpperCase());
 }
 
 PluginRegister("DesktopNotifications", Constants.PLUGIN_TYPES.MESSAGE, {
@@ -24,7 +19,8 @@ PluginRegister("DesktopNotifications", Constants.PLUGIN_TYPES.MESSAGE, {
 
   receiveMessage(decodedMessage, message) {
     const connectedUser = UserStore.getConnectedUser();
-    const enabled = SettingsStore.getValue(SETTING_KEY) &&
+    const enabled =
+      SettingsStore.getValue(SETTING_KEY) &&
       checkPermission() === NOTIFICATION_GRANTED &&
       connectedUser.id !== message.userId &&
       connectedUser.status !== Constants.USER_STATUS.DND;
@@ -36,7 +32,7 @@ PluginRegister("DesktopNotifications", Constants.PLUGIN_TYPES.MESSAGE, {
       const title = `${accountName}: ${roomName}`;
       const options = {
         body: `${username}: ${decodedMessage}`,
-        icon: user.picture
+        icon: user.picture,
       };
       const notification = new Notification(title, options);
       notification.onclick = function () {
@@ -51,5 +47,5 @@ PluginRegister("DesktopNotifications", Constants.PLUGIN_TYPES.MESSAGE, {
     }
 
     return Promise.resolve(message);
-  }
+  },
 });

@@ -7,6 +7,7 @@ import DocumentTitle from "react-document-title";
 import Room from "./Room.react";
 
 import ConnectionStore from "../stores/ConnectionStore";
+import DocumentTitleStore from "../stores/DocumentTitleStore";
 import RoomStore from "../stores/RoomStore";
 
 import { selectRoom } from "../actions/RoomActionCreators";
@@ -17,13 +18,13 @@ function activateSelectedRoom(props) {
   selectRoom(accountSlug, roomSlugs.split(","));
 }
 
-class RoomsContainer extends React.Component {
+class RoomsContainer extends React.PureComponent {
   static propTypes = {
     match: PropTypes.object.isRequired,
   };
 
   static getStores() {
-    return [RoomStore, ConnectionStore];
+    return [RoomStore, ConnectionStore, DocumentTitleStore];
   }
 
   static calculateState(prevState, prevProps) {
@@ -31,6 +32,7 @@ class RoomsContainer extends React.Component {
     return {
       rooms: RoomStore.getRoomsBySelectedAccount(...roomSlugs),
       connection: ConnectionStore.isConnected(),
+      title: DocumentTitleStore.getTitle(roomSlugs.join(" | ")),
     };
   }
 
@@ -50,21 +52,15 @@ class RoomsContainer extends React.Component {
       "split-rooms": size > 1,
       [`split-rooms-${size}`]: size > 1,
     });
-    const title = this.state.rooms.map(room => room.name).join(" | ");
+
+    const rooms = this.state.rooms.map(room =>
+      <Room key={room.id} room={room} multirooms={size > 1} connection={this.state.connection} />
+    );
 
     return (
-      <DocumentTitle title={`${title} • ${window.Minni.name}`}>
+      <DocumentTitle title={this.state.title}>
         <main className={classNames}>
-          {this.state.rooms
-            .toArray()
-            .map(room =>
-              (<Room
-                key={room.id}
-                room={room}
-                multiRooms={size > 1}
-                connection={this.state.connection}
-              />)
-            )}
+          {size ? rooms.toArray() : "..."}
         </main>
       </DocumentTitle>
     );
