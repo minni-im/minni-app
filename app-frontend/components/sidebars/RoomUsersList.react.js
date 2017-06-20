@@ -37,7 +37,10 @@ class RoomUsersList extends Component {
       [USER_STATUS.AWAY]: "d",
       [USER_STATUS.OFFLINE]: "z",
     };
-    users = users.sort((a, b) => WEIGHT[a.status] > WEIGHT[b.status]).toArray();
+    users = users
+      .filter(user => user.status !== USER_STATUS.OFFLINE)
+      .sort((a, b) => WEIGHT[a.status] > WEIGHT[b.status])
+      .toArray();
 
     return {
       users,
@@ -48,9 +51,9 @@ class RoomUsersList extends Component {
   render() {
     return (
       <div className="room--users-list flex-horizontal">
-        {this.state.users.map((user, index) =>
+        {this.state.users.map(user =>
           (<Avatar
-            key={index}
+            key={user.id}
             withStatus
             withTooltip
             showOffline
