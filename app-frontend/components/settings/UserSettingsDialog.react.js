@@ -90,7 +90,9 @@ export default class UserSettingsDialog extends React.Component {
         >
           We support standard emoticons & emojis. Hints available
           {" "}
-          <a href="http://www.emoji-cheat-sheet.com/" target="_blank">here</a>
+          <a href="http://www.emoji-cheat-sheet.com/" target="_blank" rel="noopener noreferrer">
+            here
+          </a>
           .
         </SettingItem>
 
@@ -283,12 +285,12 @@ export default class UserSettingsDialog extends React.Component {
       });
 
     const tabs = Object.keys(categories).map((category) => {
-      const contentSections = categories[category].map(
-        (Section, index) =>
-          React.isValidElement(Section)
-            ? React.cloneElement(Section, { key: index })
-            : <Section key={index} onChange={this.onSettingChange} />
-      );
+      const contentSections = categories[category].map((Section, index) => {
+        if (React.isValidElement(Section)) {
+          return React.cloneElement(Section, { key: index });
+        }
+        return <Section key={index} onChange={this.onSettingChange} />;
+      });
       return (
         <TabPanel key={category} label={camelize(category)}>
           {contentSections}

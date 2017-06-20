@@ -5,7 +5,7 @@ import classnames from "classnames";
 export function TabPanel(props) {
   return <div>TabPanel should be used from TabBar</div>;
 }
-
+TabPanel.displayName = "TabPanel";
 TabPanel.propTypes = {
   label: PropTypes.string.isRequired,
   className: PropTypes.string,
@@ -15,7 +15,7 @@ TabPanel.propTypes = {
 export default class TabBar extends React.Component {
   static propTypes = {
     selected: PropTypes.number,
-    children: PropTypes.arrayOf(PropTypes.instanceOf(TabPanel)).isRequired,
+    children: PropTypes.node.isRequired,
   };
 
   static defaultProps = {
@@ -31,11 +31,16 @@ export default class TabBar extends React.Component {
 
   render() {
     let tab;
+
     const tabNav = React.Children.map(this.props.children, (child, index) => {
+      if (child.type.displayName !== "TabPanel") {
+        return false;
+      }
+
       const classNames = { "x-tab": true };
       if (this.state.selected === index) {
         classNames["x-tab-selected"] = true;
-        tab = child;
+        tab = React.cloneElement(child);
       }
       return (
         <a key={`xtb-${index}`} className={classnames(classNames)} data-index={index}>
