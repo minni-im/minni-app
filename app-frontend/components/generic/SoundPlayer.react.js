@@ -1,5 +1,6 @@
 import React from "react";
 import { Container } from "flux/utils";
+import DocumentTitle from "react-document-title";
 
 import { USER_STATUS } from "../../Constants";
 
@@ -9,7 +10,7 @@ import UnreadMessageStore from "../../stores/UnreadMessageStore";
 import UserStore from "../../stores/UserStore";
 import UserSettingsStore from "../../stores/UserSettingsStore";
 
-class SoundPlayer extends React.Component {
+class SoundPlayer extends React.PureComponent {
   static getStores() {
     return [UnreadMessageStore];
   }
@@ -20,6 +21,10 @@ class SoundPlayer extends React.Component {
     };
   }
 
+  static playSound(sound) {
+    playSound(sound, UserSettingsStore.getSoundVolume());
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const me = UserStore.getConnectedUser();
     if (
@@ -28,12 +33,8 @@ class SoundPlayer extends React.Component {
       me.status !== USER_STATUS.AWAY &&
       UserSettingsStore.hasSoundNotifications()
     ) {
-      this.playSound("notification");
+      SoundPlayer.playSound("notification");
     }
-  }
-
-  playSound(sound) {
-    playSound(sound, UserSettingsStore.getSoundVolume());
   }
 
   render() {

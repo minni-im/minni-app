@@ -5,10 +5,10 @@ import { ActionTypes, MESSAGE_TYPES } from "../Constants";
 
 import AccountStore from "./AccountStore";
 import ConnectionStore from "./ConnectionStore";
+import FocusStore from "./FocusStore";
 import UserStore from "./UserStore";
 import MessageStore from "./MessageStore";
 import RoomStore from "./RoomStore";
-import SelectedRoomStore from "./SelectedRoomStore";
 
 function handleConnectionOpen(state, { accounts }) {
   return state.withMutations((map) => {
@@ -28,14 +28,13 @@ function handleLoadRoomsSuccess(state, { rooms }) {
 
 function handleMessageCreate(state, { roomId, message }) {
   const room = RoomStore.get(roomId);
-  const selectedRoomsSlugs = SelectedRoomStore.getRooms();
 
   const accountId = room.accountId;
   const accountState = state.get(accountId, Immutable.Map());
   let roomState = accountState.get(roomId, Immutable.Map());
 
   roomState = roomState.withMutations((map) => {
-    if (!selectedRoomsSlugs.has(room.slug) && message.type !== MESSAGE_TYPES.SYSTEM_MESSAGE) {
+    if (!FocusStore.isWindowFocused() && message.type !== MESSAGE_TYPES.SYSTEM_MESSAGE) {
       map.set("unreadCount", map.get("unreadCount", 0) + 1);
     }
     map.set("lastMessageId", message.id);
@@ -58,7 +57,7 @@ function handleRoomSelect(state, { roomSlug }) {
 
 class UnreadMessageStore extends MapStore {
   initialize() {
-    this.waitFor(UserStore, AccountStore, RoomStore, MessageStore);
+    this.waitFor(FocusStore, UserStore, AccountStore, RoomStore, MessageStore);
     this.addAction(ActionTypes.CONNECTION_OPEN, handleConnectionOpen);
     this.addAction(ActionTypes.LOAD_ROOMS_SUCCESS, handleLoadRoomsSuccess);
     this.addAction(ActionTypes.MESSAGE_CREATE, handleMessageCreate);
@@ -80,7 +79,7 @@ class UnreadMessageStore extends MapStore {
       }, 0);
     }
     return this.getState().reduce(
-      (sum, account) => account.reduce((subSum, room) => sum + room.get("unreadCount", 0), sum),
+      (sum, account) => account.reduce((subSum, room) => subSum + room.get("unreadCount", 0), sum),
       0
     );
   }
