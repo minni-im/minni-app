@@ -6,7 +6,12 @@ import * as RoomActionCreators from "../actions/RoomActionCreators";
 import * as DimensionActionCreators from "../actions/DimensionActionCreators";
 import * as MessageActionCreators from "../actions/MessageActionCreators";
 
-import { MESSAGE_TYPES, MESSAGE_STREAM_TYPES, FETCH_HISTORY_TRESHOLD } from "../Constants";
+import {
+  MESSAGE_TYPES,
+  MESSAGE_STREAM_TYPES,
+  FETCH_HISTORY_TRESHOLD,
+  MESSAGE_LIST_BOTTOM_TRESHOLD
+} from "../Constants";
 
 import Avatar from "./generic/Avatar.react";
 import Embed from "./Embed.react";
@@ -227,11 +232,10 @@ export default class Messages extends React.Component {
     }
 
     const { scroller } = this;
+    const scrollTop = Math.ceil(scroller.scrollTop);
+
     // Reaching the top when scrolling with a scrollable viewport
-    if (
-      scroller.scrollTop < FETCH_HISTORY_TRESHOLD &&
-      scroller.scrollHeight > scroller.offsetHeight
-    ) {
+    if (scrollTop < FETCH_HISTORY_TRESHOLD && scroller.scrollHeight > scroller.offsetHeight) {
       if (this.props.messagesState.hasMore && !this.props.messagesState.loadingMore) {
         this.loadMore();
       }
@@ -240,12 +244,13 @@ export default class Messages extends React.Component {
     // If at the bottom we can clear dimensions.
     // we can't use `isAtBottom()` here as it would always be true, and we would
     // never get new dimensions.
-    if (scroller.scrollTop + scroller.clientHeight === scroller.scrollHeight) {
+    const treshold = Math.abs(scrollTop + scroller.clientHeight - scroller.scrollHeight);
+    if (treshold >= 0 && treshold < MESSAGE_LIST_BOTTOM_TRESHOLD) {
       DimensionActionCreators.clearDimensions(this.props.room);
     } else {
       // Otherwise keep track of the current dimensions to use to offset calculation.
       DimensionActionCreators.updateDimensions(this.props.room, {
-        scrollTop: scroller.scrollTop,
+        scrollTop,
         scrollHeight: scroller.scrollHeight,
       });
     }

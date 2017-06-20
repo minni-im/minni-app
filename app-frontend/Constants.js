@@ -194,6 +194,9 @@ export const MAX_MESSAGES_PER_ROOMS = 50;
 export const MAX_MESSAGE_LENGTH = 2000;
 export const FETCH_HISTORY_TRESHOLD = 30;
 
+// pixels treshold to consider scroll pos to be at bottom
+export const MESSAGE_LIST_BOTTOM_TRESHOLD = 5;
+
 export const SOCKETIO_OPTIONS = {
   reconnectionDelay: 1000,
   reconnectionAttempts: 7,
