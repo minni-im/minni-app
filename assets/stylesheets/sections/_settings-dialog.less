@@ -1,5 +1,15 @@
 .settings-dialog {
   .size(100vw, 100vh);
+  .dialog__header {
+    padding-left: 10vw;
+    padding-right: 10vw;
+    .header-info {
+      padding: 0;
+    }
+    .dialog__action-buttons {
+      margin: 0;
+    }
+  }
   .dialog__content {
     padding: 0 !important;
     overflow: hidden;
@@ -14,6 +24,8 @@
     .x-tabs {
       background-color: @electric-blue;
       border-bottom-color: @electric-blue;
+      padding-left: 10vw;
+      padding-right: 10vw;
       .x-tab {
         color: @color-light;
       }
@@ -29,7 +41,14 @@
     .x-tab-content {
       overflow-x: hidden;
       overflow-y: auto;
+      padding-left: 10vw;
+      padding-right: 10vw;
     }
+  }
+
+  input[type="text"] {
+    box-sizing: border-box;
+    width: 100%;
   }
 
   section, h4 {
@@ -37,13 +56,14 @@
   }
 }
 
-.user-settings-dialog {
+.user-settings-dialog,
+  .room-settings-dialog {
   border-radius: 0;
-  .user-profile--info {
+}
 
-    input[type=text] {
-      width: 85%;
-    }
+.user-settings-dialog {
+  .user-profile--info {
+    margin-right: 3rem;
   }
 
   .user-profile--avatar {
@@ -65,12 +85,5 @@
     td:last-child {
       width: 38px;
     }
-  }
-}
-
-.room-settings-dialog {
-  border-radius: 0;
-  input[type=text] {
-    width: 96%;
   }
 }
