@@ -1,8 +1,8 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 import { Container } from "flux/utils";
+import Observer from "react-intersection-observer";
 
 import * as ImageActionCreators from "../../actions/ImageActionCreators";
 import ImageStore from "../../stores/ImageStore";
@@ -30,7 +30,7 @@ class ImageContainer extends React.Component {
   static calculateState(prevProps, nextProps) {
     const state = ImageStore.getImage(nextProps.src);
     return {
-      animate: false,
+      animate: true,
       loaded: !!state,
       imageState: state,
     };
@@ -39,19 +39,12 @@ class ImageContainer extends React.Component {
   constructor(props) {
     super(props);
     this.showLightbox = this.showLightbox.bind(this);
-    this.handleMouseEnter = this.handleMouseEnter.bind(this);
-    this.handleMouseLeave = this.handleMouseLeave.bind(this);
   }
 
   componentDidMount() {
-    this.updateStaticFrame();
     if (!this.state.loaded) {
       ImageActionCreators.loadImage(this.props.src);
     }
-  }
-
-  componentDidUpdate() {
-    this.updateStaticFrame();
   }
 
   getRatio() {
@@ -80,33 +73,8 @@ class ImageContainer extends React.Component {
     return Math.round(this.props.height * this.getRatio());
   }
 
-  updateStaticFrame() {
-    if (!this.state.loaded) return;
-    let image;
-    if (this.canvas) {
-      const drawImage = () => {
-        this.canvas.getContext("2d").drawImage(image, 0, 0, this.getWidth(), this.getHeight());
-      };
-      image = new window.Image();
-      image.src = this.props.src;
-      if (image.complete) {
-        drawImage();
-      } else {
-        image.onLoad = drawImage;
-      }
-    }
-  }
-
   isGIF() {
     return /\.gif/i.test(this.props.src);
-  }
-
-  handleMouseEnter() {
-    this.setState({ animate: true });
-  }
-
-  handleMouseLeave() {
-    this.setState({ animate: false });
   }
 
   showLightbox(event) {
@@ -133,23 +101,22 @@ class ImageContainer extends React.Component {
     };
 
     if (this.isGIF()) {
-      props.onMouseEnter = this.handleMouseEnter;
-      props.onMouseLeave = this.handleMouseLeave;
       return (
-        <span className="image">
-          <span className="image--gif">► GIF</span>
-          {!this.state.animate &&
-            <canvas
-              ref={(node) => {
-                this.canvas = node;
-              }}
-              {...props}
-            />}
-          {this.state.animate && <img {...props} alt="There should be something here" />}
-        </span>
+        <Observer
+          tag="span"
+          className="image"
+          render={() => <span className="image--gif">► GIF</span>}
+        >
+          {(inView) => {
+            if (inView) return <img {...props} alt="" />;
+            return <div className="image--loader" style={{ width, height }} />;
+          }}
+        </Observer>
       );
     }
-    return <img className={classnames("image", classNames, this.props.className)} {...props} />;
+    return (
+      <img className={classnames("image", classNames, this.props.className)} alt="" {...props} />
+    );
   }
 }
 
