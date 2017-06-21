@@ -16,7 +16,6 @@ function handleMessageCreate(state, { message }) {
   const unread = UnreadMessageStore.getTotalUnreadCount();
   if (!FocusStore.isWindowFocused() && unread && message.type === MESSAGE_TYPES.CHAT_MESSAGE) {
     const clean = cleanTitle(state);
-    console.log(clean);
     return `(${unread}) ${clean}`;
   }
   return state;
