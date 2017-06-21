@@ -9,6 +9,7 @@ import FocusStore from "./FocusStore";
 import UserStore from "./UserStore";
 import MessageStore from "./MessageStore";
 import RoomStore from "./RoomStore";
+import SelectedRoomStore from "./SelectedRoomStore";
 
 function handleConnectionOpen(state, { accounts }) {
   return state.withMutations((map) => {
@@ -27,15 +28,23 @@ function handleLoadRoomsSuccess(state, { rooms }) {
 }
 
 function handleMessageCreate(state, { roomId, message }) {
+  const connectedUser = UserStore.getConnectedUser();
   const room = RoomStore.get(roomId);
-
   const accountId = room.accountId;
   const accountState = state.get(accountId, Immutable.Map());
   let roomState = accountState.get(roomId, Immutable.Map());
 
   roomState = roomState.withMutations((map) => {
-    if (!FocusStore.isWindowFocused() && message.type !== MESSAGE_TYPES.SYSTEM_MESSAGE) {
-      map.set("unreadCount", map.get("unreadCount", 0) + 1);
+    if (message.type !== MESSAGE_TYPES.SYSTEM_MESSAGE) {
+      const roomSlugs = SelectedRoomStore.getRooms();
+      if (
+        !FocusStore.isWindowFocused() ||
+        (FocusStore.isWindowFocused() && !roomSlugs.includes(room.slug))
+      ) {
+        map.set("unreadCount", map.get("unreadCount", 0) + 1);
+      } else if (message.user.id === connectedUser.id) {
+        map.set("unreadCount", 0);
+      }
     }
     map.set("lastMessageId", message.id);
   });
@@ -55,6 +64,24 @@ function handleRoomSelect(state, { roomSlug }) {
   return state.set(accountId, accountState.set(roomId, roomState.set("unreadCount", 0)));
 }
 
+function handleWindowFocus(state, { focused }) {
+  if (focused) {
+    const roomSlugs = SelectedRoomStore.getRooms();
+    if (roomSlugs.size === 0) {
+      return state;
+    }
+    const rooms = RoomStore.getRooms(...roomSlugs);
+    const accountId = rooms.first().accountId;
+    const accountState = state.get(accountId, Immutable.Map()).withMutations((accountMap) => {
+      rooms.forEach((room) => {
+        accountMap.set(room.id, accountMap.get(room.id, Immutable.Map()).set("unreadCount", 0));
+      });
+    });
+    return state.set(accountId, accountState);
+  }
+  return state;
+}
+
 class UnreadMessageStore extends MapStore {
   initialize() {
     this.waitFor(FocusStore, UserStore, AccountStore, RoomStore, MessageStore);
@@ -62,6 +89,7 @@ class UnreadMessageStore extends MapStore {
     this.addAction(ActionTypes.LOAD_ROOMS_SUCCESS, handleLoadRoomsSuccess);
     this.addAction(ActionTypes.MESSAGE_CREATE, handleMessageCreate);
     this.addAction(ActionTypes.ROOM_SELECT, handleRoomSelect);
+    this.addAction(ActionTypes.WINDOW_FOCUS, handleWindowFocus);
   }
 
   getUnreadCount(accountId, roomId) {
