@@ -30,7 +30,7 @@ html
     meta(name="msapplication-TileImage", content=`${url.protocol}://${url.hostname}/mstile-150x150.png`)
 
     block styles
-      link(rel="stylesheet", href="/css/style.css")
+      link(rel="stylesheet", href=`/css/style.css?${START_TS}`)
 
     script(type="text/javascript").
       window.Minni = {

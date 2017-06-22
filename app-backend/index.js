@@ -33,8 +33,8 @@ const asciiLogo = banner => `
 
 app.http().io();
 const sessionStore = new RedisStore({
-  host: (DOCKER ? "redis" : config.redis.host),
-  port: (DOCKER ? 6379 : config.redis.port)
+  host: DOCKER ? "redis" : config.redis.host,
+  port: DOCKER ? 6379 : config.redis.port,
 });
 const session = {
   key: config.session.key,
@@ -46,8 +46,8 @@ const session = {
   cookie: {
     path: "/",
     httpOnly: true,
-    maxAge: 15778800000
-  }
+    maxAge: 15778800000,
+  },
 };
 
 app.set("view engine", "pug");
@@ -61,9 +61,11 @@ function bootstrap() {
   authSetup(app, session);
 
   app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({
-    extended: true
-  }));
+  app.use(
+    bodyParser.urlencoded({
+      extended: true,
+    })
+  );
   app.use(flash());
   expressLocals.setup(app);
 

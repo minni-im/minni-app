@@ -4,10 +4,13 @@ import config from "./config";
 
 const backgrounds = config["login-backgrounds"];
 
+const START_TS = Date.now();
+
 export default {
   setup(app) {
     app.use((req, res, next) => {
       Object.assign(res.locals, {
+        START_TS,
         name: config.name,
         viewname(filename) {
           return path.basename(filename, ".pug");
@@ -32,13 +35,13 @@ export default {
         },
         url: {
           hostname: req.hostname,
-          protocol: req.protocol
+          protocol: req.protocol,
         },
         moment,
-        background: () => backgrounds[Math.floor(Math.random() * backgrounds.length)]
+        background: () => backgrounds[Math.floor(Math.random() * backgrounds.length)],
       });
 
       next();
     });
-  }
+  },
 };

@@ -1,8 +1,8 @@
 extends layout
 
 block styles
-  link(rel="stylesheet", href="/css/hljs-default.min.css")
-  link(rel="stylesheet", href="/css/chat.css")
+  link(rel="stylesheet", href=`/css/hljs-default.min.css?${START_TS}`)
+  link(rel="stylesheet", href=`/css/chat.css?${START_TS}`)
 
 block header_scripts
   script(defer="defer", src="/socket.io/socket.io.js")
