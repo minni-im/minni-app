@@ -20,7 +20,7 @@ class LobbyContainer extends React.Component {
   static calculateState() {
     const account = SelectedAccountStore.getAccount();
     const rooms = account
-      ? AccountRoomStore.getRooms(account.id, room => -new Date(room.lastUpdated).getTime())
+      ? AccountRoomStore.getRooms(account.id, room => -room.lastUpdated.unix())
       : Immutable.Set();
     return {
       viewer: UserStore.getConnectedUser(),
@@ -31,10 +31,11 @@ class LobbyContainer extends React.Component {
   }
 
   render() {
+    const { title, ...otherState } = this.state;
     return (
-      <DocumentTitle title={this.state.title}>
+      <DocumentTitle title={title}>
         <main className="flex-spacer flex-horizontal lobby">
-          <Lobby {...this.state} />
+          <Lobby {...otherState} />
           <ContactList />
         </main>
       </DocumentTitle>

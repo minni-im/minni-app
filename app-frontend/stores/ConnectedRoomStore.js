@@ -49,7 +49,7 @@ function handleReconnection(state) {
       RoomActionCreators.fetchMessages(
         roomId,
         null,
-        lastMessage ? lastMessage.dateCreated.toISOString() : null,
+        lastMessage ? lastMessage.dateCreated.toISOString() : null
       );
     });
   });
@@ -89,7 +89,7 @@ class ConnectedRoomStore extends MapStore {
     if (!ConnectionStore.isConnected() || !accountId) {
       return Immutable.Map();
     }
-    const roomsId = this.getState().get(accountId, Immutable.Set()).toArray();
+    const roomsId = this.getState().get(accountId, Immutable.Map()).toArray();
     return RoomStore.getRoomsById(...roomsId);
   }
 

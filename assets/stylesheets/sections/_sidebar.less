@@ -126,8 +126,8 @@
   }
 
   a.room {
-    opacity: .5;
-    transition: opacity 250ms;
+    // opacity: .5;
+    // transition: opacity 250ms;
     margin-bottom: 1px;
 
     .unread {
@@ -144,13 +144,13 @@
       width: 0;
       font-size: 24px;
       text-align: right;
-      transition: all 250ms linear 750ms;
+      transition: all 250ms linear;
       opacity: 0;
     }
 
     &:hover {
       background-color: fade(@black, 30%);
-      opacity: 1;
+      // opacity: 1;
       .quit {
         width: 24px;
         opacity: 1;
@@ -163,11 +163,10 @@
       .icon svg {
         fill: @white;
       }
-      .unread { display: none }
       .quit {
-        width: 0;
-        opacity: 0;
+        transition-delay: 750ms;
       }
+      .unread { display: none }
     }
   }
 
@@ -196,8 +195,12 @@
     letter-spacing: .1em;
     text-transform: uppercase;
     color: @gray-light;
-    margin: 10px 5px;
+    margin: 10px 5px 0;
     max-height: 2em;
+  }
+
+  .room + .separator {
+    margin-top: 20px;
   }
 
   .lobby.selected {

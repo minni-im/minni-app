@@ -20,7 +20,7 @@ function handleLoadRoomsSuccess(state, { rooms }) {
         lastUpdated: moment(room.lastUpdated),
         dateCreated: moment(room.dateCreated),
         starred: UserSettingsStore.isRoomStarred(room),
-        usersList: UserSettingsStore.isRoomConnectedUsersListActive(room)
+        usersList: UserSettingsStore.isRoomConnectedUsersListActive(room),
       });
       map.set(room.id, new Room(room));
     });
@@ -54,20 +54,20 @@ class RoomStore extends MapStore {
     this.addAction(
       ActionTypes.LOAD_ROOMS_SUCCESS,
       ActionTypes.CONNECTION_OPEN,
-      handleLoadRoomsSuccess);
-    this.addAction(
-      ActionTypes.ROOM_STAR,
-      ActionTypes.ROOM_UNSTAR,
-      handleRoomFavorite);
+      handleLoadRoomsSuccess
+    );
+    this.addAction(ActionTypes.ROOM_STAR, ActionTypes.ROOM_UNSTAR, handleRoomFavorite);
     this.addAction(
       ActionTypes.ROOM_STAR_FAILURE,
       ActionTypes.ROOM_UNSTAR_FAILURE,
-      handleRoomFavoriteFailure);
+      handleRoomFavoriteFailure
+    );
     this.addAction(
       ActionTypes.ROOM_CREATE_SUCCESS,
       ActionTypes.ROOM_UPDATE_SUCCESS,
       ActionTypes.ACCOUNT_CREATE_SUCCESS,
-      (state, { room }) => handleLoadRoomsSuccess(state, { rooms: [room] }));
+      (state, { room }) => handleLoadRoomsSuccess(state, { rooms: [room] })
+    );
 
     this.addAction(ActionTypes.ROOM_DELETE_SUCCESS, handleRoomDelete);
     this.addAction(ActionTypes.ROOM_DELETE_FAILURE, withNoMutations(logFailure("RoomDelete")));
@@ -83,18 +83,16 @@ class RoomStore extends MapStore {
   }
 
   getRooms(...roomSlugs) {
-    return this.getState()
-      .filter(room => roomSlugs.indexOf(room.slug) !== -1);
+    return this.getState().filter(room => roomSlugs.indexOf(room.slug) !== -1);
   }
 
   getRoomsBySelectedAccount(...roomSlugs) {
     const selectedAccount = SelectedAccountStore.getAccount();
-    return this.getRooms(...roomSlugs)
-      .filter(room => room.accountId === selectedAccount.id);
+    return this.getRooms(...roomSlugs).filter(room => room.accountId === selectedAccount.id);
   }
 
   getRoomsById(...ids) {
-    return this.getState().filter(room => ids.indexOf(room.id) !== -1);
+    return this.getState().filter(room => ids.includes(room.id));
   }
 }
 

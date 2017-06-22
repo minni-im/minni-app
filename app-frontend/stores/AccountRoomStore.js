@@ -15,7 +15,7 @@ class AccountRoomStore extends MapStore {
   }
 
   getRooms(accountId, sorter = room => room.name) {
-    return this.getState().get(accountId, Immutable.Set()).toSet().sortBy(sorter);
+    return this.getState().get(accountId, Immutable.Map()).toSet().sortBy(sorter);
   }
 
   getRoomsSlug(accountId) {
