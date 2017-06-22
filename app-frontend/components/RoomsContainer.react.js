@@ -52,9 +52,8 @@ class RoomsContainer extends React.PureComponent {
       "split-rooms": size > 1,
       [`split-rooms-${size}`]: size > 1,
     });
-
     const rooms = this.state.rooms.map(room =>
-      <Room key={room.id} room={room} multirooms={size > 1} connection={this.state.connection} />
+      <Room key={room.id} room={room} multiRooms={size > 1} connection={this.state.connection} />
     );
 
     return (

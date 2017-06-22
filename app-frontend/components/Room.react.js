@@ -12,6 +12,8 @@ import Composer from "./Composer.react";
 import TypingInfo from "./TypingInfo.react";
 import FormattingHints from "./FormatingHints.react";
 
+import RoomModel from "../models/Room";
+
 import { FavoriteIcon, CloseIcon } from "../utils/IconsUtils";
 import { parseTitle } from "../utils/MarkupUtils";
 
@@ -20,6 +22,18 @@ import ComposerStore from "../stores/ComposerStore";
 import { MAX_MESSAGE_LENGTH } from "../Constants";
 
 class Room extends React.Component {
+  static propTypes = {
+    room: PropTypes.instanceOf(RoomModel).isRequired,
+    connection: PropTypes.bool,
+    multiRooms: PropTypes.bool,
+    history: PropTypes.object.isRequired,
+  };
+
+  static defaultProps = {
+    multiRooms: false,
+    connection: false,
+  };
+
   constructor(props) {
     super(props);
     this.handleRoomLeave = this.handleRoomLeave.bind(this);
@@ -33,7 +47,11 @@ class Room extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.room !== this.props.room || nextProps.connection !== this.props.connection;
+    return (
+      nextProps.room.id !== this.props.room.id ||
+      nextProps.connection !== this.props.connection ||
+      nextProps.multiRooms !== this.props.multiRooms
+    );
   }
 
   focusComposer() {
@@ -61,29 +79,20 @@ class Room extends React.Component {
     RoomActionCreators.toggleFavorite(room.id, room.starred);
   }
 
-  handleRoomLeave(event) {
-    const { room, multiRooms } = this.props;
+  handleRoomLeave() {
+    const { room } = this.props;
     /* eslint-disable */
     let [app, accountSlug, messages, roomSlugs] = document.location.pathname.slice(1).split("/");
     /* eslint-enable  */
-    if (!multiRooms) {
-      this.props.history.push({ pathname: `/chat/${accountSlug}/lobby` });
-    } else {
-      roomSlugs = roomSlugs.split(",");
-      roomSlugs.splice(roomSlugs.indexOf(room.slug), 1);
-      this.props.history.push(`/chat/${accountSlug}/messages/${roomSlugs.join(",")}`);
-    }
-
-    if (event.shiftKey) {
-      RoomActionCreators.leaveRoom(accountSlug, room.slug);
-    }
+    roomSlugs = roomSlugs.split(",");
+    roomSlugs.splice(roomSlugs.indexOf(room.slug), 1);
+    this.props.history.push(`/chat/${accountSlug}/messages/${roomSlugs.join(",")}`);
   }
 
   render() {
     const { room, multiRooms, connection } = this.props;
     const { name, topic } = room;
     const defaultValue = ComposerStore.getSavedText(room.id);
-
     return (
       <section
         className={classnames("flex-vertical", "flex-spacer", { "room--favorite": room.starred })}
@@ -99,24 +108,11 @@ class Room extends React.Component {
             <h3>{parseTitle(topic)}</h3>
           </div>
           <div className="actions">
-            {/* <span
-              className="icon icon-active"
-              title="Toggle connected users panel"
-            >
-              <RoomIcons.RoomPublicIcon />
-            </span> */}
             <RoomSettingsIcon room={room} />
-            <span
-              className="icon"
-              onClick={this.handleRoomLeave}
-              title={
-                multiRooms
-                  ? "Close this room panel (shift+click will leave the room)"
-                  : "Leave this room"
-              }
-            >
-              <CloseIcon />
-            </span>
+            {multiRooms &&
+              <span className="icon" onClick={this.handleRoomLeave} title="Close this room panel">
+                <CloseIcon />
+              </span>}
           </div>
         </header>
         {room.usersList ? <RoomUsersList room={room} /> : null}

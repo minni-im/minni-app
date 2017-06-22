@@ -48,7 +48,7 @@ class RoomSettingsDialog extends React.Component {
   onCloseDialog(action) {
     const { accountSlug, roomSlugs } = this.props.match.params;
     if (action === "delete") {
-      const active = roomSlugs.includes(this.props.room.slug);
+      const active = (roomSlugs || []).includes(this.props.room.slug);
       RoomActionCreators.deleteRoom(this.props.room.id).then(() => {
         if (active) {
           this.props.history.push(`/chat/${accountSlug}/lobby`);

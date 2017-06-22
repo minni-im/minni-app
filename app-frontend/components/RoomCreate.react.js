@@ -8,6 +8,10 @@ import SelectedAccountStore from "../stores/SelectedAccountStore";
 import * as AccountActionCreators from "../actions/AccountActionCreators";
 
 class RoomCreate extends React.Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.onCreateClick = this.onCreateClick.bind(this);
@@ -38,7 +42,7 @@ class RoomCreate extends React.Component {
       this.state.usersId
     ).then(({ ok, message }) => {
       if (ok) {
-        this.context.router.transitionTo({ pathname: `/chat/${account.slug}/lobby` });
+        this.props.history.push(`/chat/${account.slug}/lobby`);
         return;
       }
       if (!ok && message) {
