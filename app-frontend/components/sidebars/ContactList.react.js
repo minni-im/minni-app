@@ -11,13 +11,14 @@ const logger = Logger.create("ContactList");
 
 export default class ContactList extends React.Component {
   renderList() {
-    return <UserList viewer={this.props.viewer} users={this.props.users} />;
+    const users = this.props.users.sortBy(user => user.fullname);
+    return <UserList viewer={this.props.viewer} users={users} />;
   }
 
   renderEmptyList() {
     return (
       <div className="coworker-all-alone">
-        You don't have any coworker ? That is sad !
+        You don&apos;t have any coworker ? That is sad !
         <InvitationDialog className="icon pointer">
           <GroupAddIcon />
         </InvitationDialog>
@@ -34,12 +35,13 @@ export default class ContactList extends React.Component {
             <h2>Coworkers</h2>
             <h3>{teamSize} teammate{teamSize > 1 ? "s" : ""}</h3>
           </div>
-          {teamSize ?
-            <div className="actions">
+          {teamSize
+            ? <div className="actions">
               <InvitationDialog className="icon pointer">
                 <GroupAddIcon />
               </InvitationDialog>
-            </div> : false}
+            </div>
+            : false}
         </header>
         <section className="panel panel--wrapper flex-vertical flex-spacer">
           {teamSize ? this.renderList() : this.renderEmptyList()}
