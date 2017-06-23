@@ -14,6 +14,7 @@ import {
 } from "../Constants";
 
 import Avatar from "./generic/Avatar.react";
+import TimeAgo from "./generic/TimeAgo.react";
 import Embed from "./Embed.react";
 import WelcomeMessage from "./WelcomeMessage.react";
 
@@ -45,7 +46,7 @@ class Message extends React.Component {
       header = (
         <div className="message--header">
           <span className="user-name">{message.user.fullname}</span>
-          <span className="timestamp">{message.dateCreated.calendar()}</span>
+          <TimeAgo className="timestamp" datetime={message.dateCreated} />
         </div>
       );
     } else {
