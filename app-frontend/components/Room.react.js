@@ -48,7 +48,7 @@ class Room extends React.Component {
 
   shouldComponentUpdate(nextProps) {
     return (
-      nextProps.room.id !== this.props.room.id ||
+      nextProps.room !== this.props.room ||
       nextProps.connection !== this.props.connection ||
       nextProps.multiRooms !== this.props.multiRooms
     );
