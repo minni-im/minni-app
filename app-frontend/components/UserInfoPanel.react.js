@@ -20,10 +20,13 @@ class UserInfoPanel extends React.Component {
     return [UserStore];
   }
 
-  static calculateState() {
+  static calculateState(prevState) {
+    const showSettingsDialog = prevState && prevState.showSettingsDialog
+      ? prevState.showSettingsDialog
+      : false;
     return {
       user: UserStore.getConnectedUser(),
-      showSettingsDialog: false,
+      showSettingsDialog,
     };
   }
 
