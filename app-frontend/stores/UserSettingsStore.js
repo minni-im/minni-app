@@ -8,6 +8,7 @@ import { ActionTypes } from "../Constants";
 import Dispatcher from "../Dispatcher";
 
 import Logger from "../libs/Logger";
+
 const logger = Logger.create("UserSettingsStore");
 
 const DEFAULT_SETTINGS = {
@@ -112,6 +113,10 @@ class UserSettingsStore extends MapStore {
 
   getSoundVolume() {
     return this.getValue("global.notification.sound_volume") / 100;
+  }
+
+  isShiftEnterActive() {
+    return !this.getValue("global.rooms.enter");
   }
 }
 

@@ -4,14 +4,13 @@ import PropTypes from "prop-types";
 
 import { PLUGIN_TYPES } from "../Constants";
 
-import { SmileyIcon } from "../utils/IconsUtils";
-
 import ComposerActionCreators from "../actions/ComposerActionCreators";
 import UploadActionCreators from "../actions/UploadActionCreators";
 import { search as SlashCommandSearch } from "../actions/SlashCommandActionCreators";
 
 import Room from "../models/Room";
 
+import UserSettingsStore from "../stores/UserSettingsStore";
 import PluginsStore from "../stores/PluginsStore";
 
 import { KEYCODES } from "../utils/KeyboardUtils";
@@ -42,7 +41,7 @@ export default class Composer extends React.Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
     defaultValue: PropTypes.string,
-    room: PropTypes.instanceOf(Room),
+    room: PropTypes.instanceOf(Room).isRequired,
     disabled: PropTypes.bool,
   };
 
@@ -118,7 +117,9 @@ export default class Composer extends React.Component {
 
   handleOnKeyPress(event) {
     let value;
-    const shouldSend = !event.shiftKey;
+    const shiftEnterActive = UserSettingsStore.isShiftEnterActive();
+    const shouldSend =
+      (!shiftEnterActive && !event.shiftKey) || (shiftEnterActive && event.shiftKey);
     switch (event.which) {
       case KEYCODES.ENTER:
         value = this.textarea.value;
