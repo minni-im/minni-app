@@ -31,6 +31,122 @@
   }
 }
 
+.x-radio-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    border-radius: 14px;
+    border: 1px solid @gray-dark;
+
+    input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    div {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: @gray;
+      border-radius: 14px;
+      transition: background .15s ease-in-out,box-shadow .15s ease-in-out,border .15s ease-in-out;
+
+      &:after {
+        content: "";
+        display: block;
+        width: 18px;
+        height: 18px;
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        bottom: 3px;
+        background: @background-light;
+        border-radius: 10px;
+        transition: all .15s ease;
+        box-shadow: 0 3px 1px 0 rgba(0,0,0,.05), 0 2px 2px 0 rgba(0,0,0,.1), 0 3px 3px 0 rgba(0,0,0,.05);
+      }
+    }
+
+    &.x-radio-switch--checked {
+      border-color: @dark-orange;
+      div {
+        background: @light-orange;
+        &:after {
+          transform: translateX(20px);
+        }
+      }
+    }
+
+    &.x-radio-switch--disabled {
+      border-color: @gray-light;
+      div {
+        background: @light-orange;
+        filter: grayscale();
+        &:after {
+          opacity: .75;
+        }
+      }
+    }
+}
+
+.x-radio-group {
+  .x-radio-group-item {
+    border: 1px solid @gray-lighter;
+    border-radius: 3px;
+    padding: 5px;
+
+    label {
+      cursor: pointer;
+    }
+
+    .x-radio-group-item-tick {
+      position: relative;
+      border: 1px solid @gray-lighter;
+      border-radius: 3px;
+      .square(24px);
+      margin-right: 10px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      input {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        opacity: 0;
+        cursor: pointer;
+      }
+
+      svg {
+        polyline {
+          stroke: @dark-orange;
+        }
+      }
+    }
+
+    &.x-radio-group-item--checked {
+      border-color: @dark-orange;
+      background-color: @light-orange;
+
+      .x-radio-group-item-tick {
+        background-color: @background-light;
+        border-color: @dark-orange;
+      }
+    }
+  }
+
+  .x-radio-group-item + .x-radio-group-item {
+    margin-top: 5px;
+  }
+}
 
 .dialog__backdrop {
   align-items: center;

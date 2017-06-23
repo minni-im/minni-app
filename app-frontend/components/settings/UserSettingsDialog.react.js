@@ -4,6 +4,7 @@ import Immutable from "immutable";
 
 import Dialog from "../generic/Dialog.react";
 import TabBar, { TabPanel } from "../generic/TabBar.react";
+import RadioSwitch from "../generic/RadioSwitch.react";
 
 import Avatar from "../generic/Avatar.react";
 import SettingItem from "./SettingItem.react";
@@ -184,6 +185,7 @@ export default class UserSettingsDialog extends React.Component {
     return (
       <TabPanel label="Profile">
         <h3>Personnal details</h3>
+
         <div className="user-profile flex-horizontal">
           <section className="user-profile--info flex-spacer">
             <h4>
