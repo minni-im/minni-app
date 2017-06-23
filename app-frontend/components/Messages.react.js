@@ -168,7 +168,7 @@ function MessageTimestamp(props) {
 function MessageSystemGroup(props) {
   const messages = props.messages.map(message =>
     (<div key={message.id} className="message-system">
-      {message.content} <timestamp>{message.dateCreated.calendar()}</timestamp>
+      {message.content} <TimeAgo datetime={message.dateCreated} />
     </div>)
   );
   return <div className="message-group message-group-system">{messages}</div>;
