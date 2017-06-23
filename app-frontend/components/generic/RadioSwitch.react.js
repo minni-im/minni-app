@@ -2,12 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 
-const ON = "on";
-const OFF = "off";
-
 export default class RadioSwitch extends React.PureComponent {
   static propTypes = {
-    name: PropTypes.string.isRequired,
     value: PropTypes.bool.isRequired,
     disabled: PropTypes.bool,
     onChange: PropTypes.func,
@@ -18,31 +14,11 @@ export default class RadioSwitch extends React.PureComponent {
     onChange: () => {},
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: props.value ? ON : OFF,
-    };
-  }
-
-  onChange(evt) {
-    this.setState((state) => {
-      const result = this.props.onChange(evt);
-      if (result !== false) {
-        return {
-          value: state.value === ON ? OFF : ON,
-        };
-      }
-      return state;
-    });
-  }
-
   render() {
-    const { disabled } = this.props;
-    const { value } = this.state;
+    const { value, disabled } = this.props;
     const classNames = classnames("x-radio-switch", {
       "x-radio-switch--disabled": disabled,
-      "x-radio-switch--checked": value === ON,
+      "x-radio-switch--checked": value,
     });
 
     return (
@@ -51,7 +27,7 @@ export default class RadioSwitch extends React.PureComponent {
           type="checkbox"
           defaultValue={value}
           disabled={disabled}
-          onChange={e => this.onChange(e)}
+          onChange={e => this.props.onChange(e)}
         />
         <div />
       </div>

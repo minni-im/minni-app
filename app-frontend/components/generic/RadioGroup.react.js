@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 
-export default class RadioGroup extends React.Component {
+export default class RadioGroup extends React.PureComponent {
   static propTypes = {
     values: PropTypes.arrayOf(
       PropTypes.shape({
@@ -22,12 +22,12 @@ export default class RadioGroup extends React.Component {
     onChange: () => {},
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: props.selected,
-    };
-  }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     value: props.selected,
+  //   };
+  // }
 
   onChange(evt) {
     const { value, dataset } = evt.target;
@@ -36,15 +36,16 @@ export default class RadioGroup extends React.Component {
     if (valueType === "number") {
       newValue = parseInt(value, 10);
     }
-    this.setState(() => {
-      this.props.onChange({ value: newValue });
-      return { value: newValue };
-    });
+    // this.setState(() => {
+    //   this.props.onChange({ value: newValue });
+    //   return { value: newValue };
+    // });
+    this.props.onChange({ value: newValue });
   }
 
   render() {
-    const { disabled, values, name } = this.props;
-    const { value } = this.state;
+    const { disabled, values, name, selected } = this.props;
+    // const { value } = this.state;
     const classNames = classnames("x-radio-group", {
       "x-radio-group--disabled": disabled,
     });
@@ -54,7 +55,7 @@ export default class RadioGroup extends React.Component {
         {values.map(item =>
           (<div
             className={classnames("x-radio-group-item", {
-              "x-radio-group-item--checked": item.value === value,
+              "x-radio-group-item--checked": item.value === selected,
             })}
             key={item.value}
           >
@@ -65,12 +66,12 @@ export default class RadioGroup extends React.Component {
                   name={name}
                   value={item.value}
                   data-value-type={typeof item.value}
-                  checked={item.value === value}
+                  checked={item.value === selected}
                   disabled={disabled}
                   onChange={e => this.onChange(e)}
                 />
 
-                {item.value === value &&
+                {item.value === selected &&
                   <svg
                     width="18"
                     height="18"

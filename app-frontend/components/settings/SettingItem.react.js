@@ -76,9 +76,7 @@ export default class SettingItem extends React.Component {
 
     let choiceList;
     if (choices === DEFAULT_SWITCH) {
-      choiceList = (
-        <RadioSwitch name={setting} value={this.state.value} onChange={this.onSwitchClick} />
-      );
+      choiceList = <RadioSwitch value={this.state.value} onChange={this.onSwitchClick} />;
     } else {
       choiceList = (
         <RadioGroup
