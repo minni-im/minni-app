@@ -1,6 +1,7 @@
 import React from "react";
 import { Container } from "flux/utils";
 import Combokeys from "combokeys";
+import bindGlobalPatch from "combokeys/plugins/global-bind";
 
 import * as ActivityActionCreators from "../actions/ActivityActionCreators";
 
@@ -70,8 +71,8 @@ export default InfoContainer;
 
 export class InfoPanelPopover extends React.Component {
   componentDidMount() {
-    this.combokeys = new Combokeys(document.documentElement);
-    this.combokeys.bind(["command+,", "ctrl+,"], (event) => {
+    this.combokeys = bindGlobalPatch(new Combokeys(document.documentElement));
+    this.combokeys.bindGlobal(["command+,", "ctrl+,"], (event) => {
       this.infoContainer.onSettingsClick(event);
       return false;
     });
