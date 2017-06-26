@@ -46,13 +46,17 @@ class Message extends React.Component {
       header = (
         <div className="message--header">
           <span className="user-name">{message.user.fullname}</span>
-          <TimeAgo className="timestamp" datetime={message.dateCreated} />
+          <TimeAgo
+            className="timestamp"
+            datetime={message.dateCreated}
+            format={clock24 ? "dddd, LL HH:mm" : "LLLL"}
+          />
         </div>
       );
     } else {
       timestamp = (
         <div className="message--timestamp">
-          {message.dateCreated.format(clock24 ? "HH:MM" : "hh:mm A")}
+          {message.dateCreated.format(clock24 ? "HH:MM" : "LT")}
         </div>
       );
     }
@@ -168,7 +172,8 @@ function MessageTimestamp(props) {
 function MessageSystemGroup(props) {
   const messages = props.messages.map(message =>
     (<div key={message.id} className="message-system">
-      {message.content} <TimeAgo datetime={message.dateCreated} />
+      {message.content}{" "}
+      <TimeAgo datetime={message.dateCreated} format={props.clock24 ? "dddd, LL HH:mm" : "LLLL"} />
     </div>)
   );
   return <div className="message-group message-group-system">{messages}</div>;

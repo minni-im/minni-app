@@ -12,11 +12,15 @@ export default class TimeAgo extends React.PureComponent {
     datetime: PropTypes.instanceOf(moment).isRequired,
     live: PropTypes.bool,
     className: PropTypes.string,
+    title: PropTypes.string,
+    format: PropTypes.string,
   };
 
   static defaultProps = {
     live: true,
     className: "",
+    title: "",
+    format: "LLLL",
   };
 
   componentDidMount() {
@@ -54,7 +58,7 @@ export default class TimeAgo extends React.PureComponent {
       ? 1000
       : seconds < HOUR ? 1000 * MINUTE : seconds < DAY ? 1000 * HOUR : 0;
 
-    const period = Math.min(Math.max(unboundPeriod, 0), Infinity * 1000);
+    const period = Math.min(Math.max(unboundPeriod, 0), Infinity);
 
     if (period) {
       this.timeoutId = setTimeout(() => {
@@ -67,17 +71,22 @@ export default class TimeAgo extends React.PureComponent {
   }
 
   render() {
-    const { datetime, className } = this.props;
+    // TODO: This method is clearly a mess. We should not hack into momentjs
+    // Maybe we should consider moving to Intl browser APIs
+    const { datetime, className, title: propsTitle, format } = this.props;
+    const title = propsTitle.length ? propsTitle : datetime.format(format);
     const now = moment();
-
     const daysDiff = now.diff(datetime, "days");
-    if (daysDiff < 1) {
-      return (
-        <time className={className} dateTime={datetime.toISOString()}>{datetime.fromNow()}</time>
-      );
-    }
+    const hourFormat = format.length === 4 ? "LT" : "HH:mm";
     return (
-      <time className={className} dateTime={datetime.toISOString()}>{now.calendar(datetime)}</time>
+      <time className={className} dateTime={datetime.toISOString()} title={title}>
+        {daysDiff < 1
+          ? datetime.fromNow()
+          : datetime.calendar(null, {
+            lastDay: `[Yesterday at] ${hourFormat}`,
+            lastWeek: `[Last] dddd [at] ${hourFormat}`,
+          })}
+      </time>
     );
   }
 }
