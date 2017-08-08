@@ -71,7 +71,7 @@ const handlers = {
 
   reconnecting(attempt) {
     const userId = UserStore.getConnectedUser().id;
-    const ms = SOCKETIO_OPTIONS.reconnectionDelay * Math.pow(2 ** attempt);
+    const ms = SOCKETIO_OPTIONS.reconnectionDelay * Math.pow(2, attempt);
     ActivityActionCreators.updateStatus(userId, USER_STATUS.CONNECTING);
     NotificationsActionCreators.notifyError(
       `We are trying hard to reconnect to the server. #${attempt} attempt ...`,
