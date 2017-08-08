@@ -219,6 +219,8 @@ export const MAX_MULTI_ROOMS = 3;
 
 export const INVITATION_MAX_AGE = 24 * 60 * 60 * 1000;
 
+export const DECONNECTION_SPAM_TRESHOLD = 5 * 1000;
+
 export const EndPoints = {
   ACCOUNT_CREATE: "/api/accounts/",
   ACCOUNT_CHECK_EXISTENCE: name => `/api/accounts/check_existence?name=${name}`,

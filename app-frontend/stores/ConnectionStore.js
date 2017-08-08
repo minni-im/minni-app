@@ -1,7 +1,12 @@
 import { ReduceStore, withNoMutations } from "../libs/Flux";
 import Dispatcher, { dispatch, dispatchAsync } from "../Dispatcher";
 
-import { ActionTypes, SOCKETIO_OPTIONS, USER_STATUS } from "../Constants";
+import {
+  ActionTypes,
+  SOCKETIO_OPTIONS,
+  USER_STATUS,
+  DECONNECTION_SPAM_TRESHOLD
+} from "../Constants";
 
 import * as AccountActionCreators from "../actions/AccountActionCreators";
 import * as ActivityActionCreators from "../actions/ActivityActionCreators";
@@ -22,6 +27,8 @@ const logger = Logger.create("ConnectionStore");
 
 let socket = false;
 let reconnection = false;
+
+let joinLeaveNotifications = {};
 
 const handlers = {
   connect() {
@@ -64,7 +71,7 @@ const handlers = {
 
   reconnecting(attempt) {
     const userId = UserStore.getConnectedUser().id;
-    const ms = SOCKETIO_OPTIONS.reconnectionDelay * Math.pow(2, attempt);
+    const ms = SOCKETIO_OPTIONS.reconnectionDelay * Math.pow(2 ** attempt);
     ActivityActionCreators.updateStatus(userId, USER_STATUS.CONNECTING);
     NotificationsActionCreators.notifyError(
       `We are trying hard to reconnect to the server. #${attempt} attempt ...`,
@@ -114,11 +121,23 @@ const handlers = {
     connect({ user }) {},
 
     join({ user, roomId }) {
+      const timeoutId = (joinLeaveNotifications[roomId] || {})[user.id];
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        return;
+      }
       RoomActionCreators.notifyUserJoin(roomId, user.id);
     },
 
     leave({ user, roomId }) {
-      RoomActionCreators.notifyUserLeave(roomId, user.id);
+      joinLeaveNotifications = Object.assign(joinLeaveNotifications, {
+        [roomId]: Object.assign({}, joinLeaveNotifications[roomId], {
+          [user.id]: setTimeout(() => {
+            delete joinLeaveNotifications[roomId][user.id];
+            RoomActionCreators.notifyUserLeave(roomId, user.id);
+          }, DECONNECTION_SPAM_TRESHOLD),
+        }),
+      });
     },
 
     disconnect({ user }) {
