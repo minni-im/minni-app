@@ -22,15 +22,16 @@ export default (app) => {
           const json = newMessage.toAPI();
           const socketKey = `${accountId}:${message.roomId}`;
 
-          cache.hmset(socketKey, {
-            lastMsgTimestamp: json.lastUpdated.toISOString(),
-            lastMsgUserId: userId,
-          });
           res.status(201).json({
             ok: true,
             message: nonce ? Object.assign(json, { nonce }) : json,
           });
           app.io.in(socketKey).emit("messages:create", json);
+
+          cache.hmset(socketKey, {
+            lastMsgTimestamp: json.lastUpdated.toISOString(),
+            lastMsgUserId: userId,
+          });
 
           embed(json.content).then(
             (detectedEmbeds) => {

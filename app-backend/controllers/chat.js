@@ -10,44 +10,51 @@ export default (app) => {
 
     const { socket, user } = req;
     const { connectedRooms } = req.data;
+    const userPublic = user.toAPI();
+    const userAdmin = user.toAPI(true);
 
     Account.getListForUser(user.id).then((accounts) => {
       const size = accounts.length;
 
       accounts = accounts.map((account) => {
-        socket.join(account.id);
+        const { id } = account;
+        socket.join(id);
         // console.log(`'${user.id}' has joined '${account.id}'`);
-        app.io.emit("users:connect", { user: user.toAPI() });
-        return account.toAPI(user.id === account.adminId);
-      });
+        app.io.emit("users:connect", { user: userPublic });
 
-      const rooms = accounts.map((account) => {
-        const { id: accountId } = account;
-        if (connectedRooms[accountId]) {
-          connectedRooms[accountId].forEach((roomId) => {
-            const socketKey = `${accountId}:${roomId}`;
+        if (connectedRooms[id]) {
+          connectedRooms[id].forEach((roomId) => {
+            const socketKey = `${id}:${roomId}`;
             socket.join(socketKey);
             socket.broadcast.to(socketKey).emit("users:join", {
-              user: user.toAPI(),
-              accountId,
+              user: userPublic,
+              accountId: id,
               roomId,
             });
             // console.log(`'${user.id}' has joined '${socketKey}'`);
           });
         }
-        return Room.where("accountId", { key: account.id }).then(
-          room =>
-            new Promise((resolve, reject) => {
-              const cacheKey = `${account.id}:${room.id}`;
-              cache.hgetall(cacheKey, (err, state) => {
-                if (err) {
-                  return reject(err);
-                }
-                return resolve(Object.assign(room, state));
-              });
-            })
-        );
+        return account.toAPI(user.id === account.adminId);
       });
+
+      const rooms = accounts.map(account =>
+        Room.getListForAccountAndUser(account.id, user).then(list =>
+          Promise.all(
+            list.map(
+              room =>
+                new Promise((resolve, reject) => {
+                  const cacheKey = `${room.accountId}:${room.id}`;
+                  cache.hgetall(cacheKey, (err, state) => {
+                    if (err) {
+                      return reject(err);
+                    }
+                    return resolve(Object.assign(room, state));
+                  });
+                })
+            )
+          )
+        )
+      );
 
       const usersId = accounts.reduce((ids, account) => {
         account.usersId.forEach((id) => {
@@ -55,53 +62,50 @@ export default (app) => {
         });
         return ids;
       }, new Set());
-      const users = Array.from(usersId).map(userId => User.findById(userId));
+      const users = Array.from(usersId).map(userId => User.findById(userId).then(u => u.toAPI()));
 
       const presence = new Set();
+      for (const clientSocket of Object.keys(app.io.sockets.adapter.nsp.connected)) {
+        const client = app.io.sockets.adapter.nsp.connected[clientSocket];
+        if (client.request.user.id !== user.id) {
+          presence.add({
+            userId: client.request.user.id,
+            status: client.status,
+          });
+        }
+      }
 
-      Promise.all([...rooms, ...users])
-        .then((results) => {
-          const finalRooms = results
-            .slice(0, size)
-            .reduce((flat, flatRooms) => flat.concat(flatRooms), [])
-            .filter(room => room.isAccessGranted(user.id))
-            .map(room => room.toAPI(user.id === room.adminId));
-          const finalUsers = results.slice(size).map(finalUser => finalUser.toAPI());
-
-          for (const clientSocket of Object.keys(app.io.sockets.adapter.nsp.connected)) {
-            const client = app.io.sockets.adapter.nsp.connected[clientSocket];
-            if (client.request.user.id !== user.id) {
-              presence.add({
-                userId: client.request.user.id,
-                status: client.status,
-              });
-            }
-          }
+      Promise.all([...rooms, ...users]).then(
+        (results) => {
+          const finalRooms = results.slice(0, size).reduce((flat, list) => flat.concat(list), []);
+          const finalUsers = results.slice(size);
 
           socket.emit("connected", {
-            user: user.toAPI(true),
+            user: userAdmin,
             accounts,
             rooms: finalRooms,
             users: finalUsers,
             presence: Array.from(presence),
           });
-        })
-        .catch((ex) => {
+        },
+        (error) => {
           console.log(`Socket connection failed [sid: ${socket.id}, id:${user.id}]`);
-          console.error(ex);
-        });
+          console.error(error);
+        }
+      );
     });
   });
 
   app.io.route("disconnecting", (req) => {
     const { socket, user } = req;
+    const userPublic = user.toAPI();
     // console.log(`'${user.id}' is about to be disconnected`);
     // Notifying all rooms the user was connected to
     for (const socketRoomName of Object.keys(socket.rooms)) {
       if (socketRoomName.includes(":")) {
         const [accountId, roomId] = socketRoomName.split(":");
         socket.broadcast.to(socketRoomName).emit("users:leave", {
-          user: user.toAPI(false),
+          user: userPublic,
           accountId,
           roomId,
         });

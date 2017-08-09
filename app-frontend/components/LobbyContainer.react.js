@@ -8,31 +8,19 @@ import DocumentTitleStore from "../stores/DocumentTitleStore";
 import SelectedAccountStore from "../stores/SelectedAccountStore";
 import AccountStore from "../stores/AccountStore";
 import UserStore from "../stores/UserStore";
-import RoomStateStore from "../stores/RoomStateStore";
 
 import Lobby from "./Lobby.react";
 import ContactList from "./sidebars/ContactListContainer.react";
 
 class LobbyContainer extends React.Component {
   static getStores() {
-    return [
-      AccountStore,
-      AccountRoomStore,
-      SelectedAccountStore,
-      DocumentTitleStore,
-      RoomStateStore,
-    ];
+    return [AccountStore, AccountRoomStore, SelectedAccountStore, DocumentTitleStore];
   }
 
   static calculateState() {
     const account = SelectedAccountStore.getAccount();
     const rooms = account
-      ? AccountRoomStore.getRooms(account.id, (room) => {
-        const roomState = RoomStateStore.getLastMessageInfo(room.id);
-        return roomState && roomState.lastMsgTimestamp
-            ? -roomState.lastMsgTimestamp
-            : -room.lastUpdated.unix();
-      })
+      ? AccountRoomStore.getRooms(account.id, room => -room.lastMsgTimestamp)
       : Immutable.Set();
     return {
       viewer: UserStore.getConnectedUser(),

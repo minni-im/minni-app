@@ -104,26 +104,22 @@ export default (app) => {
     list(req, res) {
       const Room = recorder.model("Room");
       const { accountId } = req.params;
-      Room.where("accountId", { key: accountId })
+      const { user } = req;
+      Room.getListForAccountAndUser(accountId, user)
         .then(
-          (rooms) => {
-            const { user } = req;
-            return rooms
-              .filter(room => room.public || (room.private && room.usersId.includes(user.id)))
-              .map(room => room.toAPI(user.id === room.adminId))
-              .map(
-                room =>
-                  new Promise((resolve, reject) => {
-                    const cacheKey = `${room.accountId}:${room.id}`;
-                    cache.hgetall(cacheKey, (err, state) => {
-                      if (err) {
-                        return reject(err);
-                      }
-                      return resolve(Object.assign(room, state));
-                    });
-                  })
-              );
-          },
+          rooms =>
+            rooms.map(
+              room =>
+                new Promise((resolve, reject) => {
+                  const cacheKey = `${room.accountId}:${room.id}`;
+                  cache.hgetall(cacheKey, (err, state) => {
+                    if (err) {
+                      return reject(err);
+                    }
+                    return resolve(Object.assign(room, state));
+                  });
+                })
+            ),
           (error) => {
             res.json({
               ok: false,
@@ -208,14 +204,26 @@ export default (app) => {
         room.type = type;
         room.usersId = usersId || room.usersId;
       }
-      room.save().then(
-        (updatedRoom) => {
+      Promise.all([
+        room.save(),
+        new Promise((resolve) => {
+          cache.hgetall(`${room.accountId}:${room.id}`, (error, meta) => {
+            if (error) {
+              console.error(error);
+              resolve({});
+              return;
+            }
+            resolve(meta);
+          });
+        }),
+      ]).then(
+        ([updatedRoom, meta]) => {
           res.json({
             ok: true,
-            room: updatedRoom.toAPI(true),
+            room: Object.assign(updatedRoom.toAPI(true), meta),
           });
           app.io.in(room.accountId).emit("room:update", {
-            room: updatedRoom.toAPI(),
+            room: Object.assign(updatedRoom.toAPI(), meta),
           });
         },
         ({ message }) => {
@@ -236,6 +244,7 @@ export default (app) => {
           app.io.in(room.accountId).emit("room:delete", {
             room: room.toAPI(),
           });
+          cache.del(`${room.accountId}:${room.id}`);
         },
         ({ message, error, reason }) => {
           if (error === "" && reason) {

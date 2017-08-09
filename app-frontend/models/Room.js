@@ -16,6 +16,7 @@ const RoomRecord = Immutable.Record({
   accountId: undefined,
   adminId: undefined,
   usersId: [],
+  lastMsgTimestamp: undefined,
   lastMsgUserId: undefined,
   lastUpdated: undefined,
   dateCreated: undefined,
@@ -29,8 +30,10 @@ const RoomRecord = Immutable.Record({
 
 export default class Room extends RoomRecord {
   static isAccessGranted(room, userId) {
-    return room.type === TYPE.PUBLIC ||
-      room.type === TYPE.PRIVATE && (room.adminId === userId || room.usersId.includes(userId));
+    return (
+      room.type === TYPE.PUBLIC ||
+      (room.type === TYPE.PRIVATE && (room.adminId === userId || room.usersId.includes(userId)))
+    );
   }
 
   get private() {
