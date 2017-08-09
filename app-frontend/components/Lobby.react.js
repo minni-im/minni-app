@@ -5,16 +5,19 @@ import classnames from "classnames";
 
 import * as RoomActionCreators from "../actions/RoomActionCreators";
 
+import TimeAgo from "./generic/TimeAgo.react";
 import RoomSettingsIcon from "./RoomSettingsIcon.react";
 
-import { FavoriteIcon, RoomIcons, SettingsIcon } from "../utils/IconsUtils";
+import { FavoriteIcon, RoomIcons, SettingsIcon, GroupIcon } from "../utils/IconsUtils";
 import { parseTitleWithoutLinks } from "../utils/MarkupUtils";
+
+import UserStore from "../stores/UserStore";
 
 import Logger from "../libs/Logger";
 
 const logger = Logger.create("Lobby");
 
-class Room extends React.Component {
+class Room extends React.PureComponent {
   static propTypes = {
     room: PropTypes.object.isRequired,
     viewer: PropTypes.object.isRequired,
@@ -36,26 +39,44 @@ class Room extends React.Component {
   render() {
     const { accountName, room } = this.props;
     const title = __DEV__ ? `${room.name} - ${room.id}` : `${room.name}`;
-
+    const lastMsgUser = UserStore.get(room.lastMsgUserId);
     return (
       <Link
         to={`/chat/${accountName}/messages/${room.slug}`}
-        className={classnames("room", "flex-horizontal", this.props.className, {
+        className={classnames("room", "flex-vertical", this.props.className, {
           "room-favorite": room.starred,
           "room-public": room.public,
           "room-private": room.private,
         })}
         title={title}
       >
-        <div className="room--name">
-          {parseTitleWithoutLinks(room.name)}
+        <div className="flex-horizontal">
+          <div className="room--name">
+            {parseTitleWithoutLinks(room.name)}
+          </div>
+          {room.private &&
+            <div className="room--icons-meta flex-horizontal">
+              <RoomIcons.RoomPrivateIcon className="icon" />
+              <GroupIcon />
+              <div className="room--teammates">
+                {room.usersId.length + 1}
+              </div>
+            </div>}
+          <div className="room--topic flex-spacer">
+            {!room.private && parseTitleWithoutLinks(room.topic)}
+          </div>
+          <RoomSettingsIcon className="room--icon" room={room} />
+          <span className="room--icon icon--favorite" onClick={this.onRoomStarClick}>
+            <FavoriteIcon />
+          </span>
         </div>
-        {room.private ? <RoomIcons.RoomPrivateIcon className="icon" /> : null}
-        <div className="room--topic flex-spacer">{parseTitleWithoutLinks(room.topic)}</div>
-        <RoomSettingsIcon className="room--icon" room={room} />
-        <span className="room--icon icon--favorite" onClick={this.onRoomStarClick}>
-          <FavoriteIcon />
-        </span>
+        <div className="room--meta flex-horizontal">
+          <div className="room--last-update">
+            Last updated{" "}
+            <TimeAgo className="room--last-update-ts" datetime={room.lastMsgTimestamp} /> by{" "}
+            <span className="room--last-update-user">{lastMsgUser.fullname}</span>
+          </div>
+        </div>
       </Link>
     );
   }
@@ -93,7 +114,9 @@ export default class Lobby extends React.Component {
         <header className="flex-horizontal">
           <div className="header-info flex-spacer">
             <h2>Lobby</h2>
-            <h3>{account.description}</h3>
+            <h3>
+              {account.description}
+            </h3>
           </div>
           {/* <div className="actions">
             {settingsIcon}

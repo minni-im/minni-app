@@ -20,7 +20,7 @@ class LobbyContainer extends React.Component {
   static calculateState() {
     const account = SelectedAccountStore.getAccount();
     const rooms = account
-      ? AccountRoomStore.getRooms(account.id, room => -room.lastUpdated.unix())
+      ? AccountRoomStore.getRooms(account.id, room => -room.lastMsgTimestamp)
       : Immutable.Set();
     return {
       viewer: UserStore.getConnectedUser(),

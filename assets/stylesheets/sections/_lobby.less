@@ -26,7 +26,8 @@
         #user.status-icon(@gray-lighter);
       }
 
-      .user-name, .user-status {
+      .user-name,
+      .user-status {
         line-height: 1.2em;
       }
 
@@ -90,6 +91,35 @@
         }
       }
 
+      .room--icons-meta {
+        align-items: center;
+      }
+
+      .room--teammates {
+        margin-left: 3px;
+        color: @gray !important;
+      }
+
+      .room--meta {
+        // transform: translateY(-3px);
+        line-height: 16px;
+        color: @gray-light;
+        font-size: 12px;
+      }
+
+      .room--last-update {
+        margin-right: 10px;
+      }
+
+      .room--last-update-ts,
+      .room--last-update-user {
+        font-weight: 500;
+      }
+
+      .room--last-update-ts {
+        text-transform: lowercase;
+      }
+
       &.room-private svg.icon {
         .square(24px);
       }
@@ -124,6 +154,10 @@
               fill: @background-light;
             }
           }
+        }
+
+        .room--meta {
+          color: inherit;
         }
 
         .icon--favorite:hover {

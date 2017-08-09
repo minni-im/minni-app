@@ -43,6 +43,14 @@ RoomSchema.static("isValidName", function isValidName(accountId, roomName) {
   );
 });
 
+RoomSchema.static("getListForAccountAndUser", function getListForAccountAndUser(accountId, user) {
+  return this.where("accountId", { key: accountId }).then(rooms =>
+    rooms
+      .filter(room => room.isAccessGranted(user.id))
+      .map(room => room.toAPI(user.id === room.adminId))
+  );
+});
+
 RoomSchema.method("isDefaultRoom", function () {
   return this.type === TYPE.INITIAL;
 });

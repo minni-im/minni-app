@@ -17,6 +17,7 @@ function handleLoadRoomsSuccess(state, { rooms }) {
   return state.withMutations((map) => {
     rooms.forEach((room) => {
       Object.assign(room, {
+        lastMsgTimestamp: moment(room.lastMsgTimestamp),
         lastUpdated: moment(room.lastUpdated),
         dateCreated: moment(room.dateCreated),
         starred: UserSettingsStore.isRoomStarred(room),
@@ -40,6 +41,12 @@ function handleRoomFavoriteFailure(state, { message }) {
 
 function handleRoomDelete(state, { room }) {
   return state.delete(room.id);
+}
+
+function handleMessageCreate(state, { message }) {
+  return state
+    .setIn([message.roomId, "lastMsgUserId"], message.userId)
+    .setIn([message.roomId, "lastMsgTimestamp"], moment(message.lastUpdated));
 }
 
 function logFailure(type) {
@@ -72,6 +79,8 @@ class RoomStore extends MapStore {
     this.addAction(ActionTypes.ROOM_DELETE_SUCCESS, handleRoomDelete);
     this.addAction(ActionTypes.ROOM_DELETE_FAILURE, withNoMutations(logFailure("RoomDelete")));
     this.addAction(ActionTypes.ROOM_UPDATE_FAILURE, withNoMutations(logFailure("RoomUpdate")));
+
+    this.addAction(ActionTypes.MESSAGE_CREATE, handleMessageCreate);
   }
 
   get(roomId) {
