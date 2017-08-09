@@ -40,22 +40,31 @@ class Room extends React.Component {
     return (
       <Link
         to={`/chat/${accountName}/messages/${room.slug}`}
-        className={classnames("room", "flex-horizontal", this.props.className, {
+        className={classnames("room", "flex-vertical", this.props.className, {
           "room-favorite": room.starred,
           "room-public": room.public,
           "room-private": room.private,
         })}
         title={title}
       >
-        <div className="room--name">
-          {parseTitleWithoutLinks(room.name)}
+        <div className="flex-horizontal">
+          <div className="room--name">
+            {parseTitleWithoutLinks(room.name)}
+          </div>
+          {room.private ? <RoomIcons.RoomPrivateIcon className="icon" /> : null}
+          <div className="room--topic flex-spacer">
+            {parseTitleWithoutLinks(room.topic)}
+          </div>
+          <RoomSettingsIcon className="room--icon" room={room} />
+          <span className="room--icon icon--favorite" onClick={this.onRoomStarClick}>
+            <FavoriteIcon />
+          </span>
         </div>
-        {room.private ? <RoomIcons.RoomPrivateIcon className="icon" /> : null}
-        <div className="room--topic flex-spacer">{parseTitleWithoutLinks(room.topic)}</div>
-        <RoomSettingsIcon className="room--icon" room={room} />
-        <span className="room--icon icon--favorite" onClick={this.onRoomStarClick}>
-          <FavoriteIcon />
-        </span>
+        <div>
+          <small>
+            {room.lastUpdated.toString()}
+          </small>
+        </div>
       </Link>
     );
   }
@@ -93,7 +102,9 @@ export default class Lobby extends React.Component {
         <header className="flex-horizontal">
           <div className="header-info flex-spacer">
             <h2>Lobby</h2>
-            <h3>{account.description}</h3>
+            <h3>
+              {account.description}
+            </h3>
           </div>
           {/* <div className="actions">
             {settingsIcon}

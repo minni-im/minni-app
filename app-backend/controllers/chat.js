@@ -1,6 +1,8 @@
 import recorder from "tape-recorder";
 
 export default (app) => {
+  const cache = app.get("cache");
+
   app.io.route("connect-me", (req) => {
     const Account = recorder.model("Account");
     const User = recorder.model("User");
@@ -33,7 +35,18 @@ export default (app) => {
             // console.log(`'${user.id}' has joined '${socketKey}'`);
           });
         }
-        return Room.where("accountId", { key: account.id });
+        return Room.where("accountId", { key: account.id }).then(
+          room =>
+            new Promise((resolve, reject) => {
+              const cacheKey = `${account.id}:${room.id}`;
+              cache.hgetall(cacheKey, (err, state) => {
+                if (err) {
+                  return reject(err);
+                }
+                return resolve(Object.assign(room, state));
+              });
+            })
+        );
       });
 
       const usersId = accounts.reduce((ids, account) => {

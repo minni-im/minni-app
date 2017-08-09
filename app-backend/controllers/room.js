@@ -7,6 +7,8 @@ import { requireValidAccount } from "../middlewares/account";
 import { requireValidRoom, requireRoomAdmin } from "../middlewares/room";
 
 export default (app) => {
+  const cache = app.get("cache");
+
   app.get("/api/accounts/:accountId/rooms", requireLogin, requireValidAccount, (req) => {
     req.io.route("rooms:list");
   });
@@ -101,25 +103,41 @@ export default (app) => {
 
     list(req, res) {
       const Room = recorder.model("Room");
-      Room.where("accountId", { key: req.params.accountId }).then(
-        (rooms) => {
-          const { user } = req;
-          rooms = rooms
-            .filter(room => room.public || (room.private && room.usersId.includes(user.id)))
-            .map(room => room.toAPI(user.id === room.adminId));
-
+      const { accountId } = req.params;
+      Room.where("accountId", { key: accountId })
+        .then(
+          (rooms) => {
+            const { user } = req;
+            return rooms
+              .filter(room => room.public || (room.private && room.usersId.includes(user.id)))
+              .map(room => room.toAPI(user.id === room.adminId))
+              .map(
+                room =>
+                  new Promise((resolve, reject) => {
+                    const cacheKey = `${room.accountId}:${room.id}`;
+                    cache.hgetall(cacheKey, (err, state) => {
+                      if (err) {
+                        return reject(err);
+                      }
+                      return resolve(Object.assign(room, state));
+                    });
+                  })
+              );
+          },
+          (error) => {
+            res.json({
+              ok: false,
+              errors: error,
+            });
+          }
+        )
+        .then(rooms => Promise.all(rooms))
+        .then(rooms =>
           res.json({
             ok: true,
             rooms,
-          });
-        },
-        (error) => {
-          res.json({
-            ok: false,
-            errors: error,
-          });
-        }
-      );
+          })
+        );
     },
 
     create(req, res) {

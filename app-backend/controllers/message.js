@@ -4,6 +4,8 @@ import { requireLogin } from "../middlewares/auth";
 import embed from "../libs/embeds";
 
 export default (app) => {
+  const cache = app.get("cache");
+
   app.put("/api/messages/", requireLogin, (req) => {
     req.io.route("messages:create");
   });
@@ -19,6 +21,11 @@ export default (app) => {
         (newMessage) => {
           const json = newMessage.toAPI();
           const socketKey = `${accountId}:${message.roomId}`;
+
+          cache.hmset(socketKey, {
+            lastMsgTimestamp: json.lastUpdated.toISOString(),
+            lastMsgUserId: userId,
+          });
           res.status(201).json({
             ok: true,
             message: nonce ? Object.assign(json, { nonce }) : json,
@@ -30,7 +37,13 @@ export default (app) => {
               if (detectedEmbeds.length > 0) {
                 newMessage.embeds = detectedEmbeds;
                 newMessage.save().then((embeddedMessage) => {
-                  app.io.in(socketKey).emit("messages:update", embeddedMessage.toAPI());
+                  const embeddedMessageJson = embeddedMessage.toAPI();
+                  cache.hmset(
+                    socketKey,
+                    "lastMsgTimestamp",
+                    embeddedMessageJson.lastUpdated.toISOString()
+                  );
+                  app.io.in(socketKey).emit("messages:update", embeddedMessageJson);
                 });
               }
             },

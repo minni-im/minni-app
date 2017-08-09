@@ -5,6 +5,7 @@ import express from "express.oi";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import flash from "flash";
+import redis from "redis";
 import connectRedis from "connect-redis";
 import recorder from "tape-recorder";
 
@@ -18,6 +19,10 @@ const RedisStore = connectRedis(express.session);
 const app = express();
 
 const DOCKER = !!process.env.DOCKER;
+const REDIS_CONF = {
+  host: DOCKER ? "redis" : config.redis.host,
+  port: DOCKER ? 6379 : config.redis.port,
+};
 
 const asciiLogo = banner => `
 ╒════════════════════════════════════════════════════╕
@@ -32,10 +37,7 @@ const asciiLogo = banner => `
 ╘════════════════════════════════════════════════════╛`;
 
 app.http().io();
-const sessionStore = new RedisStore({
-  host: DOCKER ? "redis" : config.redis.host,
-  port: DOCKER ? 6379 : config.redis.port,
-});
+const sessionStore = new RedisStore(REDIS_CONF);
 const session = {
   key: config.session.key,
   store: sessionStore,
@@ -52,6 +54,7 @@ const session = {
 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
+app.set("cache", redis.createClient(REDIS_CONF));
 app.enable("trust proxy");
 
 function bootstrap() {
