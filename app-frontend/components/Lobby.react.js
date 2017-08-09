@@ -70,13 +70,14 @@ class Room extends React.PureComponent {
             <FavoriteIcon />
           </span>
         </div>
-        <div className="room--meta flex-horizontal">
-          <div className="room--last-update">
-            Last updated{" "}
-            <TimeAgo className="room--last-update-ts" datetime={room.lastMsgTimestamp} /> by{" "}
-            <span className="room--last-update-user">{lastMsgUser.fullname}</span>
-          </div>
-        </div>
+        {lastMsgUser &&
+          <div className="room--meta flex-horizontal">
+            <div className="room--last-update">
+              Last updated{" "}
+              <TimeAgo className="room--last-update-ts" datetime={room.lastMsgTimestamp} /> by{" "}
+              <span className="room--last-update-user">{lastMsgUser.fullname}</span>
+            </div>
+          </div>}
       </Link>
     );
   }
