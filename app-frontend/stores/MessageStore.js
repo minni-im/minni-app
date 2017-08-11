@@ -136,6 +136,10 @@ class MessageStore extends MapStore {
   getLastestMessage(roomId) {
     return this.getMessages(roomId).last();
   }
+
+  hasMessages(roomId) {
+    return !this.getMessages(roomId).isEmpty();
+  }
 }
 
 const instance = new MessageStore(Dispatcher);

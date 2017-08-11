@@ -5,6 +5,7 @@ import { request } from "../utils/RequestUtils";
 import SelectedAccountStore from "../stores/SelectedAccountStore";
 import ConnectedRoomStore from "../stores/ConnectedRoomStore";
 import SelectedRoomStore from "../stores/SelectedRoomStore";
+import MessageStore from "../stores/MessageStore";
 import UserStore from "../stores/UserStore";
 
 import * as MessageUtils from "../utils/MessageUtils";
@@ -12,6 +13,59 @@ import * as MessageUtils from "../utils/MessageUtils";
 import Logger from "../libs/Logger";
 
 const logger = Logger.create("RoomActionCreators");
+
+export function fetchMessages(roomId, latest, oldest = null, limit = MAX_MESSAGES_PER_ROOMS) {
+  dispatchAsync({
+    type: ActionTypes.LOAD_MESSAGES,
+    roomId,
+  });
+
+  const params = {
+    limit,
+  };
+  if (latest) {
+    params.latest = latest;
+  }
+  if (oldest) {
+    params.oldest = oldest;
+  }
+
+  return request(EndPoints.ROOM_MESSAGES(roomId), {
+    params,
+  }).then(
+    ({ ok, messages, errors }) => {
+      if (ok) {
+        dispatch({
+          type: ActionTypes.LOAD_MESSAGES_SUCCESS,
+          roomId,
+          messages,
+          limit,
+        });
+      } else {
+        dispatch({
+          type: ActionTypes.LOAD_MESSAGES_FAILURE,
+          roomId,
+          errors,
+        });
+      }
+    },
+    (errors) => {
+      dispatch({
+        type: ActionTypes.LOAD_MESSAGES_FAILURE,
+        roomId,
+        errors,
+      });
+    }
+  );
+}
+
+function fetchMessagesIfNeeded(roomId) {
+  const hasMessages = MessageStore.hasMessages(roomId);
+  if (hasMessages) {
+    return Promise.resolve();
+  }
+  return fetchMessages(roomId);
+}
 
 export function joinRoom(accountSlug, roomSlug) {
   roomSlug.forEach((slug) => {
@@ -75,53 +129,12 @@ export function toggleFavorite(roomId, isStarred) {
   });
 }
 
-export function fetchMessages(roomId, latest, oldest = null, limit = MAX_MESSAGES_PER_ROOMS) {
-  dispatchAsync({
-    type: ActionTypes.LOAD_MESSAGES,
-    roomId,
-  });
-
-  const params = {
-    limit,
-  };
-  if (latest) {
-    params.latest = latest;
-  }
-  if (oldest) {
-    params.oldest = oldest;
-  }
-
-  return request(EndPoints.ROOM_MESSAGES(roomId), {
-    params,
-  }).then(
-    ({ ok, messages, errors }) => {
-      if (ok) {
-        dispatch({
-          type: ActionTypes.LOAD_MESSAGES_SUCCESS,
-          roomId,
-          messages,
-          limit,
-        });
-      } else {
-        dispatch({
-          type: ActionTypes.LOAD_MESSAGES_FAILURE,
-          roomId,
-          errors,
-        });
-      }
-    },
-    (errors) => {
-      dispatch({
-        type: ActionTypes.LOAD_MESSAGES_FAILURE,
-        roomId,
-        errors,
-      });
-    }
-  );
-}
-
 export function receiveMessage(roomId, message, optimistic = false) {
-  MessageUtils.receiveMessage(roomId, message, optimistic).then((processedMessage) => {
+  Promise.all([
+    fetchMessagesIfNeeded(roomId),
+    MessageUtils.receiveMessage(roomId, message, optimistic),
+    // eslint-disable-next-line no-unused-vars
+  ]).then(([_, processedMessage]) => {
     dispatch({
       type: ActionTypes.MESSAGE_CREATE,
       roomId,
@@ -230,31 +243,34 @@ export function updateRoom(roomId, payload) {
 }
 
 export function notifyUserJoin(roomId, userId) {
-  const user = UserStore.getUser(userId);
-  const message = MessageUtils.createSystemMessage(
-    roomId,
-    `${user} joined the conversation`,
-    "join"
-  );
-
-  dispatch({
-    type: ActionTypes.MESSAGE_CREATE,
-    roomId,
-    message,
+  fetchMessagesIfNeeded(roomId).then(() => {
+    const user = UserStore.getUser(userId);
+    const message = MessageUtils.createSystemMessage(
+      roomId,
+      `${user} joined the conversation`,
+      "join"
+    );
+    dispatch({
+      type: ActionTypes.MESSAGE_CREATE,
+      roomId,
+      message,
+    });
   });
 }
 
 export function notifyUserLeave(roomId, userId) {
-  const user = UserStore.getUser(userId);
-  const message = MessageUtils.createSystemMessage(
-    roomId,
-    `${user} left the conversation`,
-    "leave"
-  );
+  fetchMessagesIfNeeded(roomId).then(() => {
+    const user = UserStore.getUser(userId);
+    const message = MessageUtils.createSystemMessage(
+      roomId,
+      `${user} left the conversation`,
+      "leave"
+    );
 
-  dispatch({
-    type: ActionTypes.MESSAGE_CREATE,
-    roomId,
-    message,
+    dispatch({
+      type: ActionTypes.MESSAGE_CREATE,
+      roomId,
+      message,
+    });
   });
 }
