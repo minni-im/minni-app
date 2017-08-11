@@ -1,7 +1,7 @@
 import moment from "moment";
 import { MapStore, withNoMutations } from "../libs/Flux";
 
-import { ActionTypes } from "../Constants";
+import { ActionTypes, MESSAGE_TYPES } from "../Constants";
 
 import Dispatcher from "../Dispatcher";
 import Room from "../models/Room";
@@ -10,6 +10,7 @@ import SelectedAccountStore from "../stores/SelectedAccountStore";
 import UserSettingsStore from "../stores/UserSettingsStore";
 
 import Logger from "../libs/Logger";
+
 const logger = Logger.create("RoomStore");
 
 function handleLoadRoomsSuccess(state, { rooms }) {
@@ -44,6 +45,9 @@ function handleRoomDelete(state, { room }) {
 }
 
 function handleMessageCreate(state, { message }) {
+  if (message.type === MESSAGE_TYPES.SYSTEM_MESSAGE) {
+    return state;
+  }
   return state
     .setIn([message.roomId, "lastMsgUserId"], message.userId)
     .setIn([message.roomId, "lastMsgTimestamp"], moment(message.lastUpdated));
