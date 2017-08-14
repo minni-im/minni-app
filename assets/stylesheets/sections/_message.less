@@ -9,13 +9,15 @@ code {
 .messages {
   padding: 10px;
 
-  .message-welcome, .message-timestamp {
+  .message-welcome,
+  .message-timestamp {
     padding: 1px;
     margin: 0 -10px 10px -10px;
     background-color: fade(@black, 2%);
   }
 
-  .message-loading-more, .message-has-more {
+  .message-loading-more,
+  .message-has-more {
     text-align: center;
     font-size: 11px;
     font-style: italic;
@@ -90,7 +92,8 @@ code {
       }
     }
 
-    .message--header, .message--timestamp {
+    .message--header,
+    .message--timestamp {
       font-size: 11px;
       color: @gray;
 
@@ -143,8 +146,19 @@ code {
   .message-group-system {
     font-size: 11px;
     color: @gray;
+    margin-bottom: 5px;
     timestamp {
       color: @gray-light;
+    }
+
+    .message-system + .message-system {
+      margin-top: 1px;
+    }
+
+    .message-system {
+      background-color: @message-system-background-color;
+      border-radius: 3px;
+      padding: 0 10px;
     }
   }
 
@@ -192,7 +206,8 @@ code {
     line-height: 28px;
     background-color: fadeout(@white, 60%);
     display: inline-block;
-    &::before, &::after {
+    &::before,
+    &::after {
       content: '\00a0';
       letter-spacing: -0.2em;
     }
@@ -221,7 +236,8 @@ code {
   .mention {
     background-color: @mention-background-color;
     display: inline-block;
-    &::before, &::after {
+    &::before,
+    &::after {
       content: '\00a0';
     }
   }
@@ -235,7 +251,8 @@ code {
     background-color: fadeout(@black, 85%);
     text-decoration: none !important;
     color: inherit !important;
-    &:before, &:after {
+    &:before,
+    &:after {
       content: '\00a0';
     }
   }
@@ -258,5 +275,4 @@ code {
       background-color: @gray-lighter;
     }
   }
-
 }

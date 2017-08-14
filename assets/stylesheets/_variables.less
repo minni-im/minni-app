@@ -1,76 +1,77 @@
+@black: #000;
+@gray-darker: #222;
+@gray-dark: #333;
+@gray: #555;
+@gray-light: #999;
+@gray-lighter: #eee;
+@white: #fff;
 
-@black:                   #000;
-@gray-darker:             #222;
-@gray-dark:               #333;
-@gray:                    #555;
-@gray-light:              #999;
-@gray-lighter:            #eee;
-@white:                   #fff;
+@electric-blue: #48a6fd;
+@light-blue: @electric-blue;
+@medium-blue: #007ff6;
+@dark-blue: #0061bc;
 
-@electric-blue:           #48a6fd;
-@light-blue:              @electric-blue;
-@medium-blue:             #007ff6;
-@dark-blue:               #0061bc;
-
-@light-orange:            #ffd942;
-@dark-orange:             #f5c400;
-@orange:                  mix(@light-orange, @dark-orange);
-@green:                   #00b700;
-@magenta:                 #cb4848;
-@mustard:                 #e8ac3c;
+@light-orange: #ffd942;
+@dark-orange: #f5c400;
+@orange: mix(@light-orange, @dark-orange);
+@green: #00b700;
+@magenta: #cb4848;
+@mustard: #e8ac3c;
 
 // @background-dark:         #2d333b;
-@background-dark:         #16232A;
-@background-light:        #f9f9f9;
+@background-dark: #16232a;
+@background-light: #f9f9f9;
 
-@color-light:             #f9f9f9;
-@color-dark:              #2d333b;
+@color-light: #f9f9f9;
+@color-dark: #2d333b;
 
-@status-color-online:     #9bcb48;
-@status-color-idle:       #9bcb48;
-@status-color-dnd:        #d9c522;
-@status-color-away:       @magenta;
-@status-color-offline:    @gray;
+@status-color-online: #9bcb48;
+@status-color-idle: #9bcb48;
+@status-color-dnd: #d9c522;
+@status-color-away: @magenta;
+@status-color-offline: @gray;
 @status-color-connecting: #888;
 
-@flash-messages-info:     #8FFC8F;
-@flash-messages-error:    @light-orange;
+@flash-messages-info: #8ffc8f;
+@flash-messages-error: @light-orange;
 
-@home-color:              @color-light;
-@home-background-color:   @background-dark;
+@home-color: @color-light;
+@home-background-color: @background-dark;
 
-@notifier-default:        @mustard;
-@notifier-info:           @light-blue;
-@notifier-warn:           @orange;
-@notifier-error:          @magenta;
-@notifier-fatal:          darken(@magenta, 5%);
+@notifier-default: @mustard;
+@notifier-info: @light-blue;
+@notifier-warn: @orange;
+@notifier-error: @magenta;
+@notifier-fatal: darken(@magenta, 5%);
 
-@avatar-medium-size:      40px;
+@avatar-medium-size: 40px;
 
-@main-container-width:    960px;
+@main-container-width: 960px;
 
 // Chat application variables
 // @message-background-color:    @white;
 // @message-me-background-color: @gray-lighter;
 // @message-me-color:            @color-dark;
-@message-background-color:    @gray-lighter;
+@message-background-color: @gray-lighter;
 @message-me-background-color: @light-blue;
-@message-me-color:            @color-light;
+@message-me-color: @color-light;
+
+@message-system-background-color: lighten(@gray-lighter, 5%);
 
 @main-account-switcher-width: 60px;
 @main-account-switcher-background-color: darken(@background-dark, 5%);
 
-@main-sidebar-width:          240px;
-@main-header-height:          68px;
-@main-footer-height:          78px;
-@main-user-info-height:       @main-footer-height;
+@main-sidebar-width: 240px;
+@main-header-height: 68px;
+@main-footer-height: 78px;
+@main-user-info-height: @main-footer-height;
 
-@content-sidebar-width:       250px;
+@content-sidebar-width: 250px;
 
-@room-users-list-height:               60px;
-@room-unread-background-color:         @orange;
-@room-unread-color:                    @color-dark;
+@room-users-list-height: 60px;
+@room-unread-background-color: @orange;
+@room-unread-color: @color-dark;
 @room-unread-mention-background-color: @magenta;
-@room-unread-mention-color:            @color-light;
+@room-unread-mention-color: @color-light;
 
-@mention-background-color:    @light-orange;
+@mention-background-color: @light-orange;
