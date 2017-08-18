@@ -164,6 +164,20 @@ export function createMessage(roomId, text) {
   );
 }
 
+export function updateMessage(message, text) {
+  const newMessage = {
+    id: message.id,
+    roomId: message.roomId,
+    accountId: SelectedAccountStore.getAccount().id,
+    content: encode(text).content,
+    type: message.type,
+  };
+
+  return PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_TEXT)
+    .map(plugin => plugin.encodeMessage)
+    .reduce((onGoing, processor) => onGoing.then(processor), Promise.resolve(newMessage));
+}
+
 export function createSystemMessage(roomId, content, subType) {
   const now = new Date().toISOString();
   return {

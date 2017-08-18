@@ -7,6 +7,7 @@ import DocumentTitle from "react-document-title";
 import Room from "./Room.react";
 
 import ConnectionStore from "../stores/ConnectionStore";
+import EditMessageStore from "../stores/EditMessageStore";
 import DocumentTitleStore from "../stores/DocumentTitleStore";
 import RoomStore from "../stores/RoomStore";
 
@@ -24,13 +25,14 @@ class RoomsContainer extends React.PureComponent {
   };
 
   static getStores() {
-    return [RoomStore, ConnectionStore, DocumentTitleStore];
+    return [RoomStore, ConnectionStore, DocumentTitleStore, EditMessageStore];
   }
 
   static calculateState(prevState, prevProps) {
     const roomSlugs = prevProps.match.params.roomSlugs.split(",");
+    const rooms = RoomStore.getRoomsBySelectedAccount(...roomSlugs);
     return {
-      rooms: RoomStore.getRoomsBySelectedAccount(...roomSlugs),
+      rooms,
       connection: ConnectionStore.isConnected(),
       title: DocumentTitleStore.getTitle(roomSlugs.join(" | ")),
     };
@@ -53,7 +55,13 @@ class RoomsContainer extends React.PureComponent {
       [`split-rooms-${size}`]: size > 1,
     });
     const rooms = this.state.rooms.map(room =>
-      <Room key={room.id} room={room} multiRooms={size > 1} connection={this.state.connection} />
+      (<Room
+        key={room.id}
+        room={room}
+        multiRooms={size > 1}
+        editMode={EditMessageStore.isRoomInEditMode(room.id)}
+        connection={this.state.connection}
+      />)
     );
 
     return (

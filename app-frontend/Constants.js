@@ -71,7 +71,12 @@ export const ActionTypes = keyMirror({
   COMPOSER_TEXT_SAVE: null,
 
   MESSAGE_CREATE: null,
+  MESSAGE_EDIT_START: null,
+  MESSAGE_EDIT_STOP: null,
+
   MESSAGE_UPDATE: null,
+  MESSAGE_UPDATE_SUCCESS: null,
+  MESSAGE_UPDATE_FAILURE: null,
   MESSAGE_SEND_FAILURE: null,
 
   MESSAGE_TOGGLE_PREVIEW: null,
@@ -234,6 +239,8 @@ export const EndPoints = {
   USER_SETTINGS: "/api/me/settings",
   USER_PROFILE: "/api/me",
   MESSAGES: "/api/messages",
+  MESSAGE_DELETE: messageId => `/api/messages/${messageId}`,
+  MESSAGE_UPDATE: messageId => `/api/messages/${messageId}`,
   TYPING: roomId => `/api/rooms/${roomId}/typing`,
   SLASH_COMMAND: "/api/command",
   INVITATION_LIST: accountId => `/api/accounts/${accountId}/invites`,

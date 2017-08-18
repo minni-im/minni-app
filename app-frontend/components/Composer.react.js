@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import { PLUGIN_TYPES } from "../Constants";
 
-import ComposerActionCreators from "../actions/ComposerActionCreators";
+import * as ComposerActionCreators from "../actions/ComposerActionCreators";
 import UploadActionCreators from "../actions/UploadActionCreators";
 import { search as SlashCommandSearch } from "../actions/SlashCommandActionCreators";
 
@@ -39,15 +39,19 @@ function extractFileName(htmlString) {
 
 export default class Composer extends React.Component {
   static propTypes = {
+    persist: PropTypes.bool,
     onSubmit: PropTypes.func.isRequired,
+    onEscape: PropTypes.func,
     defaultValue: PropTypes.string,
     room: PropTypes.instanceOf(Room).isRequired,
     disabled: PropTypes.bool,
   };
 
-  static defautProps = {
+  static defaultProps = {
     defaultValue: "",
     disabled: false,
+    onEscape: () => {},
+    persist: true,
   };
 
   constructor(props) {
@@ -77,13 +81,17 @@ export default class Composer extends React.Component {
   }
 
   componentWillUnmount() {
-    ComposerActionCreators.saveCurrentText(this.props.room.id, this.textarea.value.trim());
+    if (this.props.persist) {
+      ComposerActionCreators.saveCurrentText(this.props.room.id, this.textarea.value.trim());
+    }
   }
 
   clearValue() {
     this.textarea.value = "";
     this.computeTextAreaHeight(1);
-    ComposerActionCreators.saveCurrentText(this.props.room.id, "");
+    if (this.props.persist) {
+      ComposerActionCreators.saveCurrentText(this.props.room.id, "");
+    }
   }
 
   focus() {
@@ -134,7 +142,18 @@ export default class Composer extends React.Component {
     }
   }
 
-  handleOnKeyUp() {
+  handleOnKeyUp(event) {
+    switch (event.which) {
+      case KEYCODES.UP:
+        ComposerActionCreators.editLastMessage(this.props.room.id);
+        event.preventDefault();
+        break;
+      case KEYCODES.ESCAPE:
+        event.preventDefault();
+        this.props.onEscape();
+        break;
+      default:
+    }
     this.shouldWeAutocomplete();
   }
 
@@ -270,9 +289,7 @@ export default class Composer extends React.Component {
     }, {});
 
     let autocomplete;
-    const autocompleteComponent =
-      /* this.state.focused && */
-      PLUGINS_COMPONENTS[this.state.type];
+    const autocompleteComponent = this.state.focused && PLUGINS_COMPONENTS[this.state.type];
 
     if (autocompleteComponent) {
       autocomplete = React.createElement(autocompleteComponent, {

@@ -112,8 +112,10 @@ const handlers = {
         RoomActionCreators.receiveMessage(message.roomId, message);
       }
     },
-    update(message) {
-      RoomActionCreators.updateMessage(message.roomId, message);
+    update(message, edit = false) {
+      if (edit !== true) {
+        RoomActionCreators.updateMessage(message.roomId, message);
+      }
     },
   },
 

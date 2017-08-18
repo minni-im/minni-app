@@ -35,6 +35,11 @@ MessageSchema.method("toAPI", function toAPI() {
   return json;
 });
 
+MessageSchema.method("update", function update(text) {
+  this.content = text;
+  this.dateEdited = new Date().toISOString();
+});
+
 MessageSchema.view("historyByRoomAndDate", {
   map: `function(doc) {
     if (doc.modelType === "Message") {

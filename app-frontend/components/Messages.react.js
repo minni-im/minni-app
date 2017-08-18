@@ -1,10 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
+import { Container } from "flux/utils";
 
 import * as RoomActionCreators from "../actions/RoomActionCreators";
 import * as DimensionActionCreators from "../actions/DimensionActionCreators";
 import * as MessageActionCreators from "../actions/MessageActionCreators";
+
+import EditMessageStore from "../stores/EditMessageStore";
 
 import {
   MESSAGE_TYPES,
@@ -18,34 +21,49 @@ import TimeAgo from "./generic/TimeAgo.react";
 import Embed from "./Embed.react";
 import WelcomeMessage from "./WelcomeMessage.react";
 
+import Composer from "./Composer.react";
+
+import RoomModel from "../models/Room";
+
 import { debounce } from "../utils/FunctionUtils";
 
 import Logger from "../libs/Logger";
 
 const logger = Logger.create("Messages.react");
 
-class Message extends React.Component {
+class Message extends React.PureComponent {
   static propTypes = {
+    room: PropTypes.instanceOf(RoomModel).isRequired,
     first: PropTypes.bool,
     message: PropTypes.object.isRequired,
     renderEmbeds: PropTypes.bool,
     inlineImages: PropTypes.bool,
     clock24: PropTypes.bool,
+    isEditing: PropTypes.bool,
   };
 
   static defaultProps = {
     first: false,
+    isEditing: false,
   };
 
   render() {
-    const { message, renderEmbeds, inlineImages, clock24 } = this.props;
+    const { room, first, message, renderEmbeds, inlineImages, clock24, isEditing } = this.props;
     const hasEmbeds = message.hasEmbeds;
+    const classNames = {
+      "message-first": first,
+      "message-embed": hasEmbeds,
+      "message-edited": message.dateEdited,
+    };
     let header;
     let timestamp;
-    if (this.props.first) {
+
+    if (first) {
       header = (
         <div className="message--header">
-          <span className="user-name">{message.user.fullname}</span>
+          <span className="user-name">
+            {message.user.fullname}
+          </span>
           <TimeAgo
             className="timestamp"
             datetime={message.dateCreated}
@@ -57,6 +75,34 @@ class Message extends React.Component {
       timestamp = (
         <div className="message--timestamp">
           {message.dateCreated.format(clock24 ? "HH:MM" : "LT")}
+        </div>
+      );
+    }
+
+    if (isEditing) {
+      return (
+        <div className={classnames("message", classNames)}>
+          {header}
+          {timestamp}
+          <Composer
+            ref={(composer) => {
+              this.composer = composer;
+              composer && composer.focus();
+            }}
+            persist={false}
+            room={this.props.room}
+            defaultValue={message.content}
+            onSubmit={(text) => {
+              MessageActionCreators.sendUpdate(message, text);
+            }}
+            onEscape={() => {
+              MessageActionCreators.cancelEdit(room.id, message.id);
+            }}
+          />
+          <div className="message--edit-actions">
+            <kbd className="text-small">esc</kbd> to cancel or{" "}
+            <kbd className="text-small">enter</kbd> to save
+          </div>
         </div>
       );
     }
@@ -75,6 +121,7 @@ class Message extends React.Component {
         }}
       >
         {message.contentParsed}
+        {message.dateEdited && <div className="message--edited">(edited)</div>}
       </div>
     );
 
@@ -108,11 +155,6 @@ class Message extends React.Component {
       }
     }
 
-    const classNames = {
-      "message-first": this.props.first,
-      "message-embed": hasEmbeds,
-    };
-
     return (
       <div className={classnames("message", classNames)}>
         {header}
@@ -124,8 +166,27 @@ class Message extends React.Component {
   }
 }
 
+class MessageContainer extends React.Component {
+  static getStores() {
+    return [EditMessageStore];
+  }
+
+  static calculateState(prevState, props) {
+    return {
+      isEditing: EditMessageStore.isMessageEdited(props.room.id, props.message.id),
+    };
+  }
+
+  render() {
+    return <Message {...this.props} isEditing={this.state.isEditing} />;
+  }
+}
+
+const MessageWrapper = Container.create(MessageContainer, { withProps: true });
+
 class MessageGroup extends React.Component {
   static propTypes = {
+    room: PropTypes.instanceOf(RoomModel),
     messages: PropTypes.array.isRequired,
     renderEmbeds: PropTypes.bool,
     inlineImages: PropTypes.bool,
@@ -136,8 +197,9 @@ class MessageGroup extends React.Component {
   render() {
     const user = this.props.messages[0].user;
     const messages = this.props.messages.map((message, i) =>
-      (<Message
+      (<MessageWrapper
         key={message.id}
+        room={this.props.room}
         first={i === 0}
         message={message}
         clock24={this.props.clock24}
@@ -176,7 +238,11 @@ function MessageSystemGroup(props) {
       <TimeAgo datetime={message.dateCreated} format={props.clock24 ? "dddd, LL HH:mm" : "LLLL"} />
     </div>)
   );
-  return <div className="message-group message-group-system">{messages}</div>;
+  return (
+    <div className="message-group message-group-system">
+      {messages}
+    </div>
+  );
 }
 
 export default class Messages extends React.Component {
@@ -360,7 +426,13 @@ export default class Messages extends React.Component {
     const messageGroup = this.regroupMessages(this.props.messages);
     const messageGroupFinal = messageGroup.map(({ type, content }, i) => {
       if (type === MESSAGE_STREAM_TYPES.DIVIDER_TIME_STAMP) {
-        return <MessageTimestamp key={i}><h4>{content}</h4></MessageTimestamp>;
+        return (
+          <MessageTimestamp key={i}>
+            <h4>
+              {content}
+            </h4>
+          </MessageTimestamp>
+        );
       } else if (type === MESSAGE_STREAM_TYPES.SYSTEM_MESSAGE) {
         return <MessageSystemGroup key={i} messages={content} />;
       }
@@ -368,6 +440,7 @@ export default class Messages extends React.Component {
       return (
         <MessageGroup
           key={content[0].id}
+          room={this.props.room}
           viewer={this.props.viewer}
           messages={content}
           renderEmbeds={this.props.renderEmbeds}
@@ -409,7 +482,9 @@ export default class Messages extends React.Component {
         }}
         onScroll={this.onHandleScroll}
       >
-        <div className="panel-wrapper messages">{messageGroupFinal}</div>
+        <div className="panel-wrapper messages">
+          {messageGroupFinal}
+        </div>
       </section>
     );
   }

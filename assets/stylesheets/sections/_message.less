@@ -93,7 +93,8 @@ code {
     }
 
     .message--header,
-    .message--timestamp {
+    .message--timestamp,
+    .message--edited {
       font-size: 11px;
       color: @gray;
 
@@ -101,6 +102,10 @@ code {
         margin: 0 5px;
         color: @gray-light;
       }
+    }
+
+    .message--edited {
+      margin-left: 5px;
     }
 
     .message--timestamp {
@@ -126,6 +131,11 @@ code {
           fill: @gray-light;
         }
       }
+    }
+
+    .message--edit-actions {
+      text-align: right;
+      font-size: .8rem;
     }
 
     .message:hover {

@@ -16,11 +16,11 @@ const MessageRecord = Immutable.Record({
   lastUpdated: Date.now(),
 
   // UI boolean
-  preview: true
+  preview: true,
 });
 
 export default class Message extends MessageRecord {
-  isEdited() {
+  get isEdited() {
     return this.dateEdited !== null;
   }
 
@@ -29,8 +29,10 @@ export default class Message extends MessageRecord {
   }
 
   get singleEmbed() {
-    return this.embeds.size === 1 &&
+    return (
+      this.embeds.size === 1 &&
       this.content === this.embeds.get(0).get("url") &&
-      this.embeds.get(0).get("type") === "image";
+      this.embeds.get(0).get("type") === "image"
+    );
   }
 }
