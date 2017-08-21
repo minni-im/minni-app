@@ -23,6 +23,7 @@ export default class User extends UserRecord {
   }
 
   toString() {
-    return `${this.firstname}${this.lastname ? ` ${this.lastname}` : ""}`;
+    const name = `${this.firstname}${this.lastname ? ` ${this.lastname}` : ""}`.trim();
+    return name.length > 0 ? name : this.nickname;
   }
 }

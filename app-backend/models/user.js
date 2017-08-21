@@ -36,7 +36,8 @@ UserSchema.virtual({
   fullname: {
     get() {
       if (this.firstname && this.lastname) {
-        return `${this.firstname} ${this.lastname}`;
+        const name = `${this.firstname} ${this.lastname}`.trim();
+        return name.length ? name : this.nickname;
       }
       return this.nickname;
     },

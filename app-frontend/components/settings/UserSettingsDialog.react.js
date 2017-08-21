@@ -64,7 +64,10 @@ export default class UserSettingsDialog extends React.Component {
 
   onUserInfoChange({ target: input }) {
     const { id, value } = input;
-    this.userInfo = this.userInfo.set(id, value);
+    const trimmedValue = value.trim();
+    if (trimmedValue.length) {
+      this.userInfo = this.userInfo.set(id, trimmedValue);
+    }
   }
 
   generateGeneral() {
@@ -89,8 +92,7 @@ export default class UserSettingsDialog extends React.Component {
           setting="global.emoticons"
           onChange={this.onSettingChange}
         >
-          We support standard emoticons & emojis. Hints available
-          {" "}
+          We support standard emoticons & emojis. Hints available{" "}
           <a href="http://www.emoji-cheat-sheet.com/" target="_blank" rel="noopener noreferrer">
             here
           </a>
@@ -171,9 +173,11 @@ export default class UserSettingsDialog extends React.Component {
       <section>
         <h3>One click login services</h3>
         <p>
-          One-click Login is not yet configurable in the chat application.
-          You can modify it on your profile page
-          <a href="/profile" target="_blank">here</a>
+          One-click Login is not yet configurable in the chat application. You can modify it on your
+          profile page
+          <a href="/profile" target="_blank">
+            here
+          </a>
         </p>
       </section>,
     ];
@@ -253,10 +257,10 @@ export default class UserSettingsDialog extends React.Component {
             <h4>Avatar</h4>
             <Avatar user={this.props.user} size={Avatar.SIZE.XLARGE} />
             <p>
-              Avatars are provided by
-              {" "}
-              <a href="https://gravatar.com" target="_blank">gravatar</a>
-              {" "}
+              Avatars are provided by{" "}
+              <a href="https://gravatar.com" target="_blank">
+                gravatar
+              </a>{" "}
               services. You can change yours on their website.
             </p>
           </section>
