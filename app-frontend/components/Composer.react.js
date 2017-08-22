@@ -96,6 +96,9 @@ export default class Composer extends React.Component {
 
   focus() {
     this.textarea.focus();
+    if (this.textarea.value.length) {
+      this.moveCursorAtEnd();
+    }
   }
 
   moveCursorAtEnd() {
