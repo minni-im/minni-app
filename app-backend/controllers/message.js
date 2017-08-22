@@ -8,7 +8,7 @@ import embed from "../libs/embeds";
 export default (app) => {
   const cache = app.get("cache");
 
-  app.post("/api/messages/", requireLogin, (req) => {
+  app.post("/api/messages", requireLogin, (req) => {
     req.io.route("messages:create");
   });
 
