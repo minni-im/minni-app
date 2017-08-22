@@ -17,6 +17,7 @@ import {
 } from "../Constants";
 
 import Avatar from "./generic/Avatar.react";
+import Popover from "./generic/Popover.react";
 import TimeAgo from "./generic/TimeAgo.react";
 import Embed from "./Embed.react";
 import WelcomeMessage from "./WelcomeMessage.react";
@@ -26,6 +27,9 @@ import Composer from "./Composer.react";
 import RoomModel from "../models/Room";
 
 import { debounce } from "../utils/FunctionUtils";
+import { decode } from "../utils/MessageUtils";
+
+import { MenuDotsIcon } from "../utils/IconsUtils";
 
 import Logger from "../libs/Logger";
 
@@ -91,9 +95,13 @@ class Message extends React.PureComponent {
             }}
             persist={false}
             room={this.props.room}
-            defaultValue={message.content}
+            defaultValue={decode(message.content)}
             onSubmit={(text) => {
-              MessageActionCreators.sendUpdate(message, text);
+              if (decode(text) !== message.content) {
+                MessageActionCreators.sendUpdate(message, text);
+              } else {
+                MessageActionCreators.cancelEdit(room.id, message.id);
+              }
             }}
             onEscape={() => {
               MessageActionCreators.cancelEdit(room.id, message.id);
@@ -121,7 +129,6 @@ class Message extends React.PureComponent {
         }}
       >
         {message.contentParsed}
-        {message.dateEdited && <div className="message--edited">(edited)</div>}
       </div>
     );
 
@@ -155,11 +162,55 @@ class Message extends React.PureComponent {
       }
     }
 
+    let edited;
+    if (message.dateEdited) {
+      edited = <div className="message--edited">(edited)</div>;
+    }
+
+    const options = (
+      <div className="message--options actionable">
+        <Popover
+          direction={Popover.TYPE.DOWN}
+          buttonComponent={
+            <span className="icon icon-small">
+              <MenuDotsIcon />
+            </span>
+          }
+          onOpen={() => {
+            this.message.classList.add("message-options-menu--open");
+          }}
+          onClose={() => {
+            this.message.classList.remove("message-options-menu--open");
+          }}
+        >
+          <ul className="dialog message--options-menu">
+            <li
+              onClick={() => {
+                this.message.classList.remove("message-options-menu--open");
+                MessageActionCreators.edit(message.roomId, message.id);
+              }}
+            >
+              edit
+            </li>
+          </ul>
+        </Popover>
+      </div>
+    );
+
     return (
-      <div className={classnames("message", classNames)}>
+      <div
+        ref={(msg) => {
+          this.message = msg;
+        }}
+        className={classnames("message", classNames)}
+      >
         {header}
         {timestamp}
-        {content}
+        <div className="message--content-wrapper flex-horizontal">
+          {content}
+          {edited}
+          {options}
+        </div>
         {embeds}
       </div>
     );

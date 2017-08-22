@@ -17,6 +17,14 @@ export function togglePreview({ id, roomId }) {
   });
 }
 
+export function edit(roomId, messageId) {
+  dispatch({
+    type: ActionTypes.MESSAGE_EDIT_START,
+    roomId,
+    messageId,
+  });
+}
+
 export function cancelEdit(roomId, messageId) {
   dispatch({
     type: ActionTypes.MESSAGE_EDIT_STOP,

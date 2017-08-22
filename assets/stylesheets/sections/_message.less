@@ -93,8 +93,7 @@ code {
     }
 
     .message--header,
-    .message--timestamp,
-    .message--edited {
+    .message--timestamp {
       font-size: 11px;
       color: @gray;
 
@@ -105,7 +104,11 @@ code {
     }
 
     .message--edited {
-      margin-left: 5px;
+      font-size: 11px;
+      line-height: 1em;
+      margin: 5px 5px 0;
+      padding: 2px;
+      color: @color-dark;
     }
 
     .message--timestamp {
@@ -118,6 +121,61 @@ code {
       margin-right: 10px;
       white-space: nowrap;
       text-align: center;
+    }
+
+    .message--options {
+      opacity: 0;
+      transition: opacity .2s ease-out 1s, flex-basis .2s linear 1s;
+      width: 0;
+      flex-basis: 0px;
+      margin-left: auto;
+      .icon {
+        svg {
+          fill: @gray-lighter;
+        }
+        &:hover svg {
+          fill: @gray;
+        }
+      }
+
+      .popover {
+        border-radius: 3px 0 0 3px;
+        left: auto;
+        right: 100%;
+        top: -1px;
+        border: 1px solid @gray-light;
+        border-right-width: 0px;
+      }
+
+      .message--options-menu {
+        font-size: 11px;
+        text-align: center;
+        .flex-horizontal;
+        color: @gray-light;
+        margin-left: 5px;
+        li {
+          margin: 0 5px;
+        }
+        li:hover {
+          color: @electric-blue;
+        }
+      }
+    }
+    & .message-options-menu--open {
+      .message--options {
+        flex-basis: 20px;
+        opacity: 1;
+
+        svg {
+          fill: @gray;
+        }
+
+        .popover-container {
+          border: 1px solid @gray-light;
+          background-color: @background-light;
+          border-radius: 0 3px 3px 0;
+        }
+      }
     }
 
     .message--preview-hide {
@@ -145,6 +203,11 @@ code {
 
       .message--preview-hide {
         display: inline-block;
+      }
+
+      .message--options {
+        opacity: 1;
+        flex-basis: 20px;
       }
     }
   }
