@@ -148,8 +148,10 @@ export default class Composer extends React.Component {
   handleOnKeyUp(event) {
     switch (event.which) {
       case KEYCODES.UP:
-        ComposerActionCreators.editLastMessage(this.props.room.id);
-        event.preventDefault();
+        if (this.textarea.value.length === 0) {
+          ComposerActionCreators.editLastMessage(this.props.room.id);
+          event.preventDefault();
+        }
         break;
       case KEYCODES.ESCAPE:
         event.preventDefault();
