@@ -8,6 +8,7 @@ import * as DimensionActionCreators from "../actions/DimensionActionCreators";
 import * as MessageActionCreators from "../actions/MessageActionCreators";
 
 import EditMessageStore from "../stores/EditMessageStore";
+import UserStore from "../stores/UserStore";
 
 import {
   MESSAGE_TYPES,
@@ -29,7 +30,7 @@ import RoomModel from "../models/Room";
 import { debounce } from "../utils/FunctionUtils";
 import { decode } from "../utils/MessageUtils";
 
-import { MenuDotsIcon } from "../utils/IconsUtils";
+import { MenuDotsIcon, BrowserIcons } from "../utils/IconsUtils";
 
 import Logger from "../libs/Logger";
 
@@ -53,6 +54,7 @@ class Message extends React.PureComponent {
 
   render() {
     const { room, first, message, renderEmbeds, inlineImages, clock24, isEditing } = this.props;
+    const canEdit = UserStore.getConnectedUser().id === message.user.id;
     const hasEmbeds = message.hasEmbeds;
     const classNames = {
       "message-first": first,
@@ -167,9 +169,12 @@ class Message extends React.PureComponent {
       edited = <div className="message--edited">(edited)</div>;
     }
 
-    const options = (
-      <div className="message--options actionable">
+    const actionList = [];
+    if (canEdit) {
+      actionList.push(
         <Popover
+          key="edit"
+          className="action"
           direction={Popover.TYPE.DOWN}
           buttonComponent={
             <span className="icon icon-small">
@@ -183,19 +188,25 @@ class Message extends React.PureComponent {
             this.message.classList.remove("message-options-menu--open");
           }}
         >
-          <ul className="dialog message--options-menu">
+          <ul className="message--options-menu">
+            <li>Copy</li>
             <li
               onClick={() => {
                 this.message.classList.remove("message-options-menu--open");
                 MessageActionCreators.edit(message.roomId, message.id);
               }}
             >
-              edit
+              Edit message
             </li>
           </ul>
         </Popover>
-      </div>
-    );
+      );
+    }
+    const actions =
+      actionList.length > 0 &&
+      <div className="message--options actionable">
+        {actionList}
+      </div>;
 
     return (
       <div
@@ -209,7 +220,7 @@ class Message extends React.PureComponent {
         <div className="message--content-wrapper flex-horizontal">
           {content}
           {edited}
-          {options}
+          {actions}
         </div>
         {embeds}
       </div>

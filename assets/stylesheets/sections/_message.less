@@ -123,15 +123,37 @@ code {
       text-align: center;
     }
 
+    .bordered() {
+      border: 1px solid @gray-light;
+      border-radius: 3px;
+      background-color: @white;
+    }
+
     .message--options {
-      opacity: 0;
-      transition: opacity .2s ease-out 1s, flex-basis .2s linear 1s;
-      width: 0;
-      flex-basis: 0px;
-      margin-left: auto;
+      display: none;
+      flex-direction: row;
+      position: absolute;
+      right: 0;
+      top: -10px;
+      height: 24px;
+      line-height: 24px;
+
+      .bordered;
+
+      .action {
+        display: inline-block;
+        text-align: center;
+        // min-width: 30px;
+      }
+
+      .action + .action {
+        border-left: 1px solid @gray-light;
+      }
+
       .icon {
         svg {
-          fill: @gray-lighter;
+          .square(12px);
+          fill: @gray-light;
         }
         &:hover svg {
           fill: @gray;
@@ -139,41 +161,44 @@ code {
       }
 
       .popover {
-        border-radius: 3px 0 0 3px;
         left: auto;
+        top: -20px;
         right: 100%;
-        top: -1px;
-        border: 1px solid @gray-light;
-        border-right-width: 0px;
+        margin-right: 5px;
+        .bordered;
+        min-width: 100px;
+        box-shadow: 0px 0px 2px lighten(@gray-light, 25%);
       }
 
       .message--options-menu {
         font-size: 11px;
         text-align: center;
-        .flex-horizontal;
+
         color: @gray-light;
-        margin-left: 5px;
+
+        min-width: 100px;
+
         li {
-          margin: 0 5px;
-        }
-        li:hover {
-          color: @electric-blue;
+          padding: 2px 5px;
+          &:hover {
+            background-color: @light-orange;
+            color: @color-dark;
+          }
         }
       }
+
+      &:hover {
+        box-shadow: 0px 0px 2px lighten(@gray-light, 25%);
+      }
     }
+
     & .message-options-menu--open {
       .message--options {
-        flex-basis: 20px;
-        opacity: 1;
+        display: flex;
+        box-shadow: 0px 0px 2px lighten(@gray-light, 25%);
 
         svg {
-          fill: @gray;
-        }
-
-        .popover-container {
-          border: 1px solid @gray-light;
-          background-color: @background-light;
-          border-radius: 0 3px 3px 0;
+          fill: @dark-blue;
         }
       }
     }
@@ -196,6 +221,10 @@ code {
       font-size: .8rem;
     }
 
+    .message-first .message--options {
+      top: 15px;
+    }
+
     .message:hover {
       .message--timestamp {
         display: block;
@@ -206,8 +235,11 @@ code {
       }
 
       .message--options {
-        opacity: 1;
-        flex-basis: 20px;
+        display: flex;
+      }
+
+      .message--content-wrapper {
+        background-color: lighten(@gray-lighter, 5%);
       }
     }
   }
