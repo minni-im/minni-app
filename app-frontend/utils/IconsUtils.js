@@ -13,7 +13,7 @@ import InternetExplorerIcon from "../../public/images/svgs/ie.svg.react";
 import SafariIcon from "../../public/images/svgs/safari.svg.react";
 
 export { default as LobbyIcon } from "../../public/images/svgs/lobby.svg.react";
-export { default as NoPreviewIcon } from "../../public/images/svgs/settings.svg.react";
+export { default as NoPreviewIcon } from "../../public/images/svgs/no-eye.svg.react";
 export { default as SettingsIcon } from "../../public/images/svgs/settings.svg.react";
 export { default as DashboardIcon } from "../../public/images/svgs/dashboard.svg.react";
 export { default as PadlockIcon } from "../../public/images/svgs/padlock.svg.react";
@@ -32,6 +32,7 @@ export { default as TrashIcon } from "../../public/images/svgs/trash-can.svg.rea
 export { default as GroupIcon } from "../../public/images/svgs/group-of-people.svg.react";
 export { default as GroupAddIcon } from "../../public/images/svgs/group-of-people-add.svg.react";
 export { default as MenuDotsIcon } from "../../public/images/svgs/menu-dots.svg.react";
+export { default as ClipboardIcon } from "../../public/images/svgs/clipboard.svg.react";
 
 export const RoomIcons = {
   RoomPrivateIcon,

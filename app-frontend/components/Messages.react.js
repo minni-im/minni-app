@@ -30,7 +30,7 @@ import RoomModel from "../models/Room";
 import { debounce } from "../utils/FunctionUtils";
 import { decode } from "../utils/MessageUtils";
 
-import { MenuDotsIcon, BrowserIcons } from "../utils/IconsUtils";
+import { MenuDotsIcon, EditIcon, ClipboardIcon } from "../utils/IconsUtils";
 
 import Logger from "../libs/Logger";
 
@@ -175,7 +175,6 @@ class Message extends React.PureComponent {
         <Popover
           key="edit"
           className="action"
-          direction={Popover.TYPE.DOWN}
           buttonComponent={
             <span className="icon icon-small">
               <MenuDotsIcon />
@@ -188,17 +187,23 @@ class Message extends React.PureComponent {
             this.message.classList.remove("message-options-menu--open");
           }}
         >
-          <ul className="message--options-menu">
-            <li>Copy</li>
-            <li
-              onClick={() => {
+          <div className="flex-horizontal">
+            <span
+              title="Edit message"
+              className="icon icon-small"
+              onClick={(event) => {
                 this.message.classList.remove("message-options-menu--open");
                 MessageActionCreators.edit(message.roomId, message.id);
+                event.preventDefault();
               }}
             >
               Edit message
-            </li>
-          </ul>
+            </span>
+
+            <span className="icon icon-small" title="Copy message to clipboard">
+              Copy
+            </span>
+          </div>
         </Popover>
       );
     }
@@ -218,9 +223,9 @@ class Message extends React.PureComponent {
         {header}
         {timestamp}
         <div className="message--content-wrapper flex-horizontal">
+          {actions}
           {content}
           {edited}
-          {actions}
         </div>
         {embeds}
       </div>
