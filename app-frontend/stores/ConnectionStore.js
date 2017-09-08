@@ -112,10 +112,15 @@ const handlers = {
         RoomActionCreators.receiveMessage(message.roomId, message);
       }
     },
-    update(message, edit = false) {
-      if (edit !== true) {
-        RoomActionCreators.updateMessage(message.roomId, message);
-      }
+    update(message) {
+      /* We should differenciate different types of updates.
+
+         + When user is creating a message, embeds are coming back from server as
+           an update message.
+         + When a user edit an existing message, new content (text+embeds) is
+           coming back via an update message
+       */
+      RoomActionCreators.updateMessage(message.roomId, message);
     },
   },
 
@@ -226,7 +231,9 @@ function handleUserStatus({ status, oldStatus }) {
       // TODO: Investigate why we could be here this early ?? (meaning w/o user)
       return;
     }
-    const accountIds = AccountStore.getAccounts().toArray().map(account => account.id);
+    const accountIds = AccountStore.getAccounts()
+      .toArray()
+      .map(account => account.id);
     socket.emit("users:presence", { userId: user.id, status, accountIds });
   }
 }

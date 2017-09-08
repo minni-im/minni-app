@@ -52,9 +52,17 @@ class Message extends React.PureComponent {
     isEditing: false,
   };
 
+  editMessage = (event) => {
+    const { message } = this.props;
+    const canEdit = UserStore.getConnectedUser().id === message.user.id;
+    if (canEdit) {
+      MessageActionCreators.edit(message.roomId, message.id);
+      event.preventDefault();
+    }
+  };
+
   render() {
     const { room, first, message, renderEmbeds, inlineImages, clock24, isEditing } = this.props;
-    const canEdit = UserStore.getConnectedUser().id === message.user.id;
     const hasEmbeds = message.hasEmbeds;
     const classNames = {
       "message-first": first,
@@ -67,9 +75,7 @@ class Message extends React.PureComponent {
     if (first) {
       header = (
         <div className="message--header">
-          <span className="user-name">
-            {message.user.fullname}
-          </span>
+          <span className="user-name">{message.user.fullname}</span>
           <TimeAgo
             className="timestamp"
             datetime={message.dateCreated}
@@ -120,6 +126,7 @@ class Message extends React.PureComponent {
     let content = (
       <div
         className="message--content"
+        onDoubleClick={this.editMessage}
         onClick={(event) => {
           if (!hasEmbeds || !renderEmbeds || !inlineImages) {
             return;
@@ -143,21 +150,22 @@ class Message extends React.PureComponent {
             onHidePreview={() => {
               MessageActionCreators.togglePreview(message);
             }}
+            onDoubleClick={this.editMessage}
           />
         );
       } else if (renderEmbeds && !message.singleEmbed) {
         embeds = (
           <div className="message--embeds">
             {message.embeds
-              .map((embed, index) =>
-                (<Embed
+              .map((embed, index) => (
+                <Embed
                   key={index}
                   {...embed.toJS()}
                   onHidePreview={() => {
                     MessageActionCreators.togglePreview(message);
                   }}
-                />)
-              )
+                />
+              ))
               .toArray()}
           </div>
         );
@@ -169,50 +177,6 @@ class Message extends React.PureComponent {
       edited = <div className="message--edited">(edited)</div>;
     }
 
-    const actionList = [];
-    if (canEdit) {
-      actionList.push(
-        <Popover
-          key="edit"
-          className="action"
-          buttonComponent={
-            <span className="icon icon-small">
-              <MenuDotsIcon />
-            </span>
-          }
-          onOpen={() => {
-            this.message.classList.add("message-options-menu--open");
-          }}
-          onClose={() => {
-            this.message.classList.remove("message-options-menu--open");
-          }}
-        >
-          <div className="flex-horizontal">
-            <span
-              title="Edit message"
-              className="icon icon-small"
-              onClick={(event) => {
-                this.message.classList.remove("message-options-menu--open");
-                MessageActionCreators.edit(message.roomId, message.id);
-                event.preventDefault();
-              }}
-            >
-              Edit message
-            </span>
-
-            <span className="icon icon-small" title="Copy message to clipboard">
-              Copy
-            </span>
-          </div>
-        </Popover>
-      );
-    }
-    const actions =
-      actionList.length > 0 &&
-      <div className="message--options actionable">
-        {actionList}
-      </div>;
-
     return (
       <div
         ref={(msg) => {
@@ -223,7 +187,6 @@ class Message extends React.PureComponent {
         {header}
         {timestamp}
         <div className="message--content-wrapper flex-horizontal">
-          {actions}
           {content}
           {edited}
         </div>
@@ -263,8 +226,8 @@ class MessageGroup extends React.Component {
 
   render() {
     const user = this.props.messages[0].user;
-    const messages = this.props.messages.map((message, i) =>
-      (<MessageWrapper
+    const messages = this.props.messages.map((message, i) => (
+      <MessageWrapper
         key={message.id}
         room={this.props.room}
         first={i === 0}
@@ -272,8 +235,8 @@ class MessageGroup extends React.Component {
         clock24={this.props.clock24}
         renderEmbeds={this.props.renderEmbeds}
         inlineImages={this.props.inlineImages}
-      />)
-    );
+      />
+    ));
     const avatar = <Avatar user={user} />;
     const { emphasisMe } = this.props;
     const classNames = {
@@ -282,34 +245,24 @@ class MessageGroup extends React.Component {
     return (
       <div className={classnames("message-group", "flex-horizontal", classNames)}>
         {avatar}
-        <div className="group-content flex-spacer">
-          {messages}
-        </div>
+        <div className="group-content flex-spacer">{messages}</div>
       </div>
     );
   }
 }
 
 function MessageTimestamp(props) {
-  return (
-    <div className="message-timestamp">
-      {props.children}
-    </div>
-  );
+  return <div className="message-timestamp">{props.children}</div>;
 }
 
 function MessageSystemGroup(props) {
-  const messages = props.messages.map(message =>
-    (<div key={message.id} className="message-system">
+  const messages = props.messages.map(message => (
+    <div key={message.id} className="message-system">
       {message.content}{" "}
       <TimeAgo datetime={message.dateCreated} format={props.clock24 ? "dddd, LL HH:mm" : "LLLL"} />
-    </div>)
-  );
-  return (
-    <div className="message-group message-group-system">
-      {messages}
     </div>
-  );
+  ));
+  return <div className="message-group message-group-system">{messages}</div>;
 }
 
 export default class Messages extends React.Component {
@@ -495,9 +448,7 @@ export default class Messages extends React.Component {
       if (type === MESSAGE_STREAM_TYPES.DIVIDER_TIME_STAMP) {
         return (
           <MessageTimestamp key={i}>
-            <h4>
-              {content}
-            </h4>
+            <h4>{content}</h4>
           </MessageTimestamp>
         );
       } else if (type === MESSAGE_STREAM_TYPES.SYSTEM_MESSAGE) {
@@ -549,9 +500,7 @@ export default class Messages extends React.Component {
         }}
         onScroll={this.onHandleScroll}
       >
-        <div className="panel-wrapper messages">
-          {messageGroupFinal}
-        </div>
+        <div className="panel-wrapper messages">{messageGroupFinal}</div>
       </section>
     );
   }

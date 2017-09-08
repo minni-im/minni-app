@@ -37,6 +37,7 @@ MessageSchema.method("toAPI", function toAPI() {
 
 MessageSchema.method("update", function update(text) {
   this.content = text;
+  this.embeds = [];
   this.dateEdited = new Date().toISOString();
 });
 

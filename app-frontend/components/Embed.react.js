@@ -13,6 +13,7 @@ function EmbedWrapper(props) {
           event.preventDefault();
         }
       }}
+      onDoubleClick={props.onDoubleClick}
     >
       <span
         className="embed-hide"
@@ -30,10 +31,12 @@ EmbedWrapper.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
   onHidePreview: PropTypes.func,
+  onDoubleClick: PropTypes.func,
 };
 
 EmbedWrapper.defaultProps = {
   onHidePreview() {},
+  onDoubleClick() {},
 };
 
 class OEmbed extends React.Component {
@@ -54,7 +57,10 @@ class OEmbed extends React.Component {
     const { name, url } = this.props.author;
     return (
       <div className="embed--author">
-        {prefix} <a href={url} target="_blank" title={name}>{name}</a>
+        {prefix}{" "}
+        <a href={url} target="_blank" title={name}>
+          {name}
+        </a>
       </div>
     );
   }
@@ -66,7 +72,9 @@ class OEmbed extends React.Component {
     const { name, url } = this.props.provider;
     return (
       <div className="embed--provider">
-        <a href={url} target="_blank" title={name}>{name}</a>
+        <a href={url} target="_blank" title={name}>
+          {name}
+        </a>
       </div>
     );
   }
@@ -165,7 +173,11 @@ class BackgroundCoverEmbed extends OEmbed {
       style.backgroundImage += `, url(${fallbackCover})`;
     }
 
-    return <a href={url} target="_blank" className="embed--thumbnail" style={style}>&nbsp;</a>;
+    return (
+      <a href={url} target="_blank" className="embed--thumbnail" style={style}>
+        &nbsp;
+      </a>
+    );
   }
 
   renderAuthor() {
@@ -183,7 +195,9 @@ class TwitterEmbed extends OEmbed {
     const { name, url } = author;
     return (
       <h3>
-        <a href={url} target="_blank">{title}</a>
+        <a href={url} target="_blank">
+          {title}
+        </a>
         <span className="embed--author">{name}</span>
       </h3>
     );
@@ -239,7 +253,13 @@ class GithubEmbed extends OEmbed {
   renderTitle() {
     const { title, provider } = this.props;
     const { url } = provider;
-    return <h3><a href={url} target="_blank">{title}</a></h3>;
+    return (
+      <h3>
+        <a href={url} target="_blank">
+          {title}
+        </a>
+      </h3>
+    );
   }
 }
 

@@ -76,7 +76,7 @@ function handleMessageUpdate(state, { message: newMessage }) {
   return state.set(
     roomId,
     messages.update(newMessage.id, (message) => {
-      if (newMessage.embeds) {
+      if (newMessage.embeds !== message.embeds) {
         message = message.set("embeds", Immutable.fromJS(newMessage.embeds));
       }
       if (newMessage.content !== message.content) {
@@ -140,7 +140,9 @@ class MessageStore extends MapStore {
   }
 
   getLastestMessage(roomId, userId) {
-    return this.getMessages(roomId).filter(({ user }) => user && user.id === userId).last();
+    return this.getMessages(roomId)
+      .filter(({ user }) => user && user.id === userId)
+      .last();
   }
 
   hasMessages(roomId) {
