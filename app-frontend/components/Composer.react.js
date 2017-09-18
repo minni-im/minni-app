@@ -78,6 +78,10 @@ export default class Composer extends React.Component {
     );
     this.computeTextAreaHeight(1);
     this.moveCursorAtEnd();
+    this.focus();
+    if (!this.props.persist) {
+      ReactDOM.findDOMNode(this).parentNode.scrollIntoView();
+    }
   }
 
   componentWillUnmount() {

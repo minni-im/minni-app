@@ -30,8 +30,6 @@ import RoomModel from "../models/Room";
 import { debounce } from "../utils/FunctionUtils";
 import { decode } from "../utils/MessageUtils";
 
-import { MenuDotsIcon, EditIcon, ClipboardIcon } from "../utils/IconsUtils";
-
 import Logger from "../libs/Logger";
 
 const logger = Logger.create("Messages.react");
@@ -75,7 +73,9 @@ class Message extends React.PureComponent {
     if (first) {
       header = (
         <div className="message--header">
-          <span className="user-name">{message.user.fullname}</span>
+          <span className="user-name">
+            {message.user.fullname}
+          </span>
           <TimeAgo
             className="timestamp"
             datetime={message.dateCreated}
@@ -97,10 +97,6 @@ class Message extends React.PureComponent {
           {header}
           {timestamp}
           <Composer
-            ref={(composer) => {
-              this.composer = composer;
-              composer && composer.focus();
-            }}
             persist={false}
             room={this.props.room}
             defaultValue={decode(message.content)}
@@ -126,8 +122,12 @@ class Message extends React.PureComponent {
     let content = (
       <div
         className="message--content"
-        onDoubleClick={this.editMessage}
+        // onDoubleClick={this.editMessage}
         onClick={(event) => {
+          if (event.detail === 3) {
+            this.editMessage(event);
+            return;
+          }
           if (!hasEmbeds || !renderEmbeds || !inlineImages) {
             return;
           }
@@ -157,15 +157,15 @@ class Message extends React.PureComponent {
         embeds = (
           <div className="message--embeds">
             {message.embeds
-              .map((embed, index) => (
-                <Embed
+              .map((embed, index) =>
+                (<Embed
                   key={index}
                   {...embed.toJS()}
                   onHidePreview={() => {
                     MessageActionCreators.togglePreview(message);
                   }}
-                />
-              ))
+                />)
+              )
               .toArray()}
           </div>
         );
@@ -226,8 +226,8 @@ class MessageGroup extends React.Component {
 
   render() {
     const user = this.props.messages[0].user;
-    const messages = this.props.messages.map((message, i) => (
-      <MessageWrapper
+    const messages = this.props.messages.map((message, i) =>
+      (<MessageWrapper
         key={message.id}
         room={this.props.room}
         first={i === 0}
@@ -235,8 +235,8 @@ class MessageGroup extends React.Component {
         clock24={this.props.clock24}
         renderEmbeds={this.props.renderEmbeds}
         inlineImages={this.props.inlineImages}
-      />
-    ));
+      />)
+    );
     const avatar = <Avatar user={user} />;
     const { emphasisMe } = this.props;
     const classNames = {
@@ -245,24 +245,34 @@ class MessageGroup extends React.Component {
     return (
       <div className={classnames("message-group", "flex-horizontal", classNames)}>
         {avatar}
-        <div className="group-content flex-spacer">{messages}</div>
+        <div className="group-content flex-spacer">
+          {messages}
+        </div>
       </div>
     );
   }
 }
 
 function MessageTimestamp(props) {
-  return <div className="message-timestamp">{props.children}</div>;
+  return (
+    <div className="message-timestamp">
+      {props.children}
+    </div>
+  );
 }
 
 function MessageSystemGroup(props) {
-  const messages = props.messages.map(message => (
-    <div key={message.id} className="message-system">
+  const messages = props.messages.map(message =>
+    (<div key={message.id} className="message-system">
       {message.content}{" "}
       <TimeAgo datetime={message.dateCreated} format={props.clock24 ? "dddd, LL HH:mm" : "LLLL"} />
+    </div>)
+  );
+  return (
+    <div className="message-group message-group-system">
+      {messages}
     </div>
-  ));
-  return <div className="message-group message-group-system">{messages}</div>;
+  );
 }
 
 export default class Messages extends React.Component {
@@ -448,7 +458,9 @@ export default class Messages extends React.Component {
       if (type === MESSAGE_STREAM_TYPES.DIVIDER_TIME_STAMP) {
         return (
           <MessageTimestamp key={i}>
-            <h4>{content}</h4>
+            <h4>
+              {content}
+            </h4>
           </MessageTimestamp>
         );
       } else if (type === MESSAGE_STREAM_TYPES.SYSTEM_MESSAGE) {
@@ -500,7 +512,9 @@ export default class Messages extends React.Component {
         }}
         onScroll={this.onHandleScroll}
       >
-        <div className="panel-wrapper messages">{messageGroupFinal}</div>
+        <div className="panel-wrapper messages">
+          {messageGroupFinal}
+        </div>
       </section>
     );
   }
