@@ -1,14 +1,26 @@
 import recorder from "tape-recorder";
 import { requireLogin } from "../middlewares/auth";
 
+import { requireValidMessage, requireValidMessageAuthor } from "../middlewares/message";
+
 import embed from "../libs/embeds";
 
 export default (app) => {
   const cache = app.get("cache");
 
-  app.put("/api/messages/", requireLogin, (req) => {
+  app.post("/api/messages", requireLogin, (req) => {
     req.io.route("messages:create");
   });
+
+  app.put(
+    "/api/messages/:messageId",
+    requireLogin,
+    requireValidMessage,
+    requireValidMessageAuthor,
+    (req) => {
+      req.io.route("messages:update");
+    }
+  );
 
   app.io.route("messages", {
     create(req, res) {
@@ -66,6 +78,40 @@ export default (app) => {
           });
         }
       );
+    },
+
+    update(req, res) {
+      const { message } = req;
+      const { content, accountId, roomId } = req.body;
+
+      const socketKey = `${accountId}:${roomId}`;
+
+      message.update(content);
+
+      embed(content).then((detectedEmbeds) => {
+        if (detectedEmbeds.length > 0) {
+          message.embeds = detectedEmbeds;
+        }
+        message.save().then(
+          (finalMessage) => {
+            const json = finalMessage.toAPI();
+            res.json({
+              ok: true,
+              message: json,
+            });
+            app.io.in(socketKey).emit("messages:update", json, true);
+          },
+          (error) => {
+            console.error(error);
+            res.json({
+              ok: false,
+              body: req.body,
+              message: "Message update failed",
+              errors: error,
+            });
+          }
+        );
+      });
     },
   });
 };

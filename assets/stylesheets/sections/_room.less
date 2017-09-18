@@ -35,175 +35,175 @@
     }
   }
 
+  .composer {
+    align-items: flex-start;
+    justify-content: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    position: relative;
+    border-radius: 4px;
+    background-color: lighten(@gray-lighter, 2%);
+
+    textarea {
+      background-color: inherit;
+      padding: 10px 0;
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      overflow: auto;
+      resize: none;
+      flex-grow: 1;
+      align-self: stretch;
+      max-height: 180px;
+      line-height: 20px;
+    }
+
+    textarea::placeholder {
+      color: @gray-light;
+      opacity: 0.6;
+    }
+
+    .action {
+      padding: 5px;
+      cursor: pointer;
+      transition: background-color 250ms;
+      border-radius: 3px;
+      svg {
+        .square(24px);
+        vertical-align: middle;
+        fill: @gray;
+      }
+    }
+
+    .action:hover {
+      background-color: @electric-blue;
+    }
+
+    .action + .action {
+      margin-left: 2px;
+    }
+
+    .suggestions {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 100%;
+      margin-bottom: 5px;
+      background-color: @background-light;
+      border-radius: 3px;
+      overflow: hidden;
+
+      .suggestions-header {
+        padding: 5px 10px;
+        background-color: @gray-lighter;
+        color: @gray-light;
+        a {
+          color: @dark-blue;
+          text-decoration: underline;
+        }
+
+        .flex-horizontal;
+
+        > *:first-child {
+          .flex-spacer;
+        }
+
+        .header-help {
+          margin-left: 10px;
+        }
+      }
+
+      .suggestions-list {
+        margin: 5px;
+      }
+
+      .suggestion-item {
+        cursor: pointer;
+        padding: 3px 10px;
+        color: @color-dark;
+
+        .flex-horizontal;
+        > div:first-child {
+          .flex-spacer;
+        }
+
+        .avatar {
+          display: inline-block;
+          vertical-align: middle;
+          margin-right: 5px;
+        }
+
+        em {
+          color: @gray-light;
+        }
+
+        .suggestion-item--info {
+          font-style: italic;
+          color: @gray-light;
+        }
+
+        &.suggestion-item--active {
+          background-color: @electric-blue;
+          color: @color-light;
+          border-radius: 3px;
+          .suggestion-item--info,
+          em {
+            color: inherit;
+          }
+        }
+      }
+    }
+
+    .suggestions-images {
+      .suggestions-list {
+        .flex-horizontal;
+      }
+
+      .suggestion-item {
+        height: 200px;
+        flex: 1;
+        max-width: 250px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+
+        filter: grayscale(100%);
+
+        &.suggestion-item--active {
+          box-shadow: 4px 4px 0 @electric-blue inset, -4px -4px 0 @electric-blue inset;
+          flex: 3;
+          filter: none;
+          border-radius: 1px;
+        }
+      }
+    }
+
+    .suggestions-emoji {
+      .suggestion-item {
+        display: inline-block;
+        .emoji {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+
+  .composer.active {
+    background-color: @gray-lighter;
+  }
+
+  .composer {
+    .action:hover {
+      background-color: @electric-blue;
+      svg {
+        fill: @background-light;
+      }
+    }
+  }
+
   footer {
     margin: 0 10px;
     padding-top: 10px;
-
-    .composer {
-      align-items: flex-start;
-      justify-content: center;
-      padding-left: 10px;
-      padding-right: 10px;
-      position: relative;
-      border-radius: 4px;
-      background-color: lighten(@gray-lighter, 2%);
-
-      textarea {
-        background-color: inherit;
-        padding: 10px 0;
-        margin: 0;
-        border: none;
-        border-radius: 0;
-        overflow: auto;
-        resize: none;
-        flex-grow: 1;
-        align-self: stretch;
-        max-height: 180px;
-        line-height: 20px;
-      }
-
-      textarea::placeholder {
-        color: @gray-light;
-        opacity: 0.6;
-      }
-
-      .action {
-        padding: 5px;
-        cursor: pointer;
-        transition: background-color 250ms;
-        border-radius: 3px;
-        svg {
-          .square(24px);
-          vertical-align: middle;
-          fill: @gray;
-        }
-      }
-
-      .action:hover {
-        background-color: @electric-blue;
-      }
-
-      .action + .action {
-        margin-left: 2px;
-      }
-
-      .suggestions {
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 100%;
-        margin-bottom: 5px;
-        background-color: @background-light;
-        border-radius: 3px;
-        overflow: hidden;
-
-        .suggestions-header {
-          padding: 5px 10px;
-          background-color: @gray-lighter;
-          color: @gray-light;
-          a {
-            color: @dark-blue;
-            text-decoration: underline;
-          }
-
-          .flex-horizontal;
-
-          > *:first-child {
-            .flex-spacer;
-          }
-
-          .header-help {
-            margin-left: 10px;
-          }
-        }
-
-        .suggestions-list {
-          margin: 5px;
-        }
-
-        .suggestion-item {
-          cursor: pointer;
-          padding: 3px 10px;
-          color: @color-dark;
-
-          .flex-horizontal;
-          > div:first-child {
-            .flex-spacer;
-          }
-
-          .avatar {
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 5px;
-          }
-
-          em {
-            color: @gray-light;
-          }
-
-          .suggestion-item--info {
-            font-style: italic;
-            color: @gray-light;
-          }
-
-          &.suggestion-item--active {
-            background-color: @electric-blue;
-            color: @color-light;
-            border-radius: 3px;
-            .suggestion-item--info,
-            em {
-              color: inherit;
-            }
-          }
-        }
-      }
-
-      .suggestions-images {
-        .suggestions-list {
-          .flex-horizontal;
-        }
-
-        .suggestion-item {
-          height: 200px;
-          flex: 1;
-          max-width: 250px;
-          background-size: cover;
-          background-repeat: no-repeat;
-          background-position: 50% 50%;
-
-          filter: grayscale(100%);
-
-          &.suggestion-item--active {
-            box-shadow: 4px 4px 0 @electric-blue inset, -4px -4px 0 @electric-blue inset;
-            flex: 3;
-            filter: none;
-            border-radius: 1px;
-          }
-        }
-      }
-
-      .suggestions-emoji {
-        .suggestion-item {
-          display: inline-block;
-          .emoji {
-            margin-right: 5px;
-          }
-        }
-      }
-    }
-
-    .composer.active {
-      background-color: @gray-lighter;
-    }
-
-    .composer {
-      .action:hover {
-        background-color: @electric-blue;
-        svg {
-          fill: @background-light;
-        }
-      }
-    }
 
     .footer {
       // line-height: 22px;

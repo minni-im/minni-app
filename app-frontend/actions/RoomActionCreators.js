@@ -146,7 +146,7 @@ export function receiveMessage(roomId, message, optimistic = false) {
 
 export function updateMessage(roomId, message) {
   dispatch({
-    type: ActionTypes.MESSAGE_UPDATE,
+    type: ActionTypes.MESSAGE_UPDATE_SUCCESS,
     roomId,
     message,
   });
@@ -160,7 +160,7 @@ export function sendMessage(roomId, text) {
       receiveMessage(roomId, { ...rawMessage }, true);
 
       request(EndPoints.MESSAGES, {
-        method: "PUT",
+        method: "POST",
         body: Object.assign(rawMessage, {
           nonce: rawMessage.id,
         }),

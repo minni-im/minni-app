@@ -1,12 +1,26 @@
-import { dispatchAsync } from "../Dispatcher";
+import { dispatch, dispatchAsync } from "../Dispatcher";
 import { ActionTypes } from "../Constants";
 
-export default {
-  saveCurrentText(roomId, text) {
-    dispatchAsync({
-      type: ActionTypes.COMPOSER_TEXT_SAVE,
+import UserStore from "../stores/UserStore";
+import MessageStore from "../stores/MessageStore";
+
+export const saveCurrentText = (roomId, text) => {
+  dispatchAsync({
+    type: ActionTypes.COMPOSER_TEXT_SAVE,
+    roomId,
+    text,
+  });
+};
+
+export const editLastMessage = (roomId) => {
+  const { id } = UserStore.getConnectedUser();
+  const message = MessageStore.getLastestMessage(roomId, id);
+
+  if (message) {
+    dispatch({
+      type: ActionTypes.MESSAGE_EDIT_START,
       roomId,
-      text
+      messageId: message.id,
     });
   }
 };

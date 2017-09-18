@@ -76,8 +76,14 @@ function handleMessageUpdate(state, { message: newMessage }) {
   return state.set(
     roomId,
     messages.update(newMessage.id, (message) => {
-      if (newMessage.embeds) {
+      if (newMessage.embeds !== message.embeds) {
         message = message.set("embeds", Immutable.fromJS(newMessage.embeds));
+      }
+      if (newMessage.content !== message.content) {
+        message = message
+          .set("content", newMessage.content)
+          .set("contentParsed", parseContent(newMessage.content, false))
+          .set("dateEdited", newMessage.dateEdited);
       }
       return message;
     })
@@ -123,7 +129,7 @@ class MessageStore extends MapStore {
   initialize() {
     this.waitFor(UserStore, RoomStore);
     this.addAction(ActionTypes.MESSAGE_CREATE, handleMessageCreate);
-    this.addAction(ActionTypes.MESSAGE_UPDATE, handleMessageUpdate);
+    this.addAction(ActionTypes.MESSAGE_UPDATE_SUCCESS, handleMessageUpdate);
     this.addAction(ActionTypes.LOAD_MESSAGES_SUCCESS, handleLoadMessagesSuccess);
     this.addAction(ActionTypes.UPDATE_DIMENSIONS, handleTruncateMessagesList);
     this.addAction(ActionTypes.MESSAGE_TOGGLE_PREVIEW, handleMessageTogglePreview);
@@ -133,8 +139,10 @@ class MessageStore extends MapStore {
     return this.getState().get(roomId, Immutable.OrderedMap());
   }
 
-  getLastestMessage(roomId) {
-    return this.getMessages(roomId).last();
+  getLastestMessage(roomId, userId) {
+    return this.getMessages(roomId)
+      .filter(({ user }) => user && user.id === userId)
+      .last();
   }
 
   hasMessages(roomId) {

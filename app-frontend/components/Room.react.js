@@ -21,17 +21,19 @@ import ComposerStore from "../stores/ComposerStore";
 
 import { MAX_MESSAGE_LENGTH } from "../Constants";
 
-class Room extends React.Component {
+class Room extends React.PureComponent {
   static propTypes = {
     room: PropTypes.instanceOf(RoomModel).isRequired,
     connection: PropTypes.bool,
     multiRooms: PropTypes.bool,
     history: PropTypes.object.isRequired,
+    editMode: PropTypes.bool,
   };
 
   static defaultProps = {
     multiRooms: false,
     connection: false,
+    editMode: false,
   };
 
   constructor(props) {
@@ -46,12 +48,11 @@ class Room extends React.Component {
     this.focusComposer();
   }
 
-  shouldComponentUpdate(nextProps) {
-    return (
-      nextProps.room !== this.props.room ||
-      nextProps.connection !== this.props.connection ||
-      nextProps.multiRooms !== this.props.multiRooms
-    );
+  componentDidUpdate(prevProps) {
+    const { editMode } = this.props;
+    if (editMode !== prevProps.editMode && editMode === false) {
+      this.focusComposer();
+    }
   }
 
   focusComposer() {
@@ -100,12 +101,16 @@ class Room extends React.Component {
         <header className="flex-horizontal">
           <div className="header-info flex-spacer">
             <h2>
-              <span>{parseTitle(name)}</span>
+              <span>
+                {parseTitle(name)}
+              </span>
               <span className="icon icon--favorite" onClick={this.handleRoomFavoriteToggle}>
                 <FavoriteIcon />
               </span>
             </h2>
-            <h3>{parseTitle(topic)}</h3>
+            <h3>
+              {parseTitle(topic)}
+            </h3>
           </div>
           <div className="actions">
             <RoomSettingsIcon room={room} />
