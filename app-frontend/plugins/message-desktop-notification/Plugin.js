@@ -6,7 +6,7 @@ import SettingsPanel, {
   checkPermission
 } from "./Settings.react";
 
-const { SettingsStore, UserStore, RoomStore, SelectedAccountStore } = Stores;
+const { FocusStore, SettingsStore, UserStore, RoomStore, SelectedAccountStore } = Stores;
 
 const NOTIFICATION_DISPLAY_TIME = 7.5 * 1000; // time in milliseconds
 
@@ -23,7 +23,8 @@ PluginRegister("DesktopNotifications", Constants.PLUGIN_TYPES.MESSAGE, {
       SettingsStore.getValue(SETTING_KEY) &&
       checkPermission() === NOTIFICATION_GRANTED &&
       connectedUser.id !== message.userId &&
-      connectedUser.status !== Constants.USER_STATUS.DND;
+      connectedUser.status !== Constants.USER_STATUS.DND &&
+      !FocusStore.isWindowFocused();
     if (enabled) {
       const accountName = capitalize(SelectedAccountStore.getAccount().name);
       const roomName = capitalize(RoomStore.get(message.roomId).name);
