@@ -15,20 +15,3 @@ auth:
     #secret: your client secret here
     scope: user
     callback: /auth/github/callback
-
-embed:
-  active: true
-  providers:
-    - Audio
-    - Video
-    - CodePen
-    - Instagram
-    - Vimeo
-    - Medium
-    - Github
-    - Gist
-    - Flickr
-    - Twitter
-    - Youtube
-    - Spotify
-    - Vine

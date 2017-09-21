@@ -1,8 +1,7 @@
+import { OEmbed, register } from "@minni-im/minni-embed";
 import fetch from "node-fetch";
-import Base from "../../base";
 
-const REGEXP_TWITTER =
-/^https?:\/\/(?:www\.|mobile\.)?twitter\.com\/(?:#!\/)?([^\/]+)\/status(?:es)?\/(\d+)\/?/;
+const REGEXP_TWITTER = /^https?:\/\/(?:www\.|mobile\.)?twitter\.com\/(?:#!\/)?([^\/]+)\/status(?:es)?\/(\d+)\/?/;
 
 // const REGEXP_TWITTER_PHOTO = /^https?:\/\/(?:www\.)?twitter\.com\/(?:#!\/)?[^\/]+\/status(?:es)?\/(\d+)\/photo\/\d+(?:\/large|\/)?/;
 
@@ -56,15 +55,21 @@ function transformText(text, entities) {
   return text;
 }
 
+export const name = "Twitter";
+export const type = "web.twitter";
 
-export default class TwitterEmbed extends Base {
+export default class TwitterEmbed extends OEmbed {
+  name = name;
+  type = type;
+
   constructor(config) {
     super();
-    this.name = "Twitter";
-    this.type = "web.twitter";
+
     this.config = config;
     if (!config || (config && (!config.id || !config.secret))) {
-      throw new Error("Missing Twitter configuration. You have to declare an id and a secret in your 'settings.yml' file.");
+      throw new Error(
+        "Missing Twitter configuration. You have to declare an id and a secret in your 'settings.yml' file."
+      );
     }
 
     this.hasValidToken = false;
@@ -85,19 +90,20 @@ export default class TwitterEmbed extends Base {
     return {
       url: capture[0],
       username: capture[1],
-      id: capture[2]
+      id: capture[2],
     };
   }
 
-  process(element) {
-    return this.authorization()
-      .then((bearerToken) => {
-        return super.process(element, {
+  exec(element) {
+    return this.authorization().then(
+      bearerToken =>
+        super.exec(element, {
           headers: {
-            "Authorization": "Bearer " + bearerToken
-          }
-        });
-      }, error => console.error("ERROR", error));
+            Authorization: `Bearer ${bearerToken}`,
+          },
+        }),
+      error => console.error("ERROR", error)
+    );
   }
 
   extractTitle(data) {
@@ -117,8 +123,8 @@ export default class TwitterEmbed extends Base {
     return {
       author: {
         name: `@${screen_name}`,
-        url: `https://twitter.com/${screen_name}`
-      }
+        url: `https://twitter.com/${screen_name}`,
+      },
     };
   }
 
@@ -126,8 +132,8 @@ export default class TwitterEmbed extends Base {
     return {
       provider: {
         name: "Twitter",
-        url: "https://twitter.com"
-      }
+        url: "https://twitter.com",
+      },
     };
   }
 
@@ -137,17 +143,19 @@ export default class TwitterEmbed extends Base {
       thumbnail: {
         width: 500,
         height: 500,
-        url: url.replace("_normal.", ".")
-      }
+        url: url.replace("_normal.", "."),
+      },
     };
   }
 
   extractMeta(data) {
     const { retweet_count, favorite_count } = data;
-    return { meta: {
-      retweet_count,
-      favorite_count
-    } };
+    return {
+      meta: {
+        retweet_count,
+        favorite_count,
+      },
+    };
   }
 
   // OAuth stuff
@@ -174,28 +182,32 @@ export default class TwitterEmbed extends Base {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Basic ${this.bearerTokenCredentials}`
+          Authorization: `Basic ${this.bearerTokenCredentials}`,
         },
-        body: "grant_type=client_credentials"
+        body: "grant_type=client_credentials",
       })
-      .then((response) => {
-        if (response.status >= 200 && response.status < 300) {
-          return response;
-        }
-        const error = new Error(response.statusText);
-        error.response = response;
-        throw error;
-      })
-      .then(response => response.json())
-      .then(({ access_token }) => {
-        this.hasValidToken = true;
-        this.bearerToken = access_token;
-        return resolve(access_token);
-      })
-      .catch((error) => {
-        console.error(`[Twitter Embed] ${error}`);
-        return reject(error);
-      });
+        .then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response;
+          }
+          const error = new Error(response.statusText);
+          error.response = response;
+          throw error;
+        })
+        .then(response => response.json())
+        .then(({ access_token }) => {
+          this.hasValidToken = true;
+          this.bearerToken = access_token;
+          return resolve(access_token);
+        })
+        .catch((error) => {
+          console.error(`[Twitter Embed] ${error}`);
+          return reject(error);
+        });
     });
   }
+}
+
+export function init(config) {
+  register(new TwitterEmbed(config));
 }

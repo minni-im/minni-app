@@ -18,7 +18,7 @@ services:
 
   minni:
     image: node:latest
-    restart: always
+    restart: unless-stopped
     links:
       - db:couchdb
       - cache:redis

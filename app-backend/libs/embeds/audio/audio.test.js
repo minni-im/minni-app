@@ -1,4 +1,4 @@
-import Audio from "./basic";
+import Audio from "./audio";
 
 const extensions = ["mp3", "wav", "ogg"];
 let embed;
@@ -31,9 +31,9 @@ describe("Audio embed", () => {
 describe("Audio embed", () => {
   it("should process a single audio url in message", () => {
     const tree = {
-      url: "http://example.com/foo/bar/baz.mp3"
+      url: "http://example.com/foo/bar/baz.mp3",
     };
-    const results = embed.process(tree);
+    const results = embed.exec(tree);
     expect(results).toBeDefined();
     expect(results.url).toEqual(tree.url);
   });

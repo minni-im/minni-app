@@ -30,3 +30,6 @@ login-backgrounds:
   - /images/login/her.jpg
   - /images/login/bokeh.jpg
   - /images/login/tags.jpg
+
+embed:
+  disabled: []

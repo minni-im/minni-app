@@ -1,13 +1,13 @@
-import Base from "../../base";
+import { OEmbed, register } from "@minni-im/minni-embed";
 
 const REGXEP_VIMEO = /^https?:\/\/(?:www\.)?vimeo\.com\/(\d+\d)/;
 
-export default class VimeoEmbed extends Base {
-  constructor() {
-    super();
-    this.name = "Vimeo";
-    this.type = "video.vimeo";
-  }
+export const name = "Vimeo";
+export const type = "video.vimeo";
+
+export default class VimeoEmbed extends OEmbed {
+  name = name;
+  type = type;
 
   endpointUrl({ url }) {
     // `https://vimeo.com/api/v2/video/${id}.json`
@@ -21,7 +21,11 @@ export default class VimeoEmbed extends Base {
   parse(capture) {
     return {
       url: capture[0],
-      id: capture[1]
+      id: capture[1],
     };
   }
-};
+}
+
+export function init() {
+  register(new VimeoEmbed());
+}

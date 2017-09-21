@@ -1,19 +1,19 @@
-import Base from "../../base";
+import { OEmbed, register } from "@minni-im/minni-embed";
 
-const REGEX_CODEPEN = /^https?:\/\/codepen\.io\/([a-zA-Z0-9_-]+)\/pen\/([^\s$]*)/
+const REGEX_CODEPEN = /^https?:\/\/codepen\.io\/([a-zA-Z0-9_-]+)\/pen\/([^\s$]*)/;
 
-export default class CodePenEmbed extends Base {
-  constructor() {
-    super();
-    this.name = "CodePen";
-    this.type = "code.codepen";
-  }
+export const name = "CodePen";
+export const type = "code.codepen";
+
+export default class CodePenEmbed extends OEmbed {
+  name = name;
+  type = type;
 
   parse(capture) {
     return {
       url: capture[0],
-      user: capture[1]
-    }
+      user: capture[1],
+    };
   }
 
   endpointUrl({ url }) {
@@ -23,4 +23,8 @@ export default class CodePenEmbed extends Base {
   match(source) {
     return REGEX_CODEPEN.exec(source);
   }
+}
+
+export function init() {
+  register(new CodePenEmbed());
 }

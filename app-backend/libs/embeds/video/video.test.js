@@ -1,4 +1,4 @@
-import Video from "./basic";
+import Video from "./video";
 
 const extensions = ["ogv", "webm", "mp4", "mov"];
 let embed;
