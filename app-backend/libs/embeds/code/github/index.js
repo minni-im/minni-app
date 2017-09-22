@@ -32,7 +32,7 @@ export default class GithubEmbed extends OEmbed {
     return element;
   }
 
-  extractData(data, { repo }) {
+  process(data, { repo }) {
     return repo
       ? {
         type: "code.github.repo",

@@ -37,7 +37,7 @@ embeds.forEach((module) => {
   if (!disabled.includes(shortName)) {
     console.log(`Loading ${module} embed`);
     const { init, name } = require(module); // eslint-disable-line
-    init({ ...embed[name], ...auth[name] });
+    init({ ...embed[shortName], ...auth[shortName] });
   }
 });
 

@@ -17,7 +17,7 @@ export default class AudioEmbed extends Embed {
     };
   }
 
-  exec(element) {
+  process(element) {
     return element;
   }
 }

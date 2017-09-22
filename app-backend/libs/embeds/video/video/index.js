@@ -17,7 +17,7 @@ export default class VideoEmbed extends Embed {
     };
   }
 
-  exec(element) {
+  process(element) {
     return element;
   }
 }

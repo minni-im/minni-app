@@ -116,19 +116,12 @@ describe("Embed parser", () => {
     });
   });
 
-  xdescribe("Medium", () => {
-    it("should detect medium urls", () => {
-      const url = "https://medium.com/@benostrower/rey-is-a-kenobi-362b5af09849";
-      const tree = parse(`un peu de meidum sur #starwars ${url} attention ca spoile !`);
-      expect(tree.length).toEqual(1);
-      expect(tree[0].url).toEqual(url);
-    });
-  });
-
   describe("CodePen", () => {
     it("should detect codepen url", () => {
       const url = "http://codepen.io/captainbrosset/pen/lHpnK";
-      const tree = parse("tu sais comment marche les CSS Transforms? Regarde ce pen http://codepen.io/captainbrosset/pen/lHpnK");
+      const tree = parse(
+        "tu sais comment marche les CSS Transforms? Regarde ce pen http://codepen.io/captainbrosset/pen/lHpnK"
+      );
       expect(tree.length).toEqual(1);
       expect(tree[0].url).toEqual(url);
     });

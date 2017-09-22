@@ -61,8 +61,8 @@
   "dependencies": {
     "@minni-im/emojify": "^1.0.0",
     "@minni-im/minni-auth-github": "^1.0.0",
-    "@minni-im/minni-embed": "1.0.7",
-    "@minni-im/minni-embed-youtube": "1.0.0",
+    "@minni-im/minni-embed": "1.1.1",
+    "@minni-im/minni-embed-youtube": "1.0.2",
     "babel-cli": "6.26.0",
     "babel-plugin-transform-builtin-extend": "^1.1.0",
     "babel-register": "^6.22.0",
