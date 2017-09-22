@@ -4,27 +4,20 @@
   "description": "Anywhere should be the place to be working from",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --silent",
     "svg": "svg2react",
     "watch": "webpack --progress --watch --debug",
     "build:js": "webpack --progress",
     "build:css": "gulp less",
     "static": "gulp static",
-    "dist": "NODE_ENV=production npm run build:js && NODE_ENV=production npm run build:css && npm run static"
+    "dist":
+      "NODE_ENV=production npm run build:js && NODE_ENV=production npm run build:css && npm run static"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/minni-im/minni-app.git"
   },
-  "keywords": [
-    "chat",
-    "group",
-    "chat",
-    "im",
-    "instant",
-    "messaging",
-    "real-time"
-  ],
+  "keywords": ["chat", "group", "chat", "im", "instant", "messaging", "real-time"],
   "author": "Benoit Charbonnier <benoit.charbonnier@gmail.com>",
   "license": "MIT",
   "bugs": {
