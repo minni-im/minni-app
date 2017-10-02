@@ -8,8 +8,6 @@ import { ActionTypes, USER_STATUS } from "../Constants";
 import Dispatcher from "../Dispatcher";
 import User from "../models/User";
 
-import AccountStore from "../stores/AccountStore";
-
 import Logger from "../libs/Logger";
 
 const logger = Logger.create("UserStore");
@@ -72,7 +70,7 @@ class UserStore extends MapStore {
     this.addAction(ActionTypes.UPDATE_USER_STATUS, handleStatusUpdate);
   }
 
-  getUsers(usersId, except = []) {
+  getUsers(usersId = [], except = []) {
     return this.getState().filter((user) => {
       const { id } = user;
       return usersId.indexOf(id) !== -1 && except.indexOf(id) === -1;
@@ -92,7 +90,9 @@ class UserStore extends MapStore {
   }
 
   getAll() {
-    return this.getState().filter(user => user.id !== connectedUserId).toArray();
+    return this.getState()
+      .filter(user => user.id !== connectedUserId)
+      .toArray();
   }
 }
 

@@ -19,7 +19,7 @@ function activateSelectedRoom(props) {
   selectRoom(accountSlug, roomSlugs.split(","));
 }
 
-class RoomsContainer extends React.PureComponent {
+class RoomsContainer extends React.Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
   };
@@ -54,21 +54,19 @@ class RoomsContainer extends React.PureComponent {
       "split-rooms": size > 1,
       [`split-rooms-${size}`]: size > 1,
     });
-    const rooms = this.state.rooms.map(room =>
-      (<Room
+    const rooms = this.state.rooms.map(room => (
+      <Room
         key={room.id}
         room={room}
         multiRooms={size > 1}
         editMode={EditMessageStore.isRoomInEditMode(room.id)}
         connection={this.state.connection}
-      />)
-    );
+      />
+    ));
 
     return (
       <DocumentTitle title={this.state.title}>
-        <main className={classNames}>
-          {size ? rooms.toArray() : "..."}
-        </main>
+        <main className={classNames}>{size ? rooms.toArray() : "..."}</main>
       </DocumentTitle>
     );
   }

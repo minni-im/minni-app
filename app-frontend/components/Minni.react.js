@@ -20,8 +20,8 @@ import AccountSwitcher from "./sidebars/AccountSwitcher.react";
 import Lightbox from "./generic/Lightbox.react";
 import SoundPlayer from "./generic/SoundPlayer.react";
 
-const App = () =>
-  (<div className="flex-vertical flex-spacer">
+const App = () => (
+  <div className="flex-vertical flex-spacer">
     <Notifications />
     <div className="minni-app flex-horizontal flex-spacer">
       <AccountSwitcher />
@@ -55,6 +55,7 @@ const App = () =>
       <Lightbox />
       <SoundPlayer />
     </div>
-  </div>);
+  </div>
+);
 
 export default App;

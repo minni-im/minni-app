@@ -36,10 +36,6 @@ class DashboardContainer extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    AccountActionCreators.deselectCurrentAccount();
-  }
-
   render() {
     return <Dashboard {...this.state} />;
   }
