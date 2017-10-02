@@ -10,7 +10,7 @@ import UnreadMessageStore from "../../stores/UnreadMessageStore";
 import UserStore from "../../stores/UserStore";
 import UserSettingsStore from "../../stores/UserSettingsStore";
 
-class SoundPlayer extends React.PureComponent {
+class SoundPlayer extends React.Component {
   static getStores() {
     return [UnreadMessageStore];
   }

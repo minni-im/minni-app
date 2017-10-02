@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactCSSTransitionGroup from "react-addons-css-transition-group";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { Container } from "flux/utils";
 import classNames from "classnames";
 
@@ -27,41 +27,36 @@ class Notifications extends Component {
     const { notifications } = this.props;
 
     const messages = notifications.toArray().map(notificationType =>
-      notificationType.toArray().map(notification =>
-        (<div
+      notificationType.toArray().map(notification => (
+        <CSSTransition
           key={notification.id}
-          className={classNames("notifier-message flex-horizontal", {
-            [`notifier-${notification.role}`]: true,
-          })}
+          classNames="notifier"
+          timeout={{ enter: 250, exit: 250 }}
         >
-          <div className="flex-spacer">
-            {notification.content}
-          </div>
-          {notification.autoDismissable
-            ? false
-            : <span
-              key="notifier-close"
-              className="notifier-close"
-              data-id={notification.id}
-              onClick={this.onCloseNotification}
-            >
+          <div
+            className={classNames("notifier-message flex-horizontal", {
+              [`notifier-${notification.role}`]: true,
+            })}
+          >
+            <div className="flex-spacer">{notification.content}</div>
+            {notification.autoDismissable ? (
+              false
+            ) : (
+              <span
+                key="notifier-close"
+                className="notifier-close"
+                data-id={notification.id}
+                onClick={this.onCloseNotification}
+              >
                 &times;
-              </span>}
-        </div>)
-      )
+              </span>
+            )}
+          </div>
+        </CSSTransition>
+      ))
     );
 
-    return (
-      <ReactCSSTransitionGroup
-        transitionName="notifier"
-        component="div"
-        className="minni-notifier"
-        transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}
-      >
-        {messages}
-      </ReactCSSTransitionGroup>
-    );
+    return <TransitionGroup className="minni-notifier">{messages}</TransitionGroup>;
   }
 }
 

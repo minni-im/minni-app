@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import ReactCSSTransitionGroup from "react-addons-css-transition-group";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 import classnames from "classnames";
 import clickOutside from "click-outside";
 import Combokeys from "combokeys";
@@ -195,7 +195,7 @@ export default class Dialog extends React.Component {
     visible: PropTypes.bool,
     baseClassName: PropTypes.string,
     enterTimeout: PropTypes.number,
-    leaveTimeout: PropTypes.number,
+    exitTimeout: PropTypes.number,
     onClose: PropTypes.func,
   };
 
@@ -203,7 +203,7 @@ export default class Dialog extends React.Component {
     visible: false,
     baseClassName: "dialog",
     enterTimeout: 200,
-    leaveTimeout: 200,
+    exitTimeout: 200,
   };
 
   constructor(props) {
@@ -218,18 +218,20 @@ export default class Dialog extends React.Component {
   }
 
   render() {
-    const { visible, baseClassName, enterTimeout, leaveTimeout } = this.props;
+    const { visible, baseClassName, enterTimeout, exitTimeout } = this.props;
     return (
       <RootChild>
-        <ReactCSSTransitionGroup
-          transitionName={baseClassName}
-          component="div"
-          transitionEnterTimeout={enterTimeout}
-          transitionLeaveTimeout={leaveTimeout}
-        >
-          {visible &&
-            <DialogBase {...this.props} key="dialog" onDialogClose={this.onDialogClose} />}
-        </ReactCSSTransitionGroup>
+        <TransitionGroup>
+          {visible && (
+            <CSSTransition
+              key="dialog"
+              classNames={baseClassName}
+              timeout={{ enter: enterTimeout, exit: exitTimeout }}
+            >
+              <DialogBase {...this.props} onDialogClose={this.onDialogClose} />
+            </CSSTransition>
+          )}
+        </TransitionGroup>
       </RootChild>
     );
   }

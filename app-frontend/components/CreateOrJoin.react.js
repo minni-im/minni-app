@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import TransitionGroup from "react-addons-css-transition-group";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 import AccountCreate from "./AccountCreate.react";
 import AccountJoin from "./AccountJoin.react";
@@ -13,14 +13,18 @@ function CreateOrJoin(props) {
         <h3>Create</h3>
         <GroupIcon />
         <p>Create a new team &amp; invite teammates to join.</p>
-        <button className="button-primary" onClick={props.onCreate}>Create a Team</button>
+        <button className="button-primary" onClick={props.onCreate}>
+          Create a Team
+        </button>
       </div>
       <div className="separator" data-text="or" />
       <div className="join">
         <h3>Join</h3>
         <GroupAddIcon />
         <p>Enter an invitation link &amp; join an existing team.</p>
-        <button className="button-highlight" onClick={props.onJoin}>Join a Team</button>
+        <button className="button-highlight" onClick={props.onJoin}>
+          Join a Team
+        </button>
       </div>
     </div>
   );
@@ -60,41 +64,35 @@ export default class CreateOrJoinContainer extends React.Component {
     switch (this.state.step) {
       case 1:
         element = (
-          <AccountCreate
-            key="create"
-            onBack={() => this.setState({ step: 0 })}
-            onCreate={this.onCreateClick}
-          />
+          <CSSTransition key="create" classNames="slide" timeout={{ enter: 300, exit: 300 }}>
+            <AccountCreate
+              onBack={() => this.setState({ step: 0 })}
+              onCreate={this.onCreateClick}
+            />
+          </CSSTransition>
         );
         break;
       case 2:
         element = (
-          <AccountJoin
-            key="join"
-            onBack={() => this.setState({ step: 0 })}
-            onJoin={this.onJoinClick}
-          />
+          <CSSTransition key="join" classNames="slide" timeout={{ enter: 300, exit: 300 }}>
+            <AccountJoin onBack={() => this.setState({ step: 0 })} onJoin={this.onJoinClick} />
+          </CSSTransition>
         );
         break;
       default:
         element = (
-          <CreateOrJoin
-            key="createorjoin"
-            onCreate={() => this.setState({ step: 1 })}
-            onJoin={() => this.setState({ step: 2 })}
-          />
+          <CSSTransition key="createorjoin" classNames="slide" timeout={{ enter: 300, exit: 300 }}>
+            <CreateOrJoin
+              onCreate={() => this.setState({ step: 1 })}
+              onJoin={() => this.setState({ step: 2 })}
+            />
+          </CSSTransition>
         );
     }
     return (
-      <TransitionGroup
-        className="create-or-join"
-        transitionName="slide"
-        component="div"
-        transitionEnterTimeout={300}
-        transitionLeaveTimeout={300}
-      >
-        {element}
-      </TransitionGroup>
+      <div className="create-or-join">
+        <TransitionGroup>{element}</TransitionGroup>
+      </div>
     );
   }
 }

@@ -4,13 +4,11 @@ import Immutable from "immutable";
 
 import Dialog from "../generic/Dialog.react";
 import TabBar, { TabPanel } from "../generic/TabBar.react";
-import RadioSwitch from "../generic/RadioSwitch.react";
 
 import Avatar from "../generic/Avatar.react";
 import SettingItem from "./SettingItem.react";
 
 import User from "../../models/User";
-import { updateSettings } from "../../actions/SettingsActionCreators";
 
 import PluginsStore from "../../stores/PluginsStore";
 import { PLUGIN_TYPES } from "../../Constants";
@@ -18,6 +16,7 @@ import { PLUGIN_TYPES } from "../../Constants";
 import { camelize } from "../../utils/TextUtils";
 
 import Logger from "../../libs/Logger";
+
 const logger = Logger.create("UserSettingsDialog");
 
 export default class UserSettingsDialog extends React.Component {
