@@ -27,7 +27,7 @@
   "devDependencies": {
     "babel-core": "6.26.0",
     "babel-eslint": "8.0.1",
-    "babel-jest": "21.0.2",
+    "babel-jest": "21.2.0",
     "babel-loader": "7.1.2",
     "babel-preset-env": "1.6.0",
     "babel-preset-node8": "1.2.0",
@@ -42,7 +42,7 @@
     "gulp-less": "3.3.2",
     "gulp-plumber": "^1.0.1",
     "gulp-util": "^3.0.8",
-    "jest": "21.1.0",
+    "jest": "21.2.1",
     "json-loader": "0.5.7",
     "less-plugin-autoprefix": "^1.4.2",
     "less-plugin-clean-css": "^1.5.1",
