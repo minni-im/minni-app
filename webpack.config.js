@@ -72,35 +72,18 @@ module.exports = {
     }),
     // Ignore all locale files of moment.js
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-
-    // Don't generate sourcemaps for vendor bundle.
-    new webpack.SourceMapDevToolPlugin({
-      exclude: ["vendor.js"],
-    }),
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: "development",
-    }),
   ].concat(
     RELEASE
       ? [
-        new ManifestPlugin(),
-        new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.optimize.UglifyJsPlugin({
-          compressor: {
-            screw_ie8: true,
-            warnings: false,
-          },
-          mangle: {
-            screw_ie8: true,
-          },
-          output: {
-            comments: false,
-            screw_ie8: true,
-          },
-        }),
         new webpack.DefinePlugin({
           __DEV__: false,
+          "process.env": {
+            NODE_ENV: JSON.stringify("production"),
+          },
         }),
+        new ManifestPlugin(),
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.optimize.UglifyJsPlugin(),
       ]
       : [
         new webpack.DefinePlugin({
