@@ -18,7 +18,7 @@ export default {
         },
         hash: (function () {
           try {
-            return require("../dist/public/js/manifest.json"); // eslint-disable
+            return require("../public/js/manifest.json"); // eslint-disable
           } catch (exception) {
             return {};
           }
