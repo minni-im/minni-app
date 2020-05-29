@@ -18,7 +18,7 @@ function getProviders() {
   if (!settings.auth.providers) {
     throw new Error(
       `No auth provider found!
-You have to specify at least one in your setting.yml file.`,
+You have to specify at least one in your setting.yml file.`
     );
   }
   return settings.auth.providers.map((provider) => {
@@ -42,9 +42,9 @@ You have to specify at least one in your setting.yml file.`,
 }
 
 function getProvider(key) {
-  return enabledProviders.map(p => p.key === key ? p : false).filter(item => item !== false)[ // eslint-disable-line no-confusing-arrow
-    0
-  ].provider;
+  return enabledProviders
+    .map((p) => (p.key === key ? p : false))
+    .filter((item) => item !== false)[0].provider; // eslint-disable-line no-confusing-arrow
 }
 
 export function setup(app, session) {
@@ -60,9 +60,9 @@ export function setup(app, session) {
         },
         (error) => {
           done(error);
-        },
+        }
       );
-    }),
+    })
   );
 
   passport.serializeUser((user, done) => {
@@ -72,13 +72,13 @@ export function setup(app, session) {
   passport.deserializeUser((id, done) => {
     const User = recorder.model("User");
     User.findById(id).then(
-      user => done(null, user),
-      error =>
+      (user) => done(null, user),
+      (error) =>
         done(
           new UserFromSessionDoesNotExistError(
-            `Unknown user id to be revived from cookie [id: ${id}]`,
-          ),
-        ),
+            `Unknown user id to be revived from cookie [id: ${id}]`
+          )
+        )
     );
   });
 
@@ -103,7 +103,7 @@ export function setup(app, session) {
   app.use(
     passport.session({
       failWithError: true,
-    }),
+    })
   );
 
   const ioSession = Object.assign({}, session, {
@@ -126,9 +126,11 @@ export function setup(app, session) {
         (error) => {
           console.error(error);
           return next(
-            new UserFromSessionDoesNotExistError(`Unable to retrieve user with [token: ${token}]`),
+            new UserFromSessionDoesNotExistError(
+              `Unable to retrieve user with [token: ${token}]`
+            )
           );
-        },
+        }
       );
     } else {
       psiAuth(socket, next);

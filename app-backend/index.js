@@ -24,7 +24,7 @@ const REDIS_CONF = {
   port: DOCKER ? 6379 : config.redis.port,
 };
 
-const asciiLogo = banner => `
+const asciiLogo = (banner) => `
 ╒════════════════════════════════════════════════════╕
 ███╗   ███╗██╗███╗   ██╗███╗   ██╗██╗   ██╗███╗   ███╡
 ████╗ ████║██║████╗  ██║████╗  ██║██║   ██║████╗ ████│
@@ -76,9 +76,11 @@ function bootstrap() {
     require(`./controllers/${ctrl}`).default(app);
   });
 
-  fs.readdirSync(path.join(__dirname, "libs", "commands")).forEach((command) => {
-    require(`./libs/commands/${command}`).setup(app);
-  });
+  fs.readdirSync(path.join(__dirname, "libs", "commands")).forEach(
+    (command) => {
+      require(`./libs/commands/${command}`).setup(app);
+    }
+  );
 
   /* =Errors= */
   app.use(ErrorHandlers.OAuthErrorHandler(config));
@@ -86,18 +88,30 @@ function bootstrap() {
 
   const { port, host } = config;
   app.listen(port, host);
-  console.log("Minni application started and listenning on http://%s:%s", host, port);
+  console.log(
+    "Minni application started and listenning on http://%s:%s",
+    host,
+    port
+  );
 }
 
 const couchDBHost = DOCKER ? "couchdb" : config.couchdb.host;
 const couchDBPort = DOCKER ? 5984 : config.couchdb.port;
 
-console.log(asciiLogo("Starting application server"));
+if (config.demo) {
+  console.log(asciiLogo("Starting application server, demo mode active"));
+} else {
+  console.log(asciiLogo("Starting application server"));
+}
 
-recorder.connect(`http://${couchDBHost}:${couchDBPort}`, config.couchdb.name, () => {
-  fs.readdirSync(path.join(__dirname, "models")).forEach((model) => {
-    require(`./models/${model}`);
-    console.log(`Model '${model}' has been loaded`);
-  });
-  bootstrap();
-});
+recorder.connect(
+  `http://${couchDBHost}:${couchDBPort}`,
+  config.couchdb.name,
+  () => {
+    fs.readdirSync(path.join(__dirname, "models")).forEach((model) => {
+      require(`./models/${model}`);
+      console.log(`Model '${model}' has been loaded`);
+    });
+    bootstrap();
+  }
+);

@@ -2,6 +2,8 @@ import bcrypt from "bcryptjs";
 import recorder from "tape-recorder";
 import crypto from "crypto";
 
+import config from "../config";
+
 const UserSchema = new recorder.Schema({
   firstname: String,
   lastname: String,
@@ -26,8 +28,8 @@ UserSchema.virtual({
     get() {
       if (this.firstname && this.lastname) {
         return [this.firstname, this.lastname]
-          .map(text => text[0])
-          .map(letter => letter.toUpperCase())
+          .map((text) => text[0])
+          .map((letter) => letter.toUpperCase())
           .join("");
       }
       return this.nickname[0].toUpperCase();
@@ -49,7 +51,7 @@ UserSchema.virtual({
   },
 });
 
-UserSchema.method("avatar", function avatar(size = 80) {
+UserSchema.method("avatar", function avatar(size = 80, fallback) {
   if (this.picture) {
     return `${this.picture}&s=${size}`;
   }
@@ -57,7 +59,7 @@ UserSchema.method("avatar", function avatar(size = 80) {
   if (this.gravatarEmail) {
     hash = crypto.createHash("md5").update(this.gravatarEmail).digest("hex");
   }
-  return `https://secure.gravatar.com/avatar/${hash}?s=${size}`;
+  return `https://secure.gravatar.com/avatar/${hash}?s=${size}${fallback ? `&d=${fallback}` : ""}`;
 })
   .method("toAPI", function toAPI(currentUser = false) {
     const json = {
@@ -66,7 +68,7 @@ UserSchema.method("avatar", function avatar(size = 80) {
       lastname: this.lastname,
       nickname: this.nickname,
       fullname: this.fullname,
-      picture: this.avatar(160),
+      picture: this.avatar(160, config.demo && "robohash"),
       email: this.email,
       gravatarEmail: this.gravatarEmail,
     };
@@ -108,7 +110,9 @@ UserSchema.method("avatar", function avatar(size = 80) {
             return;
           }
           this.token = hash;
-          const userToken = new Buffer(`${this.id}:${password}`).toString("base64");
+          const userToken = new Buffer(`${this.id}:${password}`).toString(
+            "base64"
+          );
 
           this.save().then(
             () => {
@@ -124,10 +128,12 @@ UserSchema.method("avatar", function avatar(size = 80) {
   });
 
 UserSchema.static("findByToken", function findByToken(token) {
-  const [userId, hash] = new Buffer(token, "base64").toString("ascii").split(":");
+  const [userId, hash] = new Buffer(token, "base64")
+    .toString("ascii")
+    .split(":");
 
   return this.findById(userId).then(
-    user =>
+    (user) =>
       new Promise((resolve, reject) => {
         bcrypt.compare(hash, user.token, (errorHash, isMatch) => {
           if (errorHash) {
@@ -156,7 +162,9 @@ UserSchema.view("byProviderId", {
       }
     }`,
 }).static("findByProviderId", function findByProviderId(provider, id) {
-  return this.where("byProviderId", { key: [provider, id] }).then(users => users[0]);
+  return this.where("byProviderId", { key: [provider, id] }).then(
+    (users) => users[0]
+  );
 });
 
 export default recorder.model("User", UserSchema);

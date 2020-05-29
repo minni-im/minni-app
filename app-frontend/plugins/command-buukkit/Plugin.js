@@ -6,7 +6,7 @@ PluginRegister("BuukkitCommand", PLUGIN_TYPES.COMPOSER_COMMAND, {
   command: "gif",
   title: "Buukkit",
   description: "Search animated gifs on http://buukkit.appspot.com",
-  enabled: () => true,
+  enabled: () => !window.Minni.demo,
   typeahead: true,
-  images: true
+  images: true,
 });

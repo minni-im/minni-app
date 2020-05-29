@@ -11,6 +11,7 @@ export default {
     app.use((req, res, next) => {
       Object.assign(res.locals, {
         START_TS,
+        demo: config.demo,
         name: config.name,
         viewname(filename) {
           return path.basename(filename, ".pug");
@@ -21,12 +22,23 @@ export default {
           } catch (exception) {
             return {};
           }
-        }()),
+        })(),
         user: req.user,
         production: process.env.NODE_ENV === "production",
         nth(rank) {
           rank = Math.max(1, rank);
-          const ranks = ["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"];
+          const ranks = [
+            "th",
+            "st",
+            "nd",
+            "rd",
+            "th",
+            "th",
+            "th",
+            "th",
+            "th",
+            "th",
+          ];
           if (rank in [11, 12, 13]) {
             // Only works for ranks below 100
             return rank + ranks[0];
@@ -38,7 +50,8 @@ export default {
           protocol: req.protocol,
         },
         moment,
-        background: () => backgrounds[Math.floor(Math.random() * backgrounds.length)],
+        background: () =>
+          backgrounds[Math.floor(Math.random() * backgrounds.length)],
       });
 
       next();

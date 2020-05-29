@@ -19,12 +19,9 @@ html
     meta(name="application-name", content=name)
     meta(name="theme-color", content="#0061bc")
 
-    meta(name="description", content="Your world wide offices in the cloud")
+    meta(name="description", content="Your cloud memories, accessible from everywhere")
     meta(name="application-url", content=`${url.protocol}://${url.hostname}`)
 
-    //- IE9+
-    meta(name="msapplication-tooltip", content=name)
-    meta(name="msapplication-starturl", content=`${url.protocol}://${url.hostname}`)
     //- IE10+
     meta(name="msapplication-TileColor", content="#48a6ff")
     meta(name="msapplication-TileImage", content=`${url.protocol}://${url.hostname}/mstile-150x150.png`)
@@ -35,6 +32,7 @@ html
     script(type="text/javascript").
       window.Minni = {
         name: "#{name}",
+        demo: #{demo},
         debug: #{!production}
       };
     block header_scripts
@@ -83,6 +81,6 @@ html
             div.logo
               img(src="/images/logo-dark.png")
               | #{name}
-            div.copyright 2014 - #{(new Date()).getFullYear()} &copy; Benoit Charbonnier
+            div.copyright 2012 - #{(new Date()).getFullYear()} &copy; Benoit Charbonnier
 
     block scripts

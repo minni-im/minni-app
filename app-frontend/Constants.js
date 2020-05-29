@@ -198,6 +198,7 @@ export const TYPING_TIMEOUT = 1500;
 export const MAX_MESSAGES_PER_ROOMS = 50;
 export const MAX_MESSAGE_LENGTH = 2000;
 export const FETCH_HISTORY_TRESHOLD = 30;
+export const MESSAGE_GROUP_DURATION = 3 * 60 * 1000;
 
 // pixels treshold to consider scroll pos to be at bottom
 export const MESSAGE_LIST_BOTTOM_TRESHOLD = 5;
@@ -228,24 +229,25 @@ export const DECONNECTION_SPAM_TRESHOLD = 5 * 1000;
 
 export const EndPoints = {
   ACCOUNT_CREATE: "/api/accounts/",
-  ACCOUNT_CHECK_EXISTENCE: name => `/api/accounts/check_existence?name=${name}`,
-  ACCOUNT_ROOMS: accountId => `/api/accounts/${accountId}/rooms`,
-  ACCOUNT_USERS: accountId => `/api/accounts/${accountId}/users`,
-  ROOM_STAR: roomId => `/api/rooms/${roomId}/star`,
-  ROOM_UNSTAR: roomId => `/api/rooms/${roomId}/unstar`,
-  ROOM_MESSAGES: roomId => `/api/rooms/${roomId}/messages`,
-  ROOM_DELETE: roomId => `/api/rooms/${roomId}`,
-  ROOM_UPDATE: roomId => `/api/rooms/${roomId}`,
+  ACCOUNT_CHECK_EXISTENCE: (name) =>
+    `/api/accounts/check_existence?name=${name}`,
+  ACCOUNT_ROOMS: (accountId) => `/api/accounts/${accountId}/rooms`,
+  ACCOUNT_USERS: (accountId) => `/api/accounts/${accountId}/users`,
+  ROOM_STAR: (roomId) => `/api/rooms/${roomId}/star`,
+  ROOM_UNSTAR: (roomId) => `/api/rooms/${roomId}/unstar`,
+  ROOM_MESSAGES: (roomId) => `/api/rooms/${roomId}/messages`,
+  ROOM_DELETE: (roomId) => `/api/rooms/${roomId}`,
+  ROOM_UPDATE: (roomId) => `/api/rooms/${roomId}`,
   USER_SETTINGS: "/api/me/settings",
   USER_PROFILE: "/api/me",
   MESSAGES: "/api/messages",
-  MESSAGE_DELETE: messageId => `/api/messages/${messageId}`,
-  MESSAGE_UPDATE: messageId => `/api/messages/${messageId}`,
-  TYPING: roomId => `/api/rooms/${roomId}/typing`,
+  MESSAGE_DELETE: (messageId) => `/api/messages/${messageId}`,
+  MESSAGE_UPDATE: (messageId) => `/api/messages/${messageId}`,
+  TYPING: (roomId) => `/api/rooms/${roomId}/typing`,
   SLASH_COMMAND: "/api/command",
-  INVITATION_LIST: accountId => `/api/accounts/${accountId}/invites`,
+  INVITATION_LIST: (accountId) => `/api/accounts/${accountId}/invites`,
   INVITATION_CREATE: "/api/invites/",
-  INVITATION_VALIDATE: inviteId => `/api/invites/${inviteId}`,
-  INVITATION_DELETE: inviteId => `/api/invites/${inviteId}`,
-  INVITATION_ACCEPT: inviteId => `/api/invites/${inviteId}`,
+  INVITATION_VALIDATE: (inviteId) => `/api/invites/${inviteId}`,
+  INVITATION_DELETE: (inviteId) => `/api/invites/${inviteId}`,
+  INVITATION_ACCEPT: (inviteId) => `/api/invites/${inviteId}`,
 };

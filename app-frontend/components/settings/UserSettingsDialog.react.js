@@ -92,7 +92,11 @@ export default class UserSettingsDialog extends React.Component {
           onChange={this.onSettingChange}
         >
           We support standard emoticons & emojis. Hints available{" "}
-          <a href="http://www.emoji-cheat-sheet.com/" target="_blank" rel="noopener noreferrer">
+          <a
+            href="http://www.emoji-cheat-sheet.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             here
           </a>
           .
@@ -168,23 +172,32 @@ export default class UserSettingsDialog extends React.Component {
   }
 
   generateConnections() {
+    const { demo = false } = window.Minni;
     return [
       <section>
         <h3>One click login services</h3>
         <p>
-          One-click Login is not yet configurable in the chat application. You can modify it on your
-          profile page
-          <a href="/profile" target="_blank">
-            here
-          </a>
+          One-click Login is not yet configurable in the chat application.
+          {!demo && [
+            "You can modify it on your profile page",
+            <a href="/profile" target="_blank">
+              here
+            </a>,
+          ]}
         </p>
       </section>,
     ];
   }
 
   renderProfile() {
-    const { firstname, lastname, nickname, email, gravatarEmail } = this.props.user;
-
+    const {
+      firstname,
+      lastname,
+      nickname,
+      email,
+      gravatarEmail,
+    } = this.props.user;
+    const { demo = false } = window.Minni;
     return (
       <TabPanel label="Profile">
         <h3>Personnal details</h3>
@@ -233,7 +246,8 @@ export default class UserSettingsDialog extends React.Component {
             <div>
               <input
                 type="text"
-                defaultValue={email}
+                readOnly={demo}
+                defaultValue={demo ? "N/A in demo" : email}
                 id="email"
                 placeholder="Your email"
                 onBlur={this.onUserInfoChange}
@@ -245,7 +259,8 @@ export default class UserSettingsDialog extends React.Component {
             <div>
               <input
                 type="text"
-                defaultValue={gravatarEmail}
+                readOnly={demo}
+                defaultValue={demo ? "N/A in demo" : gravatarEmail}
                 id="gravatarEmail"
                 placeholder={!gravatarEmail ? email : gravatarEmail}
                 onBlur={this.onUserInfoChange}
@@ -278,8 +293,8 @@ export default class UserSettingsDialog extends React.Component {
     };
 
     PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_TEXT | PLUGIN_TYPES.MESSAGE)
-      .filter(plugin => !!plugin.SettingsPanel)
-      .map(plugin => plugin.SettingsPanel)
+      .filter((plugin) => !!plugin.SettingsPanel)
+      .map((plugin) => plugin.SettingsPanel)
       .forEach((panel) => {
         const { category, prepend } = panel;
         if (prepend && prepend === true) {

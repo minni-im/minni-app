@@ -14,7 +14,8 @@ import {
   MESSAGE_TYPES,
   MESSAGE_STREAM_TYPES,
   FETCH_HISTORY_TRESHOLD,
-  MESSAGE_LIST_BOTTOM_TRESHOLD
+  MESSAGE_LIST_BOTTOM_TRESHOLD,
+  MESSAGE_GROUP_DURATION,
 } from "../Constants";
 
 import Avatar from "./generic/Avatar.react";
@@ -60,7 +61,15 @@ class Message extends React.PureComponent {
   };
 
   render() {
-    const { room, first, message, renderEmbeds, inlineImages, clock24, isEditing } = this.props;
+    const {
+      room,
+      first,
+      message,
+      renderEmbeds,
+      inlineImages,
+      clock24,
+      isEditing,
+    } = this.props;
     const hasEmbeds = message.hasEmbeds;
     const classNames = {
       "message-first": first,
@@ -73,9 +82,7 @@ class Message extends React.PureComponent {
     if (first) {
       header = (
         <div className="message--header">
-          <span className="user-name">
-            {message.user.fullname}
-          </span>
+          <span className="user-name">{message.user.fullname}</span>
           <TimeAgo
             className="timestamp"
             datetime={message.dateCreated}
@@ -157,15 +164,15 @@ class Message extends React.PureComponent {
         embeds = (
           <div className="message--embeds">
             {message.embeds
-              .map((embed, index) =>
-                (<Embed
+              .map((embed, index) => (
+                <Embed
                   key={index}
                   {...embed.toJS()}
                   onHidePreview={() => {
                     MessageActionCreators.togglePreview(message);
                   }}
-                />)
-              )
+                />
+              ))
               .toArray()}
           </div>
         );
@@ -203,7 +210,10 @@ class MessageContainer extends React.Component {
 
   static calculateState(prevState, props) {
     return {
-      isEditing: EditMessageStore.isMessageEdited(props.room.id, props.message.id),
+      isEditing: EditMessageStore.isMessageEdited(
+        props.room.id,
+        props.message.id
+      ),
     };
   }
 
@@ -226,8 +236,8 @@ class MessageGroup extends React.Component {
 
   render() {
     const user = this.props.messages[0].user;
-    const messages = this.props.messages.map((message, i) =>
-      (<MessageWrapper
+    const messages = this.props.messages.map((message, i) => (
+      <MessageWrapper
         key={message.id}
         room={this.props.room}
         first={i === 0}
@@ -235,44 +245,39 @@ class MessageGroup extends React.Component {
         clock24={this.props.clock24}
         renderEmbeds={this.props.renderEmbeds}
         inlineImages={this.props.inlineImages}
-      />)
-    );
+      />
+    ));
     const avatar = <Avatar user={user} />;
     const { emphasisMe } = this.props;
     const classNames = {
       "message-group-me": this.props.viewer.id === user.id && emphasisMe,
     };
     return (
-      <div className={classnames("message-group", "flex-horizontal", classNames)}>
+      <div
+        className={classnames("message-group", "flex-horizontal", classNames)}
+      >
         {avatar}
-        <div className="group-content flex-spacer">
-          {messages}
-        </div>
+        <div className="group-content flex-spacer">{messages}</div>
       </div>
     );
   }
 }
 
 function MessageTimestamp(props) {
-  return (
-    <div className="message-timestamp">
-      {props.children}
-    </div>
-  );
+  return <div className="message-timestamp">{props.children}</div>;
 }
 
 function MessageSystemGroup(props) {
-  const messages = props.messages.map(message =>
-    (<div key={message.id} className="message-system">
+  const messages = props.messages.map((message) => (
+    <div key={message.id} className="message-system">
       {message.content}{" "}
-      <TimeAgo datetime={message.dateCreated} format={props.clock24 ? "dddd, LL HH:mm" : "LLLL"} />
-    </div>)
-  );
-  return (
-    <div className="message-group message-group-system">
-      {messages}
+      <TimeAgo
+        datetime={message.dateCreated}
+        format={props.clock24 ? "dddd, LL HH:mm" : "LLLL"}
+      />
     </div>
-  );
+  ));
+  return <div className="message-group message-group-system">{messages}</div>;
 }
 
 export default class Messages extends React.Component {
@@ -313,7 +318,9 @@ export default class Messages extends React.Component {
       const latestMessage = this.props.messages.last();
       const currentUser = this.props.viewer;
       if (
-        (latestMessage && latestMessage.user && latestMessage.user.id === currentUser.id) ||
+        (latestMessage &&
+          latestMessage.user &&
+          latestMessage.user.id === currentUser.id) ||
         this.isAtBottom()
       ) {
         this.scrollToBottom();
@@ -337,8 +344,14 @@ export default class Messages extends React.Component {
     const scrollTop = Math.ceil(scroller.scrollTop);
 
     // Reaching the top when scrolling with a scrollable viewport
-    if (scrollTop < FETCH_HISTORY_TRESHOLD && scroller.scrollHeight > scroller.offsetHeight) {
-      if (this.props.messagesState.hasMore && !this.props.messagesState.loadingMore) {
+    if (
+      scrollTop < FETCH_HISTORY_TRESHOLD &&
+      scroller.scrollHeight > scroller.offsetHeight
+    ) {
+      if (
+        this.props.messagesState.hasMore &&
+        !this.props.messagesState.loadingMore
+      ) {
         this.loadMore();
       }
     }
@@ -346,7 +359,9 @@ export default class Messages extends React.Component {
     // If at the bottom we can clear dimensions.
     // we can't use `isAtBottom()` here as it would always be true, and we would
     // never get new dimensions.
-    const treshold = Math.abs(scrollTop + scroller.clientHeight - scroller.scrollHeight);
+    const treshold = Math.abs(
+      scrollTop + scroller.clientHeight - scroller.scrollHeight
+    );
     if (treshold >= 0 && treshold < MESSAGE_LIST_BOTTOM_TRESHOLD) {
       DimensionActionCreators.clearDimensions(this.props.room);
     } else {
@@ -377,7 +392,9 @@ export default class Messages extends React.Component {
 
   handleLoadMore() {
     if (!this.isAtBottom()) {
-      this.scrollTo(this.scroller.scrollHeight - this.props.dimensions.scrollHeight);
+      this.scrollTo(
+        this.scroller.scrollHeight - this.props.dimensions.scrollHeight
+      );
     }
   }
 
@@ -404,6 +421,7 @@ export default class Messages extends React.Component {
 
   regroupMessages(messages) {
     const messageGroups = [];
+    let lastMessage;
 
     messages.forEach((message) => {
       const lastMessageGroup = messageGroups[messageGroups.length - 1];
@@ -414,13 +432,17 @@ export default class Messages extends React.Component {
         (message.type !== MESSAGE_TYPES.SYSTEM_MESSAGE &&
           lastMessageGroup[0].user &&
           lastMessageGroup[0].user.id !== message.user.id) ||
-        lastMessageGroup[0].dateCreated.day() !== message.dateCreated.day() ||
-        lastMessageGroup[0].dateCreated.hour() !== message.dateCreated.hour()
+        (lastMessage &&
+          +message.dateCreated >
+            +lastMessage.dateCreated + MESSAGE_GROUP_DURATION)
+        // lastMessageGroup[0].dateCreated.day() !== message.dateCreated.day() ||
+        // lastMessageGroup[0].dateCreated.hour() !== message.dateCreated.hour()
       ) {
         messageGroups.push([message]);
       } else {
         lastMessageGroup.push(message);
       }
+      lastMessage = message;
     });
 
     let lastTimestamp;
@@ -458,9 +480,7 @@ export default class Messages extends React.Component {
       if (type === MESSAGE_STREAM_TYPES.DIVIDER_TIME_STAMP) {
         return (
           <MessageTimestamp key={i}>
-            <h4>
-              {content}
-            </h4>
+            <h4>{content}</h4>
           </MessageTimestamp>
         );
       } else if (type === MESSAGE_STREAM_TYPES.SYSTEM_MESSAGE) {
@@ -480,7 +500,10 @@ export default class Messages extends React.Component {
         />
       );
     });
-    if (this.props.messagesState.loadingMore || !this.props.messagesState.ready) {
+    if (
+      this.props.messagesState.loadingMore ||
+      !this.props.messagesState.ready
+    ) {
       messageGroupFinal.unshift(
         <div key="loading-more" className="message-loading-more">
           Retrieving messages history...
@@ -495,13 +518,19 @@ export default class Messages extends React.Component {
           }}
           className="message-has-more"
         >
-          <span role="link" title="Click to retrieve more messages" onClick={this.onHandleLoadMore}>
+          <span
+            role="link"
+            title="Click to retrieve more messages"
+            onClick={this.onHandleLoadMore}
+          >
             And more...
           </span>
         </div>
       );
     } else {
-      messageGroupFinal.unshift(<WelcomeMessage key="welcome-message" room={this.props.room} />);
+      messageGroupFinal.unshift(
+        <WelcomeMessage key="welcome-message" room={this.props.room} />
+      );
     }
 
     return (
@@ -512,9 +541,7 @@ export default class Messages extends React.Component {
         }}
         onScroll={this.onHandleScroll}
       >
-        <div className="panel-wrapper messages">
-          {messageGroupFinal}
-        </div>
+        <div className="panel-wrapper messages">{messageGroupFinal}</div>
       </section>
     );
   }

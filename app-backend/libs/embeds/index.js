@@ -9,12 +9,22 @@ export { parse, process };
 const { auth, embed } = config;
 const { disabled } = embed;
 
-const nodeModules = path.join(__dirname, "..", "..", "..", "node_modules");
-const embeds = [[nodeModules, "@minni-im/minni-embed-*"], [nodeModules, "minni-embed-*"]]
-  .map(fragments => path.join(...fragments))
-  .map(p => glob.sync(p))
+const nodeModules = path.join(
+  __dirname,
+  "..",
+  "..",
+  "..",
+  "..",
+  "node_modules"
+);
+const embeds = [
+  [nodeModules, "@minni-im/minni-embed-*"],
+  [nodeModules, "minni-embed-*"],
+]
+  .map((fragments) => path.join(...fragments))
+  .map((p) => glob.sync(p))
   .reduce((list, globs) => list.concat(globs), [])
-  .map(p => p.replace(`${nodeModules}/`, ""))
+  .map((p) => p.replace(`${nodeModules}/`, ""))
   .concat([
     "./audio/audio",
     "./audio/spotify",
@@ -30,10 +40,7 @@ const embeds = [[nodeModules, "@minni-im/minni-embed-*"], [nodeModules, "minni-e
   ]);
 
 embeds.forEach((module) => {
-  const shortName = module
-    .split("/")
-    .pop()
-    .replace("minni-embed-", "");
+  const shortName = module.split("/").pop().replace("minni-embed-", "");
   if (!disabled.includes(shortName)) {
     console.log(`Loading ${module} embed`);
     const { init, name } = require(module); // eslint-disable-line

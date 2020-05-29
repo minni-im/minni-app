@@ -11,20 +11,20 @@ function filename(url) {
   return url.split("/").pop();
 }
 
-
 class SlashCommandResults extends TypeaheadResults {
   static className = "suggestions-command-results";
   static getStores() {
-    return [
-      SlashCommandStore
-    ];
+    return [SlashCommandStore];
   }
 
   static calculateState(prevProps, nextProps) {
-    const results = SlashCommandStore.getResults(nextProps.command.command, nextProps.query);
+    const results = SlashCommandStore.getResults(
+      nextProps.command.command,
+      nextProps.query
+    );
     return {
       selectedIndex: 0,
-      results: results.slice(0, 6)
+      results: results.slice(0, 6),
     };
   }
 
@@ -35,22 +35,24 @@ class SlashCommandResults extends TypeaheadResults {
   }
 
   transformSelectionToText(result) {
-    return result;
+    return result.preview;
   }
 
   renderHeader() {
     let name;
     if (this.state.results && this.state.results.length) {
+      const current = this.state.results[this.state.selectedIndex];
       name = (
         <span>
           &nbsp;-&nbsp;
-          <em>{filename(this.state.results[this.state.selectedIndex])}</em>
+          <em>{current.title || filename(current.preview)}</em>
         </span>
       );
     }
     return (
       <div>
-        {this.props.command.title} results matching <strong>{this.props.query}</strong>
+        {this.props.command.title} results matching{" "}
+        <strong>{this.props.query}</strong>
         {name}
       </div>
     );
@@ -63,18 +65,15 @@ class SlashCommandResults extends TypeaheadResults {
     return (
       <div
         style={{
-          backgroundImage: `url(${result})`
+          backgroundImage: `url(${result.preview})`,
         }}
         {...props}
-        title={getName(result)}
-      ></div>
+        title={result.title || getName(result.preview)}
+      />
     );
   }
 }
 
-const container = Container.create(
-  SlashCommandResults,
-  { withProps: true }
-);
+const container = Container.create(SlashCommandResults, { withProps: true });
 
 export default container;

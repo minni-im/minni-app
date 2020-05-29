@@ -109,9 +109,7 @@ export default class TypeaheadResults extends React.Component {
           onMouseEnter: () => this.setState({ selectedIndex: index }),
         });
       suggestions = (
-        <div className="suggestions-list">
-          {results.map(suggestionMapper)}
-        </div>
+        <div className="suggestions-list">{results.map(suggestionMapper)}</div>
       );
     } else {
       suggestions = (

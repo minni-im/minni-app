@@ -1,13 +1,13 @@
-version: '2'
+version: "3"
 services:
   db:
-    image: couchdb:latest
+    image: couchdb:1.6.1
     restart: always
     ports:
       # exposing the port to access fauxton
       - 5984:5984
     volumes:
-      - ./logs/couchdb:/usr/local/var/log/couchdb
+      # - ./etc/couchdb:/opt/couchdb/data # 2.3.1
       - ./etc/couchdb:/usr/local/var/lib/couchdb
 
   cache:
@@ -19,12 +19,15 @@ services:
   minni:
     image: node:latest
     restart: unless-stopped
+    depends_on:
+      - db
+      - cache
     links:
       - db:couchdb
       - cache:redis
     volumes:
       - .:/usr/local/var/www
-    command: node /usr/local/var/www/index.js
+    command: node /usr/local/var/www/dist/lib/
     environment:
       - DOCKER=true
 
@@ -33,6 +36,8 @@ services:
     restart: always
     ports:
       - 80:80
+    depends_on:
+      - minni
     links:
       - minni
     volumes:

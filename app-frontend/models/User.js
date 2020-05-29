@@ -16,14 +16,19 @@ const UserRecord = Immutable.Record({
 
 export default class User extends UserRecord {
   get initials() {
-    if (this.firstname.length && this.lastname.length) {
+    if (
+      this.firstname &&
+      this.firstname.length &&
+      this.lastname &&
+      this.lastname.length
+    ) {
       return (this.firstname[0] + this.lastname[0]).toUpperCase();
     }
     return this.nickname[0].toUpperCase();
   }
 
   toString() {
-    const name = `${this.firstname}${this.lastname ? ` ${this.lastname}` : ""}`.trim();
+    const name = `${this.firstname || ""}${this.lastname || ""}`.trim();
     return name.length > 0 ? name : this.nickname;
   }
 }

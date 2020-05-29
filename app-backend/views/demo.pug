@@ -1,0 +1,20 @@
+extends auth
+
+block form-title
+  h1 Welcome to Minni
+
+block providers
+  p
+    | This is demo version.
+    | <br>
+    | All information stored in the database for this demo are erased every day at night.
+    | <br>
+    | Choose a username, click the button and enjoy!
+
+block form
+  .email
+    form(method="POST", action="/login")
+      p
+        input(type="text", placeholder="Pick a username", name="username")
+      p
+        button.button-highlight.button-big Join the party

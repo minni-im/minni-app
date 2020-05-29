@@ -30,9 +30,7 @@ class SlashCommandStore extends MapStore {
   }
 
   getResults(command, query) {
-    return this.getState()
-      .get(command, Immutable.Map())
-      .get(query, []);
+    return this.getState().get(command, Immutable.Map()).get(query, []);
   }
 }
 

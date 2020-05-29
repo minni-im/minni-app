@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import yaml from "js-yaml";
-import { isPlainObject } from "lodash";
+import isPlainObject from "lodash.isplainobject";
 
 function normalizeEnvValue(value, isArray) {
   value = value.trim();
@@ -24,22 +24,24 @@ const config = {};
 
 [
   // loadDefaultSettings
-  context => {
-    const file = fs.readFileSync(path.join(__dirname, "..", "default.yml"), "utf8");
+  (context) => {
+    const file = fs.readFileSync(path.join(__dirname, "..", "..", "default.yml"), "utf8");
     Object.assign(context, yaml.safeLoad(file));
   },
 
   // loadSettings
-  context => {
-    const file = fs.readFileSync(path.join(__dirname, "..", "settings.yml"), "utf8");
+  (context) => {
+    const file = fs.readFileSync(path.join(__dirname, "..", "..", "settings.yml"), "utf8");
     Object.assign(context, yaml.safeLoad(file));
   },
 
   // mergeEnvSettings
-  context => {
+  (context) => {
     const merge = (baseKey, object) => {
       for (const key in object) {
-        if (!object.hasOwnProperty(key)) { continue; }
+        if (!object.hasOwnProperty(key)) {
+          continue;
+        }
         const value = object[key];
         const envKey = `${baseKey}_${key.replace(/([A-Z]+)/g, "_$1").toUpperCase()}`;
         if (isPlainObject(value)) {
@@ -53,7 +55,7 @@ const config = {};
       }
     };
     merge("MINNI", context);
-  }
+  },
 ].forEach(step => step(config));
 
 export default config;
