@@ -28,7 +28,7 @@ auth:
     scope: user
     callback: /auth/github/callback
 
-login-backgrounds:
+login_backgrounds:
   - /images/login/her.jpg
   - /images/login/bokeh.jpg
   - /images/login/tags.jpg

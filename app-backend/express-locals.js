@@ -2,7 +2,7 @@ import path from "path";
 import moment from "moment";
 import config from "./config";
 
-const backgrounds = config["login-backgrounds"];
+const backgrounds = config.login_backgrounds;
 
 const START_TS = Date.now();
 
