@@ -6,7 +6,10 @@ import isPlainObject from "lodash.isplainobject";
 function normalizeEnvValue(value, isArray) {
   value = value.trim();
   if (isArray) {
-    return value.split(",").map((item) => normalizeEnvValue(item));
+    return value
+      .split(",")
+      .filter(Boolean)
+      .map((item) => normalizeEnvValue(item));
   } else if (/^(y|yes|true|on)$/i.test(value)) {
     // YAML compatible boolean values
     return true;
