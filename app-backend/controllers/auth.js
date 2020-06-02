@@ -229,10 +229,10 @@ export default (app) => {
               email: getRandomEmail(),
             });
 
-            return user.save().then(() => {
-              account.usersId.push(user.id);
+            return user.save().then((newUser) => {
+              account.usersId.push(newUser.id);
               return account.save().then(() => {
-                req.login(user, () => {
+                req.login(newUser, () => {
                   res.redirect("/chat/demo/messages/central-plaza");
                 });
               });
@@ -241,7 +241,13 @@ export default (app) => {
           .catch((err) => {
             console.error(err);
             res.flash("error", "Sorry, we could not process your request");
-            res.render("demo");
+            res.render("demo", {
+              viewname() {
+                return "login";
+              },
+              title: "",
+              providers: [],
+            });
           });
       });
   }
