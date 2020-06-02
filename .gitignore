@@ -20,5 +20,6 @@ ehthumbs.db
 Thumbs.db
 
 etc/nginx.conf
+etc/nginx-demo.conf
 *.couch
 !etc/minni-demo.couch
