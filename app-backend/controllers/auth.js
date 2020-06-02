@@ -239,8 +239,9 @@ export default (app) => {
             });
           })
           .catch((err) => {
+            console.error(err);
             res.flash("error", "Sorry, we could not process your request");
-            res.render("login");
+            res.render("demo");
           });
       });
   }
