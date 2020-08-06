@@ -73,7 +73,9 @@ export default class Composer extends React.Component {
 
   componentDidMount() {
     this.lineHeight = parseInt(
-      window.getComputedStyle(this.textarea, null).getPropertyValue("line-height"),
+      window
+        .getComputedStyle(this.textarea, null)
+        .getPropertyValue("line-height"),
       10
     );
     this.computeTextAreaHeight(1);
@@ -86,7 +88,10 @@ export default class Composer extends React.Component {
 
   componentWillUnmount() {
     if (this.props.persist) {
-      ComposerActionCreators.saveCurrentText(this.props.room.id, this.textarea.value.trim());
+      ComposerActionCreators.saveCurrentText(
+        this.props.room.id,
+        this.textarea.value.trim()
+      );
     }
   }
 
@@ -100,7 +105,10 @@ export default class Composer extends React.Component {
 
   focus() {
     this.textarea.focus();
-    if (this.textarea.value.length) {
+    if (
+      document.activeElement !== this.textarea &&
+      this.textarea.value.length
+    ) {
       this.moveCursorAtEnd();
     }
   }
@@ -134,7 +142,8 @@ export default class Composer extends React.Component {
     let value;
     const shiftEnterActive = UserSettingsStore.isShiftEnterActive();
     const shouldSend =
-      (!shiftEnterActive && !event.shiftKey) || (shiftEnterActive && event.shiftKey);
+      (!shiftEnterActive && !event.shiftKey) ||
+      (shiftEnterActive && event.shiftKey);
     switch (event.which) {
       case KEYCODES.ENTER:
         value = this.textarea.value;
@@ -210,16 +219,20 @@ export default class Composer extends React.Component {
     let prefix;
     let type = null;
 
-    const TYPEAHEAD_PLUGINS = PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_TYPEAHEAD);
-    const COMMAND_PLUGINS = PluginsStore.getPlugins(PLUGIN_TYPES.COMPOSER_COMMAND);
-    const COMMAND_RE_TEXT = `^/(${COMMAND_PLUGINS.filter(c => c.typeahead)
-      .map(c => c.command)
+    const TYPEAHEAD_PLUGINS = PluginsStore.getPlugins(
+      PLUGIN_TYPES.COMPOSER_TYPEAHEAD
+    );
+    const COMMAND_PLUGINS = PluginsStore.getPlugins(
+      PLUGIN_TYPES.COMPOSER_COMMAND
+    );
+    const COMMAND_RE_TEXT = `^/(${COMMAND_PLUGINS.filter((c) => c.typeahead)
+      .map((c) => c.command)
       .join("|")})\\s(.+)`;
     const COMMAND_RE = new RegExp(COMMAND_RE_TEXT, "i");
 
     const PREFIX_RE = new RegExp(
-      TYPEAHEAD_PLUGINS.filter(plugin => plugin.PREFIX || plugin.SENTINEL)
-        .map(plugin => plugin.PREFIX || plugin.SENTINEL)
+      TYPEAHEAD_PLUGINS.filter((plugin) => plugin.PREFIX || plugin.SENTINEL)
+        .map((plugin) => plugin.PREFIX || plugin.SENTINEL)
         .join("|")
     );
 
@@ -227,7 +240,10 @@ export default class Composer extends React.Component {
     if (commandMatch) {
       const integration = commandMatch[1];
       const query = commandMatch[2];
-      if (this.state.integration === integration && this.state.query === query) {
+      if (
+        this.state.integration === integration &&
+        this.state.query === query
+      ) {
         return;
       }
       SlashCommandSearch(integration, query);
@@ -235,7 +251,7 @@ export default class Composer extends React.Component {
         type: "commandresults",
         integration,
         query,
-        command: COMMAND_PLUGINS.filter(c => c.command === integration)[0],
+        command: COMMAND_PLUGINS.filter((c) => c.command === integration)[0],
         results: null,
         start: 0,
         end: value.length,
@@ -248,8 +264,11 @@ export default class Composer extends React.Component {
         if (start === 0 || WHITESPACE_RE.test(value[start - 1])) {
           prefix = value.slice(start, end);
           if (this.state.prefix !== prefix) {
-            const regex = new RegExp(`^${RegexUtils.escape(prefix.slice(1))}`, "i");
-            const test = v => regex.test(v);
+            const regex = new RegExp(
+              `^${RegexUtils.escape(prefix.slice(1))}`,
+              "i"
+            );
+            const test = (v) => regex.test(v);
 
             for (const { name, SENTINEL, reduce } of TYPEAHEAD_PLUGINS) {
               if (SENTINEL && prefix[0] === SENTINEL) {
@@ -268,7 +287,15 @@ export default class Composer extends React.Component {
         break;
       }
     } while (--start >= 0);
-    this.setState({ type, results, prefix, start, end, integration: null, command: null });
+    this.setState({
+      type,
+      results,
+      prefix,
+      start,
+      end,
+      integration: null,
+      command: null,
+    });
   }
 
   performAutocomplete(text, trailingSpace = true) {
@@ -298,7 +325,8 @@ export default class Composer extends React.Component {
     }, {});
 
     let autocomplete;
-    const autocompleteComponent = this.state.focused && PLUGINS_COMPONENTS[this.state.type];
+    const autocompleteComponent =
+      this.state.focused && PLUGINS_COMPONENTS[this.state.type];
 
     if (autocompleteComponent) {
       autocomplete = React.createElement(autocompleteComponent, {
@@ -325,7 +353,11 @@ export default class Composer extends React.Component {
           autoCorrect="off"
           autoComplete="off"
           spellCheck="true"
-          placeholder={this.props.disabled ? "Trying to reconnect..." : "Type your message here"}
+          placeholder={
+            this.props.disabled
+              ? "Trying to reconnect..."
+              : "Type your message here"
+          }
           rows="1"
           onFocus={this.handleTextareaFocus}
           onBlur={this.handleTextareaBlur}
