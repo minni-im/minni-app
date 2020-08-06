@@ -1,3 +1,3 @@
 # Minni Chat
 
-> Anywhere should be the place to be working from
+> Your memories in your cloud
