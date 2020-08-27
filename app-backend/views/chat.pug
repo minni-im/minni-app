@@ -3,6 +3,7 @@ extends layout
 block styles
   link(rel="stylesheet", href=`/css/hljs-default.min.css?${START_TS}`)
   link(rel="stylesheet", href=`/css/chat.css?${START_TS}`)
+  link(rel="stylesheet", href=`/css/mobile.css?${START_TS}`, media=`only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3)`)
 
 block header_scripts
   script(defer="defer", src="/socket.io/socket.io.js")
