@@ -30,6 +30,11 @@ services:
     command: node /usr/local/var/www/dist/lib/
     environment:
       - DOCKER=true
+      # - MINNI_NAME=Minni Demo
+      # - MINNI_DEMO=true
+      # - MINNI_SESSION_KEY=minni-demo-session-id
+      # - MINNI_COUCHDB_NAME=minni-demo
+      # - MINNI_LOGIN_BACKGROUNDS=/images/login/blueprint.jpg,
 
   nginx:
     image: nginx:latest
