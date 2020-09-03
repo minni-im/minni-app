@@ -1,14 +1,14 @@
 // The micro clearfix http://nicolasgallagher.com/micro-clearfix-hack/
 .clearfix() {
-  *zoom:1;
+  *zoom: 1;
 
   &:before,
   &:after {
-      content:"";
-      display:table;
+    content: "";
+    display: table;
   }
   &:after {
-      clear:both;
+    clear: both;
   }
 }
 
@@ -100,13 +100,14 @@
 
     .header-info {
       padding: 0 10px;
-      h2, h3 {
+      h2,
+      h3 {
         .text-overflow;
         .icon {
           cursor: pointer;
           margin-left: 5px;
           svg {
-            .square(1em);
+            .square(0.8em);
           }
 
           &.icon--favorite {
@@ -128,6 +129,11 @@
         line-height: 1.2em;
         font-weight: 400;
         margin: 6px 0 0;
+
+        .mobile-toggle {
+          .square(16px);
+          margin-right: 5px;
+        }
       }
 
       h3 {
@@ -136,7 +142,6 @@
         font-weight: 300;
         margin: -2px 0 5px;
       }
-
     }
 
     .actions {
@@ -147,7 +152,8 @@
   .panel() {
     overflow-y: auto;
     overflow-x: hidden;
-    h2, h3 {
+    h2,
+    h3 {
       color: @electric-blue;
       font-weight: 300;
     }
@@ -158,7 +164,6 @@
     }
   }
 }
-
 
 #user {
   .status-icon(@background-color: @background-light, @with-status: true) {
@@ -174,12 +179,11 @@
       bottom: -(@status-icon-border-width);
       right: -(@status-icon-border-width);
 
-      transition:
-        background-color 250ms ease,
-        border-color 250ms ease,
+      transition: background-color 250ms ease, border-color 250ms ease,
         min-width 250ms ease;
 
-      &[data-status="-1"], &[data-status="0"] {
+      &[data-status="-1"],
+      &[data-status="0"] {
         background-color: @status-color-offline;
       }
 
@@ -190,7 +194,8 @@
       // IDLE
       &[data-status="3"] {
         background-color: @status-color-idle;
-        &:before, &:after {
+        &:before,
+        &:after {
           position: absolute;
           content: "";
           background-color: fade(@white, 60%);

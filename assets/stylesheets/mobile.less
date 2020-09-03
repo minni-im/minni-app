@@ -62,10 +62,51 @@ main.lobby {
   display: none;
 }
 
-#minni.show-menu {
+#minni.menu-left {
+  .minni-app > header {
+    h1 {
+      margin-right: 12vw;
+    }
+  }
   main {
     transform: translate(88vw, 0) scale(0.95);
     overflow: hidden;
     border-radius: 4px;
   }
 }
+
+// #minni.menu-right {
+//   .minni-app > header {
+//     visibility: hidden;
+//   }
+
+//   main {
+//     transform: translate(-88vw, 0) scale(0.95);
+//     overflow: unset;
+
+//     > section {
+//       overflow: hidden;
+//       border-radius: 5px;
+//     }
+
+//     .room--users-list {
+//       position: absolute;
+//       top: 0;
+//       right: -4vw;
+//       bottom: 0;
+//       left: 12vw;
+//       transform: translate(88vw, 0);
+//       z-index: 1000;
+//       height: 100%;
+//       display: block;
+//       margin-left: 1rem;
+//       padding: 1rem;
+//       box-sizing: border-box;
+//       border-radius: 5px;
+
+//       .avatar::after {
+//         content: attr(data-tooltip);
+//       }
+//     }
+//   }
+// }

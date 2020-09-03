@@ -49,7 +49,8 @@
         #user.status-icon(@dark-blue);
       }
 
-      .user-name, .user-status {
+      .user-name,
+      .user-status {
         line-height: 1.2em;
       }
       .user-name {
@@ -67,8 +68,9 @@
       align-self: center;
       margin-left: 5px;
       opacity: 0.5;
-      transition: opacity .5s;
+      transition: opacity 0.5s;
       svg {
+        .square(30px);
         fill: @white;
       }
     }
@@ -83,7 +85,7 @@
       }
 
       .user-settings {
-        opacity: .75;
+        opacity: 0.75;
         &:hover {
           opacity: 1;
         }
@@ -102,7 +104,6 @@
         margin: 0 10px 0 2px;
       }
     }
-
   }
 }
 
@@ -120,8 +121,9 @@
 
     .icon {
       .square(28px);
+      text-align: center;
       svg {
-        .square(28px);
+        .square(18px);
         fill: @gray-light;
         transition: fill 250ms;
       }
@@ -169,7 +171,9 @@
       .quit {
         transition-delay: 750ms;
       }
-      .unread { display: none }
+      .unread {
+        display: none;
+      }
     }
   }
 
@@ -177,7 +181,8 @@
     opacity: 1;
   }
 
-  .lobby, .separator {
+  .lobby,
+  .separator {
     margin-bottom: 5px;
     padding-top: 0;
     padding-bottom: 0;
@@ -187,6 +192,9 @@
     border-left: 2px solid transparent;
     .icon {
       margin-left: -2px;
+      svg {
+        .square(28px);
+      }
     }
     .name span {
       font-weight: 300;
@@ -195,7 +203,7 @@
   }
 
   .separator {
-    letter-spacing: .1em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: @gray-light;
     margin: 10px 5px 0;
@@ -212,12 +220,13 @@
   }
 }
 
-
 header.welcome {
   justify-content: center;
   text-align: center;
 
-  > h2, div, p {
+  > h2,
+  div,
+  p {
     margin-left: 10px;
     margin-right: 10px;
   }
