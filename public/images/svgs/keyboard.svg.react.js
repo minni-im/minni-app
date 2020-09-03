@@ -1,7 +1,7 @@
 import React from "react";
 export default class SVG extends React.Component {
   render() {
-    return <svg xmlns={this.props.xmlns ? this.props.xmlns : "http://www.w3.org/2000/svg"} viewBox={this.props.viewBox ? this.props.viewBox : "0 0 512 512"} {...this.props}><path d="M50 147.336v217.328h412V147.336H50zm273.081 40.842h39.517v33.296h-39.517v-33.296zm10.568 51.673v33.297h-39.515v-33.297h39.515zm-68.461-51.673h39.515v33.296h-39.515v-33.296zm10.569 51.673v33.297h-39.515v-33.297h39.515zm-68.461-51.673h39.515v33.296h-39.515v-33.296zm10.568 51.673v33.297h-39.516v-33.297h39.516zm-68.462-51.673h39.516v33.296h-39.516v-33.296zm-57.892 0h39.515v33.296H91.51v-33.296zm0 51.673h68.461v33.297H91.51v-33.297zm260.517 84.971H159.971v-33.297h192.057v33.297zm68.463-51.675h-68.463V239.85h68.463v33.297zm0-51.673h-39.516v-33.296h39.516v33.296z" /></svg>;
+    return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" {...this.props}><path d="M0 5v14h24V5H0zm16 3h2v2h-2V8zm-3 0h2v2h-2V8zm3 3v2h-2v-2h2zm-6-3h2v2h-2V8zm3 3v2h-2v-2h2zM7 8h2v2H7V8zm3 3v2H8v-2h2zM3 8h3v2H3V8zm0 3h4v2H3v-2zm14 5H7v-2h10v2zm4-3h-4v-2h4v2zm0-3h-2V8h2v2z" /></svg>;
   }
 
 }

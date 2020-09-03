@@ -1,7 +1,7 @@
 import React from "react";
 export default class SVG extends React.Component {
   render() {
-    return <svg xmlns={this.props.xmlns ? this.props.xmlns : "http://www.w3.org/2000/svg"} width={this.props.width ? this.props.width : "512"} height={this.props.height ? this.props.height : "512"} viewBox={this.props.viewBox ? this.props.viewBox : "0 0 512 512"} {...this.props}><path d="M438.393 374.595L319.757 255.977l118.621-118.629-63.783-63.741-118.6 118.618-118.62-118.603-63.768 63.73 118.639 118.631L73.622 374.625l63.73 63.768 118.65-118.659 118.65 118.644z" /></svg>;
+    return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" {...this.props}><path d="M24 20.188l-8.315-8.209 8.2-8.282L20.188 0l-8.212 8.318L3.666.115 0 3.781l8.321 8.24-8.206 8.313L3.781 24l8.237-8.318 8.285 8.203z" /></svg>;
   }
 
 }
