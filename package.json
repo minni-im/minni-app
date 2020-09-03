@@ -100,6 +100,7 @@
     "prop-types": "15.6.0",
     "pug": "2.0.0-rc.4",
     "react": "16.0.0",
+    "react-device-detect": "^1.13.1",
     "react-document-title": "^2.0.2",
     "react-dom": "16.0.0",
     "react-intersection-observer": "1.1.1",

@@ -2,13 +2,20 @@ import React from "react";
 import PropTypes from "prop-types";
 import { NavLink, Link } from "react-router-dom";
 import classnames from "classnames";
+import { isMobile } from "react-device-detect";
 
 import * as RoomActionCreators from "../actions/RoomActionCreators";
 
 import TimeAgo from "./generic/TimeAgo.react";
 import RoomSettingsIcon from "./RoomSettingsIcon.react";
 
-import { FavoriteIcon, RoomIcons, SettingsIcon, GroupIcon } from "../utils/IconsUtils";
+import {
+  MenuIcon,
+  FavoriteIcon,
+  RoomIcons,
+  SettingsIcon,
+  GroupIcon,
+} from "../utils/IconsUtils";
 import { parseTitleWithoutLinks } from "../utils/MarkupUtils";
 
 import UserStore from "../stores/UserStore";
@@ -51,36 +58,47 @@ class Room extends React.PureComponent {
         title={title}
       >
         <div className="flex-horizontal">
-          <div className="room--name">
-            {parseTitleWithoutLinks(room.name)}
-          </div>
-          {room.private &&
+          <div className="room--name">{parseTitleWithoutLinks(room.name)}</div>
+          {room.private && (
             <div className="room--icons-meta flex-horizontal">
               <RoomIcons.RoomPrivateIcon className="icon" />
               <GroupIcon />
-              <div className="room--teammates">
-                {room.usersId.length + 1}
-              </div>
-            </div>}
+              <div className="room--teammates">{room.usersId.length + 1}</div>
+            </div>
+          )}
           <div className="room--topic flex-spacer">
             {!room.private && parseTitleWithoutLinks(room.topic)}
           </div>
           <RoomSettingsIcon className="room--icon" room={room} />
-          <span className="room--icon icon--favorite" onClick={this.onRoomStarClick}>
+          <span
+            className="room--icon icon--favorite"
+            onClick={this.onRoomStarClick}
+          >
             <FavoriteIcon />
           </span>
         </div>
-        {lastMsgUser &&
+        {lastMsgUser && (
           <div className="room--meta flex-horizontal">
             <div className="room--last-update">
               Last updated{" "}
-              <TimeAgo className="room--last-update-ts" datetime={room.lastMsgTimestamp} /> by{" "}
-              <span className="room--last-update-user">{lastMsgUser.fullname}</span>
+              <TimeAgo
+                className="room--last-update-ts"
+                datetime={room.lastMsgTimestamp}
+              />{" "}
+              by{" "}
+              <span className="room--last-update-user">
+                {lastMsgUser.fullname}
+              </span>
             </div>
-          </div>}
+          </div>
+        )}
       </Link>
     );
   }
+}
+
+function handleMobileDrawerToggle() {
+  document.getElementById("minni").classList.toggle("menu-left");
 }
 
 export default class Lobby extends React.Component {
@@ -114,10 +132,16 @@ export default class Lobby extends React.Component {
       <section className="flex-vertical flex-spacer">
         <header className="flex-horizontal">
           <div className="header-info flex-spacer">
-            <h2>Lobby</h2>
-            <h3>
-              {account.description}
-            </h3>
+            <h2>
+              {isMobile && (
+                <MenuIcon
+                  className="mobile-toggle"
+                  onClick={handleMobileDrawerToggle}
+                />
+              )}
+              Lobby
+            </h2>
+            <h3>{account.description}</h3>
           </div>
           {/* <div className="actions">
             {settingsIcon}
@@ -127,22 +151,23 @@ export default class Lobby extends React.Component {
           <header className="rooms--header flex-horizontal">
             <h2 className="flex-spacer">Rooms</h2>
             <div className="actions">
-              <Link to={`/chat/${account.name}/create`} className="button button-primary">
+              <Link
+                to={`/chat/${account.name}/create`}
+                className="button button-primary"
+              >
                 Create a room
               </Link>
             </div>
           </header>
           <div className="rooms--list">
-            {rooms
-              .toArray()
-              .map(room =>
-                (<Room
-                  key={room.id}
-                  room={room}
-                  accountName={account.name}
-                  viewer={this.props.viewer}
-                />)
-              )}
+            {rooms.toArray().map((room) => (
+              <Room
+                key={room.id}
+                room={room}
+                accountName={account.name}
+                viewer={this.props.viewer}
+              />
+            ))}
           </div>
         </section>
       </section>

@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 import { withRouter } from "react-router-dom";
+import { isMobile } from "react-device-detect";
 
 import * as RoomActionCreators from "../actions/RoomActionCreators";
 
@@ -14,7 +15,7 @@ import FormattingHints from "./FormatingHints.react";
 
 import RoomModel from "../models/Room";
 
-import { FavoriteIcon, CloseIcon } from "../utils/IconsUtils";
+import { MenuIcon, FavoriteIcon, CloseIcon } from "../utils/IconsUtils";
 import { parseTitle } from "../utils/MarkupUtils";
 
 import ComposerStore from "../stores/ComposerStore";
@@ -83,11 +84,22 @@ class Room extends React.PureComponent {
   handleRoomLeave() {
     const { room } = this.props;
     /* eslint-disable */
-    let [app, accountSlug, messages, roomSlugs] = document.location.pathname.slice(1).split("/");
+    let [
+      app,
+      accountSlug,
+      messages,
+      roomSlugs,
+    ] = document.location.pathname.slice(1).split("/");
     /* eslint-enable  */
     roomSlugs = roomSlugs.split(",");
     roomSlugs.splice(roomSlugs.indexOf(room.slug), 1);
-    this.props.history.push(`/chat/${accountSlug}/messages/${roomSlugs.join(",")}`);
+    this.props.history.push(
+      `/chat/${accountSlug}/messages/${roomSlugs.join(",")}`
+    );
+  }
+
+  handleMobileDrawerToggle() {
+    document.getElementById("minni").classList.toggle("menu-left");
   }
 
   render() {
@@ -96,28 +108,40 @@ class Room extends React.PureComponent {
     const defaultValue = ComposerStore.getSavedText(room.id);
     return (
       <section
-        className={classnames("flex-vertical", "flex-spacer", { "room--favorite": room.starred })}
+        className={classnames("flex-vertical", "flex-spacer", {
+          "room--favorite": room.starred,
+        })}
       >
         <header className="flex-horizontal">
           <div className="header-info flex-spacer">
             <h2>
-              <span>
-                {parseTitle(name)}
-              </span>
-              <span className="icon icon--favorite" onClick={this.handleRoomFavoriteToggle}>
+              {isMobile && (
+                <MenuIcon
+                  className="mobile-toggle"
+                  onClick={this.handleMobileDrawerToggle}
+                />
+              )}
+              <span>{parseTitle(name)}</span>
+              <span
+                className="icon icon--favorite"
+                onClick={this.handleRoomFavoriteToggle}
+              >
                 <FavoriteIcon />
               </span>
             </h2>
-            <h3>
-              {parseTitle(topic)}
-            </h3>
+            <h3>{parseTitle(topic)}</h3>
           </div>
           <div className="actions">
             <RoomSettingsIcon room={room} />
-            {multiRooms &&
-              <span className="icon" onClick={this.handleRoomLeave} title="Close this room panel">
+            {multiRooms && (
+              <span
+                className="icon"
+                onClick={this.handleRoomLeave}
+                title="Close this room panel"
+              >
                 <CloseIcon />
-              </span>}
+              </span>
+            )}
           </div>
         </header>
         {room.usersList ? <RoomUsersList room={room} /> : null}

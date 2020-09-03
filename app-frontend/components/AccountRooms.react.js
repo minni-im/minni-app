@@ -23,8 +23,15 @@ import UnreadMessageStore from "../stores/UnreadMessageStore";
 
 import { isOSX } from "../utils/PlatformUtils";
 import { RoomIcons } from "../utils/IconsUtils";
+import { isMobile } from "react-device-detect";
 
 const emptyMap = Immutable.Map();
+
+function clearMobileDrawer() {
+  if (isMobile) {
+    document.getElementById("minni").classList.remove("menu-left");
+  }
+}
 
 class Room extends Component {
   static propTypes = {
@@ -44,7 +51,9 @@ class Room extends Component {
   }
 
   onClick(event, slug) {
-    const multiRoom = isOSX ? event.metaKey && event.shiftKey : event.ctrlKey && event.shiftKey;
+    const multiRoom = isOSX
+      ? event.metaKey && event.shiftKey
+      : event.ctrlKey && event.shiftKey;
     if (multiRoom) {
       event.preventDefault();
       const slugs = SelectedRoomStore.getRooms().add(slug).toArray();
@@ -74,19 +83,27 @@ class Room extends Component {
           "room--selected": selected,
           "room--unread": unreadCount > 0,
         })}
-        onClick={event => this.onClick(event, slug)}
+        onClick={(event) => this.onClick(event, slug)}
         to={`/chat/${accountSlug}/messages/${slug}`}
       >
         <span className="icon">
-          {room.private ? <RoomIcons.RoomPrivateIcon /> : <RoomIcons.RoomPublicIcon />}
+          {room.private ? (
+            <RoomIcons.RoomPrivateIcon />
+          ) : (
+            <RoomIcons.RoomPublicIcon />
+          )}
         </span>
         <span className="name">{name}</span>
-        {unreadCount > 0 ? <span className="unread">{unreadCount}</span> : false}
+        {unreadCount > 0 ? (
+          <span className="unread">{unreadCount}</span>
+        ) : (
+          false
+        )}
         <span
           rel="button"
           className="quit"
           title="Leave this room"
-          onClick={event => this.onLeaveClick(event, accountSlug)}
+          onClick={(event) => this.onLeaveClick(event, accountSlug)}
         >
           ×
         </span>
@@ -99,7 +116,12 @@ const RoomLink = withRouter(Room);
 
 class AccountRooms extends Component {
   static getStores() {
-    return [AccountRoomStore, ConnectedRoomStore, SelectedRoomStore, UnreadMessageStore];
+    return [
+      AccountRoomStore,
+      ConnectedRoomStore,
+      SelectedRoomStore,
+      UnreadMessageStore,
+    ];
   }
 
   static calculateState(prevState, { account }) {
@@ -136,39 +158,44 @@ class AccountRooms extends Component {
     const { rooms, selectedRooms } = this.state;
     const { account, withAccountName } = this.props;
 
-    const roomList = rooms.groupBy(room => room.starred);
+    const roomList = rooms.groupBy((room) => room.starred);
     const roomListStarred = roomList
       .get(true, emptyMap)
-      .sortBy(room => room.name)
-      .map(room =>
-        (<RoomLink
+      .sortBy((room) => room.name)
+      .map((room) => (
+        <RoomLink
           key={room.id}
           room={room}
           selected={selectedRooms.has(room.slug)}
           unreadCount={UnreadMessageStore.getUnreadCount(account.id, room.id)}
-          onLeave={event => this.onRoomLeaveClick(event, room.slug)}
-        />)
-      )
+          onLeave={(event) => this.onRoomLeaveClick(event, room.slug)}
+        />
+      ))
       .toArray();
     const roomListStandard = roomList
       .get(false, emptyMap)
-      .sortBy(room => room.name)
-      .map(room =>
-        (<RoomLink
+      .sortBy((room) => room.name)
+      .map((room) => (
+        <RoomLink
           key={room.id}
           room={room}
           selected={selectedRooms.has(room.slug)}
           unreadCount={UnreadMessageStore.getUnreadCount(account.id, room.id)}
-          onLeave={event => this.onRoomLeaveClick(event, room.slug)}
-        />)
-      )
+          onLeave={(event) => this.onRoomLeaveClick(event, room.slug)}
+        />
+      ))
       .toArray();
 
     return (
-      <nav className="flex-vertical flex-spacer">
-        <AccountLobbyLink className="lobby flex-horizontal" withAccountName={withAccountName} />
+      <nav className="flex-vertical flex-spacer" onClick={clearMobileDrawer}>
+        <AccountLobbyLink
+          className="lobby flex-horizontal"
+          withAccountName={withAccountName}
+        />
         {rooms.size === 0 && <a className="separator">No connected rooms</a>}
-        {roomListStarred.length > 0 && <a className="separator">Starred Rooms</a>}
+        {roomListStarred.length > 0 && (
+          <a className="separator">Starred Rooms</a>
+        )}
         {roomListStarred}
         {roomListStandard.length > 0 && <a className="separator">Rooms</a>}
         {roomListStandard}
