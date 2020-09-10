@@ -179,8 +179,13 @@ export default class UserSettingsDialog extends React.Component {
         <p>
           One-click Login is not yet configurable in the chat application.
           {!demo && [
-            "You can modify it on your profile page",
-            <a href="/profile" rel="noopener noreferrer" target="_blank">
+            "You can modify it on your profile page ",
+            <a
+              key="open-profile"
+              href="/profile"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               here
             </a>,
           ]}
