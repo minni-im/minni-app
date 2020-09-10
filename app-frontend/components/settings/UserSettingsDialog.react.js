@@ -180,7 +180,7 @@ export default class UserSettingsDialog extends React.Component {
           One-click Login is not yet configurable in the chat application.
           {!demo && [
             "You can modify it on your profile page",
-            <a href="/profile" target="_blank">
+            <a href="/profile" rel="noopener noreferrer" target="_blank">
               here
             </a>,
           ]}
@@ -272,7 +272,11 @@ export default class UserSettingsDialog extends React.Component {
             <Avatar user={this.props.user} size={Avatar.SIZE.XLARGE} />
             <p>
               Avatars are provided by{" "}
-              <a href="https://gravatar.com" target="_blank">
+              <a
+                href="https://gravatar.com"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 gravatar
               </a>{" "}
               services. You can change yours on their website.

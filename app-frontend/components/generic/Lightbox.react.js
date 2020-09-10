@@ -38,10 +38,12 @@ class Lightbox extends React.Component {
 
   render() {
     const maxWidth = Math.round(
-      Math.max(document.documentElement.clientWidth, window.innerWidth || 0) * 0.8
+      Math.max(document.documentElement.clientWidth, window.innerWidth || 0) *
+        0.8
     );
     const maxHeight = Math.round(
-      Math.max(document.documentElement.clientHeight, window.innerHeight || 0) * 0.8
+      Math.max(document.documentElement.clientHeight, window.innerHeight || 0) *
+        0.8
     );
 
     let { width, height } = this.state;
@@ -61,23 +63,27 @@ class Lightbox extends React.Component {
 
     return (
       <RootChild>
-        {this.state.isVisible
-          ? <div className="lightbox" onClick={this.onClick}>
+        {this.state.isVisible ? (
+          <div className="lightbox" onClick={this.onClick}>
             <div className="lightbox-content">
-              <img style={{ height, width }} src={this.state.image} alt={this.state.image} />
+              <img
+                style={{ height, width }}
+                src={this.state.image}
+                alt={this.state.image}
+              />
               <a
                 className="lightbox--open-original"
                 href={this.state.image}
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Open original in a new tab"
-                onClick={event => event.stopPropagation()}
+                onClick={(event) => event.stopPropagation()}
               >
                 {this.state.image}
               </a>
             </div>
           </div>
-          : null}
+        ) : null}
       </RootChild>
     );
   }

@@ -8,17 +8,19 @@ const REGEXP_TWITTER = /^https?:\/\/(?:www\.|mobile\.)?twitter\.com\/(?:#!\/)?([
 const TWITTER_API_AUTH_URL = "https://api.twitter.com/oauth2/token";
 
 function getUrlLink(url) {
-  return `<a href="${url.url}" target="_blank">${url.display_url}</a>`;
+  return `<a href="${url.url}" rel="noopener noreferrer" target="_blank">${url.display_url}</a>`;
 }
 
 function getUserLink(user) {
   const link = `https://twitter.com/${user.screen_name}`;
-  return `<a href="${link}" target="_blank">@${user.screen_name}</a>`;
+  return `<a href="${link}" rel="noopener noreferrer" target="_blank">@${user.screen_name}</a>`;
 }
 
 function getHashLink(tag) {
-  const link = `https://twitter.com/hashtag/${encodeURIComponent(tag.text)}?src=hash`;
-  return `<a href="${link}" target="_blank">#${tag.text}</a>`;
+  const link = `https://twitter.com/hashtag/${encodeURIComponent(
+    tag.text
+  )}?src=hash`;
+  return `<a href="${link}" rel="noopener noreferrer" target="_blank">#${tag.text}</a>`;
 }
 
 function transformText(text, entities) {
@@ -34,7 +36,10 @@ function transformText(text, entities) {
   if (entities.user_mentions) {
     for (let user in entities.user_mentions) {
       user = entities.user_mentions[user];
-      text = text.replace(new RegExp(`@${user.screen_name}`, "ig"), getUserLink(user));
+      text = text.replace(
+        new RegExp(`@${user.screen_name}`, "ig"),
+        getUserLink(user)
+      );
     }
   }
 
@@ -96,13 +101,13 @@ export default class TwitterEmbed extends OEmbed {
 
   exec(element) {
     return this.authorization().then(
-      bearerToken =>
+      (bearerToken) =>
         super.exec(element, {
           headers: {
             Authorization: `Bearer ${bearerToken}`,
           },
         }),
-      error => console.error("ERROR", error)
+      (error) => console.error("ERROR", error)
     );
   }
 
@@ -194,7 +199,7 @@ export default class TwitterEmbed extends OEmbed {
           error.response = response;
           throw error;
         })
-        .then(response => response.json())
+        .then((response) => response.json())
         .then(({ access_token }) => {
           this.hasValidToken = true;
           this.bearerToken = access_token;

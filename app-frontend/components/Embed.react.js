@@ -47,7 +47,9 @@ class OEmbed extends React.Component {
 
   renderDescription() {
     const { description } = this.props;
-    return description ? <div className="embed--description">{description}</div> : null;
+    return description ? (
+      <div className="embed--description">{description}</div>
+    ) : null;
   }
 
   renderAuthor(prefix = "") {
@@ -58,7 +60,7 @@ class OEmbed extends React.Component {
     return (
       <div className="embed--author">
         {prefix}{" "}
-        <a href={url} target="_blank" title={name}>
+        <a href={url} rel="noopener noreferrer" target="_blank" title={name}>
           {name}
         </a>
       </div>
@@ -66,13 +68,16 @@ class OEmbed extends React.Component {
   }
 
   renderProvider() {
-    if (!this.props.provider || (this.props.provider && !this.props.provider.name)) {
+    if (
+      !this.props.provider ||
+      (this.props.provider && !this.props.provider.name)
+    ) {
       return null;
     }
     const { name, url } = this.props.provider;
     return (
       <div className="embed--provider">
-        <a href={url} target="_blank" title={name}>
+        <a href={url} rel="noopener noreferrer" target="_blank" title={name}>
           {name}
         </a>
       </div>
@@ -86,7 +91,12 @@ class OEmbed extends React.Component {
     const { url, width, height } = this.props.thumbnail;
     if (withLink) {
       return (
-        <a href={this.props.url} target="_blank" className="embed--thumbnail">
+        <a
+          href={this.props.url}
+          rel="noopener noreferrer"
+          target="_blank"
+          className="embed--thumbnail"
+        >
           <Image
             src={url}
             width={this.props.width}
@@ -154,7 +164,10 @@ class ImageEmbed extends OEmbed {
   render() {
     const { classNames } = this.props;
     return (
-      <EmbedWrapper className={classnames("message--embed", classNames)} {...this.props}>
+      <EmbedWrapper
+        className={classnames("message--embed", classNames)}
+        {...this.props}
+      >
         {this.renderThumbnail()}
       </EmbedWrapper>
     );
@@ -174,7 +187,13 @@ class BackgroundCoverEmbed extends OEmbed {
     }
 
     return (
-      <a href={url} target="_blank" className="embed--thumbnail" style={style}>
+      <a
+        href={url}
+        rel="noopener noreferrer"
+        target="_blank"
+        className="embed--thumbnail"
+        style={style}
+      >
         &nbsp;
       </a>
     );
@@ -195,7 +214,7 @@ class TwitterEmbed extends OEmbed {
     const { name, url } = author;
     return (
       <h3>
-        <a href={url} target="_blank">
+        <a href={url} rel="noopener noreferrer" target="_blank">
           {title}
         </a>
         <span className="embed--author">{name}</span>
@@ -216,7 +235,10 @@ class TwitterEmbed extends OEmbed {
   render() {
     const { classNames } = this.props;
     return (
-      <EmbedWrapper className={classnames("message--embed", classNames)} {...this.props}>
+      <EmbedWrapper
+        className={classnames("message--embed", classNames)}
+        {...this.props}
+      >
         {this.renderContent()}
         {this.renderProvider()}
       </EmbedWrapper>
@@ -230,6 +252,7 @@ class SpotifyEmbed extends OEmbed {
     return (
       <a
         href={url}
+        rel="noopener noreferrer"
         target="_blank"
         className="embed--thumbnail"
         style={{
@@ -255,7 +278,7 @@ class GithubEmbed extends OEmbed {
     const { url } = provider;
     return (
       <h3>
-        <a href={url} target="_blank">
+        <a href={url} rel="noopener noreferrer" target="_blank">
           {title}
         </a>
       </h3>

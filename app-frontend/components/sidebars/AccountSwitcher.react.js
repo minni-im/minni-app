@@ -78,25 +78,30 @@ class AccountSwitcher extends React.Component {
 
     const links = accounts
       .toArray()
-      .map((account, index) =>
-        (<Account
+      .map((account, index) => (
+        <Account
           key={account.slug}
           account={account}
           selected={selectedAccountSlug === account.slug}
           index={index + 1}
-        />)
-      );
+        />
+      ));
 
     return (
       <div className="account-switcher" style={{ flexBasis: "auto" }}>
         {links}
-        <Link to="/create" className="account create" activeClassName="account-selected">
+        <Link
+          to="/create"
+          className="account create"
+          activeClassName="account-selected"
+        >
           <div>+</div>
         </Link>
         <a
           href="https://minni.im"
           className="powered-by-minni"
           target="_blank"
+          rel="noopener noreferrer"
           title="Powered by Minni.im"
         >
           <img src="/images/logo-color.png" />

@@ -26,6 +26,7 @@ const DEFAULT_RULES = {
           key={state.key}
           href={SimpleMarkdown.sanitizeUrl(node.target)}
           title={node.title}
+          rel="noopener noreferrer"
           target="_blank"
         >
           {output(node.content, state)}
@@ -108,7 +109,9 @@ const DEFAULT_RULES = {
       return { name, skinTone: capture[2] && capture[3] };
     },
     react(node, output, state) {
-      return <Emoji key={state.key} shortname={node.name} skinTone={node.skinTone} />;
+      return (
+        <Emoji key={state.key} shortname={node.name} skinTone={node.skinTone} />
+      );
     },
   },
 
@@ -130,7 +133,11 @@ const DEFAULT_RULES = {
       };
     },
     react(node, output, state) {
-      return <b className="mention" key={state.key}>{output(node.content, state)}</b>;
+      return (
+        <b className="mention" key={state.key}>
+          {output(node.content, state)}
+        </b>
+      );
     },
   },
 
@@ -196,7 +203,11 @@ const DEFAULT_RULES = {
       };
     },
     react(node, output, state) {
-      return <b key={state.key} className="hashtag">#{node.content}</b>;
+      return (
+        <b key={state.key} className="hashtag">
+          #{node.content}
+        </b>
+      );
     },
   },
 };
@@ -207,7 +218,9 @@ export function getDefaultRules() {
 
 function createContentParser(rules, content = "", inline = true, state = {}) {
   const parser = SimpleMarkdown.parserFor(rules);
-  const output = SimpleMarkdown.reactFor(SimpleMarkdown.ruleOutput(rules, "react"));
+  const output = SimpleMarkdown.reactFor(
+    SimpleMarkdown.ruleOutput(rules, "react")
+  );
 
   if (!inline) {
     content = `${content}\n\n`;
