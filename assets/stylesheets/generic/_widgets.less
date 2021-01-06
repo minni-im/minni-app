@@ -54,7 +54,8 @@
     left: 0;
     background: @gray;
     border-radius: 14px;
-    transition: background 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border 0.15s ease-in-out;
+    transition: background 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+      border 0.15s ease-in-out;
 
     &:after {
       content: "";
@@ -68,8 +69,8 @@
       background: @background-light;
       border-radius: 10px;
       transition: all 0.15s ease;
-      box-shadow: 0 3px 1px 0 rgba(0, 0, 0, 0.05), 0 2px 2px 0 rgba(0, 0, 0, 0.1),
-        0 3px 3px 0 rgba(0, 0, 0, 0.05);
+      box-shadow: 0 3px 1px 0 rgba(0, 0, 0, 0.05),
+        0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 3px 3px 0 rgba(0, 0, 0, 0.05);
     }
   }
 
@@ -336,9 +337,10 @@
     }
 
     .icon svg {
-      .square(20px);
+      .square(16px);
       fill: @gray-light;
       margin-right: 5px;
+      margin-left: 3px;
       vertical-align: middle;
     }
 
