@@ -3,7 +3,7 @@ import { Constants, register as PluginRegister } from "minni-plugins-toolkit";
 const { PLUGIN_TYPES } = Constants;
 const COMMAND_TRIM = "/shrug ";
 const SHRUG = "¯\\_(ツ)_/¯";
-const SHRUG_NO_MARKDWON = "¯\\_(ツ)_/¯";
+const SHRUG_NO_MARKDWON = "¯\\\\\\_(ツ)_/¯";
 
 PluginRegister(
   "ShrugCommand",
