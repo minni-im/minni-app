@@ -103,9 +103,7 @@ export default class TwitterEmbed extends OEmbed {
     return this.authorization().then(
       (bearerToken) =>
         super.exec(element, {
-          headers: {
-            Authorization: `Bearer ${bearerToken}`,
-          },
+          Authorization: `Bearer ${bearerToken}`,
         }),
       (error) => console.error("ERROR", error)
     );
@@ -175,7 +173,7 @@ export default class TwitterEmbed extends OEmbed {
   get bearerTokenCredentials() {
     const key = encodeURIComponent(this.consumerKey);
     const secret = encodeURIComponent(this.consumerSecret);
-    return new Buffer(`${key}:${secret}`).toString("base64");
+    return Buffer.from(`${key}:${secret}`).toString("base64");
   }
 
   authorization() {
@@ -195,6 +193,7 @@ export default class TwitterEmbed extends OEmbed {
           if (response.status >= 200 && response.status < 300) {
             return response;
           }
+
           const error = new Error(response.statusText);
           error.response = response;
           throw error;
