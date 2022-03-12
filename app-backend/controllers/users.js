@@ -1,18 +1,14 @@
-import recorder from "tape-recorder";
+import recorder from "@minni-im/tape-recorder";
 import { requireLogin } from "../middlewares/auth";
 
 export default (app) => {
-  app.get("/users",
-    requireLogin,
-    (req) => {
-      req.io.route("users:list");
-    });
+  app.get("/users", requireLogin, (req) => {
+    req.io.route("users:list");
+  });
 
-  app.get("/users/:id",
-    requireLogin,
-    (req) => {
-      req.io.route("users:get");
-    });
+  app.get("/users/:id", requireLogin, (req) => {
+    req.io.route("users:get");
+  });
 
   app.io.route("users", {
     list(req, res) {
@@ -23,17 +19,19 @@ export default (app) => {
       const userId = req.params.id;
       const User = recorder.model("User");
 
-      User.findById(userId)
-        .then((user) => {
+      User.findById(userId).then(
+        (user) => {
           if (!user) {
             res.sendStatus(404);
             return;
           }
           res.json(user.toAPI(req.user.id === userId));
-        }, (error) => {
+        },
+        (error) => {
           console.error(error);
           res.status(400).json(error);
-        });
+        }
+      );
     },
 
     presence(req) {
@@ -42,8 +40,8 @@ export default (app) => {
       req.socket.status = status;
       app.io.emit("users:presence", {
         userId,
-        status
+        status,
       });
-    }
+    },
   });
 };

@@ -1,7 +1,10 @@
-import recorder from "tape-recorder";
+import recorder from "@minni-im/tape-recorder";
 import { requireLogin } from "../middlewares/auth";
 
-import { requireValidMessage, requireValidMessageAuthor } from "../middlewares/message";
+import {
+  requireValidMessage,
+  requireValidMessageAuthor,
+} from "../middlewares/message";
 
 import embed from "../libs/embeds";
 
@@ -26,8 +29,16 @@ export default (app) => {
     create(req, res) {
       const Message = recorder.model("Message");
       const nonce = req.body.nonce;
-      const { content, accountId, roomId, userId, embeds, type, subType } = req.body;
-      const message = new Message({ content, userId, roomId, embeds, type, subType });
+      const { content, accountId, roomId, userId, embeds, type, subType } =
+        req.body;
+      const message = new Message({
+        content,
+        userId,
+        roomId,
+        embeds,
+        type,
+        subType,
+      });
 
       message.save().then(
         (newMessage) => {
@@ -56,7 +67,9 @@ export default (app) => {
                     "lastMsgTimestamp",
                     embeddedMessageJson.lastUpdated.toISOString()
                   );
-                  app.io.in(socketKey).emit("messages:update", embeddedMessageJson);
+                  app.io
+                    .in(socketKey)
+                    .emit("messages:update", embeddedMessageJson);
                 });
               }
             },

@@ -63,9 +63,10 @@
   },
   "dependencies": {
     "@minni-im/emojify": "^1.0.0",
-    "@minni-im/minni-auth-github": "^1.0.0",
+    "@minni-im/minni-auth-github": "1.0.2",
     "@minni-im/minni-embed": "1.1.2",
     "@minni-im/minni-embed-youtube": "1.0.2",
+    "@minni-im/tape-recorder": "2.2.2",
     "babel-cli": "6.26.0",
     "babel-plugin-transform-builtin-extend": "^1.1.0",
     "babel-register": "^6.22.0",
@@ -110,7 +111,6 @@
     "redis": "2.8.0",
     "request": "2.83.0",
     "simple-markdown": "0.3.1",
-    "tape-recorder": "^2.1.1",
     "twitter-text": "1.14.7"
   }
 }

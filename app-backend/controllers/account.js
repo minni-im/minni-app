@@ -1,4 +1,4 @@
-import recorder from "tape-recorder";
+import recorder from "@minni-im/tape-recorder";
 
 import { requireLogin, requireLoginRedirect } from "../middlewares/auth";
 import { requireProfileInfoRedirect } from "../middlewares/profile";

@@ -1,17 +1,23 @@
-import recorder from "tape-recorder";
+import recorder from "@minni-im/tape-recorder";
 import crypto from "crypto";
 import moment from "moment";
 
 const InviteSchema = new recorder.Schema({
-  token: String,
+  token: {
+    type: String,
+    view: true,
+  },
   inviterId: String,
-  accountId: String,
+  accountId: {
+    type: String,
+    view: true,
+  },
   maxAge: Number,
   maxUsage: Number,
   usage: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 });
 
 InviteSchema.virtual({
@@ -28,12 +34,21 @@ InviteSchema.virtual({
         }
       }
       return false;
-    }
-  }
+    },
+  },
 });
 
 InviteSchema.method("toAPI", function toAPI() {
-  const { id, token, accountId, inviterId, maxAge, maxUsage, usage, dateCreated } = this;
+  const {
+    id,
+    token,
+    accountId,
+    inviterId,
+    maxAge,
+    maxUsage,
+    usage,
+    dateCreated,
+  } = this;
   return {
     id,
     token,
@@ -42,21 +57,21 @@ InviteSchema.method("toAPI", function toAPI() {
     maxAge,
     maxUsage,
     usage,
-    dateCreated
+    dateCreated,
   };
 });
 
 InviteSchema.static("generateToken", (userId, accountId, maxAge, maxUsage) => {
   const Invite = recorder.model("Invite");
-  const token = new Buffer(
-    crypto.randomBytes(3).toString("hex")
-  ).toString("base64");
+  const token = new Buffer(crypto.randomBytes(3).toString("hex")).toString(
+    "base64"
+  );
 
   const payload = {
     accountId,
     inviterId: userId,
     maxAge,
-    token
+    token,
   };
 
   if (maxUsage) {
@@ -68,13 +83,12 @@ InviteSchema.static("generateToken", (userId, accountId, maxAge, maxUsage) => {
 });
 
 InviteSchema.static("findByToken", function findByToken(token) {
-  return this.where("token", { key: token })
-    .then((invites) => {
-      if (invites.length) {
-        return invites[0];
-      }
-      return Promise.reject(false);
-    });
+  return this.where("token", { key: token }).then((invites) => {
+    if (invites.length) {
+      return invites[0];
+    }
+    return Promise.reject(false);
+  });
 });
 
 export default recorder.model("Invite", InviteSchema);

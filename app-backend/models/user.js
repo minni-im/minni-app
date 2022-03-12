@@ -1,5 +1,5 @@
+import recorder from "@minni-im/tape-recorder";
 import bcrypt from "bcryptjs";
-import recorder from "tape-recorder";
 import crypto from "crypto";
 
 import config from "../config";
@@ -9,7 +9,10 @@ const UserSchema = new recorder.Schema({
   lastname: String,
   nickname: String,
   password: String,
-  email: String,
+  email: {
+    type: String,
+    view: true,
+  },
   gravatarEmail: String,
   picture: String,
   token: String,
@@ -157,7 +160,7 @@ UserSchema.view("byProviderId", {
   map: `function(doc) {
       if (doc.modelType === "User" && doc.providers) {
         for (var provider in doc.providers) {
-          emit([provider, doc.providers[provider]], doc);
+          emit([provider, doc.providers[provider]], null);
         }
       }
     }`,

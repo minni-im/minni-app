@@ -1,4 +1,4 @@
-import recorder from "tape-recorder";
+import recorder from "@minni-im/tape-recorder";
 
 export default (app) => {
   const cache = app.get("cache");
@@ -37,11 +37,11 @@ export default (app) => {
         return account.toAPI(user.id === account.adminId);
       });
 
-      const rooms = accounts.map(account =>
-        Room.getListForAccountAndUser(account.id, user).then(list =>
+      const rooms = accounts.map((account) =>
+        Room.getListForAccountAndUser(account.id, user).then((list) =>
           Promise.all(
             list.map(
-              room =>
+              (room) =>
                 new Promise((resolve, reject) => {
                   const cacheKey = `${room.accountId}:${room.id}`;
                   cache.hgetall(cacheKey, (err, state) => {
@@ -62,10 +62,14 @@ export default (app) => {
         });
         return ids;
       }, new Set());
-      const users = Array.from(usersId).map(userId => User.findById(userId).then(u => u.toAPI()));
+      const users = Array.from(usersId).map((userId) =>
+        User.findById(userId).then((u) => u.toAPI())
+      );
 
       const presence = new Set();
-      for (const clientSocket of Object.keys(app.io.sockets.adapter.nsp.connected)) {
+      for (const clientSocket of Object.keys(
+        app.io.sockets.adapter.nsp.connected
+      )) {
         const client = app.io.sockets.adapter.nsp.connected[clientSocket];
         if (client.request.user.id !== user.id) {
           presence.add({
@@ -77,7 +81,9 @@ export default (app) => {
 
       Promise.all([...rooms, ...users]).then(
         (results) => {
-          const finalRooms = results.slice(0, size).reduce((flat, list) => flat.concat(list), []);
+          const finalRooms = results
+            .slice(0, size)
+            .reduce((flat, list) => flat.concat(list), []);
           const finalUsers = results.slice(size);
 
           socket.emit("connected", {
@@ -89,7 +95,9 @@ export default (app) => {
           });
         },
         (error) => {
-          console.log(`Socket connection failed [sid: ${socket.id}, id:${user.id}]`);
+          console.log(
+            `Socket connection failed [sid: ${socket.id}, id:${user.id}]`
+          );
           console.error(error);
         }
       );

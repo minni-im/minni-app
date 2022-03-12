@@ -1,5 +1,5 @@
+import recorder from "@minni-im/tape-recorder";
 import bcrypt from "bcryptjs";
-import recorder from "tape-recorder";
 
 import {
   providers,

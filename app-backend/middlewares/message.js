@@ -1,4 +1,4 @@
-import recorder from "tape-recorder";
+import recorder from "@minni-im/tape-recorder";
 
 export function requireValidMessage(req, res, next) {
   const Message = recorder.model("Message");

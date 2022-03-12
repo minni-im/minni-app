@@ -1,4 +1,4 @@
-import recorder from "tape-recorder";
+import recorder from "@minni-im/tape-recorder";
 import { requireLogin } from "../middlewares/auth";
 import * as auth from "../auth";
 
@@ -49,7 +49,8 @@ export default (app) => {
       if (user.usingToken) {
         res.status(403).json({
           ok: false,
-          message: "Cannot generate a new token when using token authentication.",
+          message:
+            "Cannot generate a new token when using token authentication.",
         });
         return;
       }
@@ -121,8 +122,10 @@ export default (app) => {
           recorder
             .model("Account")
             .getListForUser(user.id)
-            .then(accounts =>
-              accounts.forEach(({ id }) => app.io.in(id).emit("users:update", newUser.toAPI(false)))
+            .then((accounts) =>
+              accounts.forEach(({ id }) =>
+                app.io.in(id).emit("users:update", newUser.toAPI(false))
+              )
             );
 
           if (req.accepts("text/html")) {

@@ -1,13 +1,13 @@
 /* eslint global-require: 0 */
 import fs from "fs";
 import path from "path";
+import recorder from "@minni-im/tape-recorder";
 import express from "express.oi";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import flash from "flash";
 import redis from "redis";
 import connectRedis from "connect-redis";
-import recorder from "tape-recorder";
 
 import { setup as authSetup } from "./auth";
 import config from "./config";

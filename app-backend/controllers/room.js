@@ -1,4 +1,4 @@
-import recorder from "tape-recorder";
+import recorder from "@minni-im/tape-recorder";
 
 import { TYPE } from "../models/room";
 
@@ -9,37 +9,74 @@ import { requireValidRoom, requireRoomAdmin } from "../middlewares/room";
 export default (app) => {
   const cache = app.get("cache");
 
-  app.get("/api/accounts/:accountId/rooms", requireLogin, requireValidAccount, (req) => {
-    req.io.route("rooms:list");
-  });
+  app.get(
+    "/api/accounts/:accountId/rooms",
+    requireLogin,
+    requireValidAccount,
+    (req) => {
+      req.io.route("rooms:list");
+    }
+  );
 
-  app.put("/api/accounts/:accountId/rooms/", requireLogin, requireValidAccount, (req) => {
-    req.io.route("rooms:create");
-  });
+  app.put(
+    "/api/accounts/:accountId/rooms/",
+    requireLogin,
+    requireValidAccount,
+    (req) => {
+      req.io.route("rooms:create");
+    }
+  );
 
-  app.delete("/api/rooms/:roomId", requireLogin, requireValidRoom, requireRoomAdmin, (req) => {
-    req.io.route("rooms:delete");
-  });
+  app.delete(
+    "/api/rooms/:roomId",
+    requireLogin,
+    requireValidRoom,
+    requireRoomAdmin,
+    (req) => {
+      req.io.route("rooms:delete");
+    }
+  );
 
-  app.post("/api/rooms/:roomId", requireLogin, requireValidRoom, requireRoomAdmin, (req) => {
-    req.io.route("rooms:update");
-  });
+  app.post(
+    "/api/rooms/:roomId",
+    requireLogin,
+    requireValidRoom,
+    requireRoomAdmin,
+    (req) => {
+      req.io.route("rooms:update");
+    }
+  );
 
   app.post("/api/rooms/:roomId/star", requireLogin, requireValidRoom, (req) => {
     req.io.route("rooms:star");
   });
 
-  app.post("/api/rooms/:roomId/unstar", requireLogin, requireValidRoom, (req) => {
-    req.io.route("rooms:unstar");
-  });
+  app.post(
+    "/api/rooms/:roomId/unstar",
+    requireLogin,
+    requireValidRoom,
+    (req) => {
+      req.io.route("rooms:unstar");
+    }
+  );
 
-  app.get("/api/rooms/:roomId/messages", requireLogin, requireValidRoom, (req) => {
-    req.io.route("rooms:messages");
-  });
+  app.get(
+    "/api/rooms/:roomId/messages",
+    requireLogin,
+    requireValidRoom,
+    (req) => {
+      req.io.route("rooms:messages");
+    }
+  );
 
-  app.post("/api/rooms/:roomId/typing", requireLogin, requireValidRoom, (req) => {
-    req.io.route("rooms:typing");
-  });
+  app.post(
+    "/api/rooms/:roomId/typing",
+    requireLogin,
+    requireValidRoom,
+    (req) => {
+      req.io.route("rooms:typing");
+    }
+  );
 
   app.io.route("rooms", {
     star(req, res) {
@@ -64,7 +101,8 @@ export default (app) => {
         (error) => {
           res.json({
             ok: false,
-            message: "We did not managed to star the room. Please try again later.",
+            message:
+              "We did not managed to star the room. Please try again later.",
             errors: error,
           });
         }
@@ -94,7 +132,8 @@ export default (app) => {
         (error) => {
           res.json({
             ok: false,
-            message: "We did not managed to unstar the room. Please try again later.",
+            message:
+              "We did not managed to unstar the room. Please try again later.",
             errors: error,
           });
         }
@@ -107,9 +146,9 @@ export default (app) => {
       const { user } = req;
       Room.getListForAccountAndUser(accountId, user)
         .then(
-          rooms =>
+          (rooms) =>
             rooms.map(
-              room =>
+              (room) =>
                 new Promise((resolve, reject) => {
                   const cacheKey = `${room.accountId}:${room.id}`;
                   cache.hgetall(cacheKey, (err, state) => {
@@ -127,8 +166,8 @@ export default (app) => {
             });
           }
         )
-        .then(rooms => Promise.all(rooms))
-        .then(rooms =>
+        .then((rooms) => Promise.all(rooms))
+        .then((rooms) =>
           res.json({
             ok: true,
             rooms,
@@ -269,7 +308,7 @@ export default (app) => {
         (messages) => {
           res.json({
             ok: true,
-            messages: messages.map(message => message.toAPI()),
+            messages: messages.map((message) => message.toAPI()),
           });
         },
         (error) => {

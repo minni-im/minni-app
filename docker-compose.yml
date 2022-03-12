@@ -23,8 +23,8 @@ services:
       - db
       - cache
     links:
-      - db:couchdb
-      - cache:redis
+      - "db:couchdb"
+      - "cache:redis"
     volumes:
       - .:/usr/local/var/www
     command: node /usr/local/var/www/dist/lib/
@@ -44,7 +44,7 @@ services:
     depends_on:
       - minni
     links:
-      - minni
+      - "minni"
     volumes:
       - .:/usr/local/var/www
       - ./logs/nginx:/var/log/nginx

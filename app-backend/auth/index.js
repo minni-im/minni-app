@@ -1,4 +1,4 @@
-import recorder from "tape-recorder";
+import recorder from "@minni-im/tape-recorder";
 import cookieParser from "cookie-parser";
 
 import passport from "passport";

@@ -1,13 +1,16 @@
-import recorder from "tape-recorder";
+import recorder from "@minni-im/tape-recorder";
 
 export function requireValidAccount(req, res, next) {
   const Account = recorder.model("Account");
-  Account.findById(req.params.accountId).then(account => {
-    if (account) {
-      req.account = account;
-      next();
+  Account.findById(req.params.accountId).then(
+    (account) => {
+      if (account) {
+        req.account = account;
+        next();
+      }
+    },
+    (error) => {
+      next(error);
     }
-  }, error => {
-    next(error);
-  });
+  );
 }

@@ -1,4 +1,4 @@
-import recorder from "tape-recorder";
+import recorder from "@minni-im/tape-recorder";
 
 export const TYPE = {
   INITIAL: 0,
@@ -14,7 +14,10 @@ const RoomSchema = new recorder.Schema({
     type: Number,
     default: TYPE.PUBLIC,
   },
-  accountId: String,
+  accountId: {
+    type: String,
+    view: true,
+  },
   adminId: String,
   usersId: {
     type: Array,
@@ -39,17 +42,21 @@ RoomSchema.virtual({
 RoomSchema.static("isValidName", function isValidName(accountId, roomName) {
   roomName = roomName.toLowerCase();
   return this.where("accountId", { key: accountId }).then(
-    rooms => rooms.filter(({ name }) => name.toLowerCase() === roomName).length === 0
+    (rooms) =>
+      rooms.filter(({ name }) => name.toLowerCase() === roomName).length === 0
   );
 });
 
-RoomSchema.static("getListForAccountAndUser", function getListForAccountAndUser(accountId, user) {
-  return this.where("accountId", { key: accountId }).then(rooms =>
-    rooms
-      .filter(room => room.isAccessGranted(user.id))
-      .map(room => room.toAPI(user.id === room.adminId))
-  );
-});
+RoomSchema.static(
+  "getListForAccountAndUser",
+  function getListForAccountAndUser(accountId, user) {
+    return this.where("accountId", { key: accountId }).then((rooms) =>
+      rooms
+        .filter((room) => room.isAccessGranted(user.id))
+        .map((room) => room.toAPI(user.id === room.adminId))
+    );
+  }
+);
 
 RoomSchema.method("isDefaultRoom", function () {
   return this.type === TYPE.INITIAL;
@@ -61,7 +68,8 @@ RoomSchema.method("isAdmin", function isAdmin(user) {
 
 RoomSchema.method("isAccessGranted", function isAccessGranted(userId) {
   return (
-    this.public || (this.private && (this.adminId === userId || this.usersId.includes(userId)))
+    this.public ||
+    (this.private && (this.adminId === userId || this.usersId.includes(userId)))
   );
 });
 
