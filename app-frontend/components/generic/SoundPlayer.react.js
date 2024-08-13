@@ -35,10 +35,21 @@ class SoundPlayer extends React.Component {
     ) {
       SoundPlayer.playSound("notification");
     }
+    this.setAppBadge();
   }
 
   render() {
     return null;
+  }
+
+  setAppBadge() {
+    if ("setAppBadge" in navigator) {
+      if (this.state.unreadCount > 0) {
+        navigator.setAppBadge(this.state.unreadCount);
+      } else {
+        navigator.clearAppBadge();
+      }
+    }
   }
 }
 
