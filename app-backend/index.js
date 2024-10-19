@@ -98,6 +98,8 @@ function bootstrap() {
 
 const couchDBHost = DOCKER ? "couchdb" : config.couchdb.host;
 const couchDBPort = DOCKER ? 5984 : config.couchdb.port;
+const couchDBUser = config.couchdb.user;
+const couchDBPassword = config.couchdb.password;
 
 if (config.demo) {
   console.log(asciiLogo("Starting application server, demo mode active"));
@@ -106,7 +108,7 @@ if (config.demo) {
 }
 
 recorder.connect(
-  `http://${couchDBHost}:${couchDBPort}`,
+  `http://${couchDBUser}:${couchDBPassword}@${couchDBHost}:${couchDBPort}`,
   config.couchdb.name,
   () => {
     fs.readdirSync(path.join(__dirname, "models")).forEach((model) => {
