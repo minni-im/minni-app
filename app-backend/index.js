@@ -108,8 +108,16 @@ if (config.demo) {
 }
 
 recorder.connect(
-  `http://${couchDBUser}:${couchDBPassword}@${couchDBHost}:${couchDBPort}`,
+  `http://${couchDBHost}:${couchDBPort}`,
   config.couchdb.name,
+  {
+    requestDefaults: {
+      auth: {
+        username: couchDBUser,
+        password: couchDBPassword,
+      },
+    },
+  },
   () => {
     fs.readdirSync(path.join(__dirname, "models")).forEach((model) => {
       require(`./models/${model}`);
