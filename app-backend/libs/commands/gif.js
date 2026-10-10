@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import { requireLogin } from "../../middlewares/auth";
 
 const ENDPOINT = "https://bkt-2q9.pages.dev/";
-const ALL_IMAGES = new URL("/images.json", ENDPOINT);
+const ALL_IMAGES = new URL("/images.json", ENDPOINT).toString();
 
 export function setup(app) {
     console.log("Loading Buukkit GIF command");
