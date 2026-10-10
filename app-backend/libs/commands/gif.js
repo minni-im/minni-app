@@ -1,11 +1,14 @@
 import fetch from "node-fetch";
 import { requireLogin } from "../../middlewares/auth";
 
+const ENDPOINT = "https://bkt-2q9.pages.dev/";
+const ALL_IMAGES = new URL("/images.json", ENDPOINT);
+
 export function setup(app) {
     console.log("Loading Buukkit GIF command");
     app.get("/api/command/gif/search", requireLogin, (req, res) => {
         const query = req.query.q || "";
-        fetch("https://bkt-2q9.pages.dev/images.json")
+        fetch(ALL_IMAGES)
             .then((response) => response.json())
             .then((results) =>
                 res.json({
@@ -16,11 +19,14 @@ export function setup(app) {
                                 keyword.includes(query),
                             ),
                         )
-                        .map((image) => ({
-                            preview: image.url,
-                            url: image.url,
-                            title: image.filename,
-                        })),
+                        .map((image) => {
+                            const url = new URL(image.url, ENDPOINT).toString();
+                            return {
+                                preview: url,
+                                url: url,
+                                title: image.filename,
+                            };
+                        }),
                 }),
             )
             .catch((err) => {
