@@ -5,7 +5,7 @@ import config from "../../config";
 const { tenor } = config.plugins;
 
 export function setup(app) {
-    const API_KEY = tenor.api_key;
+    const API_KEY = tenor && tenor.api_key;
     if (!API_KEY) {
         console.error(
             "Tenor Composer Plugin: missing required 'api_key' in settings.",

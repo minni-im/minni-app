@@ -5,7 +5,7 @@ import config from "../../config";
 const { klipy } = config.plugins;
 
 export function setup(app) {
-    const API_KEY = klipy.api_key;
+    const API_KEY = klipy && klipy.api_key;
     if (!API_KEY) {
         console.error(
             "Klipy Composer Plugin: missing required 'api_key' in settings.",
