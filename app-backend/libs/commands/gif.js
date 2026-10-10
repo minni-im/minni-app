@@ -28,7 +28,7 @@ export function setup(app) {
                         .map((image) => {
                             const normalizedName = normalize(image.name);
                             let score =
-                                normalizedName === normalizedQuery ? 1_000 : 0;
+                                normalizedName === normalizedQuery ? 1000 : 0;
 
                             if (
                                 !queryWords.every((word) =>
