@@ -177,13 +177,15 @@ class ImageEmbed extends OEmbed {
 class BackgroundCoverEmbed extends OEmbed {
   renderThumbnail() {
     const { url, thumbnail, fallbackCover } = this.props;
-    const { url: thumbnailUrl, width } = thumbnail;
-    const style = {
-      backgroundImage: `url(${thumbnailUrl})`,
-    };
 
-    if (fallbackCover) {
-      style.backgroundImage += `, url(${fallbackCover})`;
+    const style = {};
+    if (thumbnail) {
+      style.backgroundImage = `url(${thumbnail.url})`;
+      if (fallbackCover) {
+        style.backgroundImage += `, url(${fallbackCover})`;
+      }
+    } else {
+      style.backgroundImage += `url(${fallbackCover})`;
     }
 
     return (
